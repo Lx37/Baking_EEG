@@ -15,7 +15,7 @@ from Baking_EEG import _3_epoch as epoch
 ######################################
 # Indicate the protocol and subject you're working on + data directory and excel file with patients info
 protocol = 'Resting' # 'PP' or 'LG' or 'Words' or 'Arythmetic' or 'Resting'
-sujet = 'VS91'
+sujet = 'SS25' #'VS91'
 # Set the parameters for the preprocessing : save data or not, verbose or not, plot or not (True or False)
 save = True
 verbose = True
@@ -52,7 +52,7 @@ utils.create_arbo(protocol, patient_info, cfg)
 #'''
 print("################## Preprocessing data " + sujet + " ##################")
 
-if patient_info['data_fname'].endswith('.set'): # EGI .mff raw data format
+if patient_info['data_fname'].endswith('.set'): # EEGlab raw data format (exported)
     data = prepro.preprocess(patient_info, cfg, save, verbose, plot)
 #else:
 #   mircromed #TODO
