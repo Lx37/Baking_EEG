@@ -92,4 +92,10 @@ elif os.path.exists(data_name_preproc):
     fif_name = data_name_preproc
 
 data = mne.io.read_raw_fif(fif_name, preload=True)
+
+events = mne.find_events(data, stim_channel='STI 014')
+eventplot = mne.viz.plot_events(events, data.info['sfreq'])
+
 data = epoch.get_ERP_epochs(data, patient_info, cfg, save=True, verbose=True, plot=True)
+
+print(data.info)

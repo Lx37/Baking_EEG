@@ -253,13 +253,12 @@ def connectivity_overSubs_BRU(subs, data_save_dir, selected_chans, proto, cfg, s
 
                 if plot: ###MODIF BRU : ajout de if plot
                     #plot conn ROI for each subjet
-                    ROI_sub_fig, ROI_sub_ax = plot_connectivity_circle(df_ROI_sub.to_numpy(), All_ROI.keys(),
-                                                                       title=f'{sub} {proto} Event {event_id} Connectivity {k} band',
-                                                                       vmin=cfg.con_vmin, vmax=cfg.con_vmax)
-                    fname_sub_fig = f'{data_save_dir}{cfg.result_con_path_BRU}/{sub}/{sub}_{proto}_{cfg.con_method}_{k}_{event_id}_conData_ROI.png'
-                    ROI_sub_fig.savefig(fname_sub_fig, facecolor='black')
-
-
+                    # ROI_sub_fig, ROI_sub_ax = plot_connectivity_circle(df_ROI_sub.to_numpy(), All_ROI.keys(),
+                    #                                                    title=f'{sub} {proto} Event {event_id} Connectivity {k} band',
+                    #                                                    vmin=cfg.con_vmin, vmax=cfg.con_vmax)
+                    # fname_sub_fig = f'{data_save_dir}{cfg.result_con_path_BRU}/{sub}/{sub}_{proto}_{cfg.con_method}_{k}_{event_id}_conData_ROI.png'
+                    # ROI_sub_fig.savefig(fname_sub_fig, facecolor='black')
+                    print('yo')
 
                 all_conn_aray[:, :, i_event, i_sub] = con_data.get_data(output='dense')[:, :, 0].copy()
                 #all_conn_ROI_aray[:, :, i_event, i_sub] = df_ROI_sub.to_numpy()
@@ -273,6 +272,14 @@ def connectivity_overSubs_BRU(subs, data_save_dir, selected_chans, proto, cfg, s
                 df_mean_ROI.to_excel(mean_ROI_name)
 
                 print(f'Save mean by ROI: {mean_ROI_name}')
+
+                mean_ROI_fig, mean_ROI_ax = plot_connectivity_circle(
+                    df_mean_ROI.to_numpy(), All_ROI.keys(),
+                    title=f'Mean {proto} Event {event_id} Connectivity {k} band',
+                    vmin=cfg.con_vmin, vmax=cfg.con_vmax
+                )
+                mean_fname = f'{data_save_dir}{cfg.result_con_path_BRU}/Mean_{proto}_{cfg.con_method}_{k}_{event_id}_conData_ROI.png'
+                mean_ROI_fig.savefig(mean_fname, facecolor='black')
 
             all_conn_aray_name = f'{data_save_dir}{cfg.result_con_path_BRU}/{proto}_{cfg.con_method}_{k}_allSubConArray.npy'
             np.save(all_conn_aray_name, all_conn_aray)

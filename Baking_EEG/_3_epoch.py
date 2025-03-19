@@ -41,18 +41,21 @@ def redefine_event_PP(new_events, cfg, verbose=True, plot=True):
                      print ('Error no AP before or after PP ??')
     if verbose:
         print('Events AFTER changes : ', events_redef_equal)
-    if plot:
-        eventplot = mne.viz.plot_events(events_redef, data.info['sfreq'])
-        eventplot = mne.viz.plot_events(events_redef_equal, data.info['sfreq'])
 
     return events_redef_equal
 
 def redefine_event_LG(data, patient_info, cfg, verbose=True, plot=True):
     ########### Renaming of triggers  ###########
     ### Loading csv
-    csvname = cfg.csvpath + patient_info['ID_patient'] + '.csv'
-    ord = pd.read_csv(csvname, sep=",")
-
+    #csvname = cfg.csvpath + patient_info['ID_patient'] + '.csv'
+    csvname = patient_info['raw_data_dir'] + patient_info['ID_patient'] + '/Stimulations/local-global/playframe.csv'
+    try:
+        ord = pd.read_csv(csvname, sep=",")
+    except:
+        print("Can't find playframe excel file Local Global protocol for patient : ", patient_info['ID_patient'])
+        print('CSV file : ', csvname)
+        exit() 
+        
     number = 0
     ord["block"] = 0
     ord["LS"] = 0
@@ -148,8 +151,12 @@ def get_ERP_epochs(data, patient_info, cfg, save=True, verbose=True, plot=True):
 
         
         events_redef = redefine_event_PP(new_events, cfg, verbose=True, plot=True)
+        
+        if plot:
+            eventplot = mne.viz.plot_events(events_redef, data.info['sfreq'])
+        
         events_id = cfg.events_id_PP
-        epochs_reject = cfg.epochs_reject_PP
+        epochs_reject = None #cfg.epochs_reject_PP
     
     elif patient_info['protocol'] == 'LG':
         events_redef = redefine_event_LG(data, patient_info, cfg, verbose=True, plot=True)
@@ -195,7 +202,7 @@ def get_ERP_epochs(data, patient_info, cfg, save=True, verbose=True, plot=True):
             epochs_name = patient_info['data_save_dir'] + cfg.all_folders_LG['data_epochs_path']
         elif patient_info['protocol'] == 'Resting':
             epochs_name = patient_info['data_save_dir'] + cfg.all_folders_Resting['data_epochs_path']
-        epochs_name = epochs_name + patient_info['ID_patient'] + '_' + patient_info['protocol'] + cfg.prefix_epo_conn
+        epochs_name = epochs_name + patient_info['ID_patient'] + '_' + patient_info['protocol'] + cfg.prefix_epochs_PPAP
         print("Saving data : " + epochs_name)
         
         #epochs_name = cfg.data_epochs_path + data.info['subject_info']['his_id'] + '_' + proto + cfg.prefix_epoched
