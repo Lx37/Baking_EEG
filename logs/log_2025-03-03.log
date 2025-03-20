@@ -1,0 +1,140 @@
+2025-03-03 14:06:18,313 - INFO - Baking_EEG._4_decoding - Running decoding on subject TpAB19 from group del
+2025-03-03 14:08:02,019 - INFO - Baking_EEG._4_decoding - Running decoding on subject TpAB19 from group del
+2025-03-03 14:08:04,967 - INFO - Baking_EEG._4_decoding - Autodetected number of jobs: 4
+2025-03-03 14:10:22,101 - INFO - Baking_EEG._4_decoding - Overall decoding metrics:
+2025-03-03 14:10:22,103 - INFO - Baking_EEG._4_decoding - Accuracy: 0.821875
+2025-03-03 14:10:22,103 - INFO - Baking_EEG._4_decoding - Precision: 0.27586206896551724
+2025-03-03 14:10:22,103 - INFO - Baking_EEG._4_decoding - Recall: 0.18181818181818182
+2025-03-03 14:10:22,103 - INFO - Baking_EEG._4_decoding - F1 Score: 0.2191780821917808
+2025-03-03 14:10:22,104 - INFO - Baking_EEG._4_decoding - Balanced Accuracy: 0.5528656126482213
+2025-03-03 17:50:27,162 - INFO - __main__ - User is: tom
+2025-03-03 17:50:27,162 - INFO - __main__ - Configured paths for user tom
+2025-03-03 17:50:27,162 - INFO - __main__ - EEG Decoding Framework initialized (MNE version: 1.6.1)
+2025-03-03 17:50:40,186 - INFO - __main__ - User is: tom
+2025-03-03 17:50:40,186 - INFO - __main__ - Configured paths for user tom
+2025-03-03 17:50:40,186 - INFO - __main__ - EEG Decoding Framework initialized (MNE version: 1.6.1)
+2025-03-03 17:50:50,472 - INFO - __main__ - Décodage pour le sujet TpAB19 (groupe: del, protocole: PP)
+2025-03-03 17:50:50,495 - ERROR - __main__ - Aucun fichier epoch trouvé pour TpAB19_PP_*-epo.fif dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP/data_epochs/
+2025-03-03 17:50:50,496 - ERROR - __main__ - Erreur lors du décodage pour le sujet TpAB19: Aucun fichier epoch trouvé pour TpAB19_PP_*-epo.fif dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP/data_epochs/
+Traceback (most recent call last):
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/examples/run_decoding.py", line 225, in run_decoding_on_subject
+    epochs = self.load_epochs_for_decoding(patient_info, verbose)
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/examples/run_decoding.py", line 178, in load_epochs_for_decoding
+    raise FileNotFoundError(error_msg)
+FileNotFoundError: Aucun fichier epoch trouvé pour TpAB19_PP_*-epo.fif dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP/data_epochs/
+2025-03-03 18:07:16,179 - INFO - __main__ - User is: tom
+2025-03-03 18:07:16,180 - INFO - __main__ - Configured paths for user tom
+2025-03-03 18:07:16,180 - INFO - __main__ - EEG Decoding Framework initialized (MNE version: 1.6.1)
+2025-03-03 18:07:25,585 - INFO - __main__ - Décodage pour le sujet TpAB19 (groupe: del, protocole: PP)
+2025-03-03 18:07:29,487 - INFO - __main__ - Comparaison des conditions: PP/10 vs PP/20
+2025-03-03 18:07:29,622 - INFO - Baking_EEG._4_decoding - Autodetected number of jobs: 4
+2025-03-03 18:08:20,652 - INFO - Baking_EEG._4_decoding - Fold 1/5 AUC: 0.667
+2025-03-03 18:08:20,654 - INFO - Baking_EEG._4_decoding - Fold 2/5 AUC: 0.778
+2025-03-03 18:08:20,654 - INFO - Baking_EEG._4_decoding - Fold 3/5 AUC: 0.556
+2025-03-03 18:08:20,654 - INFO - Baking_EEG._4_decoding - Fold 4/5 AUC: 1.000
+2025-03-03 18:08:20,654 - INFO - Baking_EEG._4_decoding - Fold 5/5 AUC: 0.500
+2025-03-03 18:08:20,676 - INFO - Baking_EEG._4_decoding - Overall decoding metrics:
+2025-03-03 18:08:20,676 - INFO - Baking_EEG._4_decoding - Accuracy: 0.567
+2025-03-03 18:08:20,676 - INFO - Baking_EEG._4_decoding - Precision: 0.500
+2025-03-03 18:08:20,677 - INFO - Baking_EEG._4_decoding - Recall: 0.538
+2025-03-03 18:08:20,677 - INFO - Baking_EEG._4_decoding - F1 Score: 0.519
+2025-03-03 18:08:20,677 - INFO - Baking_EEG._4_decoding - Balanced Accuracy: 0.563
+2025-03-03 18:08:20,677 - INFO - Baking_EEG._4_decoding - ROC AUC: 0.615
+2025-03-03 18:08:20,679 - INFO - __main__ - Scores de validation croisée: [0.66666667 0.77777778 0.55555556 1.         0.5       ]
+2025-03-03 18:08:20,680 - INFO - __main__ - Score moyen: 0.700, Écart-type: 0.178
+2025-03-03 18:08:20,680 - INFO - __main__ - accuracy: 0.567
+2025-03-03 18:08:20,681 - INFO - __main__ - precision: 0.500
+2025-03-03 18:08:20,681 - INFO - __main__ - recall: 0.538
+2025-03-03 18:08:20,681 - INFO - __main__ - f1: 0.519
+2025-03-03 18:08:20,681 - INFO - __main__ - balanced_accuracy: 0.563
+2025-03-03 18:08:20,681 - INFO - __main__ - roc_auc: 0.615
+2025-03-03 18:08:20,718 - INFO - __main__ - Résultats sauvegardés dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpAB19_PP
+2025-03-03 18:08:21,857 - ERROR - __main__ - Erreur lors du décodage pour le sujet TpAB19: plot_decoding_results() got an unexpected keyword argument 'ax'
+Traceback (most recent call last):
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/examples/run_decoding.py", line 295, in run_decoding_on_subject
+    self.plot_decoding_results_dashboard(
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/examples/run_decoding.py", line 359, in plot_decoding_results_dashboard
+    plot_decoding_results(times, scores_time, subject_id=subject_id, ax=ax3)
+TypeError: plot_decoding_results() got an unexpected keyword argument 'ax'
+2025-03-03 18:16:09,473 - INFO - __main__ - Configured paths for user tom
+2025-03-03 18:16:22,820 - INFO - __main__ - Decoding for subject TpAB19 (group: del, protocol: PP)
+2025-03-03 18:16:25,484 - INFO - __main__ - Comparing conditions: PP/10 vs PP/20
+2025-03-03 18:16:25,557 - INFO - Baking_EEG._4_decoding - Autodetected number of jobs: 4
+2025-03-03 18:17:22,917 - INFO - Baking_EEG._4_decoding - Fold 1/5 AUC: 0.667
+2025-03-03 18:17:22,918 - INFO - Baking_EEG._4_decoding - Fold 2/5 AUC: 0.778
+2025-03-03 18:17:22,918 - INFO - Baking_EEG._4_decoding - Fold 3/5 AUC: 0.556
+2025-03-03 18:17:22,918 - INFO - Baking_EEG._4_decoding - Fold 4/5 AUC: 1.000
+2025-03-03 18:17:22,918 - INFO - Baking_EEG._4_decoding - Fold 5/5 AUC: 0.500
+2025-03-03 18:17:22,944 - INFO - Baking_EEG._4_decoding - Overall decoding metrics:
+2025-03-03 18:17:22,944 - INFO - Baking_EEG._4_decoding - Accuracy: 0.567
+2025-03-03 18:17:22,944 - INFO - Baking_EEG._4_decoding - Precision: 0.500
+2025-03-03 18:17:22,944 - INFO - Baking_EEG._4_decoding - Recall: 0.538
+2025-03-03 18:17:22,945 - INFO - Baking_EEG._4_decoding - F1 Score: 0.519
+2025-03-03 18:17:22,945 - INFO - Baking_EEG._4_decoding - Balanced Accuracy: 0.563
+2025-03-03 18:17:22,945 - INFO - Baking_EEG._4_decoding - ROC AUC: 0.611
+2025-03-03 18:17:22,947 - INFO - __main__ - Cross-validation scores: [0.66666667 0.77777778 0.55555556 1.         0.5       ]
+2025-03-03 18:17:22,948 - INFO - __main__ - Mean score: 0.700, Std: 0.178
+2025-03-03 18:17:22,948 - INFO - __main__ - accuracy: 0.567
+2025-03-03 18:17:22,948 - INFO - __main__ - precision: 0.500
+2025-03-03 18:17:22,948 - INFO - __main__ - recall: 0.538
+2025-03-03 18:17:22,948 - INFO - __main__ - f1: 0.519
+2025-03-03 18:17:22,948 - INFO - __main__ - balanced_accuracy: 0.563
+2025-03-03 18:17:22,948 - INFO - __main__ - roc_auc: 0.611
+2025-03-03 18:17:22,996 - INFO - __main__ - Results saved in /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpAB19_PP
+2025-03-03 18:17:24,622 - ERROR - __main__ - Error decoding subject TpAB19: plot_decoding_results() got an unexpected keyword argument 'ax'
+Traceback (most recent call last):
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/examples/run_decoding.py", line 197, in run_decoding_on_subject
+    plot_decoding_results_dashboard(
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/examples/run_decoding.py", line 240, in plot_decoding_results_dashboard
+    plot_decoding_results(times, scores_time, subject_id=subject_id, ax=ax3)
+TypeError: plot_decoding_results() got an unexpected keyword argument 'ax'
+2025-03-03 18:19:04,414 - INFO - __main__ - Configured paths for user tom
+2025-03-03 18:19:10,119 - INFO - __main__ - Decoding for subject TpAB19 (group: del, protocol: PP)
+2025-03-03 18:19:12,170 - INFO - __main__ - Comparing conditions: PP/10 vs PP/20
+2025-03-03 18:19:12,265 - INFO - Baking_EEG._4_decoding - Autodetected number of jobs: 4
+2025-03-03 18:20:06,570 - INFO - Baking_EEG._4_decoding - Fold 1/5 AUC: 0.667
+2025-03-03 18:20:06,571 - INFO - Baking_EEG._4_decoding - Fold 2/5 AUC: 0.778
+2025-03-03 18:20:06,571 - INFO - Baking_EEG._4_decoding - Fold 3/5 AUC: 0.556
+2025-03-03 18:20:06,571 - INFO - Baking_EEG._4_decoding - Fold 4/5 AUC: 1.000
+2025-03-03 18:20:06,572 - INFO - Baking_EEG._4_decoding - Fold 5/5 AUC: 0.500
+2025-03-03 18:20:06,607 - INFO - Baking_EEG._4_decoding - Overall decoding metrics:
+2025-03-03 18:20:06,607 - INFO - Baking_EEG._4_decoding - Accuracy: 0.567
+2025-03-03 18:20:06,607 - INFO - Baking_EEG._4_decoding - Precision: 0.500
+2025-03-03 18:20:06,607 - INFO - Baking_EEG._4_decoding - Recall: 0.538
+2025-03-03 18:20:06,607 - INFO - Baking_EEG._4_decoding - F1 Score: 0.519
+2025-03-03 18:20:06,607 - INFO - Baking_EEG._4_decoding - Balanced Accuracy: 0.563
+2025-03-03 18:20:06,607 - INFO - Baking_EEG._4_decoding - ROC AUC: 0.622
+2025-03-03 18:20:06,612 - INFO - __main__ - Cross-validation scores: [0.66666667 0.77777778 0.55555556 1.         0.5       ]
+2025-03-03 18:20:06,613 - INFO - __main__ - Mean score: 0.700, Std: 0.178
+2025-03-03 18:20:06,613 - INFO - __main__ - accuracy: 0.567
+2025-03-03 18:20:06,613 - INFO - __main__ - precision: 0.500
+2025-03-03 18:20:06,613 - INFO - __main__ - recall: 0.538
+2025-03-03 18:20:06,613 - INFO - __main__ - f1: 0.519
+2025-03-03 18:20:06,613 - INFO - __main__ - balanced_accuracy: 0.563
+2025-03-03 18:20:06,613 - INFO - __main__ - roc_auc: 0.622
+2025-03-03 18:20:06,673 - INFO - __main__ - Results saved in /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpAB19_PP
+2025-03-03 23:04:02,326 - INFO - __main__ - Configured paths for user tom
+2025-03-03 23:04:12,851 - INFO - __main__ - Decoding for subject TpAB19 (group: del, protocol: PP)
+2025-03-03 23:04:14,917 - INFO - __main__ - Comparing conditions: PP/10 vs PP/20
+2025-03-03 23:04:15,034 - INFO - Baking_EEG._4_decoding - Autodetected number of jobs: 4
+2025-03-03 23:05:35,505 - INFO - Baking_EEG._4_decoding - Fold 1/5 AUC: 0.667
+2025-03-03 23:05:35,508 - INFO - Baking_EEG._4_decoding - Fold 2/5 AUC: 0.778
+2025-03-03 23:05:35,508 - INFO - Baking_EEG._4_decoding - Fold 3/5 AUC: 0.556
+2025-03-03 23:05:35,508 - INFO - Baking_EEG._4_decoding - Fold 4/5 AUC: 1.000
+2025-03-03 23:05:35,509 - INFO - Baking_EEG._4_decoding - Fold 5/5 AUC: 0.500
+2025-03-03 23:05:35,584 - INFO - Baking_EEG._4_decoding - Overall decoding metrics:
+2025-03-03 23:05:35,584 - INFO - Baking_EEG._4_decoding - Accuracy: 0.567
+2025-03-03 23:05:35,584 - INFO - Baking_EEG._4_decoding - Precision: 0.500
+2025-03-03 23:05:35,584 - INFO - Baking_EEG._4_decoding - Recall: 0.538
+2025-03-03 23:05:35,584 - INFO - Baking_EEG._4_decoding - F1 Score: 0.519
+2025-03-03 23:05:35,585 - INFO - Baking_EEG._4_decoding - Balanced Accuracy: 0.563
+2025-03-03 23:05:35,585 - INFO - Baking_EEG._4_decoding - ROC AUC: 0.611
+2025-03-03 23:05:35,590 - INFO - __main__ - Cross-validation scores: [0.66666667 0.77777778 0.55555556 1.         0.5       ]
+2025-03-03 23:05:35,591 - INFO - __main__ - Mean score: 0.700, Std: 0.178
+2025-03-03 23:05:35,592 - INFO - __main__ - accuracy: 0.567
+2025-03-03 23:05:35,592 - INFO - __main__ - precision: 0.500
+2025-03-03 23:05:35,592 - INFO - __main__ - recall: 0.538
+2025-03-03 23:05:35,593 - INFO - __main__ - f1: 0.519
+2025-03-03 23:05:35,593 - INFO - __main__ - balanced_accuracy: 0.563
+2025-03-03 23:05:35,593 - INFO - __main__ - roc_auc: 0.611
+2025-03-03 23:05:35,697 - INFO - __main__ - Results saved in /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpAB19_PP

@@ -1,0 +1,51 @@
+2025-03-10 08:33:32,276 - INFO - __main__ - Configured paths for user tom
+2025-03-10 08:33:52,808 - INFO - __main__ - Cross-subject decoding with LeaveOneGroupOut: 11 subjects
+2025-03-10 08:37:24,969 - INFO - __main__ - Configured paths for user tom
+2025-03-10 08:37:33,109 - INFO - __main__ - Cross-subject decoding with LeaveOneGroupOut: 10 subjects
+2025-03-10 08:42:42,217 - INFO - __main__ - Configured paths for user tom
+2025-03-10 08:42:51,845 - INFO - __main__ - Cross-subject decoding with LeaveOneGroupOut: 9 subjects
+2025-03-10 09:15:50,239 - INFO - __main__ - Configured paths for user tom
+2025-03-10 09:16:12,697 - INFO - __main__ - Cross-subject decoding with LeaveOneGroupOut: 9 subjects
+2025-03-10 09:17:00,109 - INFO - __main__ - Class weights for training set: {0.0: 3.463894967177243, 1.0: 0.5843484680693983}
+2025-03-10 10:01:00,303 - INFO - __main__ - Score de décodage cross-subject pour TpAB19: 0.549
+2025-03-10 10:01:01,224 - INFO - __main__ - Model saved to /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpAB19_PP/cross_subject_model_TpAB19.joblib
+2025-03-10 10:01:01,258 - INFO - __main__ - Résultats sauvegardés dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpAB19_PP
+2025-03-10 10:09:13,497 - INFO - __main__ - Configured paths for user tom
+2025-03-10 10:09:26,270 - INFO - __main__ - Cross-subject decoding with LeaveOneGroupOut: 9 subjects
+2025-03-10 10:10:09,378 - INFO - __main__ - Class weights for training set: {0.0: 3.463894967177243, 1.0: 0.5843484680693983}
+2025-03-10 10:20:15,336 - INFO - __main__ - Score de décodage cross-subject pour TpAB19: 0.549
+2025-03-10 10:20:16,888 - INFO - __main__ - Model saved to /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpAB19_PP/cross_subject_model_TpAB19.joblib
+2025-03-10 10:20:16,916 - INFO - __main__ - Résultats sauvegardés dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpAB19_PP
+2025-03-10 11:40:15,613 - INFO - __main__ - Configured paths for user tom
+2025-03-10 11:40:32,412 - INFO - __main__ - Cross-subject decoding with LeaveOneGroupOut: 9 subjects
+2025-03-10 11:41:02,181 - INFO - __main__ - Class weights for training set: {0.0: 3.463894967177243, 1.0: 0.5843484680693983}
+2025-03-10 11:47:28,703 - INFO - __main__ - Score de décodage cross-subject pour TpAB19: 0.549
+2025-03-10 11:47:29,682 - INFO - __main__ - Model saved to /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpAB19_PP/cross_subject_model_TpAB19.joblib
+2025-03-10 11:47:29,692 - INFO - __main__ - Résultats sauvegardés dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpAB19_PP
+2025-03-10 18:32:33,662 - INFO - __main__ - Configured paths for user tom
+2025-03-10 18:32:39,381 - INFO - __main__ - Cross-subject decoding with LeaveOneGroupOut: 9 subjects
+2025-03-10 18:33:12,088 - INFO - __main__ - Class weights for training set: {0.0: 3.463894967177243, 1.0: 0.5843484680693983}
+2025-03-10 18:41:42,046 - INFO - __main__ - Score de décodage cross-subject pour TpAB19: 0.549
+2025-03-10 18:41:42,792 - INFO - __main__ - Model saved to /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpAB19_PP/cross_subject_model_TpAB19.joblib
+2025-03-10 18:41:42,828 - INFO - __main__ - Résultats sauvegardés dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpAB19_PP
+2025-03-10 20:40:01,592 - INFO - __main__ - Configured paths for user tom
+2025-03-10 20:40:27,077 - INFO - __main__ - Cross-subject decoding with LeaveOneGroupOut: 4 subjects
+2025-03-10 20:40:37,110 - INFO - __main__ - Class weights for training set: {0.0: 3.3493975903614457, 1.0: 0.587737843551797}
+2025-03-10 20:41:41,623 - INFO - __main__ - Score de décodage cross-subject pour TpAB19: 0.535
+2025-03-10 20:41:42,031 - INFO - __main__ - Model saved to /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpAB19_PP/cross_subject_model_TpAB19.joblib
+2025-03-10 20:41:42,049 - INFO - __main__ - Résultats sauvegardés dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpAB19_PP
+2025-03-10 20:48:31,952 - INFO - __main__ - Configured paths for user tom
+2025-03-10 20:48:40,645 - INFO - __main__ - Cross-subject decoding with LeaveOneGroupOut: 3 subjects
+2025-03-10 20:49:33,308 - INFO - __main__ - Configured paths for user tom
+2025-03-10 20:50:01,528 - INFO - __main__ - Configured paths for user tom
+2025-03-10 20:50:34,611 - INFO - __main__ - Cross-subject decoding with LeaveOneGroupOut: 4 subjects
+2025-03-10 20:50:44,843 - INFO - __main__ - Class weights for training set: {0.0: 3.3493975903614457, 1.0: 0.587737843551797}
+2025-03-10 20:51:40,504 - INFO - __main__ - Score de décodage cross-subject pour TpAB19: 0.535
+2025-03-10 20:51:40,898 - INFO - __main__ - Model saved to /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpAB19_PP/cross_subject_model_TpAB19.joblib
+2025-03-10 20:51:40,915 - INFO - __main__ - Résultats sauvegardés dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpAB19_PP
+2025-03-10 21:07:42,748 - INFO - __main__ - Configured paths for user tom
+2025-03-10 21:07:48,821 - INFO - __main__ - Cross-subject decoding with LeaveOneGroupOut: 4 subjects
+2025-03-10 21:07:59,269 - INFO - __main__ - Class weights for training set: {0.0: 3.3493975903614457, 1.0: 0.587737843551797}
+2025-03-10 21:08:54,222 - INFO - __main__ - Score de décodage cross-subject pour TpAB19: 0.535
+2025-03-10 21:08:54,582 - INFO - __main__ - Model saved to /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpAB19_PP/cross_subject_model_TpAB19.joblib
+2025-03-10 21:08:54,599 - INFO - __main__ - Résultats sauvegardés dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpAB19_PP

@@ -1,0 +1,75 @@
+2025-03-11 08:23:56,582 - INFO - __main__ - Configured paths for user tom
+2025-03-11 08:24:31,782 - INFO - __main__ - Decoding for subject TpJC5 (group: del, protocol: PP)
+2025-03-11 08:24:35,857 - INFO - _4_decoding - Autodetected number of jobs: 4
+2025-03-11 08:26:04,386 - INFO - _4_decoding - Fold 1/5 AUC: 0.893
+2025-03-11 08:26:04,427 - INFO - _4_decoding - Fold 2/5 AUC: 0.820
+2025-03-11 08:26:04,428 - INFO - _4_decoding - Fold 3/5 AUC: 0.883
+2025-03-11 08:26:04,428 - INFO - _4_decoding - Fold 4/5 AUC: 0.852
+2025-03-11 08:26:04,428 - INFO - _4_decoding - Fold 5/5 AUC: 0.883
+2025-03-11 08:26:04,465 - INFO - _4_decoding - Overall decoding metrics:
+2025-03-11 08:26:04,465 - INFO - _4_decoding - Accuracy: 0.893
+2025-03-11 08:26:04,465 - INFO - _4_decoding - Precision: 0.910
+2025-03-11 08:26:04,465 - INFO - _4_decoding - Recall: 0.973
+2025-03-11 08:26:04,466 - INFO - _4_decoding - F1 Score: 0.940
+2025-03-11 08:26:04,466 - INFO - _4_decoding - Balanced Accuracy: 0.664
+2025-03-11 08:26:04,466 - INFO - _4_decoding - ROC AUC: 0.870
+2025-03-11 08:26:04,469 - INFO - __main__ - Cross-validation scores: [0.89259259 0.82037037 0.88333333 0.85185185 0.88333333]
+2025-03-11 08:26:04,469 - INFO - __main__ - Mean score: 0.866, Std: 0.027
+2025-03-11 08:26:04,469 - INFO - __main__ - accuracy: 0.893
+2025-03-11 08:26:04,469 - INFO - __main__ - precision: 0.910
+2025-03-11 08:26:04,470 - INFO - __main__ - recall: 0.973
+2025-03-11 08:26:04,470 - INFO - __main__ - f1: 0.940
+2025-03-11 08:26:04,470 - INFO - __main__ - balanced_accuracy: 0.664
+2025-03-11 08:26:04,470 - INFO - __main__ - roc_auc: 0.870
+2025-03-11 08:26:04,748 - INFO - __main__ - Results saved in /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpJC5_PP
+2025-03-11 14:41:10,439 - INFO - __main__ - Configured paths for user tom
+2025-03-11 14:41:36,613 - INFO - __main__ - Decoding for subject LAT3 (group: controls, protocol: PP)
+2025-03-11 14:41:36,622 - ERROR - __main__ - Error decoding subject LAT3: Aucun fichier trouvé pour le sujet LAT3 dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_CONTROLS_0.5/data_epochs
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 141, in run_decoding_on_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, group, base_path, verbose)
+  File "examples/run_decoding.py", line 107, in load_epochs_for_decoding
+    raise FileNotFoundError(f"Aucun fichier trouvé pour le sujet {subject_id} dans {data_path}")
+FileNotFoundError: Aucun fichier trouvé pour le sujet LAT3 dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_CONTROLS_0.5/data_epochs
+2025-03-11 14:42:06,492 - INFO - __main__ - Configured paths for user tom
+2025-03-11 14:42:17,720 - INFO - __main__ - Decoding for subject  (group: LCM2, protocol: PP)
+2025-03-11 14:42:17,721 - ERROR - __main__ - Error decoding subject : Unknown group: LCM2
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 141, in run_decoding_on_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, group, base_path, verbose)
+  File "examples/run_decoding.py", line 97, in load_epochs_for_decoding
+    raise ValueError(f"Unknown group: {group}")
+ValueError: Unknown group: LCM2
+2025-03-11 14:42:31,299 - INFO - __main__ - Configured paths for user tom
+2025-03-11 14:42:39,704 - INFO - __main__ - Decoding for subject LCM2 (group: controls, protocol: PP)
+2025-03-11 14:42:39,705 - ERROR - __main__ - Error decoding subject LCM2: Aucun fichier trouvé pour le sujet LCM2 dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_CONTROLS_0.5/data_epochs
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 141, in run_decoding_on_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, group, base_path, verbose)
+  File "examples/run_decoding.py", line 107, in load_epochs_for_decoding
+    raise FileNotFoundError(f"Aucun fichier trouvé pour le sujet {subject_id} dans {data_path}")
+FileNotFoundError: Aucun fichier trouvé pour le sujet LCM2 dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_CONTROLS_0.5/data_epochs
+2025-03-11 14:47:16,499 - INFO - __main__ - Configured paths for user tom
+2025-03-11 14:47:32,193 - INFO - __main__ - Decoding for subject TJR7 (group: controls, protocol: PP)
+2025-03-11 14:47:35,921 - INFO - _4_decoding - Autodetected number of jobs: 4
+2025-03-11 14:51:49,623 - INFO - _4_decoding - Fold 1/5 AUC: 0.643
+2025-03-11 14:51:49,635 - INFO - _4_decoding - Fold 2/5 AUC: 0.736
+2025-03-11 14:51:49,636 - INFO - _4_decoding - Fold 3/5 AUC: 0.707
+2025-03-11 14:51:49,636 - INFO - _4_decoding - Fold 4/5 AUC: 0.710
+2025-03-11 14:51:49,636 - INFO - _4_decoding - Fold 5/5 AUC: 0.722
+2025-03-11 14:51:49,729 - INFO - _4_decoding - Overall decoding metrics:
+2025-03-11 14:51:49,730 - INFO - _4_decoding - Accuracy: 0.824
+2025-03-11 14:51:49,730 - INFO - _4_decoding - Precision: 0.894
+2025-03-11 14:51:49,730 - INFO - _4_decoding - Recall: 0.900
+2025-03-11 14:51:49,730 - INFO - _4_decoding - F1 Score: 0.897
+2025-03-11 14:51:49,730 - INFO - _4_decoding - Balanced Accuracy: 0.635
+2025-03-11 14:51:49,730 - INFO - _4_decoding - ROC AUC: 0.699
+2025-03-11 14:51:49,772 - INFO - __main__ - Cross-validation scores: [0.64346591 0.73579545 0.70738636 0.71022727 0.721875  ]
+2025-03-11 14:51:49,772 - INFO - __main__ - Mean score: 0.704, Std: 0.032
+2025-03-11 14:51:49,773 - INFO - __main__ - accuracy: 0.824
+2025-03-11 14:51:49,773 - INFO - __main__ - precision: 0.894
+2025-03-11 14:51:49,773 - INFO - __main__ - recall: 0.900
+2025-03-11 14:51:49,773 - INFO - __main__ - f1: 0.897
+2025-03-11 14:51:49,773 - INFO - __main__ - balanced_accuracy: 0.635
+2025-03-11 14:51:49,773 - INFO - __main__ - roc_auc: 0.699
+2025-03-11 14:51:50,162 - INFO - __main__ - Results saved in /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TJR7_PP

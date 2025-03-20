@@ -1,0 +1,778 @@
+2025-03-07 10:54:35,967 - INFO - __main__ - Configured paths for user tom
+2025-03-07 10:54:51,822 - INFO - __main__ - Cross-subject decoding: training on 17 subjects, testing on TpJPS55,TpMM4,TpPC21
+2025-03-07 10:54:54,810 - ERROR - __main__ - Error loading data for training subject TpAB19: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:54:54,816 - ERROR - __main__ - Error loading data for training subject TpAG51: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAG51_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAG51_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 10:54:54,892 - ERROR - __main__ - Error loading data for training subject TpAK24: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAK24_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAK24_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 10:54:56,605 - ERROR - __main__ - Error loading data for training subject TpAK27: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:54:56,606 - ERROR - __main__ - Error loading data for training subject TpCB15: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpCB15_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpCB15_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 10:54:59,321 - ERROR - __main__ - Error loading data for training subject TpCF1: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:54:59,322 - ERROR - __main__ - Error loading data for training subject TpDRL3: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpDRL3_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpDRL3_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 10:55:01,763 - ERROR - __main__ - Error loading data for training subject TpJB25: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:55:05,483 - ERROR - __main__ - Error loading data for training subject TpJB26: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:55:06,519 - ERROR - __main__ - Error loading data for training subject TpJC5: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:55:10,275 - ERROR - __main__ - Error loading data for training subject TpJLR17: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:55:13,372 - ERROR - __main__ - Error loading data for training subject TpJPS55: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:55:15,409 - ERROR - __main__ - Error loading data for training subject TpKT33: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:55:15,411 - ERROR - __main__ - Error loading data for training subject TpLA28: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpLA28_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpLA28_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 10:55:18,366 - ERROR - __main__ - Error loading data for training subject TpMB45: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:55:18,367 - ERROR - __main__ - Error loading data for training subject TpMM4: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpMM4_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpMM4_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 10:55:21,081 - ERROR - __main__ - Error loading data for training subject TpMN42: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:55:21,081 - ERROR - __main__ - Error in cross-subject decoding for subject TpJPS55,TpMM4,TpPC21: No valid training data loaded.
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 292, in run_cross_subject
+    raise ValueError("No valid training data loaded.")
+ValueError: No valid training data loaded.
+2025-03-07 10:55:44,721 - INFO - __main__ - Configured paths for user tom
+2025-03-07 10:58:02,134 - INFO - __main__ - Cross-subject decoding: training on 14 subjects, testing on TpJPS55,TpMM4,TpCF1,
+2025-03-07 10:58:04,946 - ERROR - __main__ - Error loading data for training subject TpAB19: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:58:04,947 - ERROR - __main__ - Error loading data for training subject TpAG51: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAG51_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAG51_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 10:58:04,992 - ERROR - __main__ - Error loading data for training subject TpAK24: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAK24_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAK24_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 10:58:06,926 - ERROR - __main__ - Error loading data for training subject TpAK27: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:58:06,929 - ERROR - __main__ - Error loading data for training subject TpCB15: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpCB15_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpCB15_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 10:58:06,931 - ERROR - __main__ - Error loading data for training subject TpDRL3: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpDRL3_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpDRL3_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 10:58:09,479 - ERROR - __main__ - Error loading data for training subject TpJB25: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:58:12,232 - ERROR - __main__ - Error loading data for training subject TpJB26: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:58:13,037 - ERROR - __main__ - Error loading data for training subject TpJC5: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:58:15,245 - ERROR - __main__ - Error loading data for training subject TpJLR17: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:58:17,861 - ERROR - __main__ - Error loading data for training subject TpKT33: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:58:17,862 - ERROR - __main__ - Error loading data for training subject TpLA28: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpLA28_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpLA28_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 10:58:20,999 - ERROR - __main__ - Error loading data for training subject TpMB45: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:58:24,155 - ERROR - __main__ - Error loading data for training subject TpMN42: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 10:58:24,156 - ERROR - __main__ - Error in cross-subject decoding for subject TpJPS55,TpMM4,TpCF1,: No valid training data loaded.
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 292, in run_cross_subject
+    raise ValueError("No valid training data loaded.")
+ValueError: No valid training data loaded.
+2025-03-07 11:02:11,979 - INFO - __main__ - Configured paths for user tom
+2025-03-07 11:02:15,599 - INFO - __main__ - Cross-subject decoding: training on 13 subjects, testing on TpSM49,TpRD38
+2025-03-07 11:02:19,221 - ERROR - __main__ - Error loading data for training subject TpAB19: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 11:02:19,224 - ERROR - __main__ - Error loading data for training subject TpAG51: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAG51_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAG51_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 11:02:19,254 - ERROR - __main__ - Error loading data for training subject TpAK24: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAK24_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAK24_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 11:02:21,090 - ERROR - __main__ - Error loading data for training subject TpAK27: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 11:02:21,092 - ERROR - __main__ - Error loading data for training subject TpCB15: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpCB15_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpCB15_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 11:02:21,093 - ERROR - __main__ - Error loading data for training subject TpDRL3: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpDRL3_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpDRL3_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 11:02:23,548 - ERROR - __main__ - Error loading data for training subject TpJB25: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 11:02:26,457 - ERROR - __main__ - Error loading data for training subject TpJB26: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 11:02:27,273 - ERROR - __main__ - Error loading data for training subject TpJC5: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 11:02:29,303 - ERROR - __main__ - Error loading data for training subject TpJLR17: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 11:02:31,901 - ERROR - __main__ - Error loading data for training subject TpKT33: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 11:02:31,903 - ERROR - __main__ - Error loading data for training subject TpLA28: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpLA28_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpLA28_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 11:02:35,055 - ERROR - __main__ - Error loading data for training subject TpMB45: tuple indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 281, in run_cross_subject
+    XAP = epochs["AP"].pick(picks="eeg").get_data(copy=False)
+TypeError: tuple indices must be integers or slices, not str
+2025-03-07 11:02:35,056 - ERROR - __main__ - Error in cross-subject decoding for subject TpSM49,TpRD38: No valid training data loaded.
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 292, in run_cross_subject
+    raise ValueError("No valid training data loaded.")
+ValueError: No valid training data loaded.
+2025-03-07 14:32:18,721 - INFO - __main__ - Configured paths for user tom
+2025-03-07 14:33:38,750 - INFO - __main__ - Configured paths for user tom
+2025-03-07 14:33:59,936 - INFO - __main__ - Cross-subject decoding: training on 17 subjects, testing on TpJPS55,TpMM4,TpPC21
+2025-03-07 14:34:10,029 - ERROR - __main__ - Error loading data for training subject TpAG51: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAG51_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAG51_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 14:34:10,056 - ERROR - __main__ - Error loading data for training subject TpAK24: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAK24_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAK24_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 14:34:16,466 - ERROR - __main__ - Error loading data for training subject TpCB15: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpCB15_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpCB15_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 14:34:26,472 - ERROR - __main__ - Error loading data for training subject TpDRL3: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpDRL3_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpDRL3_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 14:35:18,076 - ERROR - __main__ - Error loading data for training subject TpLA28: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpLA28_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpLA28_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 14:35:29,294 - ERROR - __main__ - Error loading data for training subject TpMM4: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpMM4_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpMM4_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 14:35:38,746 - ERROR - __main__ - Error in cross-subject decoding for subject TpJPS55,TpMM4,TpPC21: all the input array dimensions except for the concatenation axis must match exactly, but along dimension 2, the array at index 0 has size 601 and the array at index 5 has size 301
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 293, in run_cross_subject
+    X_train = np.concatenate(X_train_list, axis=0)
+  File "<__array_function__ internals>", line 200, in concatenate
+ValueError: all the input array dimensions except for the concatenation axis must match exactly, but along dimension 2, the array at index 0 has size 601 and the array at index 5 has size 301
+2025-03-07 14:36:00,389 - INFO - __main__ - Configured paths for user tom
+2025-03-07 14:42:18,532 - INFO - __main__ - Configured paths for user tom
+2025-03-07 14:42:31,712 - INFO - __main__ - Decoding for subject TpCF1 (group: del, protocol: PP)
+2025-03-07 14:42:40,443 - INFO - __main__ - Data loaded for subject TpCF1
+2025-03-07 14:42:40,919 - INFO - _4_decoding - Autodetected number of jobs: 4
+2025-03-07 14:48:55,203 - INFO - _4_decoding - Fold 1/5 AUC: 0.512
+2025-03-07 14:48:55,225 - INFO - _4_decoding - Fold 2/5 AUC: 0.545
+2025-03-07 14:48:55,225 - INFO - _4_decoding - Fold 3/5 AUC: 0.394
+2025-03-07 14:48:55,225 - INFO - _4_decoding - Fold 4/5 AUC: 0.456
+2025-03-07 14:48:55,225 - INFO - _4_decoding - Fold 5/5 AUC: 0.443
+2025-03-07 14:48:55,325 - INFO - _4_decoding - Overall decoding metrics:
+2025-03-07 14:48:55,325 - INFO - _4_decoding - Accuracy: 0.740
+2025-03-07 14:48:55,325 - INFO - _4_decoding - Precision: 0.848
+2025-03-07 14:48:55,325 - INFO - _4_decoding - Recall: 0.848
+2025-03-07 14:48:55,325 - INFO - _4_decoding - F1 Score: 0.848
+2025-03-07 14:48:55,325 - INFO - _4_decoding - Balanced Accuracy: 0.467
+2025-03-07 14:48:55,325 - INFO - _4_decoding - ROC AUC: 0.461
+2025-03-07 14:48:55,344 - INFO - __main__ - Cross-validation scores: [0.51190476 0.5452381  0.39350649 0.45584416 0.44323671]
+2025-03-07 14:48:55,345 - INFO - __main__ - Mean score: 0.470, Std: 0.053
+2025-03-07 14:48:55,345 - INFO - __main__ - accuracy: 0.740
+2025-03-07 14:48:55,345 - INFO - __main__ - precision: 0.848
+2025-03-07 14:48:55,345 - INFO - __main__ - recall: 0.848
+2025-03-07 14:48:55,345 - INFO - __main__ - f1: 0.848
+2025-03-07 14:48:55,346 - INFO - __main__ - balanced_accuracy: 0.467
+2025-03-07 14:48:55,346 - INFO - __main__ - roc_auc: 0.461
+2025-03-07 14:48:55,567 - INFO - __main__ - Results saved in /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpCF1_PP
+2025-03-07 18:50:14,671 - INFO - __main__ - Configured paths for user tom
+2025-03-07 18:50:36,046 - INFO - __main__ - Cross-subject decoding: training on 16 subjects, testing on TpJPS55,TpMM4,TpPC21
+2025-03-07 18:50:40,570 - ERROR - __main__ - Error loading data for training subject TpAG51: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAG51_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAG51_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 18:50:40,587 - ERROR - __main__ - Error loading data for training subject TpAK24: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAK24_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAK24_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 18:50:42,744 - ERROR - __main__ - Error loading data for training subject TpCB15: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpCB15_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpCB15_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 18:50:42,746 - ERROR - __main__ - Error loading data for training subject TpDRL3: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpDRL3_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpDRL3_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 18:51:01,140 - ERROR - __main__ - Error loading data for training subject TpLA28: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpLA28_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpLA28_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 18:51:07,195 - ERROR - __main__ - Error loading data for training subject TpMM4: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpMM4_PP_preproc_noICA_PP-epo_ar.fif"
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 280, in run_cross_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 101, in load_epochs_for_decoding
+    epochs = mne.read_epochs(fif_fname, proj=False, verbose=verbose, preload=True)
+  File "<decorator-gen-208>", line 10, in read_epochs
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+  File "<decorator-gen-209>", line 10, in __init__
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/epochs.py", line 3921, in __init__
+    fname = str(_check_fname(fname=fname, must_exist=True, overwrite="read"))
+  File "<decorator-gen-0>", line 12, in _check_fname
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/mne/utils/check.py", line 263, in _check_fname
+    raise FileNotFoundError(f'{name} does not exist: "{fname}"')
+FileNotFoundError: File does not exist: "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpMM4_PP_preproc_noICA_PP-epo_ar.fif"
+2025-03-07 18:51:10,946 - ERROR - __main__ - Error in cross-subject decoding for subject TpJPS55,TpMM4,TpPC21: all the input array dimensions except for the concatenation axis must match exactly, but along dimension 2, the array at index 0 has size 601 and the array at index 4 has size 301
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 293, in run_cross_subject
+    X_train = np.concatenate(X_train_list, axis=0)
+  File "<__array_function__ internals>", line 200, in concatenate
+ValueError: all the input array dimensions except for the concatenation axis must match exactly, but along dimension 2, the array at index 0 has size 601 and the array at index 4 has size 301
+2025-03-07 20:29:24,464 - INFO - __main__ - Configured paths for user tom
+2025-03-07 20:29:38,163 - INFO - __main__ - Decoding for subject TpAK27 (group: del, protocol: PP)
+2025-03-07 20:29:41,292 - INFO - __main__ - Data loaded for subject TpAK27
+2025-03-07 20:29:41,633 - INFO - _4_decoding - Autodetected number of jobs: 4
+2025-03-07 20:30:09,492 - INFO - __main__ - Configured paths for user tom
+2025-03-07 20:30:19,949 - INFO - __main__ - Decoding for subject TpCB15 (group: del, protocol: PP)
+2025-03-07 20:30:23,570 - INFO - __main__ - Data loaded for subject TpCB15
+2025-03-07 20:30:23,804 - INFO - _4_decoding - Autodetected number of jobs: 4
+2025-03-07 20:30:44,950 - INFO - __main__ - Configured paths for user tom
+2025-03-07 20:30:51,781 - INFO - __main__ - Cross-subject decoding: training on 17 subjects, testing on TpJPS55,TpMM4,TpPC21
+2025-03-07 20:30:57,935 - ERROR - __main__ - Error loading data for training subject TpAK24: Aucun fichier trouvé pour le sujet TpAK24 dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 288, in run_cross_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 105, in load_epochs_for_decoding
+    raise FileNotFoundError(f"Aucun fichier trouvé pour le sujet {subject_id} dans {data_path}")
+FileNotFoundError: Aucun fichier trouvé pour le sujet TpAK24 dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs
+2025-03-07 20:31:34,811 - ERROR - __main__ - Error in cross-subject decoding for subject TpJPS55,TpMM4,TpPC21: all the input array dimensions except for the concatenation axis must match exactly, but along dimension 2, the array at index 0 has size 601 and the array at index 8 has size 301
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 301, in run_cross_subject
+    X_train = np.concatenate(X_train_list, axis=0)
+  File "<__array_function__ internals>", line 200, in concatenate
+ValueError: all the input array dimensions except for the concatenation axis must match exactly, but along dimension 2, the array at index 0 has size 601 and the array at index 8 has size 301
+2025-03-07 20:32:22,433 - INFO - __main__ - Configured paths for user tom
+2025-03-07 20:32:28,146 - INFO - __main__ - Decoding for subject TpJB25 (group: del, protocol: PP)
+2025-03-07 20:32:30,842 - INFO - __main__ - Data loaded for subject TpJB25
+2025-03-07 20:32:31,052 - INFO - _4_decoding - Autodetected number of jobs: 4
+2025-03-07 20:32:47,317 - INFO - __main__ - Configured paths for user tom
+2025-03-07 20:32:58,277 - INFO - __main__ - Decoding for subject TpJB26 (group: del, protocol: PP)
+2025-03-07 20:33:00,586 - INFO - __main__ - Data loaded for subject TpJB26
+2025-03-07 20:33:00,830 - INFO - _4_decoding - Autodetected number of jobs: 4
+2025-03-07 20:34:56,368 - INFO - __main__ - Configured paths for user tom
+2025-03-07 20:35:03,783 - INFO - __main__ - Cross-subject decoding: training on 17 subjects, testing on TpJPS55,TpMM4,TpPC21
+2025-03-07 20:35:09,585 - ERROR - __main__ - Error loading data for training subject TpAK24: Aucun fichier trouvé pour le sujet TpAK24 dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 286, in run_cross_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 105, in load_epochs_for_decoding
+    raise FileNotFoundError(f"Aucun fichier trouvé pour le sujet {subject_id} dans {data_path}")
+FileNotFoundError: Aucun fichier trouvé pour le sujet TpAK24 dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs
+2025-03-07 20:36:05,833 - ERROR - __main__ - Error in cross-subject decoding for subject TpJPS55,TpMM4,TpPC21: Aucun fichier trouvé pour le sujet TpJPS55,TpMM4,TpPC21 dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 308, in run_cross_subject
+    epochs_test, XAP_test, XPP_test = load_epochs_for_decoding(test_subject, test_group, base_path, verbose)
+  File "examples/run_decoding.py", line 105, in load_epochs_for_decoding
+    raise FileNotFoundError(f"Aucun fichier trouvé pour le sujet {subject_id} dans {data_path}")
+FileNotFoundError: Aucun fichier trouvé pour le sujet TpJPS55,TpMM4,TpPC21 dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs
+2025-03-07 20:47:43,421 - INFO - __main__ - Configured paths for user tom
+2025-03-07 20:48:06,254 - INFO - __main__ - Configured paths for user tom
+2025-03-07 20:48:16,123 - INFO - __main__ - Cross-subject decoding: training on 17 subjects, testing on ['TpJPS55', 'TpMM4', 'TpPC21']
+2025-03-07 20:48:22,501 - ERROR - __main__ - Error loading data for training subject TpAK24: Aucun fichier trouvé pour le sujet TpAK24 dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 286, in run_cross_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 105, in load_epochs_for_decoding
+    raise FileNotFoundError(f"Aucun fichier trouvé pour le sujet {subject_id} dans {data_path}")
+FileNotFoundError: Aucun fichier trouvé pour le sujet TpAK24 dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs
+2025-03-07 20:49:19,828 - ERROR - __main__ - Error in cross-subject decoding for subject ['TpJPS55', 'TpMM4', 'TpPC21']: can only concatenate list (not "str") to list
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 308, in run_cross_subject
+    epochs_test, XAP_test, XPP_test = load_epochs_for_decoding(test_subject, test_group, base_path, verbose)
+  File "examples/run_decoding.py", line 96, in load_epochs_for_decoding
+    file_noICA = os.path.join(data_path, subject_id + '_PP_preproc_noICA_PP-epo_ar.fif')
+TypeError: can only concatenate list (not "str") to list
+2025-03-07 20:49:59,836 - INFO - __main__ - Configured paths for user tom
+2025-03-07 20:50:05,317 - INFO - __main__ - Cross-subject decoding: training on 17 subjects, testing on TpJPS55
+2025-03-07 20:50:09,443 - ERROR - __main__ - Error loading data for training subject TpAK24: Aucun fichier trouvé pour le sujet TpAK24 dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 286, in run_cross_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=False)
+  File "examples/run_decoding.py", line 105, in load_epochs_for_decoding
+    raise FileNotFoundError(f"Aucun fichier trouvé pour le sujet {subject_id} dans {data_path}")
+FileNotFoundError: Aucun fichier trouvé pour le sujet TpAK24 dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs
+2025-03-07 20:51:15,781 - ERROR - __main__ - Error in cross-subject decoding for subject TpJPS55: Found array with dim 3. StandardScaler expected <= 2.
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 324, in run_cross_subject
+    clf.fit(X_train, y_train)
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/sklearn/base.py", line 1152, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 423, in fit
+    Xt = self._fit(X, y, **fit_params_steps)
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 377, in _fit
+    X, fitted_transformer = fit_transform_one_cached(
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/joblib/memory.py", line 312, in __call__
+    return self.func(*args, **kwargs)
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 957, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **fit_params)
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/sklearn/utils/_set_output.py", line 157, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/sklearn/base.py", line 919, in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/sklearn/preprocessing/_data.py", line 839, in fit
+    return self.partial_fit(X, y, sample_weight)
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/sklearn/base.py", line 1152, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/sklearn/preprocessing/_data.py", line 875, in partial_fit
+    X = self._validate_data(
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/sklearn/base.py", line 605, in _validate_data
+    out = check_array(X, input_name="X", **check_params)
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/sklearn/utils/validation.py", line 951, in check_array
+    raise ValueError(
+ValueError: Found array with dim 3. StandardScaler expected <= 2.
+2025-03-07 21:18:25,578 - INFO - __main__ - Configured paths for user tom
+2025-03-07 21:18:33,417 - INFO - __main__ - Cross-subject decoding: training on 17 subjects, testing on TpJPS55
+2025-03-07 21:18:40,654 - ERROR - __main__ - Error loading data for training subject TpAK24: Aucun fichier trouvé pour le sujet TpAK24 dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 287, in run_cross_subject
+    epochs, XPP, XAP = load_epochs_for_decoding(subject_id, train_group, base_path, verbose=True)
+  File "examples/run_decoding.py", line 105, in load_epochs_for_decoding
+    raise FileNotFoundError(f"Aucun fichier trouvé pour le sujet {subject_id} dans {data_path}")
+FileNotFoundError: Aucun fichier trouvé pour le sujet TpAK24 dans /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs
+2025-03-08 01:05:06,628 - INFO - __main__ - Cross-subject decoding score: 0.184
+2025-03-08 01:05:06,875 - INFO - __main__ - Results saved in /Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data/decoding_results/TpJPS55_PP
+2025-03-08 01:05:10,118 - ERROR - __main__ - Error in cross-subject decoding for subject TpJPS55: x and y must have same first dimension, but have shapes (601,) and (1,)
+Traceback (most recent call last):
+  File "examples/run_decoding.py", line 356, in run_cross_subject
+    y_test,             # y
+  File "examples/../Baking_EEG/_4_decoding.py", line 188, in plot_decoding_results_dashboard
+    ax_temporal.plot(epochs.times, scores_time, 'b-', linewidth=2.5)
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/matplotlib/axes/_axes.py", line 1688, in plot
+    lines = [*self._get_lines(*args, data=data, **kwargs)]
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/matplotlib/axes/_base.py", line 311, in __call__
+    yield from self._plot_args(
+  File "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG/.venv/lib/python3.8/site-packages/matplotlib/axes/_base.py", line 504, in _plot_args
+    raise ValueError(f"x and y must have same first dimension, but "
+ValueError: x and y must have same first dimension, but have shapes (601,) and (1,)
