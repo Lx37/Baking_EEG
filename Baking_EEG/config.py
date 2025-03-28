@@ -9,8 +9,9 @@ data_preproc_path = 'data_preproc/'
 stimDict_path = 'data_stimdict/'
 data_con_path = 'data_connectivity/'
 result_con_path = 'connectivity/'
-data_epochs_path = 'data_epochs/'
+data_epochs_path = data_con_path #'data_epochs/' # Patch for Vera - should be updated #TODO
 result_con_path_BRU = 'connectivity/'
+data_psd_path = 'data_spectrum/'
 
 ##folders to store the data for PP analysis
 all_folders_PP = {
