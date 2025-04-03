@@ -1,0 +1,36 @@
+{
+    // --- Votre paramètre existant ---
+    "python.analysis.extraPaths": [
+        "./Baking_EEG"
+    ],
+
+    // --- Paramètres pour le formatage avec Black ---
+
+    // Spécifie 'black' comme formateur pour les fichiers Python
+    "python.formatting.provider": "black",
+
+    // *** CHOISISSEZ UNE DES DEUX OPTIONS CI-DESSOUS ***
+
+    // Option 1: Formater TOUS les types de fichiers à la sauvegarde
+    // Si vous voulez que TOUS vos fichiers (pas seulement Python) soient formatés
+    // à la sauvegarde par leur formateur respectif :
+    // "editor.formatOnSave": true,
+
+    // Option 2: Formater UNIQUEMENT les fichiers Python à la sauvegarde (RECOMMANDÉ)
+    // C'est généralement préférable pour éviter des formatages inattendus
+    // sur d'autres types de fichiers. Assurez-vous que l'option 1 est commentée ou supprimée.
+    "[python]": {
+        "editor.formatOnSave": true
+    },
+
+    // (Optionnel) Spécifie explicitement le chemin vers black
+    // Décommentez et adaptez la ligne correspondant à votre OS si VS Code
+    // ne trouve pas `black` automatiquement (par exemple, s'il n'est pas dans le PATH
+    // ou si vous utilisez un environnement virtuel non détecté).
+    // Assurez-vous que le chemin pointe vers l'exécutable `black` dans votre environnement actif.
+    // "python.formatting.blackPath": "/chemin/complet/vers/votre/env/bin/black", // Exemple Linux/macOS
+    // "python.formatting.blackPath": "C:\\chemin\\complet\\vers\\votre\\env\\Scripts\\black.exe", // Exemple Windows
+
+
+
+}
