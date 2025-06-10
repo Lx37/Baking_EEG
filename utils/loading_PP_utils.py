@@ -207,9 +207,10 @@ def load_epochs_data_for_decoding(
 
         if not event_keys_to_select and specifier:
             if verbose_logging:
-                logger_data_loading.debug(
-                    "No event keys for specifier '%s' (condition: %s) "
-                    "for subject %s. Available IDs: %s",
+                logger_data_loading.warning(
+                    "Aucune donnée trouvée pour '%s' (condition: %s) "
+                    "chez sujet %s. Événements disponibles: %s. "
+                    "Ceci peut être normal selon le protocole du sujet.",
                     specifier, condition_name, subject_identifier,
                     list(epochs_object.event_id.keys())
                 )
