@@ -1,23 +1,3 @@
-import sys
-import os
-import logging
-import time
-import argparse
-from getpass import getuser
-from datetime import datetime
-import numpy as np
-import pandas as pd
-from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import StratifiedKFold
-import itertools
-import scipy.stats
-
-# --- Configuration du chemin pour les imports ---
-SCRIPT_DIR_EXAMPLE = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT_EXAMPLE = os.path.abspath(os.path.join(SCRIPT_DIR_EXAMPLE, ".."))
-if PROJECT_ROOT_EXAMPLE not in sys.path:
-    sys.path.insert(0, PROJECT_ROOT_EXAMPLE)
-# --- Fin Configuration du chemin ---
 
 from config.decoding_config import (
     CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
@@ -41,8 +21,26 @@ from utils.utils import (
 )
 from utils.vizualization_utils import create_subject_decoding_dashboard_plots
 from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
+import sys
+import os
+import logging
+import time
+import argparse
+from getpass import getuser
+from datetime import datetime
+import numpy as np
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import StratifiedKFold
+import itertools
+import scipy.stats
 
-
+# --- Configuration du chemin pour les imports ---
+SCRIPT_DIR_EXAMPLE = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT_EXAMPLE = os.path.abspath(os.path.join(SCRIPT_DIR_EXAMPLE, ".."))
+if PROJECT_ROOT_EXAMPLE not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT_EXAMPLE)
+# --- Fin Configuration du chemin ---
 
 
 # --- Configuration du Logging ---
