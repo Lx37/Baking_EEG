@@ -1,0 +1,582 @@
+{
+  "analysis_summary": {
+    "timestamp": "2025-06-10T11:55:00.213918",
+    "project_root": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG",
+    "total_modules": 41,
+    "total_functions": 122,
+    "total_classes": 4,
+    "total_lines_of_code": 12743
+  },
+  "modules_analyzed": {
+    "validate_project": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/validate_project.py",
+      "functions_count": 0,
+      "classes_count": 0,
+      "lines_of_code": 0,
+      "dependencies": []
+    },
+    "ast_visualizer": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/ast_visualizer.py",
+      "functions_count": 0,
+      "classes_count": 0,
+      "lines_of_code": 0,
+      "dependencies": []
+    },
+    "advanced_analysis": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/advanced_analysis.py",
+      "functions_count": 0,
+      "classes_count": 0,
+      "lines_of_code": 0,
+      "dependencies": []
+    },
+    "fix_format": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/fix_format.py",
+      "functions_count": 5,
+      "classes_count": 0,
+      "lines_of_code": 77,
+      "dependencies": [
+        "re",
+        "os"
+      ]
+    },
+    "analysis_tools.comprehensive_code_analyzer": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/analysis_tools/comprehensive_code_analyzer.py",
+      "functions_count": 41,
+      "classes_count": 4,
+      "lines_of_code": 907,
+      "dependencies": [
+        "json",
+        "matplotlib",
+        "ast",
+        "dataclasses",
+        "subprocess",
+        "seaborn",
+        "collections",
+        "typing",
+        "graphviz",
+        "pathlib",
+        "sys",
+        "inspect",
+        "time",
+        "datetime",
+        "importlib",
+        "networkx",
+        "re",
+        "os"
+      ]
+    },
+    "analysis_tools.code_analyzer": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/analysis_tools/code_analyzer.py",
+      "functions_count": 0,
+      "classes_count": 0,
+      "lines_of_code": 0,
+      "dependencies": []
+    },
+    "config.config": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/config/config.py",
+      "functions_count": 0,
+      "classes_count": 0,
+      "lines_of_code": 297,
+      "dependencies": []
+    },
+    "config.decoding_config": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/config/decoding_config.py",
+      "functions_count": 0,
+      "classes_count": 0,
+      "lines_of_code": 99,
+      "dependencies": []
+    },
+    "utils.stats_utils": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/utils/stats_utils.py",
+      "functions_count": 5,
+      "classes_count": 0,
+      "lines_of_code": 603,
+      "dependencies": [
+        "scipy",
+        "logging",
+        "mne",
+        "numpy",
+        "os"
+      ]
+    },
+    "utils.utils": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/utils/utils.py",
+      "functions_count": 8,
+      "classes_count": 0,
+      "lines_of_code": 299,
+      "dependencies": [
+        "logging",
+        "mne",
+        "typing",
+        "pandas",
+        "pathlib",
+        "sys",
+        "numpy",
+        "getpass",
+        "datetime",
+        "os"
+      ]
+    },
+    "utils.vizualization_utils": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/utils/vizualization_utils.py",
+      "functions_count": 8,
+      "classes_count": 0,
+      "lines_of_code": 1427,
+      "dependencies": [
+        "sklearn",
+        "scipy",
+        "config",
+        "matplotlib",
+        "logging",
+        "seaborn",
+        "pandas",
+        "numpy",
+        "os"
+      ]
+    },
+    "utils.loading_PP_utils": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/utils/loading_PP_utils.py",
+      "functions_count": 1,
+      "classes_count": 0,
+      "lines_of_code": 267,
+      "dependencies": [
+        "config",
+        "logging",
+        "mne",
+        "numpy",
+        "time",
+        "os"
+      ]
+    },
+    "Baking_EEG._3_epoch": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/Baking_EEG/_3_epoch.py",
+      "functions_count": 4,
+      "classes_count": 0,
+      "lines_of_code": 214,
+      "dependencies": [
+        "matplotlib",
+        "logging",
+        "mne",
+        "pandas",
+        "numpy",
+        "datetime",
+        "os"
+      ]
+    },
+    "Baking_EEG._1_preprocess": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/Baking_EEG/_1_preprocess.py",
+      "functions_count": 4,
+      "classes_count": 0,
+      "lines_of_code": 331,
+      "dependencies": [
+        "matplotlib",
+        "logging",
+        "mne",
+        "utils",
+        "numpy",
+        "datetime",
+        "os"
+      ]
+    },
+    "Baking_EEG._2_cleaning": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/Baking_EEG/_2_cleaning.py",
+      "functions_count": 3,
+      "classes_count": 0,
+      "lines_of_code": 156,
+      "dependencies": [
+        "autoreject",
+        "matplotlib",
+        "logging",
+        "mne",
+        "numpy",
+        "datetime",
+        "os"
+      ]
+    },
+    "Baking_EEG.cross_subject_decoding": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/Baking_EEG/cross_subject_decoding.py",
+      "functions_count": 2,
+      "classes_count": 0,
+      "lines_of_code": 132,
+      "dependencies": []
+    },
+    "Baking_EEG": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/Baking_EEG/__init__.py",
+      "functions_count": 0,
+      "classes_count": 0,
+      "lines_of_code": 0,
+      "dependencies": []
+    },
+    "Baking_EEG._4_connectivity": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/Baking_EEG/_4_connectivity.py",
+      "functions_count": 5,
+      "classes_count": 0,
+      "lines_of_code": 295,
+      "dependencies": [
+        "matplotlib",
+        "logging",
+        "mne",
+        "xarray",
+        "pandas",
+        "mne_connectivity",
+        "numpy",
+        "datetime",
+        "os"
+      ]
+    },
+    "Baking_EEG.run_all_decode": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/Baking_EEG/run_all_decode.py",
+      "functions_count": 8,
+      "classes_count": 0,
+      "lines_of_code": 1616,
+      "dependencies": [
+        "datetime",
+        "stats",
+        "argparse",
+        "scipy",
+        "sklearn",
+        "matplotlib",
+        "_4_decoding_core",
+        "logging",
+        "Baking_EEG",
+        "mne",
+        "pandas",
+        "sys",
+        "numpy",
+        "getpass",
+        "itertools",
+        "time",
+        "os"
+      ]
+    },
+    "Baking_EEG._4_decoding_core": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/Baking_EEG/_4_decoding_core.py",
+      "functions_count": 1,
+      "classes_count": 0,
+      "lines_of_code": 491,
+      "dependencies": [
+        "base",
+        "sklearn",
+        "scipy",
+        "config",
+        "logging",
+        "mne",
+        "pandas",
+        "utils",
+        "numpy"
+      ]
+    },
+    "Baking_EEG._4_epoch_spectrum": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/Baking_EEG/_4_epoch_spectrum.py",
+      "functions_count": 2,
+      "classes_count": 0,
+      "lines_of_code": 133,
+      "dependencies": [
+        "matplotlib",
+        "logging",
+        "mne",
+        "pandas",
+        "numpy",
+        "datetime",
+        "os"
+      ]
+    },
+    "Baking_EEG.stat_decode_ALL": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/Baking_EEG/stat_decode_ALL.py",
+      "functions_count": 5,
+      "classes_count": 0,
+      "lines_of_code": 597,
+      "dependencies": [
+        "scipy",
+        "logging",
+        "mne",
+        "numpy",
+        "os"
+      ]
+    },
+    "Baking_EEG.all_decode": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/Baking_EEG/all_decode.py",
+      "functions_count": 11,
+      "classes_count": 0,
+      "lines_of_code": 1825,
+      "dependencies": [
+        "stats",
+        "scipy",
+        "sklearn",
+        "matplotlib",
+        "logging",
+        "seaborn",
+        "mne",
+        "pandas",
+        "numpy",
+        "time",
+        "os"
+      ]
+    },
+    "examples.run_decoding_all_group": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/examples/run_decoding_all_group.py",
+      "functions_count": 0,
+      "classes_count": 0,
+      "lines_of_code": 0,
+      "dependencies": []
+    },
+    "examples.single_sub_ERP_JB": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/examples/single_sub_ERP_JB.py",
+      "functions_count": 0,
+      "classes_count": 0,
+      "lines_of_code": 61,
+      "dependencies": [
+        "config",
+        "Baking_EEG",
+        "mne",
+        "utils",
+        "sys",
+        "getpass",
+        "os"
+      ]
+    },
+    "examples.run_decoding_cross": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/examples/run_decoding_cross.py",
+      "functions_count": 1,
+      "classes_count": 0,
+      "lines_of_code": 245,
+      "dependencies": []
+    },
+    "examples.multi_sub_epoch_spectrum": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/examples/multi_sub_epoch_spectrum.py",
+      "functions_count": 0,
+      "classes_count": 0,
+      "lines_of_code": 46,
+      "dependencies": [
+        "config",
+        "Baking_EEG",
+        "mne",
+        "utils",
+        "sys",
+        "getpass",
+        "os"
+      ]
+    },
+    "examples.single_sub_ERP_Vera": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/examples/single_sub_ERP_Vera.py",
+      "functions_count": 0,
+      "classes_count": 0,
+      "lines_of_code": 89,
+      "dependencies": [
+        "config",
+        "Baking_EEG",
+        "mne",
+        "utils",
+        "sys",
+        "numpy",
+        "getpass",
+        "os"
+      ]
+    },
+    "examples.permutation_clustering": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/examples/permutation_clustering.py",
+      "functions_count": 1,
+      "classes_count": 0,
+      "lines_of_code": 104,
+      "dependencies": [
+        "mne",
+        "numpy",
+        "os"
+      ]
+    },
+    "examples.run_decoding": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/examples/run_decoding.py",
+      "functions_count": 0,
+      "classes_count": 0,
+      "lines_of_code": 0,
+      "dependencies": []
+    },
+    "examples.wilkoxon": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/examples/wilkoxon.py",
+      "functions_count": 1,
+      "classes_count": 0,
+      "lines_of_code": 87,
+      "dependencies": [
+        "scipy",
+        "numpy",
+        "os"
+      ]
+    },
+    "examples.multi_sub_connectivity": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/examples/multi_sub_connectivity.py",
+      "functions_count": 0,
+      "classes_count": 0,
+      "lines_of_code": 46,
+      "dependencies": [
+        "config",
+        "Baking_EEG",
+        "mne",
+        "utils",
+        "sys",
+        "getpass",
+        "os"
+      ]
+    },
+    "examples.run_decoding_one_group_pp": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/examples/run_decoding_one_group_pp.py",
+      "functions_count": 1,
+      "classes_count": 0,
+      "lines_of_code": 496,
+      "dependencies": [
+        "argparse",
+        "scipy",
+        "logging",
+        "Baking_EEG",
+        "pandas",
+        "sys",
+        "numpy",
+        "getpass",
+        "datetime",
+        "time",
+        "os"
+      ]
+    },
+    "examples.see_bad_chans": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/examples/see_bad_chans.py",
+      "functions_count": 0,
+      "classes_count": 0,
+      "lines_of_code": 51,
+      "dependencies": [
+        "config",
+        "Baking_EEG",
+        "mne",
+        "utils",
+        "sys",
+        "numpy",
+        "getpass",
+        "os"
+      ]
+    },
+    "examples.multi_sub_connectivity_BRU": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/examples/multi_sub_connectivity_BRU.py",
+      "functions_count": 0,
+      "classes_count": 0,
+      "lines_of_code": 24,
+      "dependencies": [
+        "config",
+        "Baking_EEG",
+        "mne",
+        "utils",
+        "sys",
+        "getpass",
+        "os"
+      ]
+    },
+    "examples.single_sub_ERP": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/examples/single_sub_ERP.py",
+      "functions_count": 0,
+      "classes_count": 0,
+      "lines_of_code": 77,
+      "dependencies": [
+        "config",
+        "Baking_EEG",
+        "mne",
+        "utils",
+        "sys",
+        "numpy",
+        "getpass",
+        "os"
+      ]
+    },
+    "examples.run_decoding_one_pp": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/examples/run_decoding_one_pp.py",
+      "functions_count": 1,
+      "classes_count": 0,
+      "lines_of_code": 724,
+      "dependencies": [
+        "argparse",
+        "sklearn",
+        "scipy",
+        "config",
+        "itertools",
+        "logging",
+        "Baking_EEG",
+        "pandas",
+        "utils",
+        "sys",
+        "numpy",
+        "getpass",
+        "datetime",
+        "time",
+        "os"
+      ]
+    },
+    "examples.run_decoding_one_group": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/examples/run_decoding_one_group.py",
+      "functions_count": 1,
+      "classes_count": 0,
+      "lines_of_code": 498,
+      "dependencies": [
+        "argparse",
+        "scipy",
+        "logging",
+        "Baking_EEG",
+        "pandas",
+        "sys",
+        "numpy",
+        "getpass",
+        "datetime",
+        "time",
+        "os"
+      ]
+    },
+    "examples.check_normality_Vera": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/examples/check_normality_Vera.py",
+      "functions_count": 1,
+      "classes_count": 0,
+      "lines_of_code": 177,
+      "dependencies": [
+        "scipy",
+        "matplotlib",
+        "seaborn",
+        "pandas",
+        "numpy",
+        "itertools",
+        "os"
+      ]
+    },
+    "examples.single_sub_connectivity": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/examples/single_sub_connectivity.py",
+      "functions_count": 0,
+      "classes_count": 0,
+      "lines_of_code": 93,
+      "dependencies": [
+        "config",
+        "Baking_EEG",
+        "mne",
+        "utils",
+        "sys",
+        "getpass",
+        "os"
+      ]
+    },
+    "base.base_decoding": {
+      "file_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/base/base_decoding.py",
+      "functions_count": 2,
+      "classes_count": 0,
+      "lines_of_code": 159,
+      "dependencies": [
+        "logging",
+        "mne",
+        "sklearn",
+        "numpy"
+      ]
+    }
+  },
+  "diagrams_generated": [
+    "uml_class_diagram",
+    "dependency_diagram",
+    "execution_flow_diagram",
+    "call_graph",
+    "control_flow_graphs",
+    "ast_diagrams",
+    "data_flow_graph",
+    "metrics_diagrams"
+  ],
+  "output_directory": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG/analysis_output/comprehensive_analysis"
+}

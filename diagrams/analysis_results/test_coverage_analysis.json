@@ -1,0 +1,283 @@
+{
+  "total_files": 46,
+  "tested_files": 3,
+  "coverage_percentage": 6.976744186046512,
+  "files_analysis": {
+    "validate_project.py": {
+      "functions": 0,
+      "classes": 0,
+      "testable_elements": 0,
+      "lines": 1
+    },
+    "ast_visualizer.py": {
+      "functions": 0,
+      "classes": 0,
+      "testable_elements": 0,
+      "lines": 1
+    },
+    "advanced_analysis.py": {
+      "functions": 0,
+      "classes": 0,
+      "testable_elements": 0,
+      "lines": 1
+    },
+    "test_import.py": {
+      "functions": 0,
+      "classes": 0,
+      "testable_elements": 0,
+      "lines": 1
+    },
+    "test_loading_utils.py": {
+      "functions": 4,
+      "classes": 0,
+      "testable_elements": 4,
+      "lines": 162
+    },
+    "fix_format.py": {
+      "functions": 5,
+      "classes": 0,
+      "testable_elements": 5,
+      "lines": 107
+    },
+    "test_comprehensive.py": {
+      "functions": 12,
+      "classes": 4,
+      "testable_elements": 16,
+      "lines": 283
+    },
+    "analysis_tools/comprehensive_code_analyzer.py": {
+      "functions": 41,
+      "classes": 4,
+      "testable_elements": 45,
+      "lines": 1131
+    },
+    "analysis_tools/simple_code_analyzer.py": {
+      "functions": 8,
+      "classes": 0,
+      "testable_elements": 8,
+      "lines": 884
+    },
+    "analysis_tools/code_analyzer.py": {
+      "functions": 0,
+      "classes": 0,
+      "testable_elements": 0,
+      "lines": 1
+    },
+    "analysis_tools/quick_analyzer.py": {
+      "functions": 4,
+      "classes": 0,
+      "testable_elements": 4,
+      "lines": 435
+    },
+    "config/config.py": {
+      "functions": 0,
+      "classes": 0,
+      "testable_elements": 0,
+      "lines": 354
+    },
+    "config/decoding_config.py": {
+      "functions": 0,
+      "classes": 0,
+      "testable_elements": 0,
+      "lines": 113
+    },
+    "utils/stats_utils.py": {
+      "functions": 5,
+      "classes": 0,
+      "testable_elements": 5,
+      "lines": 691
+    },
+    "utils/utils.py": {
+      "functions": 8,
+      "classes": 0,
+      "testable_elements": 8,
+      "lines": 356
+    },
+    "utils/vizualization_utils.py": {
+      "functions": 8,
+      "classes": 0,
+      "testable_elements": 8,
+      "lines": 1620
+    },
+    "utils/loading_PP_utils.py": {
+      "functions": 1,
+      "classes": 0,
+      "testable_elements": 1,
+      "lines": 293
+    },
+    "Baking_EEG/_3_epoch.py": {
+      "functions": 4,
+      "classes": 0,
+      "testable_elements": 4,
+      "lines": 278
+    },
+    "Baking_EEG/_1_preprocess.py": {
+      "functions": 4,
+      "classes": 0,
+      "testable_elements": 4,
+      "lines": 416
+    },
+    "Baking_EEG/_2_cleaning.py": {
+      "functions": 3,
+      "classes": 0,
+      "testable_elements": 3,
+      "lines": 215
+    },
+    "Baking_EEG/cross_subject_decoding.py": {
+      "functions": 2,
+      "classes": 0,
+      "testable_elements": 2,
+      "lines": 147
+    },
+    "Baking_EEG/__init__.py": {
+      "functions": 0,
+      "classes": 0,
+      "testable_elements": 0,
+      "lines": 2
+    },
+    "Baking_EEG/_4_connectivity.py": {
+      "functions": 5,
+      "classes": 0,
+      "testable_elements": 5,
+      "lines": 379
+    },
+    "Baking_EEG/run_all_decode.py": {
+      "functions": 8,
+      "classes": 0,
+      "testable_elements": 8,
+      "lines": 1778
+    },
+    "Baking_EEG/_4_decoding_core.py": {
+      "functions": 1,
+      "classes": 0,
+      "testable_elements": 1,
+      "lines": 528
+    },
+    "Baking_EEG/_4_epoch_spectrum.py": {
+      "functions": 2,
+      "classes": 0,
+      "testable_elements": 2,
+      "lines": 188
+    },
+    "Baking_EEG/stat_decode_ALL.py": {
+      "functions": 5,
+      "classes": 0,
+      "testable_elements": 5,
+      "lines": 690
+    },
+    "Baking_EEG/all_decode.py": {
+      "functions": 11,
+      "classes": 0,
+      "testable_elements": 11,
+      "lines": 2081
+    },
+    "examples/run_decoding_all_group.py": {
+      "functions": 0,
+      "classes": 0,
+      "testable_elements": 0,
+      "lines": 3
+    },
+    "examples/single_sub_ERP_JB.py": {
+      "functions": 0,
+      "classes": 0,
+      "testable_elements": 0,
+      "lines": 81
+    },
+    "examples/run_decoding_cross.py": {
+      "functions": 1,
+      "classes": 0,
+      "testable_elements": 1,
+      "lines": 265
+    },
+    "examples/multi_sub_epoch_spectrum.py": {
+      "functions": 0,
+      "classes": 0,
+      "testable_elements": 0,
+      "lines": 60
+    },
+    "examples/single_sub_ERP_Vera.py": {
+      "functions": 0,
+      "classes": 0,
+      "testable_elements": 0,
+      "lines": 122
+    },
+    "examples/permutation_clustering.py": {
+      "functions": 1,
+      "classes": 0,
+      "testable_elements": 1,
+      "lines": 124
+    },
+    "examples/run_decoding.py": {
+      "functions": 0,
+      "classes": 0,
+      "testable_elements": 0,
+      "lines": 1
+    },
+    "examples/wilkoxon.py": {
+      "functions": 1,
+      "classes": 0,
+      "testable_elements": 1,
+      "lines": 105
+    },
+    "examples/multi_sub_connectivity.py": {
+      "functions": 0,
+      "classes": 0,
+      "testable_elements": 0,
+      "lines": 61
+    },
+    "examples/run_decoding_one_group_pp.py": {
+      "functions": 1,
+      "classes": 0,
+      "testable_elements": 1,
+      "lines": 545
+    },
+    "examples/see_bad_chans.py": {
+      "functions": 0,
+      "classes": 0,
+      "testable_elements": 0,
+      "lines": 64
+    },
+    "examples/multi_sub_connectivity_BRU.py": {
+      "functions": 0,
+      "classes": 0,
+      "testable_elements": 0,
+      "lines": 27
+    },
+    "examples/single_sub_ERP.py": {
+      "functions": 0,
+      "classes": 0,
+      "testable_elements": 0,
+      "lines": 101
+    },
+    "examples/run_decoding_one_pp.py": {
+      "functions": 1,
+      "classes": 0,
+      "testable_elements": 1,
+      "lines": 777
+    },
+    "examples/run_decoding_one_group.py": {
+      "functions": 1,
+      "classes": 0,
+      "testable_elements": 1,
+      "lines": 546
+    },
+    "examples/check_normality_Vera.py": {
+      "functions": 1,
+      "classes": 0,
+      "testable_elements": 1,
+      "lines": 240
+    },
+    "examples/single_sub_connectivity.py": {
+      "functions": 0,
+      "classes": 0,
+      "testable_elements": 0,
+      "lines": 121
+    },
+    "base/base_decoding.py": {
+      "functions": 2,
+      "classes": 0,
+      "testable_elements": 2,
+      "lines": 182
+    }
+  }
+}

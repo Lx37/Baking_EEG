@@ -2,7 +2,7 @@ import mne
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-from Baking_EEG import utils
+from utils import utils
 
 
 ## logging info ###

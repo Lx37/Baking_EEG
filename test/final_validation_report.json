@@ -1,0 +1,122 @@
+{
+  "validation_date": "2025-06-10T13:56:14.835812",
+  "project_path": "/Users/tom/Desktop/ENSC/Stage CAP/Baking_EEG",
+  "summary": {
+    "total_tests": 20,
+    "passed_tests": 17,
+    "success_rate": "85.0%",
+    "status": "SUCCESS"
+  },
+  "detailed_results": {
+    "imports": [
+      {
+        "module": "utils.loading_PP_utils",
+        "success": true,
+        "error": null
+      },
+      {
+        "module": "utils.stats_utils",
+        "success": true,
+        "error": null
+      },
+      {
+        "module": "examples.run_decoding_one_pp",
+        "success": true,
+        "error": null
+      },
+      {
+        "module": "Baking_EEG._4_decoding",
+        "success": false,
+        "error": "No module named 'Baking_EEG._4_decoding'"
+      },
+      {
+        "module": "utils.vizualization_utils",
+        "success": true,
+        "error": null
+      }
+    ],
+    "functions": [
+      {
+        "test": "fdr_correction",
+        "success": true,
+        "error": null
+      },
+      {
+        "test": "dashboard_params",
+        "success": true,
+        "error": null
+      }
+    ],
+    "execution": {
+      "test": "main_script",
+      "success": true,
+      "error": null
+    },
+    "code_quality": [
+      {
+        "file": "utils/loading_PP_utils.py",
+        "success": true,
+        "info": "PEP8 compliant"
+      },
+      {
+        "file": "utils/stats_utils.py",
+        "success": false,
+        "info": "107 long lines"
+      },
+      {
+        "file": "examples/run_decoding_one_pp.py",
+        "success": false,
+        "info": "233 long lines"
+      }
+    ],
+    "analysis_tools": [
+      {
+        "tool": "analysis_tools/comprehensive_code_analyzer.py",
+        "success": true,
+        "info": "Available"
+      },
+      {
+        "tool": "analysis_tools/simple_code_analyzer.py",
+        "success": true,
+        "info": "Available"
+      },
+      {
+        "tool": "analysis_tools/quick_analyzer.py",
+        "success": true,
+        "info": "Available"
+      },
+      {
+        "tool": "flowchart_generator.py",
+        "success": true,
+        "info": "Available"
+      },
+      {
+        "tool": "uml_generator.py",
+        "success": true,
+        "info": "Available"
+      },
+      {
+        "tool": "test_comprehensive.py",
+        "success": true,
+        "info": "Available"
+      }
+    ],
+    "generated_outputs": [
+      {
+        "output": "analysis_results",
+        "success": true,
+        "info": "17 files"
+      },
+      {
+        "output": "diagrams",
+        "success": true,
+        "info": "0 files"
+      },
+      {
+        "output": "figures",
+        "success": true,
+        "info": "0 files"
+      }
+    ]
+  }
+}

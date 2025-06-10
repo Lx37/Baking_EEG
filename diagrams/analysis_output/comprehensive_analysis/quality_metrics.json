@@ -1,0 +1,10 @@
+{
+  "total_modules": 41,
+  "total_functions": 122,
+  "total_classes": 4,
+  "average_complexity": 18.401639344262296,
+  "max_complexity": 208,
+  "total_loc": 12743,
+  "functions_without_docstring": 21,
+  "classes_without_docstring": 0
+}

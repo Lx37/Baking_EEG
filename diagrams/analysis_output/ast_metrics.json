@@ -1,0 +1,26 @@
+{
+  "utils/loading_PP_utils.py": {
+    "total_nodes": 1269,
+    "function_count": 1,
+    "class_count": 0,
+    "max_nesting_depth": 13,
+    "control_structures": 40,
+    "imports": 7
+  },
+  "utils/stats_utils.py": {
+    "total_nodes": 2372,
+    "function_count": 5,
+    "class_count": 0,
+    "max_nesting_depth": 13,
+    "control_structures": 48,
+    "imports": 5
+  },
+  "examples/run_decoding_one_pp.py": {
+    "total_nodes": 4222,
+    "function_count": 1,
+    "class_count": 0,
+    "max_nesting_depth": 16,
+    "control_structures": 79,
+    "imports": 20
+  }
+}

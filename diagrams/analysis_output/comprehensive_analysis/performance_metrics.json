@@ -1,0 +1,10 @@
+{
+  "analysis_start_time": "2025-06-10T11:55:00.143601",
+  "total_files_analyzed": 41,
+  "analysis_duration_seconds": 0.061309814453125,
+  "validate_project_parse_time": 0.00012874603271484375,
+  "ast_visualizer_parse_time": 4.100799560546875e-05,
+  "advanced_analysis_parse_time": 0.000186920166015625,
+  "fix_format_parse_time": 0.004584789276123047,
+  "analysis_tools.comprehensive_code_analyzer_parse_time": 0.04424881935119629
+}
