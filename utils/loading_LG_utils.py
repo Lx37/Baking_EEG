@@ -5,20 +5,9 @@ import logging
 import numpy as np
 import mne
 from config.config import ALL_SUBJECT_GROUPS
-from config.decoding_config import CONFIG_LOAD_MAIN_LG_DECODING, CONFIG_LOAD_LG_COMPARISONS
+from config.decoding_config import CONFIG_LOAD_MAIN_LG_DECODING, CONFIG_LOAD_LG_COMPARISONS,EVENT_ID_LG
 logger_data_loading = logging.getLogger(__name__)
 
-# Local Global protocol event mapping
-# LSGD versus LDGD (Local Standard Global Deviant vs Local Deviant Global Deviant)
-# LSGS versus LSGD (Local Standard Global Standard vs Local Standard Global Deviant)
-# LDGS versus LDGD (Local Deviant Global Standard vs Local Deviant Global Deviant)
-# LSGS versus LDGS (Local Standard Global Standard vs Local Deviant Global Standard)
-EVENTS_ID_LG = {
-    'LS/GS': 11,  # Local Standard, Global Standard
-    'LS/GD': 12,  # Local Standard, Global Deviant
-    'LD/GS': 21,  # Local Deviant, Global Standard
-    'LD/GD': 22   # Local Deviant, Global Deviant
-}
 
 
 def load_epochs_data_for_lg_decoding(

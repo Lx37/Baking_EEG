@@ -33,6 +33,17 @@ CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT = {
     "PP_FOR_SPECIFIC_COMPARISON": PP_CODES_FOR_SPECIFIC_COMPARISON,
     **AP_FAMILIES_FOR_SPECIFIC_COMPARISON,
 }
+# Local Global protocol event mapping
+# LSGD versus LDGD (Local Standard Global Deviant vs Local Deviant Global Deviant)
+# LSGS versus LSGD (Local Standard Global Standard vs Local Standard Global Deviant)
+# LDGS versus LDGD (Local Deviant Global Standard vs Local Deviant Global Deviant)
+# LSGS versus LDGS (Local Standard Global Standard vs Local Deviant Global Standard)
+EVENTS_ID_LG = {
+    'LS/GS': 11,  # Local Standard, Global Standard
+    'LS/GD': 12,  # Local Standard, Global Deviant
+    'LD/GS': 21,  # Local Deviant, Global Standard
+    'LD/GD': 22   # Local Deviant, Global Deviant
+}
 
 # Alias pour compatibilité avec les scripts existants (pour bash)
 CONFIG_LOAD_SINGLE_PROTOCOL = CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT
