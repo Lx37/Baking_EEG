@@ -30,7 +30,7 @@ from config.decoding_config import (
     # Pas pour single subject direct
     CHANCE_LEVEL_AUC_SCORE, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
     COMPUTE_INTRA_SUBJECT_STATISTICS, COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
-    CONFIG_LOAD_MAIN_DECODING, SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS,
+    CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT, SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS,
     N_JOBS_PROCESSING, AP_FAMILIES_FOR_SPECIFIC_COMPARISON
 )
 from config.config import ALL_SUBJECT_GROUPS
@@ -134,7 +134,7 @@ def execute_single_subject_decoding(
     if compute_tgm_flag is None:
         compute_tgm_flag = COMPUTE_TEMPORAL_GENERALIZATION_MATRICES
     if loading_conditions_config is None:
-        loading_conditions_config = CONFIG_LOAD_MAIN_DECODING
+        loading_conditions_config = CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT
     if cluster_threshold_config_intra_fold is None:
         cluster_threshold_config_intra_fold = (
             INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG
@@ -256,6 +256,8 @@ def execute_single_subject_decoding(
                 if num_cv_splits_main < 2:
                     logger_run_one.error(
                         "Subj %s: Not enough samples for CV in main decoding (%d splits). Skipping.", subject_identifier, num_cv_splits_main)
+                    # Retourner les résultats actuels au lieu de continuer
+                    return subject_results
                 else:
                     cv_splitter_main = StratifiedKFold(
                         n_splits=num_cv_splits_main, shuffle=True, random_state=42)
@@ -371,13 +373,15 @@ def execute_single_subject_decoding(
                                 logger_run_one.info("  Specific task '%s' for %s: Peak AUC = %.3f", comparison_name_specific,
                                                     subject_identifier, peak_auc_val if pd.notna(peak_auc_val) else -1)
                     else:
-                        logger_run_one.warning("Subj %s: Missing data for %s in specific task '%s'. Skipping.",
+                        logger_run_one.info("Subj %s: Données manquantes pour %s dans la tâche spécifique '%s'. Ceci peut être normal selon le protocole du sujet.",
                                                subject_identifier, ap_family_key_enum, comparison_name_specific)
                     subject_results["pp_ap_specific_ap_results"].append(
                         task_result_specific)
             else:
-                logger_run_one.warning(
-                    "Subj %s: PP_FOR_SPECIFIC_COMPARISON data missing. Skipping specific tasks.", subject_identifier)
+                logger_run_one.info(
+                    "Subj %s: PP_FOR_SPECIFIC_COMPARISON data manquante. "
+                    "Ceci est normal si le sujet n'a pas ce type de données spécifiques selon le protocole. "
+                    "Passage aux comparaisons inter-familles.", subject_identifier)
         logger_run_one.info(
             "  --- Specific Task Comparisons for %s DONE ---", subject_identifier)
 
@@ -486,7 +490,7 @@ def execute_single_subject_decoding(
                             logger_run_one.info("  Inter-Family task '%s' for %s: Peak AUC = %.3f", comparison_name_ap_vs_ap,
                                                 subject_identifier, peak_auc_val_apap if pd.notna(peak_auc_val_apap) else -1)
                 else:
-                    logger_run_one.warning("Subj %s: Missing data for %s or %s in task '%s'. Skipping.",
+                    logger_run_one.info("Subj %s: Données manquantes pour %s ou %s dans la tâche '%s'. Ceci peut être normal selon le protocole du sujet.",
                                            subject_identifier, ap_key_1, ap_key_2, comparison_name_ap_vs_ap)
                 subject_results["pp_ap_ap_vs_ap_results"].append(
                     task_result_ap_vs_ap)
@@ -579,7 +583,7 @@ def execute_single_subject_decoding(
                             logger_run_one.warning("Subj %s, Anchor %s: Not enough valid curves after filtering (%d) for avg. Orig: %d. Debug: %s", subject_identifier, anchor_ap_display_name, len(
                                 valid_curves_for_stacking), len(curves_to_average_this_anchor), constituent_names_debug_this_anchor)
                     else:
-                        logger_run_one.warning("Subj %s, Anchor %s: Not enough constituent curves (%d) for avg. Debug: %s", subject_identifier, anchor_ap_display_name, len(
+                        logger_run_one.info("Subj %s, Anchor %s: Pas assez de courbes constituantes (%d) pour moyenne. Ceci est normal si les données spécifiques manquent. Debug: %s", subject_identifier, anchor_ap_display_name, len(
                             curves_to_average_this_anchor), constituent_names_debug_this_anchor)
                     subject_results["pp_ap_ap_centric_avg_results"].append(
                         ap_centric_avg_item)

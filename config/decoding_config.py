@@ -34,8 +34,32 @@ CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT = {
     **AP_FAMILIES_FOR_SPECIFIC_COMPARISON,
 }
 
-# Alias pour compatibilité avec les scripts existants
+# Alias pour compatibilité avec les scripts existants (pour bash)
 CONFIG_LOAD_SINGLE_PROTOCOL = CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT
+
+# === CONFIGURATION LOCAL-GLOBAL (LG) PROTOCOL ===
+# Configuration du chargement des données pour le protocole Local-Global
+CONFIG_LOAD_MAIN_LG_DECODING = {
+    "LS_ALL": "LS/",  # Charge tous les événements Local Standard
+    "LD_ALL": "LD/",  # Charge tous les événements Local Deviant
+    "GS_ALL": "/GS",  # Charge tous les événements Global Standard
+    "GD_ALL": "/GD",  # Charge tous les événements Global Deviant
+}
+
+# Comparaisons spécifiques pour l'analyse LG
+CONFIG_LOAD_LG_COMPARISONS = {
+    **CONFIG_LOAD_MAIN_LG_DECODING,
+    "LSGS": ["LS/GS"],  # Local Standard Global Standard
+    "LSGD": ["LS/GD"],  # Local Standard Global Deviant
+    "LDGS": ["LD/GS"],  # Local Deviant Global Standard
+    "LDGD": ["LD/GD"],  # Local Deviant Global Deviant
+}
+
+# Configuration complète pour l'analyse LG d'un sujet unique
+CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG = {
+    **CONFIG_LOAD_MAIN_LG_DECODING,
+    **CONFIG_LOAD_LG_COMPARISONS,
+}
 
 # === CONFIGURATION GLOBALE DE L'ANALYSE ===
 USE_GRID_SEARCH_OPTIMIZATION = False
@@ -62,7 +86,7 @@ COMPUTE_INTRA_SUBJECT_STATISTICS = True
 COMPUTE_GROUP_LEVEL_STATISTICS = True
 SAVE_ANALYSIS_RESULTS = True
 GENERATE_PLOTS = True
-COMPUTE_TEMPORAL_GENERALIZATION_MATRICES = False 
+COMPUTE_TEMPORAL_GENERALIZATION_MATRICES = False
 
 
 # === Grilles d'hyperparamètres pour GridSearchCV ===
