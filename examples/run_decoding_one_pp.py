@@ -1,3 +1,4 @@
+
 import sys
 import os
 import logging
@@ -19,6 +20,14 @@ if PROJECT_ROOT_EXAMPLE not in sys.path:
     sys.path.insert(0, PROJECT_ROOT_EXAMPLE)
 # --- Fin Configuration du chemin ---
 
+from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
+from utils.vizualization_utils import create_subject_decoding_dashboard_plots
+from utils.utils import (
+    configure_project_paths, setup_analysis_results_directory
+)
+from utils.loading_PP_utils import load_epochs_data_for_decoding
+from utils import stats_utils as bEEG_stats
+from config.config import ALL_SUBJECT_GROUPS
 from config.decoding_config import (
     CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
     USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
@@ -33,18 +42,6 @@ from config.decoding_config import (
     CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT, SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS,
     N_JOBS_PROCESSING, AP_FAMILIES_FOR_SPECIFIC_COMPARISON
 )
-from config.config import ALL_SUBJECT_GROUPS
-from utils import stats_utils as bEEG_stats
-from utils.loading_PP_utils import load_epochs_data_for_decoding
-from utils.utils import (
-    configure_project_paths, setup_analysis_results_directory
-)
-from utils.vizualization_utils import create_subject_decoding_dashboard_plots
-from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
-
-
-
-
 # --- Configuration du Logging ---
 LOG_DIR_RUN_ONE = './logs_run_single_subject'  # Dossier de logs spécifique
 os.makedirs(LOG_DIR_RUN_ONE, exist_ok=True)
@@ -374,7 +371,7 @@ def execute_single_subject_decoding(
                                                     subject_identifier, peak_auc_val if pd.notna(peak_auc_val) else -1)
                     else:
                         logger_run_one.info("Subj %s: Données manquantes pour %s dans la tâche spécifique '%s'. Ceci peut être normal selon le protocole du sujet.",
-                                               subject_identifier, ap_family_key_enum, comparison_name_specific)
+                                            subject_identifier, ap_family_key_enum, comparison_name_specific)
                     subject_results["pp_ap_specific_ap_results"].append(
                         task_result_specific)
             else:
@@ -491,7 +488,7 @@ def execute_single_subject_decoding(
                                                 subject_identifier, peak_auc_val_apap if pd.notna(peak_auc_val_apap) else -1)
                 else:
                     logger_run_one.info("Subj %s: Données manquantes pour %s ou %s dans la tâche '%s'. Ceci peut être normal selon le protocole du sujet.",
-                                           subject_identifier, ap_key_1, ap_key_2, comparison_name_ap_vs_ap)
+                                        subject_identifier, ap_key_1, ap_key_2, comparison_name_ap_vs_ap)
                 subject_results["pp_ap_ap_vs_ap_results"].append(
                     task_result_ap_vs_ap)
         else:

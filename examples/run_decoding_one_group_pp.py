@@ -1,26 +1,6 @@
-# examples/run_group_analysis.py (ou gardez run_decoding_one_group.py si vous préférez)
+# Examples script for group-level PP analysis
 
-from Baking_EEG.utils.utils import configure_project_paths
-from Baking_EEG.utils import stats_utils as bEEG_stats
-from Baking_EEG.utils.vizualization_utils import (  # create_subject_decoding_dashboard_plots, # Appelée dans execute_single_subject_decoding
-    plot_group_mean_scores_barplot,
-    plot_group_temporal_decoding_statistics,
-    plot_group_tgm_statistics)
-from Baking_EEG.config.config import ALL_SUBJECT_GROUPS
-from Baking_EEG.config.decoding_config import (
-    CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
-    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
-    PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
-    FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
-    N_PERMUTATIONS_GROUP_LEVEL, GROUP_LEVEL_STAT_THRESHOLD_TYPE,
-    # Correction du nom de la constante
-    T_THRESHOLD_FOR_GROUP_STAT_CLUSTERING, CHANCE_LEVEL_AUC_SCORE,
-    # COMPUTE_INTRA_SUBJECT_STATISTICS, # Est un argument de fonction
-    INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
-    COMPUTE_TEMPORAL_GENERALIZATION_MATRICES, CONFIG_LOAD_SINGLE_PROTOCOL,
-    SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS, N_JOBS_PROCESSING,
-    # AP_FAMILIES_FOR_SPECIFIC_COMPARISON # Utilisé dans execute_single_subject_decoding
-)
+
 import os
 import sys
 import logging
@@ -38,12 +18,34 @@ PROJECT_ROOT_EXAMPLE = os.path.abspath(os.path.join(SCRIPT_DIR_EXAMPLE, ".."))
 if PROJECT_ROOT_EXAMPLE not in sys.path:
     sys.path.insert(0, PROJECT_ROOT_EXAMPLE)
 # --- Fin Configuration du chemin ---
-
+from Baking_EEG.utils.utils import (
+    configure_project_paths, setup_analysis_results_directory
+)
+from Baking_EEG.utils import stats_utils as bEEG_stats
+from Baking_EEG.utils.vizualization_utils import (
+    plot_group_mean_scores_barplot,
+    plot_group_temporal_decoding_statistics,
+    plot_group_tgm_statistics
+)
+from Baking_EEG.config.config import ALL_SUBJECT_GROUPS
+from Baking_EEG.config.decoding_config import (
+    CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
+    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
+    PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
+    FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
+    N_PERMUTATIONS_GROUP_LEVEL, GROUP_LEVEL_STAT_THRESHOLD_TYPE,
+    T_THRESHOLD_FOR_GROUP_STAT_CLUSTERING, CHANCE_LEVEL_AUC_SCORE,
+    INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
+    COMPUTE_TEMPORAL_GENERALIZATION_MATRICES, CONFIG_LOAD_SINGLE_PROTOCOL,
+    SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS, N_JOBS_PROCESSING
+)
 # Imports depuis votre module Baking_EEG
 
 # La fonction execute_single_subject_decoding est dans run_decoding_one_pp.py
 try:
-    from Baking_EEG.examples.run_decoding_one_pp import execute_single_subject_decoding
+    from Baking_EEG.examples.run_decoding_one_pp import (
+        execute_single_subject_decoding
+    )
 except ImportError as e_import:
     print(f"Erreur d'import execute_single_subject_decoding: {e_import}")
     sys.exit(1)
