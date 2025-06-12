@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Script de soumission Submitit pour un sujet unique.
-Ce script configure et soumet un job Slurm pour exécuter un traitement sur un sujet spécifique.
+Script de soumission Submitit pour un sujet unique - Protocole Local-Global (LG).
+Ce script configure et soumet un job Slurm pour exécuter un traitement LG sur un sujet spécifique.
 """
 
 # --- Imports ---
@@ -96,7 +96,7 @@ LOG_DIR_SUBMITIT_MASTER = os.path.join(CURRENT_SCRIPT_DIR, 'logs_submitit_master
 os.makedirs(LOG_DIR_SUBMITIT_MASTER, exist_ok=True)
 
 TARGET_SUBJECT_ID_FOR_JOB = "TpSM49"
-TARGET_PROTOCOL_TYPE_FOR_JOB = "PP_AP"
+TARGET_PROTOCOL_TYPE_FOR_JOB = "LG"
 
 MASTER_LOG_FILE_NAME = datetime.now().strftime(
     f'master_submitit_SINGLE_{TARGET_PROTOCOL_TYPE_FOR_JOB}_{TARGET_SUBJECT_ID_FOR_JOB}_%Y-%m-%d_%H-%M-%S.log'
@@ -125,7 +125,7 @@ logger.info(f"Log principal de ce script de soumission: {MASTER_LOG_FILE_PATH}")
 logger.info(f"CURRENT_SCRIPT_DIR (où ce script est exécuté): {CURRENT_SCRIPT_DIR}")
 logger.info(f"PROJECT_ROOT_FOR_PYTHONPATH (ajouté à sys.path): {PROJECT_ROOT_FOR_PYTHONPATH}")
 
-# MOVED: Import only configuration modules here, NOT the main execution function
+# Import only configuration modules here, NOT the main execution function
 try:
     from config.config import ALL_SUBJECT_GROUPS
     from utils.utils import configure_project_paths
@@ -134,7 +134,7 @@ try:
         USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES, PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
         FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT, COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
         INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG, COMPUTE_INTRA_SUBJECT_STATISTICS, SAVE_ANALYSIS_RESULTS,
-        GENERATE_PLOTS, CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT, CHANCE_LEVEL_AUC_SCORE
+        GENERATE_PLOTS, CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG, CHANCE_LEVEL_AUC_SCORE
     )
     logger.info("Importations depuis 'config' et 'utils' réussies.")
 except ModuleNotFoundError as e_mod:
@@ -179,8 +179,8 @@ try:
     import examples
     print(f"DEBUG_WORKER_FILE: SUCCESS - 'import examples' worked.")
     if hasattr(examples, '__file__'): print(f"DEBUG_WORKER_FILE: examples.__file__ is '{{examples.__file__}}'")
-    if hasattr(examples, 'run_decoding_one_pp'): print(f"DEBUG_WORKER_FILE: examples.run_decoding_one_pp exists.")
-    else: print(f"DEBUG_WORKER_FILE: WARNING - examples.run_decoding_one_pp NOT FOUND.")
+    if hasattr(examples, 'run_decoding_one_lg'): print(f"DEBUG_WORKER_FILE: examples.run_decoding_one_lg exists.")
+    else: print(f"DEBUG_WORKER_FILE: WARNING - examples.run_decoding_one_lg NOT FOUND.")
 except ModuleNotFoundError as e:
     print(f"DEBUG_WORKER_FILE: FAILED - 'import examples' ModuleNotFoundError: {{e}}")
 except Exception as e:
@@ -250,10 +250,10 @@ echo "--- Slurm Job Setup Script COMPLETED ---"
 echo "INFO: Proceeding to execute the submitit task..."
 """
 
-# NEW: Wrapper function that imports the execution function inside the worker
-def execute_single_subject_decoding_wrapper(**kwargs):
+# Wrapper function that imports the execution function inside the worker
+def execute_single_subject_decoding_lg_wrapper(**kwargs):
     """
-    Wrapper function that performs the import inside the worker node.
+    Wrapper function that performs the import inside the worker node for LG protocol.
     This avoids the pickling issue with module imports.
     """
     import sys
@@ -264,12 +264,12 @@ def execute_single_subject_decoding_wrapper(**kwargs):
     if project_root not in sys.path:
         sys.path.insert(0, project_root)
     
-    # Now import and execute the function
-    from examples.run_decoding_one_pp import execute_single_subject_decoding
-    return execute_single_subject_decoding(**kwargs)
+    # Now import and execute the function for LG protocol
+    from examples.run_decoding_one_lg import execute_single_subject_lg_decoding
+    return execute_single_subject_lg_decoding(**kwargs)
 
 def main_submission_logic():
-    logger.info("--- Début de la logique de soumission principale (main_submission_logic) ---")
+    logger.info("--- Début de la logique de soumission principale (main_submission_logic) pour protocole LG ---")
 
     try:
         user_for_paths = getpass.getuser()
@@ -310,7 +310,7 @@ def main_submission_logic():
 
     slurm_params = {
         "timeout_min": TIMEOUT_MINUTES,
-        "setup": SETUP_COMMANDS_FOR_SLURM_JOB_CPU.splitlines(), # Critical: ensure this setup runs!
+        "local_setup": SETUP_COMMANDS_FOR_SLURM_JOB_CPU.splitlines(), # Critical: ensure this setup runs!
         "slurm_partition": SLURM_PARTITION,
         "slurm_mem": MEMORY_FOR_JOB,
         "slurm_cpus_per_task": N_CPUS_FOR_JOB,
@@ -330,16 +330,19 @@ def main_submission_logic():
     executor = submitit.AutoExecutor(folder=submitit_job_log_folder)
     executor.update_parameters(**slurm_params)
 
-    loading_config_for_job = CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT
-    logger.info(f"Config de chargement des données (PP_AP): CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT")
+    loading_config_for_job = CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG
+    logger.info(f"Config de chargement des données (LG): CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG")
 
     kwargs_for_function_call = {
         "subject_identifier": TARGET_SUBJECT_ID_FOR_JOB,
         "group_affiliation": target_subject_group,
         "decoding_protocol_identifier": f'Analysis_{TARGET_PROTOCOL_TYPE_FOR_JOB}_Individual',
-        "save_results_flag": SAVE_ANALYSIS_RESULTS, "enable_verbose_logging": True,
-        "generate_plots_flag": GENERATE_PLOTS, "base_input_data_path": base_input_path,
-        "base_output_results_path": base_output_path, "n_jobs_for_processing": N_CPUS_FOR_JOB,
+        "save_results_flag": SAVE_ANALYSIS_RESULTS, 
+        "enable_verbose_logging": True,
+        "generate_plots_flag": GENERATE_PLOTS, 
+        "base_input_data_path": base_input_path,
+        "base_output_results_path": base_output_path, 
+        "n_jobs_for_processing": N_CPUS_FOR_JOB,
         "classifier_type": CLASSIFIER_MODEL_TYPE,
         "use_grid_search_for_subject": USE_GRID_SEARCH_OPTIMIZATION,
         "use_csp_for_temporal_subject": USE_CSP_FOR_TEMPORAL_PIPELINES,
@@ -353,13 +356,13 @@ def main_submission_logic():
         "loading_conditions_config": loading_config_for_job,
         "cluster_threshold_config_intra_fold": INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
     }
-    logger.info(f"Arguments (clés) pour execute_single_subject_decoding: {list(kwargs_for_function_call.keys())}")
+    logger.info(f"Arguments (clés) pour execute_single_subject_lg_decoding: {list(kwargs_for_function_call.keys())}")
 
     submitted_job = None
     try:
         logger.info(f"Soumission du job pour {TARGET_SUBJECT_ID_FOR_JOB}, Protocole: {TARGET_PROTOCOL_TYPE_FOR_JOB}...")
-        # CHANGED: Submit the wrapper function instead of the direct import
-        submitted_job = executor.submit(execute_single_subject_decoding_wrapper, **kwargs_for_function_call)
+        # Submit the wrapper function instead of the direct import
+        submitted_job = executor.submit(execute_single_subject_decoding_lg_wrapper, **kwargs_for_function_call)
         logger.info(f"Job soumis: {submitted_job}")
         if hasattr(submitted_job, 'job_id') and submitted_job.job_id:
             slurm_job_id_str = str(submitted_job.job_id)
@@ -382,16 +385,24 @@ def main_submission_logic():
         job_id_final = str(getattr(submitted_job, 'job_id', 'ID_Final_Inconnu'))
         logger.info(f"Job {job_id_final} ({TARGET_SUBJECT_ID_FOR_JOB}) terminé. État: {submitted_job.state}")
 
-        # Your result processing logic (import numpy as np, pandas as pd if needed here)
-        import numpy as np # Add if not already imported globally
-        import pandas as pd # Add if not already imported globally
+        # Result processing logic for LG protocol
+        import numpy as np 
+        import pandas as pd
         if isinstance(subject_job_results, dict) and \
            subject_job_results.get("subject_id") == TARGET_SUBJECT_ID_FOR_JOB and \
            subject_job_results.get("protocol_type_processed") == TARGET_PROTOCOL_TYPE_FOR_JOB:
-            logger.info(f"Résultats valides reçus pour {TARGET_SUBJECT_ID_FOR_JOB}.")
-            # ... (your detailed result logging) ...
+            logger.info(f"Résultats LG valides reçus pour {TARGET_SUBJECT_ID_FOR_JOB}.")
+            
+            # Log specific LG results structure
+            if "lg_main_decoding_results" in subject_job_results:
+                logger.info(f"Résultats de décodage principal LG (LS vs LD) trouvés.")
+            if "lg_specific_effects_results" in subject_job_results:
+                logger.info(f"Résultats d'effets spécifiques LG trouvés.")
+            if "lg_temporal_generalization_results" in subject_job_results:
+                logger.info(f"Résultats de généralisation temporelle LG trouvés.")
+                
         else:
-            logger.warning(f"Structure de résultat inattendue pour {TARGET_SUBJECT_ID_FOR_JOB}. Reçu: {type(subject_job_results)}. Contenu (partiel): {str(subject_job_results)[:500]}")
+            logger.warning(f"Structure de résultat LG inattendue pour {TARGET_SUBJECT_ID_FOR_JOB}. Reçu: {type(subject_job_results)}. Contenu (partiel): {str(subject_job_results)[:500]}")
 
     except FailedJobError as e_failed_job:
         job_id_err = str(getattr(submitted_job, 'job_id', 'ID_Erreur_Inconnu'))
@@ -406,11 +417,11 @@ def main_submission_logic():
     logger.info(f"--- Logique de soumission pour {TARGET_SUBJECT_ID_FOR_JOB} ({TARGET_PROTOCOL_TYPE_FOR_JOB}) terminée. ---")
 
 if __name__ == "__main__":
-    logger.info(f"--- Démarrage du script de soumission principal ({os.path.basename(__file__)}) ---")
+    logger.info(f"--- Démarrage du script de soumission principal LG ({os.path.basename(__file__)}) ---")
     try:
         main_submission_logic()
     except Exception as e_main:
         logger.critical(f"Erreur non gérée dans main_submission_logic: {e_main}", exc_info=True)
         sys.exit(1)
     finally:
-        logger.info(f"--- Fin du script de soumission principal. Log: {MASTER_LOG_FILE_PATH} ---")
+        logger.info(f"--- Fin du script de soumission principal LG. Log: {MASTER_LOG_FILE_PATH} ---")

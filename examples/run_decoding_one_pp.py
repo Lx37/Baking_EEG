@@ -21,7 +21,7 @@ if PROJECT_ROOT_EXAMPLE not in sys.path:
 # --- Fin Configuration du chemin ---
 
 from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
-from utils.vizualization_utils import create_subject_decoding_dashboard_plots
+from utils.vizualization_utils_PP import create_subject_decoding_dashboard_plots
 from utils.utils import (
     configure_project_paths, setup_analysis_results_directory
 )
