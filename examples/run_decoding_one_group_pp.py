@@ -1,5 +1,5 @@
 # Fichier : examples/run_decoding_one_group_pp.py
-
+# python -m examples.run_decoding_one_group_pp --group_name controls
 import os
 import sys
 import logging

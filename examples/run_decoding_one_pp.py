@@ -16,6 +16,11 @@ import scipy.stats
 
 # --- Imports des modules du projet (standardisés) ---
 
+import sys
+import os
+
+# Ajouter le répertoire parent (racine du projet) au chemin Python
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
 
