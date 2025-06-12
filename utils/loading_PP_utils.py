@@ -6,8 +6,8 @@ import time
 import logging
 import numpy as np
 import mne
-from config.config import ALL_SUBJECT_GROUPS
-from config.decoding_config import CONFIG_LOAD_MAIN_DECODING
+from Baking_EEG.config.config import ALL_SUBJECT_GROUPS
+from Baking_EEG.config.decoding_config import CONFIG_LOAD_MAIN_DECODING
 logger_data_loading = logging.getLogger(__name__)
 
 

@@ -1,3 +1,4 @@
+# Fichier : examples/run_decoding_one_pp.py
 
 import sys
 import os
@@ -13,14 +14,12 @@ from sklearn.model_selection import StratifiedKFold
 import itertools
 import scipy.stats
 
-# --- Configuration du chemin pour les imports ---
-SCRIPT_DIR_EXAMPLE = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT_EXAMPLE = os.path.abspath(os.path.join(SCRIPT_DIR_EXAMPLE, ".."))
-if PROJECT_ROOT_EXAMPLE not in sys.path:
-    sys.path.insert(0, PROJECT_ROOT_EXAMPLE)
-# --- Fin Configuration du chemin ---
+# --- Imports des modules du projet (standardisés) ---
+
 
 from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
+
+# Tous les autres imports partent de la racine (utils, config...)
 from utils.vizualization_utils_PP import create_subject_decoding_dashboard_plots
 from utils.utils import (
     configure_project_paths, setup_analysis_results_directory
@@ -33,15 +32,12 @@ from config.decoding_config import (
     USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
     PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
     FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
-    # N_PERMUTATIONS_GROUP_LEVEL, GROUP_LEVEL_STAT_THRESHOLD_TYPE,
-    # Pas pour single subject direct
-    # T_THRESHOLD_FOR_GROUP_STAT_CLUSTERING,
-    # Pas pour single subject direct
     CHANCE_LEVEL_AUC_SCORE, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
     COMPUTE_INTRA_SUBJECT_STATISTICS, COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
     CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT, SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS,
     N_JOBS_PROCESSING, AP_FAMILIES_FOR_SPECIFIC_COMPARISON
 )
+
 # --- Configuration du Logging ---
 LOG_DIR_RUN_ONE = './logs_run_single_subject'  # Dossier de logs spécifique
 os.makedirs(LOG_DIR_RUN_ONE, exist_ok=True)

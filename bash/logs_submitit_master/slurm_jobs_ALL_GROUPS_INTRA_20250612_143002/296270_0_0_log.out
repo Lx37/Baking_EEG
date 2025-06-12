@@ -1,0 +1,7 @@
+submitit INFO (2025-06-12 14:30:04,271) - Starting with JobEnvironment(job_id=296270_0, hostname=node9, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-12 14:30:04,271) - Loading pickle: /home/tom.balay/Baking_EEG/bash/logs_submitit_master/slurm_jobs_ALL_GROUPS_INTRA_20250612_143002/296270_0_submitted.pkl
+DEBUG Worker - project_root: /home/tom.balay/Baking_EEG
+DEBUG Worker - parent_dir: /home/tom.balay
+DEBUG Worker - sys.path: ['/home/tom.balay', '/home/tom.balay/Baking_EEG', '/home/tom.balay/Baking_EEG/bash']...
+submitit ERROR (2025-06-12 14:30:08,777) - Submitted job triggered an exception
+2025-06-12 14:30:08,777 - ERROR - submitit - [process_job:68] - Submitted job triggered an exception

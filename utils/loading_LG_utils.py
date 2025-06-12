@@ -4,8 +4,8 @@ import time
 import logging
 import numpy as np
 import mne
-from config.config import ALL_SUBJECT_GROUPS
-from config.decoding_config import CONFIG_LOAD_MAIN_LG_DECODING, CONFIG_LOAD_LG_COMPARISONS,EVENT_ID_LG
+from Baking_EEG.config.config import ALL_SUBJECT_GROUPS
+from Baking_EEG.config.decoding_config import CONFIG_LOAD_MAIN_LG_DECODING, CONFIG_LOAD_LG_COMPARISONS,EVENT_ID_LG
 logger_data_loading = logging.getLogger(__name__)
 
 

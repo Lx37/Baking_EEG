@@ -1,26 +1,5 @@
+# Fichier : examples/run_decoding_one_pp.py
 
-from config.decoding_config import (
-    CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
-    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
-    PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
-    FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
-    # N_PERMUTATIONS_GROUP_LEVEL, GROUP_LEVEL_STAT_THRESHOLD_TYPE,
-    # Pas pour single subject direct
-    # T_THRESHOLD_FOR_GROUP_STAT_CLUSTERING,
-    # Pas pour single subject direct
-    CHANCE_LEVEL_AUC_SCORE, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
-    COMPUTE_INTRA_SUBJECT_STATISTICS, COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
-    CONFIG_LOAD_MAIN_DECODING, SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS,
-    N_JOBS_PROCESSING, AP_FAMILIES_FOR_SPECIFIC_COMPARISON
-)
-from config.config import ALL_SUBJECT_GROUPS
-from utils import stats_utils as bEEG_stats
-from utils.loading_PP_utils import load_epochs_data_for_decoding
-from utils.utils import (
-    configure_project_paths, setup_analysis_results_directory
-)
-from utils.vizualization_utils import create_subject_decoding_dashboard_plots
-from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
 import sys
 import os
 import logging
@@ -35,13 +14,29 @@ from sklearn.model_selection import StratifiedKFold
 import itertools
 import scipy.stats
 
-# --- Configuration du chemin pour les imports ---
-SCRIPT_DIR_EXAMPLE = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT_EXAMPLE = os.path.abspath(os.path.join(SCRIPT_DIR_EXAMPLE, ".."))
-if PROJECT_ROOT_EXAMPLE not in sys.path:
-    sys.path.insert(0, PROJECT_ROOT_EXAMPLE)
-# --- Fin Configuration du chemin ---
+# --- Imports des modules du projet (standardisés) ---
 
+
+from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
+
+# Tous les autres imports partent de la racine (utils, config...)
+from utils.vizualization_utils_PP import create_subject_decoding_dashboard_plots
+from utils.utils import (
+    configure_project_paths, setup_analysis_results_directory
+)
+from utils.loading_PP_utils import load_epochs_data_for_decoding
+from utils import stats_utils as bEEG_stats
+from config.config import ALL_SUBJECT_GROUPS
+from config.decoding_config import (
+    CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
+    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
+    PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
+    FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
+    CHANCE_LEVEL_AUC_SCORE, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
+    COMPUTE_INTRA_SUBJECT_STATISTICS, COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
+    CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT, SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS,
+    N_JOBS_PROCESSING, AP_FAMILIES_FOR_SPECIFIC_COMPARISON
+)
 
 # --- Configuration du Logging ---
 LOG_DIR_RUN_ONE = './logs_run_single_subject'  # Dossier de logs spécifique
@@ -132,7 +127,7 @@ def execute_single_subject_decoding(
     if compute_tgm_flag is None:
         compute_tgm_flag = COMPUTE_TEMPORAL_GENERALIZATION_MATRICES
     if loading_conditions_config is None:
-        loading_conditions_config = CONFIG_LOAD_MAIN_DECODING
+        loading_conditions_config = CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT
     if cluster_threshold_config_intra_fold is None:
         cluster_threshold_config_intra_fold = (
             INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG
@@ -254,6 +249,8 @@ def execute_single_subject_decoding(
                 if num_cv_splits_main < 2:
                     logger_run_one.error(
                         "Subj %s: Not enough samples for CV in main decoding (%d splits). Skipping.", subject_identifier, num_cv_splits_main)
+                    # Retourner les résultats actuels au lieu de continuer
+                    return subject_results
                 else:
                     cv_splitter_main = StratifiedKFold(
                         n_splits=num_cv_splits_main, shuffle=True, random_state=42)
@@ -369,13 +366,15 @@ def execute_single_subject_decoding(
                                 logger_run_one.info("  Specific task '%s' for %s: Peak AUC = %.3f", comparison_name_specific,
                                                     subject_identifier, peak_auc_val if pd.notna(peak_auc_val) else -1)
                     else:
-                        logger_run_one.warning("Subj %s: Missing data for %s in specific task '%s'. Skipping.",
-                                               subject_identifier, ap_family_key_enum, comparison_name_specific)
+                        logger_run_one.info("Subj %s: Données manquantes pour %s dans la tâche spécifique '%s'. Ceci peut être normal selon le protocole du sujet.",
+                                            subject_identifier, ap_family_key_enum, comparison_name_specific)
                     subject_results["pp_ap_specific_ap_results"].append(
                         task_result_specific)
             else:
-                logger_run_one.warning(
-                    "Subj %s: PP_FOR_SPECIFIC_COMPARISON data missing. Skipping specific tasks.", subject_identifier)
+                logger_run_one.info(
+                    "Subj %s: PP_FOR_SPECIFIC_COMPARISON data manquante. "
+                    "Ceci est normal si le sujet n'a pas ce type de données spécifiques selon le protocole. "
+                    "Passage aux comparaisons inter-familles.", subject_identifier)
         logger_run_one.info(
             "  --- Specific Task Comparisons for %s DONE ---", subject_identifier)
 
@@ -484,8 +483,8 @@ def execute_single_subject_decoding(
                             logger_run_one.info("  Inter-Family task '%s' for %s: Peak AUC = %.3f", comparison_name_ap_vs_ap,
                                                 subject_identifier, peak_auc_val_apap if pd.notna(peak_auc_val_apap) else -1)
                 else:
-                    logger_run_one.warning("Subj %s: Missing data for %s or %s in task '%s'. Skipping.",
-                                           subject_identifier, ap_key_1, ap_key_2, comparison_name_ap_vs_ap)
+                    logger_run_one.info("Subj %s: Données manquantes pour %s ou %s dans la tâche '%s'. Ceci peut être normal selon le protocole du sujet.",
+                                        subject_identifier, ap_key_1, ap_key_2, comparison_name_ap_vs_ap)
                 subject_results["pp_ap_ap_vs_ap_results"].append(
                     task_result_ap_vs_ap)
         else:
@@ -577,7 +576,7 @@ def execute_single_subject_decoding(
                             logger_run_one.warning("Subj %s, Anchor %s: Not enough valid curves after filtering (%d) for avg. Orig: %d. Debug: %s", subject_identifier, anchor_ap_display_name, len(
                                 valid_curves_for_stacking), len(curves_to_average_this_anchor), constituent_names_debug_this_anchor)
                     else:
-                        logger_run_one.warning("Subj %s, Anchor %s: Not enough constituent curves (%d) for avg. Debug: %s", subject_identifier, anchor_ap_display_name, len(
+                        logger_run_one.info("Subj %s, Anchor %s: Pas assez de courbes constituantes (%d) pour moyenne. Ceci est normal si les données spécifiques manquent. Debug: %s", subject_identifier, anchor_ap_display_name, len(
                             curves_to_average_this_anchor), constituent_names_debug_this_anchor)
                     subject_results["pp_ap_ap_centric_avg_results"].append(
                         ap_centric_avg_item)

@@ -28,7 +28,7 @@ if PROJECT_ROOT not in sys.path:
 
 # Import project modules
 
-from config.decoding_config import (
+from Baking_EEG.config.decoding_config import (
     CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
     USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
     PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
@@ -38,13 +38,13 @@ from config.decoding_config import (
     CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG, SAVE_ANALYSIS_RESULTS,
     GENERATE_PLOTS, N_JOBS_PROCESSING
 )
-from config.config import ALL_SUBJECT_GROUPS
+from Baking_EEG.config.config import ALL_SUBJECT_GROUPS
 from utils import stats_utils as bEEG_stats
-from utils.loading_LG_utils import load_epochs_data_for_lg_decoding
-from utils.utils import (
+from Baking_EEG.utils.loading_LG_utils import load_epochs_data_for_lg_decoding
+from Baking_EEG.utils.utils import (
     configure_project_paths, setup_analysis_results_directory
 )
-from utils.vizualization_utils_LG import create_subject_decoding_dashboard_plots_lg
+from Baking_EEG.utils.vizualization_utils_LG import create_subject_decoding_dashboard_plots_lg
 from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
 # Logging configuration
 LOG_DIR = './logs_run_single_subject_lg'
