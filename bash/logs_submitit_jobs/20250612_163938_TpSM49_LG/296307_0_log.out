@@ -1,0 +1,4 @@
+submitit INFO (2025-06-12 16:39:40,307) - Starting with JobEnvironment(job_id=296307, hostname=node10, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-12 16:39:40,308) - Loading pickle: /home/tom.balay/Baking_EEG/bash/logs_submitit_jobs/20250612_163938_TpSM49_LG/296307_submitted.pkl
+submitit ERROR (2025-06-12 16:39:44,494) - Submitted job triggered an exception
+2025-06-12 16:39:44,494 - ERROR - submitit - [process_job:68] - Submitted job triggered an exception
