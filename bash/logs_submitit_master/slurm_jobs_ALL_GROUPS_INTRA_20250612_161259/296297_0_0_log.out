@@ -79,3 +79,7 @@ Found 701 clusters
 2025-06-12 16:16:20,324 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - Starting 1D temporal decoding (SlidingEstimator)...
 2025-06-12 16:16:45,483 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:323] - 1D temporal decoding done. Peak mean AUC: 0.711
 2025-06-12 16:16:45,485 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:331] - Starting TGM computation (GeneralizingEstimator)...
+submitit WARNING (2025-06-12 17:03:51,994) - Bypassing signal SIGTERM
+2025-06-12 17:03:51,994 - WARNING - submitit - [bypass:196] - Bypassing signal SIGTERM
+submitit WARNING (2025-06-12 17:03:51,993) - Bypassing signal SIGCONT
+2025-06-12 17:03:51,993 - WARNING - submitit - [bypass:196] - Bypassing signal SIGCONT

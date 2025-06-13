@@ -21,3 +21,7 @@
 [Parallel(n_jobs=-1)]: Done   2 out of   5 | elapsed:    9.4s remaining:   14.1s
 [Parallel(n_jobs=-1)]: Done   5 out of   5 | elapsed:   10.5s finished
 [Parallel(n_jobs=-1)]: Using backend LokyBackend with 40 concurrent workers.
+submitit WARNING (2025-06-12 17:03:48,424) - Bypassing signal SIGCONT
+slurmstepd: error: *** STEP 296297.0 ON node9 CANCELLED AT 2025-06-12T17:03:48 ***
+submitit WARNING (2025-06-12 17:03:48,425) - Bypassing signal SIGTERM
+slurmstepd: error: *** JOB 296297 ON node9 CANCELLED AT 2025-06-12T17:03:48 ***

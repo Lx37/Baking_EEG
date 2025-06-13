@@ -1,24 +1,23 @@
-
-# --- Data loading function for PP
-# DELIRIUM protocol
+# --- Data loading function for LG (Local-Global) protocol
 import os
 import time
 import logging
 import numpy as np
 import mne
 from config.config import ALL_SUBJECT_GROUPS
-from config.decoding_config import CONFIG_LOAD_MAIN_DECODING
+from config.decoding_config import CONFIG_LOAD_MAIN_LG_DECODING, CONFIG_LOAD_LG_COMPARISONS,EVENT_ID_LG
 logger_data_loading = logging.getLogger(__name__)
 
 
-def load_epochs_data_for_decoding(
+
+def load_epochs_data_for_lg_decoding(
     subject_identifier,
     group_affiliation,
     base_input_data_path,
     conditions_to_load=None,
     verbose_logging=True,
 ):
-    """Load preprocessed MNE Epochs data for a subject and extract data.
+    """Load preprocessed MNE Epochs data for Local-Global protocol analysis.
 
     Args:
         subject_identifier (str): The ID of the subject.
@@ -27,9 +26,9 @@ def load_epochs_data_for_decoding(
         base_input_data_path (str): Root directory for input data.
         conditions_to_load (dict, optional): Specifies conditions to extract.
             Keys: custom names for extracted data arrays.
-            Values: MNE event specifiers (e.g., 'Event/Type',
-            ['Event/1', 'Event/2'], or 'Event/Prefix/').
-            Defaults to `CONFIG_LOAD_MAIN_DECODING` if None.
+            Values: MNE event specifiers (e.g., 'LS/GS',
+            ['LS/GS', 'LS/GD'], or 'LS/').
+            Defaults to `CONFIG_LOAD_MAIN_LG_DECODING` if None.
         verbose_logging (bool): If True, enables detailed logging.
 
     Returns:
@@ -68,15 +67,15 @@ def load_epochs_data_for_decoding(
     group_affiliation_lower = group_affiliation.lower()
     data_root_path = None
 
-    # --- Path determination logic ---
+    # --- Path determination logic for LG protocol ---
     if group_affiliation_lower == "controls":
-        potential_path = os.path.join(base_input_data_path, "PP_CONTROLS_0.5")
+        potential_path = os.path.join(base_input_data_path, "LG_CONTROLS_0.5")
         if os.path.isdir(potential_path):
             data_root_path = potential_path
     elif group_affiliation_lower in ["del", "nodel"]:
         potential_path = os.path.join(
             base_input_data_path,
-            f"PP_PATIENTS_{group_affiliation.upper()}_0.5"
+            f"LG_PATIENTS_{group_affiliation.upper()}_0.5"
         )
         if os.path.isdir(potential_path):
             data_root_path = potential_path
@@ -96,15 +95,15 @@ def load_epochs_data_for_decoding(
             group_affiliation_lower = detected_group.lower()
             if group_affiliation_lower == "controls":
                 data_root_path = os.path.join(
-                    base_input_data_path, "PP_CONTROLS_0.5")
+                    base_input_data_path, "LG_CONTROLS_0.5")
             elif group_affiliation_lower in ["del", "nodel"]:
                 data_root_path = os.path.join(
                     base_input_data_path,
-                    f"PP_PATIENTS_{detected_group.upper()}_0.5"
+                    f"LG_PATIENTS_{detected_group.upper()}_0.5"
                 )
         else:  # Generic fallback
             potential_path_generic = os.path.join(
-                base_input_data_path, f"PP_{group_affiliation.upper()}_0.5"
+                base_input_data_path, f"LG_{group_affiliation.upper()}_0.5"
             )
             if os.path.isdir(potential_path_generic):
                 data_root_path = potential_path_generic
@@ -118,20 +117,20 @@ def load_epochs_data_for_decoding(
             subject_identifier, group_affiliation, data_root_path,
             base_input_data_path
         )
-        return None, {}  # Or raise FileNotFoundError
+        return None, {}
 
     epochs_file_path_base = os.path.join(data_root_path, "data_epochs")
     possible_subject_ids = [subject_identifier,
                             subject_identifier.replace("Tp", "")]
-    possible_suffixes = ["noICA_PP", "ICA_PP", ""]  # Order by specificity
+    possible_suffixes = ["noICA_LG", "ICA_LG", ""]  # Order by specificity
     fname_candidates = []
     for s_id_cand in possible_subject_ids:
         for suffix_cand in possible_suffixes:
-            base_name = f"{s_id_cand}_PP_preproc"
+            base_name = f"{s_id_cand}_LG_preproc"
             if suffix_cand:
                 base_name += f"_{suffix_cand}"
             fname_candidates.append(
-                os.path.join(epochs_file_path_base, f"{base_name}-epo_ar.fif")
+                os.path.join(epochs_file_path_base, f"{base_name}-epo.fif")
             )
     epochs_fif_filename = next(
         (f for f in fname_candidates if os.path.exists(f)), None
@@ -139,16 +138,16 @@ def load_epochs_data_for_decoding(
 
     if not epochs_fif_filename:
         logger_data_loading.error(
-            "No preprocessed epoch FIF file found for '%s' "
+            "No preprocessed LG epoch FIF file found for '%s' "
             "in '%s'. Checked %d candidates (first 5: %s).",
             subject_identifier, epochs_file_path_base,
             len(fname_candidates), fname_candidates[:5]
         )
-        return None, {}  # Or raise FileNotFoundError
+        return None, {}
 
     if verbose_logging:
         logger_data_loading.info(
-            "Loading epoch data for subject '%s' from: %s",
+            "Loading LG epoch data for subject '%s' from: %s",
             subject_identifier, epochs_fif_filename
         )
     try:
@@ -159,7 +158,7 @@ def load_epochs_data_for_decoding(
             )
         if epochs_object and verbose_logging:
             logger_data_loading.info(
-                "Event IDs available for %s:", subject_identifier)
+                "LG Event IDs available for %s:", subject_identifier)
             if epochs_object.event_id:
                 for desc, code in epochs_object.event_id.items():
                     logger_data_loading.info("  - '%s': %d", desc, code)
@@ -168,7 +167,7 @@ def load_epochs_data_for_decoding(
                     "  - No event_id found in epochs_object.")
     except (FileNotFoundError, IOError, ValueError, RuntimeError) as e:
         logger_data_loading.error(
-            "Failed to read epochs file '%s' for subject '%s': %s",
+            "Failed to read LG epochs file '%s' for subject '%s': %s",
             epochs_fif_filename, subject_identifier, e, exc_info=True,
         )
         return None, {}
@@ -178,12 +177,12 @@ def load_epochs_data_for_decoding(
     extracted_data = {}
     actual_conditions_to_process = (
         conditions_to_load if conditions_to_load is not None
-        else CONFIG_LOAD_MAIN_DECODING
+        else CONFIG_LOAD_MAIN_LG_DECODING
     )
 
     if verbose_logging:
         logger_data_loading.info(
-            "Processing conditions: %s", list(
+            "Processing LG conditions: %s", list(
                 actual_conditions_to_process.keys())
         )
 
@@ -198,6 +197,12 @@ def load_epochs_data_for_decoding(
                 event_keys_to_select = [
                     k for k in epochs_object.event_id if k.startswith(prefix)
                 ]
+            elif specifier.startswith("/"):
+                # Handle suffix matching (e.g., "/GS" matches "LS/GS", "LD/GS")
+                suffix = specifier
+                event_keys_to_select = [
+                    k for k in epochs_object.event_id if k.endswith(suffix)
+                ]
             elif specifier in epochs_object.event_id:
                 event_keys_to_select = [specifier]
         elif isinstance(specifier, list):
@@ -207,7 +212,7 @@ def load_epochs_data_for_decoding(
 
         if not event_keys_to_select and specifier:
             if verbose_logging:
-                logger_data_loading.warning(
+                logger_data_loading.info(
                     "Aucune donnée trouvée pour '%s' (condition: %s) "
                     "chez sujet %s. Événements disponibles: %s. "
                     "Ceci peut être normal selon le protocole du sujet.",
@@ -246,7 +251,7 @@ def load_epochs_data_for_decoding(
                 )
         except (ValueError, RuntimeError) as e_ex:
             logger_data_loading.error(
-                "Error extracting data for condition '%s' (subject %s): %s",
+                "Error extracting LG data for condition '%s' (subject %s): %s",
                 condition_name, subject_identifier, e_ex, exc_info=True,
             )
             extracted_data[condition_name] = empty_data_array
@@ -257,14 +262,14 @@ def load_epochs_data_for_decoding(
     )
     if total_loaded_epochs == 0 and any(actual_conditions_to_process.values()):
         logger_data_loading.error(
-            "CRITICAL: No data loaded for ANY specified conditions "
+            "CRITICAL: No LG data loaded for ANY specified conditions "
             "for subject %s.", subject_identifier
         )
 
     for cn, da in extracted_data.items():
         if da.size == 0 and actual_conditions_to_process.get(cn):
             logger_data_loading.warning(
-                "Empty data array for condition '%s' (specifier: '%s') "
+                "Empty data array for LG condition '%s' (specifier: '%s') "
                 "for subject %s.", cn, actual_conditions_to_process.get(cn),
                 subject_identifier
             )
@@ -274,13 +279,7 @@ def load_epochs_data_for_decoding(
             [f"{name}={arr.shape}" for name, arr in extracted_data.items()]
         )
         logger_data_loading.info(
-            "  Data shapes for '%s': %s. Loaded in %.2fs",
+            "  LG Data shapes for '%s': %s. Loaded in %.2fs",
             subject_identifier, shapes_log, time.time() - start_time
         )
     return epochs_object, extracted_data
-
-
-# the classifier outputs a predicted probability of belonging to the standard
-# class (S). Note that the probability of belonging to the other, deviant
-# class (D) c
-# PPext3
