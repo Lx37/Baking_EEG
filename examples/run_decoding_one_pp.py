@@ -157,9 +157,8 @@ def execute_single_subject_decoding(
         compute_intra_subject_stats_flag = COMPUTE_INTRA_SUBJECT_STATISTICS
     if n_perms_for_intra_subject_clusters is None:
         n_perms_for_intra_subject_clusters = N_PERMUTATIONS_INTRA_SUBJECT
-        if compute_tgm_flag is None:
-            # Note: compute_tgm_flag n'est plus utilisé, remplacé par les drapeaux spécifiques
-        compute_tgm_flag = None  # Valeur par défaut, non utilisée
+    if compute_tgm_flag is None:
+        compute_tgm_flag = None  
     if loading_conditions_config is None:
         loading_conditions_config = CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT
     if cluster_threshold_config_intra_fold is None:

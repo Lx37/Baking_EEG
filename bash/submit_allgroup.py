@@ -219,7 +219,7 @@ def main_submission_logic():
     # Configuration des ressources Slurm
     SLURM_CPUS_PER_GROUP_JOB = 40
     SLURM_MEMORY_PER_JOB = "80G"
-    SLURM_TIMEOUT_MINUTES = 60 * 60
+    SLURM_TIMEOUT_MINUTES = 1000 * 60
     SLURM_PARTITION = "CPU"
     SLURM_ACCOUNT = "tom.balay"
 

@@ -153,7 +153,7 @@ def main():
         f"SLURM_CPUS_PER_GROUP_JOB (cpus_per_task pour Slurm) sera: {SLURM_CPUS_PER_GROUP_JOB}")
 
     group_job_slurm_params = {
-        "timeout_min": 24 * 60,
+        "timeout_min": 60 * 60,
         "slurm_additional_parameters": {"account": "tom.balay"},
         "setup": SETUP_COMMANDS_CPU,
         "slurm_partition": "CPU",

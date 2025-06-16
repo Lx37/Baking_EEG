@@ -317,6 +317,9 @@ EGI_con_chan_BRU = [
 #################################
 ######### ID of SUBJECT  ########
 
+# Dictionnaire ALL_SUBJECT_GROUPS généré à partir des données
+# Structure: diagnostic -> liste des IDs des sujets
+
 ALL_SUBJECT_GROUPS = {
     "controls": [
         "AO05",

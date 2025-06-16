@@ -1,0 +1,28 @@
+2025-06-16 14:01:41,064 - INFO - [__main__:submit_allgroup.py:99] - --- Script de soumission Submitit pour analyses de groupe démarré ---
+2025-06-16 14:01:41,064 - INFO - [__main__:submit_allgroup.py:101] - Log principal de ce script de soumission : /home/tom.balay/Baking_EEG/bash/logs_submitit_master/master_submitit_ALL_GROUPS_INTRA_2025-06-16_14-01-41.log
+2025-06-16 14:01:41,065 - INFO - [__main__:submit_allgroup.py:103] - CURRENT_SCRIPT_DIR (où ce script est exécuté) : /home/tom.balay/Baking_EEG/bash
+2025-06-16 14:01:41,065 - INFO - [__main__:submit_allgroup.py:105] - PROJECT_ROOT_FOR_PYTHONPATH (ajouté à sys.path) : /home/tom.balay/Baking_EEG
+2025-06-16 14:01:41,125 - INFO - [__main__:submit_allgroup.py:121] - Importations depuis 'config' et 'utils' réussies.
+2025-06-16 14:01:41,125 - INFO - [__main__:submit_allgroup.py:131] - Chemin vers 'activate' de l'environnement virtuel sur le cluster: /home/tom.balay/.venvs/py3.11_cluster/bin/activate
+2025-06-16 14:01:41,125 - INFO - [__main__:submit_allgroup.py:135] - Racine du projet à utiliser pour PYTHONPATH dans le job Slurm: /home/tom.balay/Baking_EEG
+2025-06-16 14:01:41,125 - INFO - [__main__:submit_allgroup.py:397] - --- Démarrage du script de soumission principal (submit_allgroup.py) ---
+2025-06-16 14:01:41,125 - INFO - [__main__:submit_allgroup.py:198] - --- Début de la logique de soumission principale (main_submission_logic) ---
+2025-06-16 14:01:41,125 - INFO - [__main__:submit_allgroup.py:205] - Utilisateur détecté pour la configuration des chemins : tom.balay
+2025-06-16 14:01:41,125 - INFO - [utils.utils:utils.py:22] - Python executable: /home/tom.balay/.venvs/py3.11_cluster/bin/python, Version: 3.11.2
+2025-06-16 14:01:41,125 - INFO - [utils.utils:utils.py:26] - Current Working Directory: /home/tom.balay/Baking_EEG/bash
+2025-06-16 14:01:41,126 - INFO - [utils.utils:utils.py:48] - Input data path for user 'tom.balay': /mnt/data/tom.balay/data/Baking_EEG_data/Baking_EEG_data
+2025-06-16 14:01:41,126 - INFO - [utils.utils:utils.py:71] - Output results path for user 'tom.balay': /home/tom.balay/results/Baking_EEG_results_V7
+2025-06-16 14:01:41,127 - INFO - [__main__:submit_allgroup.py:213] - Chemin de base des données d'entrée : /mnt/data/tom.balay/data/Baking_EEG_data/Baking_EEG_data
+2025-06-16 14:01:41,127 - INFO - [__main__:submit_allgroup.py:214] - Chemin de base des résultats de sortie : /home/tom.balay/results/Baking_EEG_results_V7
+2025-06-16 14:01:41,127 - INFO - [__main__:submit_allgroup.py:217] - Groupes ciblés pour l'analyse : ['controls', 'del', 'nodel']
+2025-06-16 14:01:41,127 - INFO - [__main__:submit_allgroup.py:234] - Paramètres Slurm pour chaque job de groupe : {'timeout_min': 60000, 'setup': '\necho "--- Configuration de l\'environnement pour le job Slurm (PID: $$) ---"\necho "Date et heure: $(date)"\necho "Hostname: $(hostname)"\necho "Job ID Slurm: $SLURM_JOB_ID"\necho "Répertoire de travail initial: $(pwd)"\nmodule purge\necho "Modules purgés."\necho "Activation de l\'environnement virtuel: /home/tom.balay/.venvs/py3.11_cluster/bin/activate"\nsource /home/tom.balay/.venvs/py3.11_cluster/bin/activate\nif [ $? -ne 0 ]; then echo "ERREUR: Échec de l\'activation de l\'environnement virtuel."; exit 1; fi\necho "Configuration de PYTHONPATH pour le job..."\nexport PYTHONPATH="/home/tom.balay/Baking_EEG:${PYTHONPATH}"\necho "PYTHONPATH actuel du job: $PYTHONPATH"\necho "--- Environnement CPU configuré (venv) ---"\necho "Chemin Python utilisé: $(which python)"\necho "Version Python: $(python -V)"\necho "Vérification des dépendances clés..."\npython -c "import sys; print(f\'sys.path dans Python: {sys.path}\')"\npython -c "import mne; print(f\'MNE version: {mne.__version__} (depuis {mne.__file__})\')"\npython -c "import sklearn; print(f\'scikit-learn version: {sklearn.__version__} (depuis {sklearn.__file__})\')"\npython -c "import numpy; print(f\'NumPy version: {numpy.__version__} (depuis {numpy.__file__})\')"\necho "--- Fin de la configuration, lancement de la tâche Python ---"\n', 'slurm_partition': 'CPU', 'slurm_mem': '80G', 'slurm_cpus_per_task': 40, 'slurm_additional_parameters': {'account': 'tom.balay'}}
+2025-06-16 14:01:41,129 - INFO - [__main__:submit_allgroup.py:241] - Logs Submitit spécifiques aux jobs Slurm dans : /home/tom.balay/Baking_EEG/bash/logs_submitit_master/slurm_jobs_ALL_GROUPS_INTRA_20250616_140141
+2025-06-16 14:01:41,306 - INFO - [__main__:submit_allgroup.py:249] - Configuration de la soumission en batch des jobs de groupe...
+2025-06-16 14:01:41,306 - INFO - [__main__:submit_allgroup.py:264] - Préparation du job pour le groupe 'controls' (13 sujets)
+2025-06-16 14:01:41,306 - INFO - [__main__:submit_allgroup.py:310] -     -> Job pour le groupe 'controls' soumis au batch.
+2025-06-16 14:01:41,306 - INFO - [__main__:submit_allgroup.py:264] - Préparation du job pour le groupe 'del' (22 sujets)
+2025-06-16 14:01:41,306 - INFO - [__main__:submit_allgroup.py:310] -     -> Job pour le groupe 'del' soumis au batch.
+2025-06-16 14:01:41,306 - INFO - [__main__:submit_allgroup.py:264] - Préparation du job pour le groupe 'nodel' (24 sujets)
+2025-06-16 14:01:41,306 - INFO - [__main__:submit_allgroup.py:310] -     -> Job pour le groupe 'nodel' soumis au batch.
+2025-06-16 14:01:41,327 - INFO - [__main__:submit_allgroup.py:322] - 3 job(s) de groupe soumis avec succès. Attente des résultats...
+2025-06-16 14:01:41,327 - INFO - [__main__:submit_allgroup.py:331] - Attente du résultat pour le groupe : controls (Job ID: 298043_0)...

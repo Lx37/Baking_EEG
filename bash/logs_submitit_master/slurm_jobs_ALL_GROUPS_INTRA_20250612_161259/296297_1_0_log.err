@@ -1,74 +1,0 @@
-/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:157: RuntimeWarning: This filename (/mnt/data/tom.balay/Baking_EEG_data/PP_PATIENTS_DEL_0.5/data_epochs/TpAB19_PP_preproc_noICA_PP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
-  epochs_object = mne.read_epochs(
-[Parallel(n_jobs=-1)]: Using backend LokyBackend with 40 concurrent workers.
-[Parallel(n_jobs=-1)]: Done   2 out of   5 | elapsed:   30.9s remaining:   46.4s
-[Parallel(n_jobs=-1)]: Done   5 out of   5 | elapsed:   35.8s finished
-[Parallel(n_jobs=40)]: Using backend LokyBackend with 40 concurrent workers.
-[Parallel(n_jobs=40)]: Done   2 out of   5 | elapsed:   46.2s remaining:  1.2min
-[Parallel(n_jobs=40)]: Done   5 out of   5 | elapsed:   51.1s finished
-  0%|                                                                                                                                                                                                                 | Permuting (exact test) : 0/31 [00:00<?,       ?it/s]  3%|██████▌                                                                                                                                                                                                      | Permuting (exact test) : 1/31 [00:00<00:10,    2.92it/s]  6%|█████████████▏                                                                                                                                                                                               | Permuting (exact test) : 2/31 [00:00<00:05,    4.95it/s] 10%|███████████████████▊                                                                                                                                                                                         | Permuting (exact test) : 3/31 [00:00<00:04,    6.44it/s] 13%|██████████████████████████▍                                                                                                                                                                                  | Permuting (exact test) : 4/31 [00:00<00:03,    7.58it/s] 16%|█████████████████████████████████                                                                                                                                                                            | Permuting (exact test) : 5/31 [00:00<00:03,    7.98it/s] 19%|███████████████████████████████████████▋                                                                                                                                                                     | Permuting (exact test) : 6/31 [00:00<00:02,    8.72it/s] 23%|██████████████████████████████████████████████▎                                                                                                                                                              | Permuting (exact test) : 7/31 [00:00<00:02,    8.88it/s] 26%|████████████████████████████████████████████████████▉                                                                                                                                                        | Permuting (exact test) : 8/31 [00:00<00:02,    9.42it/s] 29%|███████████████████████████████████████████████████████████▌                                                                                                                                                 | Permuting (exact test) : 9/31 [00:00<00:02,    9.90it/s] 32%|█████████████████████████████████████████████████████████████████▊                                                                                                                                          | Permuting (exact test) : 10/31 [00:00<00:01,   10.78it/s] 35%|████████████████████████████████████████████████████████████████████████▍                                                                                                                                   | Permuting (exact test) : 11/31 [00:01<00:01,   11.12it/s] 39%|██████████████████████████████████████████████████████████████████████████████▉                                                                                                                             | Permuting (exact test) : 12/31 [00:01<00:01,   11.91it/s] 42%|█████████████████████████████████████████████████████████████████████████████████████▌                                                                                                                      | Permuting (exact test) : 13/31 [00:01<00:01,   12.14it/s] 45%|████████████████████████████████████████████████████████████████████████████████████████████▏                                                                                                               | Permuting (exact test) : 14/31 [00:01<00:01,   12.34it/s] 48%|██████████████████████████████████████████████████████████████████████████████████████████████████▋                                                                                                         | Permuting (exact test) : 15/31 [00:01<00:01,   12.53it/s] 52%|█████████████████████████████████████████████████████████████████████████████████████████████████████████▎                                                                                                  | Permuting (exact test) : 16/31 [00:01<00:01,   12.23it/s] 55%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                                                                                            | Permuting (exact test) : 17/31 [00:01<00:01,   11.98it/s] 58%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍                                                                                     | Permuting (exact test) : 18/31 [00:01<00:01,   12.16it/s] 61%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████                                                                               | Permuting (exact test) : 19/31 [00:01<00:01,   10.88it/s] 65%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                                                        | Permuting (exact test) : 20/31 [00:01<00:01,   10.78it/s] 68%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏                                                                 | Permuting (exact test) : 21/31 [00:01<00:00,   10.70it/s] 71%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                                                           | Permuting (exact test) : 22/31 [00:02<00:00,   10.10it/s] 74%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                                                    | Permuting (exact test) : 23/31 [00:02<00:00,   10.07it/s] 77%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉                                              | Permuting (exact test) : 24/31 [00:02<00:00,   10.30it/s] 81%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                       | Permuting (exact test) : 25/31 [00:02<00:00,   10.51it/s] 84%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████                                 | Permuting (exact test) : 26/31 [00:02<00:00,   10.99it/s] 87%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                          | Permuting (exact test) : 27/31 [00:02<00:00,   11.17it/s] 90%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                   | Permuting (exact test) : 28/31 [00:02<00:00,   11.07it/s] 94%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊             | Permuting (exact test) : 29/31 [00:02<00:00,   10.72it/s] 97%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍      | Permuting (exact test) : 30/31 [00:02<00:00,   10.91it/s]100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| Permuting (exact test) : 31/31 [00:02<00:00,   10.59it/s]100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| Permuting (exact test) : 31/31 [00:04<00:00,    7.63it/s]
-[Parallel(n_jobs=-1)]: Using backend LokyBackend with 40 concurrent workers.
-[Parallel(n_jobs=-1)]: Done   2 out of   5 | elapsed:   18.4s remaining:   27.6s
-[Parallel(n_jobs=-1)]: Done   5 out of   5 | elapsed:   19.9s finished
-[Parallel(n_jobs=-1)]: Using backend LokyBackend with 40 concurrent workers.
-submitit WARNING (2025-06-12 17:03:50,232) - Bypassing signal SIGCONT
-slurmstepd: error: *** STEP 296299.0 ON node8 CANCELLED AT 2025-06-12T17:03:50 ***
-submitit WARNING (2025-06-12 17:03:50,235) - Bypassing signal SIGTERM
---- Logging error ---
-slurmstepd: error: *** JOB 296299 ON node8 CANCELLED AT 2025-06-12T17:03:50 ***
-Traceback (most recent call last):
-  File "/usr/lib/python3.11/logging/__init__.py", line 1114, in emit
-    self.flush()
-  File "/usr/lib/python3.11/logging/__init__.py", line 1094, in flush
-    self.stream.flush()
-RuntimeError: reentrant call inside <_io.BufferedWriter name='/home/tom.balay/Baking_EEG/bash/logs_run_group_analysis/log_run_group_analysis_2025-06-12_161312.log'>
-Call stack:
-  File "<frozen runpy>", line 198, in _run_module_as_main
-  File "<frozen runpy>", line 88, in _run_code
-  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/submitit/core/_submit.py", line 11, in <module>
-    submitit_main()
-  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/submitit/core/submission.py", line 76, in submitit_main
-    process_job(args.folder)
-  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/submitit/core/submission.py", line 55, in process_job
-    result = delayed.result()
-  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/submitit/core/utils.py", line 137, in result
-    self._result = self.function(*self.args, **self.kwargs)
-  File "/home/tom.balay/Baking_EEG/bash/submit_allgroup.py", line 192, in execute_group_decoding_wrapper
-    return execute_group_intra_subject_decoding_analysis(**kwargs)
-  File "/home/tom.balay/Baking_EEG/examples/run_decoding_one_group_pp.py", line 127, in execute_group_intra_subject_decoding_analysis
-    subject_output_dict = execute_single_subject_decoding(
-  File "/home/tom.balay/Baking_EEG/examples/run_decoding_one_pp.py", line 347, in execute_single_subject_decoding
-    specific_task_output = run_temporal_decoding_analysis(
-  File "/home/tom.balay/Baking_EEG/examples/../Baking_EEG/_4_decoding_core.py", line 338, in run_temporal_decoding_analysis
-    tgm_cv_raw = cross_val_multiscore(
-  File "<decorator-gen-4>", line 12, in cross_val_multiscore
-  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/base.py", line 389, in cross_val_multiscore
-    scores = parallel(
-  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1952, in __call__
-    return output if self.return_generator else list(output)
-  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1595, in _get_outputs
-    yield from self._retrieve()
-  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1707, in _retrieve
-    time.sleep(0.01)
-  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/submitit/core/job_environment.py", line 196, in bypass
-    self._logger.warning(f"Bypassing signal {signal.Signals(signum).name}")
-  File "/usr/lib/python3.11/logging/__init__.py", line 1501, in warning
-    self._log(WARNING, msg, args, **kwargs)
-  File "/usr/lib/python3.11/logging/__init__.py", line 1634, in _log
-    self.handle(record)
-  File "/usr/lib/python3.11/logging/__init__.py", line 1644, in handle
-    self.callHandlers(record)
-  File "/usr/lib/python3.11/logging/__init__.py", line 1706, in callHandlers
-    hdlr.handle(record)
-  File "/usr/lib/python3.11/logging/__init__.py", line 978, in handle
-    self.emit(record)
-  File "/usr/lib/python3.11/logging/__init__.py", line 1230, in emit
-    StreamHandler.emit(self, record)
-  File "/usr/lib/python3.11/logging/__init__.py", line 1114, in emit
-    self.flush()
-  File "/usr/lib/python3.11/logging/__init__.py", line 1094, in flush
-    self.stream.flush()
-  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/submitit/core/job_environment.py", line 196, in bypass
-    self._logger.warning(f"Bypassing signal {signal.Signals(signum).name}")
-Message: 'Bypassing signal SIGTERM'
-Arguments: ()
