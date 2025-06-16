@@ -10,8 +10,11 @@ from config.decoding_config import (
     N_PERMUTATIONS_GROUP_LEVEL, GROUP_LEVEL_STAT_THRESHOLD_TYPE,
     T_THRESHOLD_FOR_GROUP_STAT_CLUSTERING, CHANCE_LEVEL_AUC_SCORE,
     INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
-    COMPUTE_TEMPORAL_GENERALIZATION_MATRICES, CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT,
-    SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS, N_JOBS_PROCESSING
+    CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT,
+    SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS, N_JOBS_PROCESSING,
+    # Nouvelles configurations TGM spécifiques
+    COMPUTE_TGM_FOR_MAIN_COMPARISON, COMPUTE_TGM_FOR_SPECIFIC_COMPARISONS,
+    COMPUTE_TGM_FOR_INTER_FAMILY_COMPARISONS
 )
 from config.config import ALL_SUBJECT_GROUPS
 from utils.vizualization_utils_PP import (
@@ -107,8 +110,7 @@ def execute_group_intra_subject_decoding_analysis(
     n_jobs_for_each_subject=N_JOBS_PROCESSING,
     compute_group_level_stats_flag=True,
     n_perms_intra_subject_folds_for_group_runs=N_PERMUTATIONS_INTRA_SUBJECT,
-    classifier_type_for_group_runs=CLASSIFIER_MODEL_TYPE,
-    compute_tgm_for_group_subjects_flag=COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
+    classifier_type_for_group_runs=CLASSIFIER_MODEL_TYPE,            compute_tgm_for_group_subjects_flag=COMPUTE_TGM_FOR_MAIN_COMPARISON,
     compute_intra_subject_stats_for_group_runs_flag=True,
     n_perms_for_group_cluster_test=N_PERMUTATIONS_GROUP_LEVEL,
     group_cluster_test_threshold_method=GROUP_LEVEL_STAT_THRESHOLD_TYPE,

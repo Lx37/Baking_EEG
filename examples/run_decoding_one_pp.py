@@ -1,5 +1,26 @@
 # Fichier : examples/run_decoding_one_pp.py
 
+from config.decoding_config import (
+    CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
+    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
+    PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
+    FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
+    CHANCE_LEVEL_AUC_SCORE, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
+    COMPUTE_INTRA_SUBJECT_STATISTICS,
+    CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT, SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS,
+    N_JOBS_PROCESSING, AP_FAMILIES_FOR_SPECIFIC_COMPARISON,
+    # Nouvelles configurations TGM spécifiques
+    COMPUTE_TGM_FOR_MAIN_COMPARISON, COMPUTE_TGM_FOR_SPECIFIC_COMPARISONS,
+    COMPUTE_TGM_FOR_INTER_FAMILY_COMPARISONS
+)
+from config.config import ALL_SUBJECT_GROUPS
+from utils import stats_utils as bEEG_stats
+from utils.loading_PP_utils import load_epochs_data_for_decoding
+from utils.utils import (
+    configure_project_paths, setup_analysis_results_directory
+)
+from utils.vizualization_utils_PP import create_subject_decoding_dashboard_plots
+from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
 import sys
 import os
 import logging
@@ -13,35 +34,28 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import StratifiedKFold
 import itertools
 import scipy.stats
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+from mne.decoding import CSP
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 # --- Imports des modules du projet (standardisés) ---
 
 import sys
 import os
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+try:
+    from mne.decoding import CSP
+except ImportError:
+    CSP = None
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 # Ajouter le répertoire parent (racine du projet) au chemin Python
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
 
 # Tous les autres imports partent de la racine (utils, config...)
-from utils.vizualization_utils_PP import create_subject_decoding_dashboard_plots
-from utils.utils import (
-    configure_project_paths, setup_analysis_results_directory
-)
-from utils.loading_PP_utils import load_epochs_data_for_decoding
-from utils import stats_utils as bEEG_stats
-from config.config import ALL_SUBJECT_GROUPS
-from config.decoding_config import (
-    CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
-    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
-    PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
-    FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
-    CHANCE_LEVEL_AUC_SCORE, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
-    COMPUTE_INTRA_SUBJECT_STATISTICS, COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
-    CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT, SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS,
-    N_JOBS_PROCESSING, AP_FAMILIES_FOR_SPECIFIC_COMPARISON
-)
 
 # --- Configuration du Logging ---
 LOG_DIR_RUN_ONE = './logs_run_single_subject'  # Dossier de logs spécifique
@@ -129,8 +143,9 @@ def execute_single_subject_decoding(
         compute_intra_subject_stats_flag = COMPUTE_INTRA_SUBJECT_STATISTICS
     if n_perms_for_intra_subject_clusters is None:
         n_perms_for_intra_subject_clusters = N_PERMUTATIONS_INTRA_SUBJECT
-    if compute_tgm_flag is None:
-        compute_tgm_flag = COMPUTE_TEMPORAL_GENERALIZATION_MATRICES
+        if compute_tgm_flag is None:
+            # Note: compute_tgm_flag n'est plus utilisé, remplacé par les drapeaux spécifiques
+        compute_tgm_flag = None  # Valeur par défaut, non utilisée
     if loading_conditions_config is None:
         loading_conditions_config = CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT
     if cluster_threshold_config_intra_fold is None:
@@ -274,7 +289,7 @@ def execute_single_subject_decoding(
                         n_jobs_external=actual_n_jobs,  # Utiliser la variable convertie
                         compute_intra_fold_stats=compute_intra_subject_stats_flag,
                         n_permutations_for_intra_fold_clusters=n_perms_for_intra_subject_clusters,
-                        compute_temporal_generalization_matrix=compute_tgm_flag,
+                        compute_temporal_generalization_matrix=COMPUTE_TGM_FOR_MAIN_COMPARISON,
                         chance_level=CHANCE_LEVEL_AUC_SCORE,
                         cluster_threshold_config_intra_fold=cluster_threshold_config_intra_fold
                     )
@@ -356,7 +371,7 @@ def execute_single_subject_decoding(
                                     n_jobs_external=actual_n_jobs,
                                     compute_intra_fold_stats=compute_intra_subject_stats_flag,
                                     n_permutations_for_intra_fold_clusters=n_perms_for_intra_subject_clusters,
-                                    compute_temporal_generalization_matrix=True,  # TGM pour ces tâches spécifiques
+                                    compute_temporal_generalization_matrix=COMPUTE_TGM_FOR_SPECIFIC_COMPARISONS,
                                     chance_level=CHANCE_LEVEL_AUC_SCORE,
                                     cluster_threshold_config_intra_fold=cluster_threshold_config_intra_fold
                                 )
@@ -473,7 +488,7 @@ def execute_single_subject_decoding(
                                 n_jobs_external=actual_n_jobs,
                                 compute_intra_fold_stats=compute_intra_subject_stats_flag,
                                 n_permutations_for_intra_fold_clusters=n_perms_for_intra_subject_clusters,
-                                compute_temporal_generalization_matrix=False,  # Pas de TGM pour AP vs AP
+                                compute_temporal_generalization_matrix=COMPUTE_TGM_FOR_INTER_FAMILY_COMPARISONS,
                                 chance_level=CHANCE_LEVEL_AUC_SCORE,
                                 cluster_threshold_config_intra_fold=cluster_threshold_config_intra_fold
                             )

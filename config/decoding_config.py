@@ -77,7 +77,15 @@ USE_GRID_SEARCH_OPTIMIZATION = False
 USE_CSP_FOR_TEMPORAL_PIPELINES = False
 USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES = True
 N_JOBS_PROCESSING = "auto"
-CLASSIFIER_MODEL_TYPE = "svc"
+CLASSIFIER_MODEL_TYPE = "svc"  # Options: "svc", "logreg", "rf"
+
+# === CONFIGURATION DES CLASSIFICATEURS ===
+# Types de classificateurs supportés
+SUPPORTED_CLASSIFIER_TYPES = {
+    "svc": "Support Vector Classifier",
+    "logreg": "Logistic Regression",
+    "rf": "Random Forest"
+}
 
 # === PARAMÈTRES DES TESTS STATISTIQUES ===
 # Pour les stats sur les CV folds (sujet unique)
@@ -98,6 +106,12 @@ COMPUTE_GROUP_LEVEL_STATISTICS = True
 SAVE_ANALYSIS_RESULTS = True
 GENERATE_PLOTS = True
 COMPUTE_TEMPORAL_GENERALIZATION_MATRICES = False
+
+# Configuration spécifique TGM par type de comparaison
+# TGM UNIQUEMENT pour la comparaison principale PP vs AP all
+COMPUTE_TGM_FOR_MAIN_COMPARISON = True  # PP/all vs AP/all uniquement
+COMPUTE_TGM_FOR_SPECIFIC_COMPARISONS = False  # PP_spec vs AP_families
+COMPUTE_TGM_FOR_INTER_FAMILY_COMPARISONS = False  # AP_family vs AP_family
 
 
 # === Grilles d'hyperparamètres pour GridSearchCV ===
@@ -125,6 +139,7 @@ PARAM_GRID_CONFIG_EXTENDED = {
 CV_FOLDS_FOR_GRIDSEARCH_INTERNAL = 3
 
 # === Hyperparamètres fixes (si USE_GRID_SEARCH_OPTIMIZATION = False) ===
+# Cette configuration remplace la précédente
 FIXED_CLASSIFIER_PARAMS_CONFIG = {
     "svc": {
         'svc_c': 1.0,
@@ -145,4 +160,22 @@ FIXED_CLASSIFIER_PARAMS_CONFIG = {
         'fs_percentile': 75,
         'csp_n_components': 8
     }
+}
+
+# === CONFIGURATION CSP AVANCÉE ===
+# Options de sélection CSP
+CSP_SELECTION_OPTIONS = {
+    "method": "variance",  # "variance", "mutual_info", "manual"
+    "n_components_range": [2, 4, 6, 8, 10],
+    "automatic_selection": True,
+    "cross_validate_components": True
+}
+
+# Configuration CSP par défaut
+DEFAULT_CSP_CONFIG = {
+    "n_components": 4,
+    "reg": None,
+    "log": True,
+    "norm_trace": False,
+    "transform_into": "average_power"
 }

@@ -6,6 +6,25 @@ This script performs Local-Global protocol decoding analysis for a single
 subject using the _4_decoding_core module.
 """
 
+from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
+from utils.vizualization_utils_LG import create_subject_decoding_dashboard_plots_lg
+from utils.utils import (
+    configure_project_paths, setup_analysis_results_directory
+)
+from utils.loading_LG_utils import load_epochs_data_for_lg_decoding
+from utils import stats_utils as bEEG_stats
+from config.config import ALL_SUBJECT_GROUPS
+from config.decoding_config import (
+    CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
+    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
+    PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
+    FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
+    CHANCE_LEVEL_AUC_SCORE, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
+    COMPUTE_INTRA_SUBJECT_STATISTICS, COMPUTE_TGM_FOR_MAIN_COMPARISON,
+    COMPUTE_TGM_FOR_SPECIFIC_COMPARISONS, COMPUTE_TGM_FOR_INTER_FAMILY_COMPARISONS,
+    CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG, SAVE_ANALYSIS_RESULTS,
+    GENERATE_PLOTS, N_JOBS_PROCESSING
+)
 import sys
 import os
 import logging
@@ -28,24 +47,6 @@ if PROJECT_ROOT not in sys.path:
 
 # Import project modules
 
-from config.decoding_config import (
-    CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
-    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
-    PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
-    FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
-    CHANCE_LEVEL_AUC_SCORE, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
-    COMPUTE_INTRA_SUBJECT_STATISTICS, COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
-    CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG, SAVE_ANALYSIS_RESULTS,
-    GENERATE_PLOTS, N_JOBS_PROCESSING
-)
-from config.config import ALL_SUBJECT_GROUPS
-from utils import stats_utils as bEEG_stats
-from utils.loading_LG_utils import load_epochs_data_for_lg_decoding
-from utils.utils import (
-    configure_project_paths, setup_analysis_results_directory
-)
-from utils.vizualization_utils_LG import create_subject_decoding_dashboard_plots_lg
-from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
 # Logging configuration
 LOG_DIR = './logs_run_single_subject_lg'
 os.makedirs(LOG_DIR, exist_ok=True)
@@ -131,7 +132,9 @@ def execute_single_subject_lg_decoding(
     if n_perms_for_intra_subject_clusters is None:
         n_perms_for_intra_subject_clusters = N_PERMUTATIONS_INTRA_SUBJECT
     if compute_tgm_flag is None:
-        compute_tgm_flag = COMPUTE_TEMPORAL_GENERALIZATION_MATRICES
+        # Note: compute_tgm_flag n'est plus utilisé, remplacé par les drapeaux spécifiques
+        compute_tgm_flag = COMPUTE_TGM_FOR_MAIN_COMPARISON
+        compute_tgm_flag = COMPUTE_TGM_FOR_MAIN_COMPARISON
     if loading_conditions_config is None:
         loading_conditions_config = CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG
     if cluster_threshold_config_intra_fold is None:
@@ -311,7 +314,7 @@ def execute_single_subject_lg_decoding(
                         n_permutations_for_intra_fold_clusters=(
                             n_perms_for_intra_subject_clusters),
                         compute_temporal_generalization_matrix=(
-                            compute_tgm_flag),
+                            COMPUTE_TGM_FOR_MAIN_COMPARISON),
                         chance_level=CHANCE_LEVEL_AUC_SCORE,
                         cluster_threshold_config_intra_fold=(
                             cluster_threshold_config_intra_fold)
@@ -446,7 +449,7 @@ def execute_single_subject_lg_decoding(
                                         compute_intra_subject_stats_flag),
                                     n_permutations_for_intra_fold_clusters=(
                                         n_perms_for_intra_subject_clusters),
-                                    compute_temporal_generalization_matrix=True,
+                                    compute_temporal_generalization_matrix=COMPUTE_TGM_FOR_SPECIFIC_COMPARISONS,
                                     chance_level=CHANCE_LEVEL_AUC_SCORE,
                                     cluster_threshold_config_intra_fold=(
                                         cluster_threshold_config_intra_fold)

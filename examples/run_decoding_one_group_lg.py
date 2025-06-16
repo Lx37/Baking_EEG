@@ -1,6 +1,27 @@
 # Examples script for group-level LG analysis
 
 
+from Baking_EEG.config.decoding_config import (
+    CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
+    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
+    PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
+    FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
+    N_PERMUTATIONS_GROUP_LEVEL, GROUP_LEVEL_STAT_THRESHOLD_TYPE,
+    T_THRESHOLD_FOR_GROUP_STAT_CLUSTERING, CHANCE_LEVEL_AUC_SCORE,
+    INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
+    COMPUTE_TGM_FOR_MAIN_COMPARISON, CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG,
+    SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS, N_JOBS_PROCESSING
+)
+from Baking_EEG.config.config import ALL_SUBJECT_GROUPS
+from Baking_EEG.utils.vizualization_utils_LG import (
+    plot_group_mean_scores_barplot_lg,
+    plot_group_temporal_decoding_statistics_lg,
+    plot_group_tgm_statistics_lg
+)
+from Baking_EEG.utils import stats_utils as bEEG_stats
+from Baking_EEG.utils.utils import (
+    configure_project_paths, setup_analysis_results_directory
+)
 import os
 import sys
 import logging
@@ -18,27 +39,6 @@ PROJECT_ROOT_EXAMPLE = os.path.abspath(os.path.join(SCRIPT_DIR_EXAMPLE, ".."))
 if PROJECT_ROOT_EXAMPLE not in sys.path:
     sys.path.insert(0, PROJECT_ROOT_EXAMPLE)
 # --- Fin Configuration du chemin ---
-from Baking_EEG.utils.utils import (
-    configure_project_paths, setup_analysis_results_directory
-)
-from Baking_EEG.utils import stats_utils as bEEG_stats
-from Baking_EEG.utils.vizualization_utils_LG import (
-    plot_group_mean_scores_barplot_lg,
-    plot_group_temporal_decoding_statistics_lg,
-    plot_group_tgm_statistics_lg
-)
-from Baking_EEG.config.config import ALL_SUBJECT_GROUPS
-from Baking_EEG.config.decoding_config import (
-    CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
-    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
-    PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
-    FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
-    N_PERMUTATIONS_GROUP_LEVEL, GROUP_LEVEL_STAT_THRESHOLD_TYPE,
-    T_THRESHOLD_FOR_GROUP_STAT_CLUSTERING, CHANCE_LEVEL_AUC_SCORE,
-    INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
-    COMPUTE_TEMPORAL_GENERALIZATION_MATRICES, CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG,
-    SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS, N_JOBS_PROCESSING
-)
 # La fonction execute_single_subject_lg_decoding est dans run_decoding_one_lg.py
 try:
     from Baking_EEG.examples.run_decoding_one_lg import (
@@ -89,7 +89,7 @@ def execute_group_intra_subject_lg_decoding_analysis(
     compute_group_level_stats_flag=True,
     n_perms_intra_subject_folds_for_group_runs=N_PERMUTATIONS_INTRA_SUBJECT,
     classifier_type_for_group_runs=CLASSIFIER_MODEL_TYPE,
-    compute_tgm_for_group_subjects_flag=COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
+    compute_tgm_for_group_subjects_flag=COMPUTE_TGM_FOR_MAIN_COMPARISON,
     compute_intra_subject_stats_for_group_runs_flag=True,
     n_perms_for_group_cluster_test=N_PERMUTATIONS_GROUP_LEVEL,
     group_cluster_test_threshold_method=GROUP_LEVEL_STAT_THRESHOLD_TYPE,
