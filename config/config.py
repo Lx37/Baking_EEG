@@ -334,12 +334,8 @@ ALL_SUBJECT_GROUPS = {
         "TpLP11", "TpMD13", "TpMD52", "TpME22", "TpPA35", "TpPI46",
         "TpPL48", "TpRB50", "TpRK39", "TpSD30", "TpYB41",
     ],
-
-    "EMSC": [
-        "TpAF11J8"
-    ],
     "MCS+": [
-        "IR27", "NF35", "TpCF24J8"
+        "PE_SAM",
     ],
     "MCS-": [
 

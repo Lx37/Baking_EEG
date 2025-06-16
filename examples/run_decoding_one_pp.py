@@ -1,4 +1,13 @@
-# Fichier : examples/run_decoding_one_pp.py
+# File: examples/run_decoding_one_pp.py
+# Single Subject PP (Primary-Associated Phonemes) Protocol Decoding Analysis
+#
+# This script performs PP protocol decoding analysis for a single subject
+# using the _4_decoding_core module. It implements:
+# - Main comparison: PP_all vs AP_all
+# - Specific comparisons: PP_specific vs AP_families
+# - Inter-family comparisons: AP_family vs AP_family
+# - Statistical testing with FDR and cluster-based permutation tests
+# - Optional Temporal Generalization Matrix (TGM) computation
 
 from config.decoding_config import (
     CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
@@ -9,13 +18,18 @@ from config.decoding_config import (
     COMPUTE_INTRA_SUBJECT_STATISTICS,
     CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT, SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS,
     N_JOBS_PROCESSING, AP_FAMILIES_FOR_SPECIFIC_COMPARISON,
-    # Nouvelles configurations TGM spécifiques
+    # Specific TGM configurations
     COMPUTE_TGM_FOR_MAIN_COMPARISON, COMPUTE_TGM_FOR_SPECIFIC_COMPARISONS,
     COMPUTE_TGM_FOR_INTER_FAMILY_COMPARISONS
 )
 from config.config import ALL_SUBJECT_GROUPS
 from utils import stats_utils as bEEG_stats
-from utils.loading_PP_utils import load_epochs_data_for_decoding
+from utils.loading_PP_utils import (
+    load_epochs_data_for_decoding_delirium,
+    load_epochs_data_for_decoding_battery,
+    load_epochs_data_for_decoding_ppext3,
+    load_epochs_data_auto_protocol
+)
 from utils.utils import (
     configure_project_paths, setup_analysis_results_directory
 )
@@ -39,7 +53,7 @@ from sklearn.pipeline import Pipeline
 from mne.decoding import CSP
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
-# --- Imports des modules du projet (standardisés) ---
+# --- Project module imports (standardized) ---
 
 import sys
 import os
@@ -202,15 +216,24 @@ def execute_single_subject_decoding(
         logger_run_one.info("Using loading conditions: %s", list(
             actual_loading_conditions.keys()))
 
-        epochs_object, returned_data_dict = load_epochs_data_for_decoding(
+        epochs_object, returned_data_dict, detected_protocol = load_epochs_data_auto_protocol(
             subject_identifier, group_affiliation, base_input_data_path,
             actual_loading_conditions, enable_verbose_logging
+        )
+
+        # Log detected protocol information
+        logger_run_one.info(
+            "Detected protocol '%s' for subject %s",
+            detected_protocol, subject_identifier
         )
 
         if epochs_object is None:
             logger_run_one.error(
                 "Epochs object loading failed for %s. Aborting subject.", subject_identifier)
             return subject_results
+
+        # Store protocol information and epoch times
+        subject_results["detected_protocol"] = detected_protocol
         subject_results["epochs_time_points"] = epochs_object.times.copy()
 
         # Gestion de param_grid_config_for_subject et fixed_params_for_subject
