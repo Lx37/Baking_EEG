@@ -248,7 +248,7 @@ def execute_group_cross_subject_decoding_analysis(
                         subject_identifier=test_subj_id,
                         group_identifier=f"{cross_subject_set_identifier}_CS_TestFold",
                         output_directory_path=fold_plot_dir,
-                        chance_level_auc=CHANCE_LEVEL_AUC_SCORE,
+                        chance_level_auc=CHANCE_LEVEL_AUC,
                         specific_ap_decoding_results=None,  # No specific tasks in CS
                         mean_of_specific_scores_1d=None,
                         sem_of_specific_scores_1d=None,

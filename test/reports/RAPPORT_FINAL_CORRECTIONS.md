@@ -16,7 +16,7 @@
 ### 2. ✅ **Correction de `examples/run_decoding_one_pp.py`**
 - **Problèmes :**
   - Import inexistant `CONFIG_LOAD_SINGLE_PROTOCOL`
-  - Paramètre incorrect `chance_level_auc` → `chance_level_auc_score`
+  - Paramètre incorrect `chance_level_auc` → `CHANCE_LEVEL_AUC`
   - Paramètres par défaut dangereux (listes mutables)
   - Ordre des imports non-conforme PEP 8
 - **Solutions appliquées :**
@@ -45,7 +45,7 @@
 - ✅ Import de `examples.run_decoding_one_pp`
 - ✅ Import de `utils.vizualization_utils`
 - ✅ Fonction `perform_pointwise_fdr_correction_on_scores` retourne 3 éléments
-- ✅ Paramètre `chance_level_auc_score` présent dans la fonction de visualisation
+- ✅ Paramètre `CHANCE_LEVEL_AUC` présent dans la fonction de visualisation
 - ✅ Répertoires `diagrams/`, `figures/`, `analysis_results/` créés
 - ✅ Script principal accessible (menu d'aide)
 

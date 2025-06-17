@@ -135,7 +135,7 @@ def perform_pointwise_fdr_correction_on_scores(scores, chance_level=0.5, alpha=0
 **Après :**
 - ✅ `CONFIG_LOAD_MAIN_DECODING` (configuration existante)
 - ✅ `condition_combis=None` (paramètre sûr)
-- ✅ `"chance_level_auc_score"` (paramètre correct)
+- ✅ `"CHANCE_LEVEL_AUC"` (paramètre correct)
 
 ### 4️⃣ Fonction de visualisation
 **Avant :**
@@ -148,7 +148,7 @@ create_subject_decoding_dashboard_plots(
 **Après :**
 ```python
 create_subject_decoding_dashboard_plots(
-    chance_level_auc_score=0.5  # ✅ Paramètre correct
+    CHANCE_LEVEL_AUC=0.5  # ✅ Paramètre correct
 )
 ```
 

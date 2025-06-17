@@ -87,12 +87,12 @@ def demo_corrections():
         sig = inspect.signature(create_subject_decoding_dashboard_plots)
         params = list(sig.parameters.keys())
 
-        if 'chance_level_auc_score' in params:
+        if 'CHANCE_LEVEL_AUC' in params:
             print("✅ create_subject_decoding_dashboard_plots - Paramètre corrigé!")
-            print("   └─ Paramètre 'chance_level_auc_score' présent ✅")
+            print("   └─ Paramètre 'CHANCE_LEVEL_AUC' présent ✅")
             print("   └─ Erreur 'unexpected keyword argument' résolue ✅")
         else:
-            print("❌ Paramètre 'chance_level_auc_score' manquant")
+            print("❌ Paramètre 'CHANCE_LEVEL_AUC' manquant")
 
     except Exception as e:
         print(f"❌ vizualization_utils - Erreur: {e}")
@@ -192,7 +192,7 @@ def demo_success_metrics():
     corrections = [
         "Formatage PEP 8 (70+ lignes corrigées)",
         "Bug critique dans stats_utils (return manquant)",
-        "Paramètres de visualisation (chance_level_auc_score)",
+        "Paramètres de visualisation (CHANCE_LEVEL_AUC)",
         "Configuration et imports (run_decoding_one_pp.py)",
         "Gestion d'exceptions spécifiques",
         "Logging avec lazy evaluation"

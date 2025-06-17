@@ -38,10 +38,11 @@ try:
     from utils.vizualization_utils import create_subject_decoding_dashboard_plots
     import inspect
     sig = inspect.signature(create_subject_decoding_dashboard_plots)
-    if 'chance_level_auc_score' in sig.parameters:
-        print("✅ create_subject_decoding_dashboard_plots - Paramètre chance_level_auc_score présent")
+    if 'CHANCE_LEVEL_AUC' in sig.parameters:
+        print(
+            "✅ create_subject_decoding_dashboard_plots - Paramètre CHANCE_LEVEL_AUC présent")
     else:
-        print("❌ create_subject_decoding_dashboard_plots - Paramètre chance_level_auc_score manquant")
+        print("❌ create_subject_decoding_dashboard_plots - Paramètre CHANCE_LEVEL_AUC manquant")
 except Exception as e:
     print(f"❌ utils.vizualization_utils - Erreur: {e}")
 

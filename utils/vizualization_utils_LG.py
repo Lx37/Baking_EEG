@@ -26,7 +26,7 @@ def create_subject_decoding_dashboard_plots_lg(
     subject_identifier,
     group_identifier,
     output_directory_path,
-    chance_level_auc_score=0.5,
+    CHANCE_LEVEL_AUC=0.5,
     protocol_type="LG",
     lg_main_original_labels_array=None,
     lg_main_predicted_probabilities_global=None,
@@ -62,7 +62,7 @@ def create_subject_decoding_dashboard_plots_lg(
         Group ID.
     output_directory_path : str
         Directory to save plots.
-    chance_level_auc_score : float, optional
+    CHANCE_LEVEL_AUC : float, optional
         Chance level for AUC, by default 0.5.
     protocol_type : str, optional
         Protocol type identifier, by default "LG".
@@ -91,7 +91,7 @@ def create_subject_decoding_dashboard_plots_lg(
         if lg_main_mean_temporal_decoding_scores_1d is not None and main_epochs_time_points is not None:
             ax1.plot(main_epochs_time_points, lg_main_mean_temporal_decoding_scores_1d,
                      'b-', linewidth=2, label='LS vs LD Main')
-            ax1.axhline(y=chance_level_auc_score, color='gray',
+            ax1.axhline(y=CHANCE_LEVEL_AUC, color='gray',
                         linestyle='--', alpha=0.7, label='Chance')
 
             # Add significance markers
@@ -123,7 +123,7 @@ def create_subject_decoding_dashboard_plots_lg(
         if lg_main_cross_validation_global_scores is not None and len(lg_main_cross_validation_global_scores) > 0:
             ax2.hist(lg_main_cross_validation_global_scores, bins=10,
                      alpha=0.7, color='skyblue', edgecolor='black')
-            ax2.axvline(x=chance_level_auc_score, color='red',
+            ax2.axvline(x=CHANCE_LEVEL_AUC, color='red',
                         linestyle='--', alpha=0.7, label='Chance')
             ax2.axvline(x=np.mean(lg_main_cross_validation_global_scores), color='blue', linestyle='-',
                         linewidth=2, label=f'Mean: {np.mean(lg_main_cross_validation_global_scores):.3f}')
@@ -141,7 +141,7 @@ def create_subject_decoding_dashboard_plots_lg(
             im = ax3.imshow(tgm, cmap='RdBu_r', aspect='auto', origin='lower',
                             extent=[main_epochs_time_points[0], main_epochs_time_points[-1],
                                     main_epochs_time_points[0], main_epochs_time_points[-1]],
-                            vmin=chance_level_auc_score - 0.1, vmax=chance_level_auc_score + 0.1)
+                            vmin=CHANCE_LEVEL_AUC - 0.1, vmax=CHANCE_LEVEL_AUC + 0.1)
             ax3.set_xlabel('Testing Time (s)', fontsize=FONT_SIZE_LABEL)
             ax3.set_ylabel('Training Time (s)', fontsize=FONT_SIZE_LABEL)
             ax3.set_title('LG Temporal Generalization Matrix',
@@ -168,7 +168,7 @@ def create_subject_decoding_dashboard_plots_lg(
                     ax4.plot(times, scores,
                              color=colors[i], linewidth=2, label=label)
 
-            ax4.axhline(y=chance_level_auc_score, color='gray',
+            ax4.axhline(y=CHANCE_LEVEL_AUC, color='gray',
                         linestyle='--', alpha=0.7, label='Chance')
             ax4.set_xlabel('Time (s)', fontsize=FONT_SIZE_LABEL)
             ax4.set_ylabel('AUC Score', fontsize=FONT_SIZE_LABEL)
@@ -189,7 +189,7 @@ def create_subject_decoding_dashboard_plots_lg(
                                  lg_mean_of_specific_scores_1d + lg_sem_of_specific_scores_1d,
                                  alpha=0.3, color='green')
 
-            ax5.axhline(y=chance_level_auc_score, color='gray',
+            ax5.axhline(y=CHANCE_LEVEL_AUC, color='gray',
                         linestyle='--', alpha=0.7, label='Chance')
 
             # Add significance markers for mean specific
@@ -227,7 +227,7 @@ def create_subject_decoding_dashboard_plots_lg(
                                 ax6.scatter(sig_times, [max(scores) * 1.02] * len(sig_times),
                                             marker='*', color='red', s=20)
 
-            ax6.axhline(y=chance_level_auc_score, color='gray',
+            ax6.axhline(y=CHANCE_LEVEL_AUC, color='gray',
                         linestyle='--', alpha=0.7, label='Chance')
             ax6.set_xlabel('Time (s)', fontsize=FONT_SIZE_LABEL)
             ax6.set_ylabel('AUC Score', fontsize=FONT_SIZE_LABEL)
@@ -264,7 +264,7 @@ def create_subject_decoding_dashboard_plots_lg(
                                 ax7.scatter(sig_times, [max(scores) * 1.02] * len(sig_times),
                                             marker='*', color='red', s=20)
 
-            ax7.axhline(y=chance_level_auc_score, color='gray',
+            ax7.axhline(y=CHANCE_LEVEL_AUC, color='gray',
                         linestyle='--', alpha=0.7, label='Chance')
             ax7.set_xlabel('Time (s)', fontsize=FONT_SIZE_LABEL)
             ax7.set_ylabel('AUC Score', fontsize=FONT_SIZE_LABEL)
@@ -309,7 +309,7 @@ def create_subject_decoding_dashboard_plots_lg(
                     ax9.plot(main_epochs_time_points, lg_main_mean_temporal_decoding_scores_1d,
                              'black', linewidth=3, label='Mean')
 
-            ax9.axhline(y=chance_level_auc_score, color='gray',
+            ax9.axhline(y=CHANCE_LEVEL_AUC, color='gray',
                         linestyle='--', alpha=0.7, label='Chance')
             ax9.set_xlabel('Time (s)', fontsize=FONT_SIZE_LABEL)
             ax9.set_ylabel('AUC Score', fontsize=FONT_SIZE_LABEL)
@@ -333,7 +333,7 @@ def create_subject_decoding_dashboard_plots_lg(
         # Create additional detailed plots
         _create_detailed_lg_comparison_plots(
             lg_specific_comparison_results, main_epochs_time_points,
-            subject_identifier, output_directory_path, chance_level_auc_score
+            subject_identifier, output_directory_path, CHANCE_LEVEL_AUC
         )
 
         logger_viz_lg.info(

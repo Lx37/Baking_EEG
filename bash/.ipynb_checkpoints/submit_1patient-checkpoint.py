@@ -98,7 +98,7 @@ try:
         SAVE_ANALYSIS_RESULTS,
         GENERATE_PLOTS,
         CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT,
-        CHANCE_LEVEL_AUC_SCORE
+        CHANCE_LEVEL_AUC
     )
     logger.info("Importations depuis 'examples.run_decoding_one_pp' réussies.")
 except ModuleNotFoundError as e_mod:

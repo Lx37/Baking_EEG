@@ -110,13 +110,13 @@ def test_function_calls():
         sig = inspect.signature(create_subject_decoding_dashboard_plots)
         params = list(sig.parameters.keys())
 
-        if 'chance_level_auc_score' in params:
+        if 'CHANCE_LEVEL_AUC' in params:
             print_success(
-                "create_subject_decoding_dashboard_plots - Paramètre chance_level_auc_score présent")
+                "create_subject_decoding_dashboard_plots - Paramètre CHANCE_LEVEL_AUC présent")
             results.append(("dashboard_params", True, None))
         else:
             print_error(
-                "create_subject_decoding_dashboard_plots - Paramètre chance_level_auc_score manquant")
+                "create_subject_decoding_dashboard_plots - Paramètre CHANCE_LEVEL_AUC manquant")
             results.append(("dashboard_params", False, "Missing parameter"))
     except Exception as e:
         print_error(

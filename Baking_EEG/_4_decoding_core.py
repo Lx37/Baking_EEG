@@ -1,5 +1,3 @@
-# Fichier : baking_core/_4_decoding_core.py
-
 import logging
 import numpy as np
 import pandas as pd
@@ -11,15 +9,16 @@ from sklearn.base import clone
 from sklearn.metrics import (roc_auc_score, accuracy_score, precision_score,
                              recall_score, f1_score, balanced_accuracy_score)
 import scipy.stats
-
-# --- Imports des modules du projet (standardisés) ---
-
 from base.base_decoding import (_build_standard_classifier_pipeline,
                                  _execute_global_decoding_for_one_fold)
 from utils import stats_utils as bEEG_stats
 from config.decoding_config import (DEFAULT_CLASSIFIER_TYPE_MODULE_INTERNAL,
-                                     DEFAULT_CHANCE_LEVEL_AUC,
-                                     INTERNAL_N_JOBS_FOR_MNE_DECODING)
+                                     CHANCE_LEVEL_AUC,
+                                     INTERNAL_N_JOBS_FOR_MNE_DECODING,
+                                     USE_CSP_FOR_TEMPORAL_PIPELINES,
+                                     USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
+                                     USE_GRID_SEARCH,
+                                     COMPUTE_TEMPORAL_GENERALIZATION_MATRICES)
 
 logger_decoding_core = logging.getLogger(__name__) 
 
@@ -27,9 +26,9 @@ def run_temporal_decoding_analysis(
     epochs_data,  # (n_trials, n_channels, n_times)
     target_labels,  # (n_trials,)
     classifier_model_type=DEFAULT_CLASSIFIER_TYPE_MODULE_INTERNAL,
-    use_grid_search=False,
-    use_csp_for_temporal_pipelines=False,
-    use_anova_fs_for_temporal_pipelines=True,
+    use_grid_search=USE_GRID_SEARCH,
+    use_csp_for_temporal_pipelines=USE_CSP_FOR_TEMPORAL_PIPELINES,
+    use_anova_fs_for_temporal_pipelines=USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
     param_grid_config=None,  # Full grid config, specific clf grid extracted inside
     cv_folds_for_gridsearch=3,
     fixed_classifier_params=None,  # Dict for the specific classifier_model_type
@@ -38,13 +37,13 @@ def run_temporal_decoding_analysis(
     n_jobs_external=1,  # For global decoding parallel folds
     group_labels_for_cv=None,  # For GroupKFold
     compute_intra_fold_stats=True,
-    chance_level=DEFAULT_CHANCE_LEVEL_AUC,
+    chance_level=CHANCE_LEVEL_AUC,
     n_permutations_for_intra_fold_clusters=256,
-    compute_temporal_generalization_matrix=True,
+    compute_temporal_generalization_matrix=COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
     cluster_threshold_config_intra_fold=None,
 ):
     """Run temporal decoding, TGM, and global decoding with optional GS and stats."""
-    logger_decoding_core.info("--- Temporal Decoding Analysis ---")
+    logger_decoding_core.info("--- Temporal Ddcoding Analysis ---")
     logger_decoding_core.info(
         "Clf: %s, GS: %s, CSP (temporal): %s, ANOVA FS (temporal): %s",
         classifier_model_type, use_grid_search, use_csp_for_temporal_pipelines,
@@ -65,7 +64,6 @@ def run_temporal_decoding_analysis(
     target_labels_enc = label_enc.fit_transform(target_labels)
     n_classes = len(label_enc.classes_)
 
-    # Fallback values for result initialization
     # Ensure probas has at least 2 columns even for binary case if n_classes=1 (error case)
     empty_probas = np.zeros(
         (n_trials, max(2, n_classes if n_classes >= 2 else 2)))
@@ -94,8 +92,7 @@ def run_temporal_decoding_analysis(
         return empty_results_tuple
 
     # --- Prepare classifier/pipeline for MNE (Sliding/Generalizing) ---
-    # Use passed fixed_classifier_params directly (it should be pre-filtered by caller)
-    # For temporal, ANOVA FS is typically used if CSP is not, hence the condition.
+
     pipeline_mne, clf_name_mne, fs_name_mne, csp_name_mne = \
         _build_standard_classifier_pipeline(
             classifier_model_type=classifier_model_type,
@@ -125,8 +122,8 @@ def run_temporal_decoding_analysis(
                 "No param_grid_config for '%s' for MNE GS. Using basic defaults.",
                 classifier_model_type
             )
-            # Define very basic defaults here, or ensure caller always provides full config
-            current_grid_mne = {f'{clf_name_mne}__C': [0.1, 1, 10]}  # Example
+
+            current_grid_mne = {f'{clf_name_mne}__C': [0.1, 1, 10]}  
             if fs_name_mne:
                 current_grid_mne[f'{fs_name_mne}__percentile'] = [15, 30]
             if csp_name_mne: current_grid_mne[f'{csp_name_mne}__n_components'] = [
@@ -173,15 +170,11 @@ def run_temporal_decoding_analysis(
                 classifier_model_type
             )
             current_grid_global = {
-                f'{clf_name_global}__C': [0.1, 1, 10]}  # Example
-
+                f'{clf_name_global}__C': [0.1, 1, 10]}  
         if not current_grid_global:
             logger_decoding_core.error(
                 "No grid for Global GS (%s). Aborting.", classifier_model_type)
             return empty_results_tuple
-        # n_jobs for GS for global decoding can be different
-        # If global decoding itself is parallelized over folds (n_jobs_external > 1),
-        # then the inner GS should be n_jobs=1 to avoid oversubscription.
         gs_cv_n_jobs_global = 1 if n_jobs_external != 1 else -1
         final_estimator_global = GridSearchCV(
             estimator=pipeline_global, param_grid=current_grid_global, scoring='roc_auc',
@@ -191,19 +184,18 @@ def run_temporal_decoding_analysis(
     else:
         final_estimator_global = pipeline_global
 
-    # --- CV Splitter Setup ---
+    # --- CV splitter setup ---
     actual_cv_splitter = None
     if isinstance(cross_validation_splitter, int):
         n_splits_req = cross_validation_splitter
         if group_labels_for_cv is not None and len(np.unique(group_labels_for_cv)) >= 2:
             n_groups = len(np.unique(group_labels_for_cv))
-            # n_splits for GroupKFold cannot exceed number of groups            n_splits = min(n_splits_req, n_groups) if n_groups >= 2 else 0
             if n_splits >= 2:
                 actual_cv_splitter = GroupKFold(n_splits=n_splits)
-            else:  # Not enough groups for requested splits
+            else: 
                 logger_decoding_core.warning(
                     f"Cannot perform GroupKFold with {n_splits_req} splits for {n_groups} groups. Will attempt StratifiedKFold if possible.")
-                # Fall through to StratifiedKFold logic
+            
         # Fallback to StratifiedKFold if GroupKFold not applicable or failed
         if actual_cv_splitter is None:
             min_class_count = np.min(np.bincount(target_labels_enc))
@@ -228,7 +220,7 @@ def run_temporal_decoding_analysis(
     num_cv_splits = actual_cv_splitter.get_n_splits(
         X=epochs_data, y=target_labels_enc, groups=group_labels_for_cv)
 
-    # --- Sample Weights ---
+    # --- Sample weights ---
     effective_sample_weights = None
     if isinstance(trial_sample_weights, str) and trial_sample_weights.lower() == "auto":
         if n_classes >= 2:
@@ -281,12 +273,7 @@ def run_temporal_decoding_analysis(
                     "MNE Estimators (Fixed mode): Passing sample_weight to %s.", clf_name_mne)
         else:  # Using GridSearchCV
             # GridSearchCV itself doesn't take sample_weight in fit_params for cross_val_multiscore.
-            # The `class_weight='balanced'` in the classifier (SVC, LogReg) should handle imbalance.
-            # For RF, it balances during bootstrap if bootstrap=True (default).
-            # If we *needed* to pass sample_weight to GS's *internal* fits,
-            # it would be via fit_params to GS constructor, not cross_val_multiscore.
-            # However, cross_val_multiscore does not propagate fit_params to GS's fit method.
-            # So, for GS, rely on 'class_weight' or ensure data is balanced.
+        
             logger_decoding_core.info(
                 "MNE Estimators (GridSearch mode): Relying on 'class_weight=balanced' or balanced data for imbalance.")
 
@@ -294,7 +281,6 @@ def run_temporal_decoding_analysis(
     logger_decoding_core.info(
         "Starting 1D temporal decoding (SlidingEstimator)...")
     sliding_decoder = SlidingEstimator(
-        # Clone to avoid state issues
         base_estimator=clone(final_estimator_mne),
         n_jobs=INTERNAL_N_JOBS_FOR_MNE_DECODING, scoring="roc_auc", verbose=False
     )

@@ -53,7 +53,7 @@
 - 🔧 Réorganisé les imports et path configuration
 - 🔧 Remplacé par `CONFIG_LOAD_MAIN_DECODING`
 - 🔧 Corrigé les paramètres par défaut (`condition_combis=None`)
-- 🔧 Corrigé `chance_level_auc` → `chance_level_auc_score`
+- 🔧 Corrigé `chance_level_auc` → `CHANCE_LEVEL_AUC`
 
 ### 4. ✅ Validation fonctionnelle complète
 **Confirmé par l'utilisateur :**

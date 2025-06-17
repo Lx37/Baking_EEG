@@ -64,7 +64,7 @@ def test_file_corrections():
     try:
         with open('examples/run_decoding_one_pp.py', 'r') as f:
             content = f.read()
-        if 'chance_level_auc_score' in content and 'CONFIG_LOAD_MAIN_DECODING' in content:
+        if 'CHANCE_LEVEL_AUC' in content and 'CONFIG_LOAD_MAIN_DECODING' in content:
             print_success("run_decoding_one_pp.py - Paramètres corrigés")
             results["files_corrected"] += 1
             results["details"].append(

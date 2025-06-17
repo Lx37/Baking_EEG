@@ -67,7 +67,7 @@ def test_critical_fixes():
         sig = inspect.signature(create_subject_decoding_dashboard_plots)
         params = list(sig.parameters.keys())
 
-        if 'chance_level_auc_score' in params:
+        if 'CHANCE_LEVEL_AUC' in params:
             print(
                 "✅ Test 4/4: create_subject_decoding_dashboard_plots - Paramètre corrigé")
             success_count += 1

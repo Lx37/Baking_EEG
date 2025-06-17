@@ -14,7 +14,7 @@ from config.decoding_config import (
     USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
     PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
     FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
-    CHANCE_LEVEL_AUC_SCORE, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
+    CHANCE_LEVEL_AUC, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
     COMPUTE_INTRA_SUBJECT_STATISTICS,
     CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT, SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS,
     N_JOBS_PROCESSING, AP_FAMILIES_FOR_SPECIFIC_COMPARISON,
@@ -105,7 +105,7 @@ def execute_single_subject_decoding(
     decoding_protocol_identifier="Single_Protocol_Analysis",
     # Utilisation des constantes importées pour les valeurs par défaut
     save_results_flag=None,
-    enable_verbose_logging=False,  # Mettre à True pour plus de détails
+    enable_verbose_logging=False,
     generate_plots_flag=None,
     base_input_data_path=None,
     base_output_results_path=None,
@@ -158,7 +158,7 @@ def execute_single_subject_decoding(
     if n_perms_for_intra_subject_clusters is None:
         n_perms_for_intra_subject_clusters = N_PERMUTATIONS_INTRA_SUBJECT
     if compute_tgm_flag is None:
-        compute_tgm_flag = None  
+        compute_tgm_flag = None
     if loading_conditions_config is None:
         loading_conditions_config = CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT
     if cluster_threshold_config_intra_fold is None:
@@ -312,7 +312,7 @@ def execute_single_subject_decoding(
                         compute_intra_fold_stats=compute_intra_subject_stats_flag,
                         n_permutations_for_intra_fold_clusters=n_perms_for_intra_subject_clusters,
                         compute_temporal_generalization_matrix=COMPUTE_TGM_FOR_MAIN_COMPARISON,
-                        chance_level=CHANCE_LEVEL_AUC_SCORE,
+                        chance_level=CHANCE_LEVEL_AUC,
                         cluster_threshold_config_intra_fold=cluster_threshold_config_intra_fold
                     )
                     subject_results.update({
@@ -382,8 +382,10 @@ def execute_single_subject_decoding(
                                 cv_splitter_task_spec = StratifiedKFold(
                                     n_splits=num_cv_task_spec, shuffle=True, random_state=42)
                                 specific_task_output = run_temporal_decoding_analysis(
-                                    epochs_data=task_data_specific_current, target_labels=task_labels_specific_orig,
-                                    classifier_model_type=classifier_type, use_grid_search=use_grid_search_for_subject,
+                                    epochs_data=task_data_specific_current,
+                                    target_labels=task_labels_specific_orig,
+                                    classifier_model_type=classifier_type,
+                                    use_grid_search=use_grid_search_for_subject,
                                     use_csp_for_temporal_pipelines=use_csp_for_temporal_subject,
                                     use_anova_fs_for_temporal_pipelines=use_anova_fs_for_temporal_subject,
                                     param_grid_config=current_param_grid_for_clf_dict,
@@ -394,7 +396,7 @@ def execute_single_subject_decoding(
                                     compute_intra_fold_stats=compute_intra_subject_stats_flag,
                                     n_permutations_for_intra_fold_clusters=n_perms_for_intra_subject_clusters,
                                     compute_temporal_generalization_matrix=COMPUTE_TGM_FOR_SPECIFIC_COMPARISONS,
-                                    chance_level=CHANCE_LEVEL_AUC_SCORE,
+                                    chance_level=CHANCE_LEVEL_AUC,
                                     cluster_threshold_config_intra_fold=cluster_threshold_config_intra_fold
                                 )
                                 task_result_specific.update({
@@ -437,13 +439,13 @@ def execute_single_subject_decoding(
                         stacked_specific_curves, axis=0, nan_policy='omit')
 
                 _, fdr_mask_stack, fdr_pval_stack = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
-                    stacked_specific_curves, CHANCE_LEVEL_AUC_SCORE, alternative_hypothesis="greater"
+                    stacked_specific_curves, CHANCE_LEVEL_AUC, alternative_hypothesis="greater"
                 )
                 subject_results["pp_ap_mean_specific_fdr"] = {
                     "mask": fdr_mask_stack, "p_values": fdr_pval_stack, "method": f"FDR on stack of {len(valid_mean_scores_for_stack)} specific curves"}
 
                 _, clu_obj_stack, p_clu_stack, _ = bEEG_stats.perform_cluster_permutation_test(
-                    stacked_specific_curves, CHANCE_LEVEL_AUC_SCORE, n_perms_for_intra_subject_clusters,
+                    stacked_specific_curves, CHANCE_LEVEL_AUC, n_perms_for_intra_subject_clusters,
                     cluster_threshold_config_intra_fold, "greater", actual_n_jobs
                 )
                 combined_mask_clu_stack = np.zeros_like(
@@ -511,7 +513,7 @@ def execute_single_subject_decoding(
                                 compute_intra_fold_stats=compute_intra_subject_stats_flag,
                                 n_permutations_for_intra_fold_clusters=n_perms_for_intra_subject_clusters,
                                 compute_temporal_generalization_matrix=COMPUTE_TGM_FOR_INTER_FAMILY_COMPARISONS,
-                                chance_level=CHANCE_LEVEL_AUC_SCORE,
+                                chance_level=CHANCE_LEVEL_AUC,
                                 cluster_threshold_config_intra_fold=cluster_threshold_config_intra_fold
                             )
                             task_result_ap_vs_ap.update({
@@ -592,12 +594,12 @@ def execute_single_subject_decoding(
                                     stacked_curves_for_avg, axis=0, nan_policy='omit')
 
                             _, fdr_mask_centric, fdr_pval_centric = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
-                                stacked_curves_for_avg, CHANCE_LEVEL_AUC_SCORE, alternative_hypothesis="greater")
+                                stacked_curves_for_avg, CHANCE_LEVEL_AUC, alternative_hypothesis="greater")
                             ap_centric_avg_item["fdr_sig_data"] = {
                                 "mask": fdr_mask_centric, "p_values": fdr_pval_centric, "method": f"FDR on stack for {anchor_ap_display_name}"}
 
                             _, clu_obj_centric, p_clu_centric, _ = bEEG_stats.perform_cluster_permutation_test(
-                                stacked_curves_for_avg, CHANCE_LEVEL_AUC_SCORE, n_perms_for_intra_subject_clusters,
+                                stacked_curves_for_avg, CHANCE_LEVEL_AUC, n_perms_for_intra_subject_clusters,
                                 cluster_threshold_config_intra_fold, "greater", actual_n_jobs)
                             combined_mask_clu_centric = np.zeros_like(
                                 ap_centric_avg_item["average_scores_1d"], dtype=bool) if ap_centric_avg_item["average_scores_1d"] is not None else np.array([], dtype=bool)
@@ -699,7 +701,7 @@ def execute_single_subject_decoding(
                     "subject_identifier": subject_identifier,
                     "group_identifier": group_affiliation,
                     "output_directory_path": subject_results_dir,
-                    "chance_level_auc_score": CHANCE_LEVEL_AUC_SCORE,  # Constante importée
+                    "CHANCE_LEVEL_AUC": CHANCE_LEVEL_AUC,  # Constante importée
                     "protocol_type": "PP_AP",  # Ou un autre identifiant si vous généralisez
 
                     "main_original_labels_array": subject_results.get("pp_ap_main_original_labels"),

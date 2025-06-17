@@ -10,7 +10,7 @@ from sklearn.metrics import roc_curve, roc_auc_score, confusion_matrix
 import scipy.stats
 
 #
-from config.decoding_config import CHANCE_LEVEL_AUC_SCORE
+from config.decoding_config import CHANCE_LEVEL_AUC
 
 logger_viz_utils = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ def plot_group_mean_scores_barplot(
     group_identifier_for_plot_title,
     output_directory_path=None,
     score_metric_name="ROC AUC",
-    chance_level_value=CHANCE_LEVEL_AUC_SCORE,
+    chance_level_value=CHANCE_LEVEL_AUC,
 ):
     """Plot a bar chart of scores for each subject in a group."""
     if not isinstance(subject_to_score_mapping, dict):
@@ -100,7 +100,7 @@ def plot_group_temporal_decoding_statistics(
     std_error_group_temporal_scores=None,
     cluster_p_value_map_1d=None,
     fdr_significance_mask_1d=None,
-    chance_level=CHANCE_LEVEL_AUC_SCORE,
+    chance_level=CHANCE_LEVEL_AUC,
 ):
     """Plots group-level temporal decoding stats with significance overlays."""
     # Parameter Validation
@@ -666,7 +666,7 @@ def create_subject_decoding_dashboard_plots(
     # Utilisé pour Page 8 (PP_AP: Moyennes centrées sur AP_fam)
     ap_centric_average_results_list=None,
 
-    chance_level_auc_score=CHANCE_LEVEL_AUC_SCORE,  # Utilise la constante du module
+    CHANCE_LEVEL_AUC=CHANCE_LEVEL_AUC,  # Utilise la constante du module
 ):
     """Generate a multi-page PDF/PNGs dashboard for single subject results."""
     logger_viz_utils.info(
@@ -815,7 +815,7 @@ def create_subject_decoding_dashboard_plots(
                 scores_valid_p1 = main_mean_temporal_decoding_scores_1d[~np.isnan(
                     main_mean_temporal_decoding_scores_1d)]
                 y_base_sig_p1 = min(np.min(scores_valid_p1) if scores_valid_p1.size >
-                                    0 else chance_level_auc_score, chance_level_auc_score) - 0.02
+                                    0 else CHANCE_LEVEL_AUC, CHANCE_LEVEL_AUC) - 0.02
                 sig_bar_height_p1, current_y_sig_p1 = 0.01, y_base_sig_p1
 
                 if main_temporal_1d_fdr_sig_data and main_temporal_1d_fdr_sig_data.get('mask') is not None and \
@@ -832,17 +832,17 @@ def create_subject_decoding_dashboard_plots(
                                           where=main_temporal_1d_cluster_sig_data['mask'], color='orangered',
                                           alpha=0.7, step='mid', label="Mean Cluster p<0.05")
 
-                ax1_temp.axhline(chance_level_auc_score, color='k',
-                                 ls='--', label=f'Chance ({chance_level_auc_score})')
+                ax1_temp.axhline(CHANCE_LEVEL_AUC, color='k',
+                                 ls='--', label=f'Chance ({CHANCE_LEVEL_AUC})')
                 if main_epochs_time_points.size > 0 and 0 >= main_epochs_time_points.min() and 0 <= main_epochs_time_points.max():
                     ax1_temp.axvline(0, color='r', ls=':',
                                      label='Stimulus Onset')
 
                 # Ajustement dynamique de ylim
                 min_plot_y_p1 = min(current_y_sig_p1 - sig_bar_height_p1 - 0.01,
-                                    (np.nanmin(scores_valid_p1) - 0.05 if scores_valid_p1.size > 0 else chance_level_auc_score - 0.15))
+                                    (np.nanmin(scores_valid_p1) - 0.05 if scores_valid_p1.size > 0 else CHANCE_LEVEL_AUC - 0.15))
                 max_plot_y_p1 = max(1.01,
-                                    (np.nanmax(scores_valid_p1) + 0.05 if scores_valid_p1.size > 0 else chance_level_auc_score + 0.15))
+                                    (np.nanmax(scores_valid_p1) + 0.05 if scores_valid_p1.size > 0 else CHANCE_LEVEL_AUC + 0.15))
                 ax1_temp.set_ylim(min_plot_y_p1, max_plot_y_p1)
             else:
                 ax1_temp.text(0.5, 0.5, f'Main Temporal Scores N/A',
@@ -892,7 +892,7 @@ def create_subject_decoding_dashboard_plots(
                 ax1_roc.plot(fpr, tpr, color='darkorange', lw=2,
                              label=f'Agg. ROC (AUC={auc_aggregated:.3f})')
                 ax1_roc.plot([0, 1], [0, 1], color='navy', lw=1,
-                             ls=':', label=f'Chance ({chance_level_auc_score})')
+                             ls=':', label=f'Chance ({CHANCE_LEVEL_AUC})')
                 ax1_roc.set_xlim([-0.02, 1.0])
                 ax1_roc.set_ylim([0.0, 1.05])
                 ax1_roc.set_xlabel('False Positive Rate')
@@ -1064,7 +1064,7 @@ def create_subject_decoding_dashboard_plots(
                     main_mean_temporal_generalization_matrix_scores,
                     times_array=main_epochs_time_points,
                     test_times_array=main_epochs_time_points,  # Assume square GAT
-                    chance_level=chance_level_auc_score,
+                    chance_level=CHANCE_LEVEL_AUC,
                     ax_obj=ax3_tgm,
                     fdr_sig_mask_matrix=fdr_mask_for_tgm_p3,
                     # cluster_sig_masks_list=None, # Si vous avez des clusters pour TGM
@@ -1159,7 +1159,7 @@ def create_subject_decoding_dashboard_plots(
                         scores_valid_sp_p4 = mean_scores_p4[~np.isnan(
                             mean_scores_p4)]
                         y_base_sig_sp_p4 = min(np.min(
-                            scores_valid_sp_p4) if scores_valid_sp_p4.size > 0 else chance_level_auc_score, chance_level_auc_score) - 0.02
+                            scores_valid_sp_p4) if scores_valid_sp_p4.size > 0 else CHANCE_LEVEL_AUC, CHANCE_LEVEL_AUC) - 0.02
                         sig_bar_h_sp_p4, cur_y_sig_sp_p4 = 0.01, y_base_sig_sp_p4
 
                         if fdr_data_p4 and fdr_data_p4.get('mask') is not None and np.any(fdr_data_p4['mask']):
@@ -1171,16 +1171,16 @@ def create_subject_decoding_dashboard_plots(
                             ax_p4.fill_between(main_epochs_time_points, cur_y_sig_sp_p4 - sig_bar_h_sp_p4, cur_y_sig_sp_p4,
                                                where=cluster_data_p4['mask'], color='orangered', alpha=0.7, step='mid', label="Mean Cluster p<0.05")
 
-                        ax_p4.axhline(chance_level_auc_score, color='k',
-                                      ls='--', label=f'Chance ({chance_level_auc_score})')
+                        ax_p4.axhline(CHANCE_LEVEL_AUC, color='k',
+                                      ls='--', label=f'Chance ({CHANCE_LEVEL_AUC})')
                         if main_epochs_time_points.size > 0 and 0 >= main_epochs_time_points.min() and 0 <= main_epochs_time_points.max():
                             ax_p4.axvline(0, color='r', ls=':',
                                           label='Stimulus Onset')
 
                         min_plot_y_sp_p4 = min(cur_y_sig_sp_p4 - sig_bar_h_sp_p4 - 0.01,
-                                               (np.nanmin(scores_valid_sp_p4) - 0.05 if scores_valid_sp_p4.size > 0 else chance_level_auc_score - 0.15))
+                                               (np.nanmin(scores_valid_sp_p4) - 0.05 if scores_valid_sp_p4.size > 0 else CHANCE_LEVEL_AUC - 0.15))
                         max_plot_y_sp_p4 = max(1.01,
-                                               (np.nanmax(scores_valid_sp_p4) + 0.05 if scores_valid_sp_p4.size > 0 else chance_level_auc_score + 0.15))
+                                               (np.nanmax(scores_valid_sp_p4) + 0.05 if scores_valid_sp_p4.size > 0 else CHANCE_LEVEL_AUC + 0.15))
                         ax_p4.set_ylim(min_plot_y_sp_p4, max_plot_y_sp_p4)
                     else:
                         ax_p4.text(0.5, 0.5, 'Scores N/A', ha='center',
@@ -1240,7 +1240,7 @@ def create_subject_decoding_dashboard_plots(
             scores_valid_mean_sp_p5 = mean_of_specific_scores_1d[~np.isnan(
                 mean_of_specific_scores_1d)]
             y_base_sig_msp_p5 = min(np.min(
-                scores_valid_mean_sp_p5) if scores_valid_mean_sp_p5.size > 0 else chance_level_auc_score, chance_level_auc_score) - 0.02
+                scores_valid_mean_sp_p5) if scores_valid_mean_sp_p5.size > 0 else CHANCE_LEVEL_AUC, CHANCE_LEVEL_AUC) - 0.02
             sig_bar_h_msp_p5, cur_y_sig_msp_p5 = 0.01, y_base_sig_msp_p5
 
             # FDR sur la moyenne des courbes spécifiques
@@ -1272,15 +1272,15 @@ def create_subject_decoding_dashboard_plots(
                                    alpha=0.7, label="Cluster (N/A)")
 
             ax5_mean_spec.axhline(
-                chance_level_auc_score, color='k', ls='--', label=f'Chance ({chance_level_auc_score})')
+                CHANCE_LEVEL_AUC, color='k', ls='--', label=f'Chance ({CHANCE_LEVEL_AUC})')
             if main_epochs_time_points.size > 0 and 0 >= main_epochs_time_points.min() and 0 <= main_epochs_time_points.max():
                 ax5_mean_spec.axvline(
                     0, color='r', ls=':', label='Stimulus Onset')
 
             min_plot_y_msp_p5 = min(cur_y_sig_msp_p5 - sig_bar_h_msp_p5 - 0.01,
-                                    (np.nanmin(scores_valid_mean_sp_p5) - 0.05 if scores_valid_mean_sp_p5.size > 0 else chance_level_auc_score - 0.15))
+                                    (np.nanmin(scores_valid_mean_sp_p5) - 0.05 if scores_valid_mean_sp_p5.size > 0 else CHANCE_LEVEL_AUC - 0.15))
             max_plot_y_msp_p5 = max(1.01,
-                                    (np.nanmax(scores_valid_mean_sp_p5) + 0.05 if scores_valid_mean_sp_p5.size > 0 else chance_level_auc_score + 0.15))
+                                    (np.nanmax(scores_valid_mean_sp_p5) + 0.05 if scores_valid_mean_sp_p5.size > 0 else CHANCE_LEVEL_AUC + 0.15))
             ax5_mean_spec.set_ylim(min_plot_y_msp_p5, max_plot_y_msp_p5)
 
             ax5_mean_spec.set_title(
@@ -1355,7 +1355,7 @@ def create_subject_decoding_dashboard_plots(
 
                         scores_v_p6 = mean_scores_p6[~np.isnan(mean_scores_p6)]
                         y_b_ap6 = min(np.min(scores_v_p6) if scores_v_p6.size >
-                                      0 else chance_level_auc_score, chance_level_auc_score) - 0.02
+                                      0 else CHANCE_LEVEL_AUC, CHANCE_LEVEL_AUC) - 0.02
                         s_h_ap6, cur_y_ap6 = 0.01, y_b_ap6
                         if fdr_data_p6 and fdr_data_p6.get('mask') is not None and np.any(fdr_data_p6['mask']):
                             ax_p6.fill_between(main_epochs_time_points, cur_y_ap6 - s_h_ap6, cur_y_ap6,
@@ -1365,16 +1365,16 @@ def create_subject_decoding_dashboard_plots(
                             ax_p6.fill_between(main_epochs_time_points, cur_y_ap6 - s_h_ap6, cur_y_ap6,
                                                where=cluster_data_p6['mask'], color='orangered', alpha=0.7, step='mid', label="Mean Cluster p<0.05")
 
-                        ax_p6.axhline(chance_level_auc_score, color='k', ls='--',
-                                      lw=1, label=f'Chance ({chance_level_auc_score:.1f})')
+                        ax_p6.axhline(CHANCE_LEVEL_AUC, color='k', ls='--',
+                                      lw=1, label=f'Chance ({CHANCE_LEVEL_AUC:.1f})')
                         if main_epochs_time_points.size > 0 and 0 >= main_epochs_time_points.min() and 0 <= main_epochs_time_points.max():
                             ax_p6.axvline(0, color='r', ls=':',
                                           lw=1, label='Stimulus Onset')
 
                         min_plot_y_p6 = min(cur_y_ap6 - s_h_ap6 - 0.01, (np.nanmin(
-                            scores_v_p6) - 0.05 if scores_v_p6.size > 0 else chance_level_auc_score - 0.15))
+                            scores_v_p6) - 0.05 if scores_v_p6.size > 0 else CHANCE_LEVEL_AUC - 0.15))
                         max_plot_y_p6 = max(1.01, (np.nanmax(
-                            scores_v_p6) + 0.05 if scores_v_p6.size > 0 else chance_level_auc_score + 0.15))
+                            scores_v_p6) + 0.05 if scores_v_p6.size > 0 else CHANCE_LEVEL_AUC + 0.15))
                         ax_p6.set_ylim(min_plot_y_p6, max_plot_y_p6)
                     else:
                         ax_p6.text(0.5, 0.5, 'Scores N/A', ha='center',
@@ -1450,7 +1450,7 @@ def create_subject_decoding_dashboard_plots(
 
                         scores_v_p7 = mean_scores_p7[~np.isnan(mean_scores_p7)]
                         y_b_ap7 = min(np.min(scores_v_p7) if scores_v_p7.size >
-                                      0 else chance_level_auc_score, chance_level_auc_score) - 0.02
+                                      0 else CHANCE_LEVEL_AUC, CHANCE_LEVEL_AUC) - 0.02
                         s_h_ap7, cur_y_ap7 = 0.01, y_b_ap7
                         if fdr_d_p7 and fdr_d_p7.get('mask') is not None and np.any(fdr_d_p7['mask']):
                             ax_p7.fill_between(main_epochs_time_points, cur_y_ap7 - s_h_ap7, cur_y_ap7,
@@ -1460,16 +1460,16 @@ def create_subject_decoding_dashboard_plots(
                             ax_p7.fill_between(main_epochs_time_points, cur_y_ap7 - s_h_ap7, cur_y_ap7,
                                                where=clu_d_p7['mask'], color='orangered', alpha=0.7, step='mid', label="Mean Cluster p<0.05")
 
-                        ax_p7.axhline(chance_level_auc_score, color='k', ls='--',
-                                      lw=1, label=f'Chance ({chance_level_auc_score:.1f})')
+                        ax_p7.axhline(CHANCE_LEVEL_AUC, color='k', ls='--',
+                                      lw=1, label=f'Chance ({CHANCE_LEVEL_AUC:.1f})')
                         if main_epochs_time_points.size > 0 and 0 >= main_epochs_time_points.min() and 0 <= main_epochs_time_points.max():
                             ax_p7.axvline(0, color='r', ls=':',
                                           lw=1, label='Stimulus Onset')
 
                         min_plot_y_p7 = min(cur_y_ap7 - s_h_ap7 - 0.01, (np.nanmin(
-                            scores_v_p7) - 0.05 if scores_v_p7.size > 0 else chance_level_auc_score - 0.15))
+                            scores_v_p7) - 0.05 if scores_v_p7.size > 0 else CHANCE_LEVEL_AUC - 0.15))
                         max_plot_y_p7 = max(1.01, (np.nanmax(
-                            scores_v_p7) + 0.05 if scores_v_p7.size > 0 else chance_level_auc_score + 0.15))
+                            scores_v_p7) + 0.05 if scores_v_p7.size > 0 else CHANCE_LEVEL_AUC + 0.15))
                         ax_p7.set_ylim(min_plot_y_p7, max_plot_y_p7)
                     else:
                         ax_p7.text(0.5, 0.5, 'Scores N/A', ha='center',
@@ -1551,7 +1551,7 @@ def create_subject_decoding_dashboard_plots(
                     scores_valid_ac_p8 = avg_scores_p8[~np.isnan(
                         avg_scores_p8)]
                     y_base_sig_ac_p8 = min(np.min(
-                        scores_valid_ac_p8) if scores_valid_ac_p8.size > 0 else chance_level_auc_score, chance_level_auc_score) - 0.02
+                        scores_valid_ac_p8) if scores_valid_ac_p8.size > 0 else CHANCE_LEVEL_AUC, CHANCE_LEVEL_AUC) - 0.02
                     sig_bar_h_ac_p8, cur_y_sig_ac_p8 = 0.01, y_base_sig_ac_p8
 
                     # FDR sur la moyenne AP-centrique
@@ -1579,16 +1579,16 @@ def create_subject_decoding_dashboard_plots(
                         ax_p8.plot([], [], color='orangered',
                                    alpha=0.7, label="Cluster (N/A)")
 
-                    ax_p8.axhline(chance_level_auc_score, color='k',
-                                  ls='--', label=f'Chance ({chance_level_auc_score})')
+                    ax_p8.axhline(CHANCE_LEVEL_AUC, color='k',
+                                  ls='--', label=f'Chance ({CHANCE_LEVEL_AUC})')
                     if main_epochs_time_points.size > 0 and 0 >= main_epochs_time_points.min() and 0 <= main_epochs_time_points.max():
                         ax_p8.axvline(0, color='r', ls=':',
                                       label='Stimulus Onset')
 
                     min_plot_y_ac_p8 = min(cur_y_sig_ac_p8 - sig_bar_h_ac_p8 - 0.01,
-                                           (np.nanmin(scores_valid_ac_p8) - 0.05 if scores_valid_ac_p8.size > 0 else chance_level_auc_score - 0.15))
+                                           (np.nanmin(scores_valid_ac_p8) - 0.05 if scores_valid_ac_p8.size > 0 else CHANCE_LEVEL_AUC - 0.15))
                     max_plot_y_ac_p8 = max(1.01,
-                                           (np.nanmax(scores_valid_ac_p8) + 0.05 if scores_valid_ac_p8.size > 0 else chance_level_auc_score + 0.15))
+                                           (np.nanmax(scores_valid_ac_p8) + 0.05 if scores_valid_ac_p8.size > 0 else CHANCE_LEVEL_AUC + 0.15))
                     ax_p8.set_ylim(min_plot_y_ac_p8, max_plot_y_ac_p8)
 
                     # Titre du subplot simplifié pour indiquer l'ancre

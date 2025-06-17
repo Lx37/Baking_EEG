@@ -1,6 +1,27 @@
 # Examples script for group-level LG analysis
 
 
+from Baking_EEG.config.decoding_config import (
+    CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
+    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
+    PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
+    FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
+    N_PERMUTATIONS_GROUP_LEVEL, GROUP_LEVEL_STAT_THRESHOLD_TYPE,
+    T_THRESHOLD_FOR_GROUP_STAT_CLUSTERING, CHANCE_LEVEL_AUC,
+    INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
+    COMPUTE_TEMPORAL_GENERALIZATION_MATRICES, CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG,
+    SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS, N_JOBS_PROCESSING
+)
+from Baking_EEG.config.config import ALL_SUBJECT_GROUPS
+from Baking_EEG.utils.vizualization_utils_LG import (
+    plot_group_mean_scores_barplot_lg,
+    plot_group_temporal_decoding_statistics_lg,
+    plot_group_tgm_statistics_lg
+)
+from Baking_EEG.utils import stats_utils as bEEG_stats
+from Baking_EEG.utils.utils import (
+    configure_project_paths, setup_analysis_results_directory
+)
 import os
 import sys
 import logging
@@ -18,27 +39,6 @@ PROJECT_ROOT_EXAMPLE = os.path.abspath(os.path.join(SCRIPT_DIR_EXAMPLE, ".."))
 if PROJECT_ROOT_EXAMPLE not in sys.path:
     sys.path.insert(0, PROJECT_ROOT_EXAMPLE)
 # --- Fin Configuration du chemin ---
-from Baking_EEG.utils.utils import (
-    configure_project_paths, setup_analysis_results_directory
-)
-from Baking_EEG.utils import stats_utils as bEEG_stats
-from Baking_EEG.utils.vizualization_utils_LG import (
-    plot_group_mean_scores_barplot_lg,
-    plot_group_temporal_decoding_statistics_lg,
-    plot_group_tgm_statistics_lg
-)
-from Baking_EEG.config.config import ALL_SUBJECT_GROUPS
-from Baking_EEG.config.decoding_config import (
-    CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
-    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
-    PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
-    FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
-    N_PERMUTATIONS_GROUP_LEVEL, GROUP_LEVEL_STAT_THRESHOLD_TYPE,
-    T_THRESHOLD_FOR_GROUP_STAT_CLUSTERING, CHANCE_LEVEL_AUC_SCORE,
-    INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
-    COMPUTE_TEMPORAL_GENERALIZATION_MATRICES, CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG,
-    SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS, N_JOBS_PROCESSING
-)
 # La fonction execute_single_subject_lg_decoding est dans run_decoding_one_lg.py
 try:
     from Baking_EEG.examples.run_decoding_one_lg import (
@@ -245,16 +245,16 @@ def execute_group_intra_subject_lg_decoding_analysis(
                                  group_identifier, mean_lg_auc, std_lg_auc, len(valid_lg_global_scores))
         if compute_group_level_stats_flag and len(valid_lg_global_scores) >= 2:
             stat_lg_g, p_val_lg_g = bEEG_stats.compare_global_scores_to_chance(
-                valid_lg_global_scores, CHANCE_LEVEL_AUC_SCORE, "ttest", "greater")
+                valid_lg_global_scores, CHANCE_LEVEL_AUC, "ttest", "greater")
             logger_run_group_lg.info(
                 "  LG Global AUC (Main Dec.) vs Chance: t=%.3f, p=%.4f", stat_lg_g, p_val_lg_g)
             if save_results_flag and group_summary_dir:
                 with open(os.path.join(group_summary_dir, "stats_lg_global_auc.txt"), "w") as f_stat:
                     f_stat.write(
-                        f"Intra-Subject LG Global AUC (Main Dec.) vs Chance ({CHANCE_LEVEL_AUC_SCORE})\nGroup: {group_identifier}, N: {len(valid_lg_global_scores)}\nMean AUC: {mean_lg_auc:.4f}, Std: {std_lg_auc:.4f}\nT-stat: {stat_lg_g:.4f}, P-val: {p_val_lg_g:.4f}\n")
+                        f"Intra-Subject LG Global AUC (Main Dec.) vs Chance ({CHANCE_LEVEL_AUC})\nGroup: {group_identifier}, N: {len(valid_lg_global_scores)}\nMean AUC: {mean_lg_auc:.4f}, Std: {std_lg_auc:.4f}\nT-stat: {stat_lg_g:.4f}, P-val: {p_val_lg_g:.4f}\n")
         if generate_plots_flag and group_summary_dir:
             plot_group_mean_scores_barplot_lg(group_results_collection["subject_lg_global_auc_scores"],
-                                              f"{group_identifier} - Subject LG Global AUCs (Main)", group_summary_dir, "Global ROC AUC", CHANCE_LEVEL_AUC_SCORE)
+                                              f"{group_identifier} - Subject LG Global AUCs (Main)", group_summary_dir, "Global ROC AUC", CHANCE_LEVEL_AUC)
     else:
         logger_run_group_lg.warning(
             "No valid LG global scores for group %s.", group_identifier)
@@ -272,7 +272,7 @@ def execute_group_intra_subject_lg_decoding_analysis(
                 logger_run_group_lg.info(
                     "LG Group %s (N=%d for Main 1D stats): Running group stats...", group_identifier, stacked_1d_lg.shape[0])
                 t_obs_fdr_lg, fdr_mask_lg, p_fdr_lg = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
-                    stacked_1d_lg, CHANCE_LEVEL_AUC_SCORE, alternative_hypothesis="greater")
+                    stacked_1d_lg, CHANCE_LEVEL_AUC, alternative_hypothesis="greater")
                 if save_results_flag and group_summary_dir:
                     np.savez_compressed(os.path.join(group_summary_dir, "stats_lg_temp_1D_FDR_Main.npz"),
                                         t_obs=t_obs_fdr_lg, sig_mask=fdr_mask_lg, p_vals=p_fdr_lg, times=ref_times_1d)
@@ -288,7 +288,7 @@ def execute_group_intra_subject_lg_decoding_analysis(
                     t_thresh_clu_lg = INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG if group_cluster_test_threshold_method != "tfce" else t_thresh_clu_lg
 
                 t_obs_clu_lg, clu_lg, p_clu_lg, _ = bEEG_stats.perform_cluster_permutation_test(
-                    stacked_1d_lg, CHANCE_LEVEL_AUC_SCORE, n_perms_for_group_cluster_test, t_thresh_clu_lg, "greater", actual_n_jobs_group_stats)
+                    stacked_1d_lg, CHANCE_LEVEL_AUC, n_perms_for_group_cluster_test, t_thresh_clu_lg, "greater", actual_n_jobs_group_stats)
                 clu_map_lg = (bEEG_stats.create_p_value_map_from_cluster_results(
                     ref_times_1d.shape, clu_lg, p_clu_lg) if clu_lg and p_clu_lg is not None else None)
                 if save_results_flag and group_summary_dir:
@@ -298,7 +298,7 @@ def execute_group_intra_subject_lg_decoding_analysis(
                     sem_1d_lg = (scipy.stats.sem(
                         stacked_1d_lg, axis=0, nan_policy="omit") if stacked_1d_lg.shape[0] > 1 else None)
                     plot_group_temporal_decoding_statistics_lg(ref_times_1d, np.mean(
-                        stacked_1d_lg, axis=0), f"{group_identifier} (Main LG 1D Temporal)", group_summary_dir, sem_1d_lg, clu_map_lg, fdr_mask_lg, CHANCE_LEVEL_AUC_SCORE)
+                        stacked_1d_lg, axis=0), f"{group_identifier} (Main LG 1D Temporal)", group_summary_dir, sem_1d_lg, clu_map_lg, fdr_mask_lg, CHANCE_LEVEL_AUC)
 
             # Analyze LG specific comparisons at group level
             valid_1d_scores_lg_specific = [s for i, s in enumerate(group_results_collection["subject_lg_mean_of_specific_scores_list"]) if i < len(group_results_collection["subject_epochs_time_points_list"]) and (
@@ -308,13 +308,13 @@ def execute_group_intra_subject_lg_decoding_analysis(
                 logger_run_group_lg.info(
                     "LG Group %s (N=%d for Specific 1D stats): Running specific comparison group stats...", group_identifier, stacked_1d_lg_specific.shape[0])
                 t_obs_fdr_lg_spec, fdr_mask_lg_spec, p_fdr_lg_spec = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
-                    stacked_1d_lg_specific, CHANCE_LEVEL_AUC_SCORE, alternative_hypothesis="greater")
+                    stacked_1d_lg_specific, CHANCE_LEVEL_AUC, alternative_hypothesis="greater")
                 if save_results_flag and group_summary_dir:
                     np.savez_compressed(os.path.join(group_summary_dir, "stats_lg_temp_1D_FDR_Specific.npz"),
                                         t_obs=t_obs_fdr_lg_spec, sig_mask=fdr_mask_lg_spec, p_vals=p_fdr_lg_spec, times=ref_times_1d)
 
                 t_obs_clu_lg_spec, clu_lg_spec, p_clu_lg_spec, _ = bEEG_stats.perform_cluster_permutation_test(
-                    stacked_1d_lg_specific, CHANCE_LEVEL_AUC_SCORE, n_perms_for_group_cluster_test, t_thresh_clu_lg, "greater", actual_n_jobs_group_stats)
+                    stacked_1d_lg_specific, CHANCE_LEVEL_AUC, n_perms_for_group_cluster_test, t_thresh_clu_lg, "greater", actual_n_jobs_group_stats)
                 clu_map_lg_spec = (bEEG_stats.create_p_value_map_from_cluster_results(
                     ref_times_1d.shape, clu_lg_spec, p_clu_lg_spec) if clu_lg_spec and p_clu_lg_spec is not None else None)
                 if save_results_flag and group_summary_dir:
@@ -324,7 +324,7 @@ def execute_group_intra_subject_lg_decoding_analysis(
                     sem_1d_lg_spec = (scipy.stats.sem(
                         stacked_1d_lg_specific, axis=0, nan_policy="omit") if stacked_1d_lg_specific.shape[0] > 1 else None)
                     plot_group_temporal_decoding_statistics_lg(ref_times_1d, np.mean(
-                        stacked_1d_lg_specific, axis=0), f"{group_identifier} (LG Specific 1D Temporal)", group_summary_dir, sem_1d_lg_spec, clu_map_lg_spec, fdr_mask_lg_spec, CHANCE_LEVEL_AUC_SCORE, plot_suffix="_specific")
+                        stacked_1d_lg_specific, axis=0), f"{group_identifier} (LG Specific 1D Temporal)", group_summary_dir, sem_1d_lg_spec, clu_map_lg_spec, fdr_mask_lg_spec, CHANCE_LEVEL_AUC, plot_suffix="_specific")
 
             # Analyze LG local effects at group level
             valid_1d_scores_lg_local = [s for i, s in enumerate(group_results_collection["subject_lg_local_effect_scores_list"]) if i < len(group_results_collection["subject_epochs_time_points_list"]) and (
@@ -334,13 +334,13 @@ def execute_group_intra_subject_lg_decoding_analysis(
                 logger_run_group_lg.info(
                     "LG Group %s (N=%d for Local Effect 1D stats): Running local effect group stats...", group_identifier, stacked_1d_lg_local.shape[0])
                 t_obs_fdr_lg_local, fdr_mask_lg_local, p_fdr_lg_local = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
-                    stacked_1d_lg_local, CHANCE_LEVEL_AUC_SCORE, alternative_hypothesis="greater")
+                    stacked_1d_lg_local, CHANCE_LEVEL_AUC, alternative_hypothesis="greater")
                 if save_results_flag and group_summary_dir:
                     np.savez_compressed(os.path.join(group_summary_dir, "stats_lg_temp_1D_FDR_LocalEffect.npz"),
                                         t_obs=t_obs_fdr_lg_local, sig_mask=fdr_mask_lg_local, p_vals=p_fdr_lg_local, times=ref_times_1d)
 
                 t_obs_clu_lg_local, clu_lg_local, p_clu_lg_local, _ = bEEG_stats.perform_cluster_permutation_test(
-                    stacked_1d_lg_local, CHANCE_LEVEL_AUC_SCORE, n_perms_for_group_cluster_test, t_thresh_clu_lg, "greater", actual_n_jobs_group_stats)
+                    stacked_1d_lg_local, CHANCE_LEVEL_AUC, n_perms_for_group_cluster_test, t_thresh_clu_lg, "greater", actual_n_jobs_group_stats)
                 clu_map_lg_local = (bEEG_stats.create_p_value_map_from_cluster_results(
                     ref_times_1d.shape, clu_lg_local, p_clu_lg_local) if clu_lg_local and p_clu_lg_local is not None else None)
                 if save_results_flag and group_summary_dir:
@@ -350,7 +350,7 @@ def execute_group_intra_subject_lg_decoding_analysis(
                     sem_1d_lg_local = (scipy.stats.sem(
                         stacked_1d_lg_local, axis=0, nan_policy="omit") if stacked_1d_lg_local.shape[0] > 1 else None)
                     plot_group_temporal_decoding_statistics_lg(ref_times_1d, np.mean(
-                        stacked_1d_lg_local, axis=0), f"{group_identifier} (LG Local Effect 1D Temporal)", group_summary_dir, sem_1d_lg_local, clu_map_lg_local, fdr_mask_lg_local, CHANCE_LEVEL_AUC_SCORE, plot_suffix="_local_effect")
+                        stacked_1d_lg_local, axis=0), f"{group_identifier} (LG Local Effect 1D Temporal)", group_summary_dir, sem_1d_lg_local, clu_map_lg_local, fdr_mask_lg_local, CHANCE_LEVEL_AUC, plot_suffix="_local_effect")
 
             logger_run_group_lg.info(
                 "LG Group %s temporal 1D statistics completed.", group_identifier)
@@ -372,13 +372,13 @@ def execute_group_intra_subject_lg_decoding_analysis(
                     logger_run_group_lg.info(
                         "LG Group %s (N=%d for TGM stats): Running TGM group stats...", group_identifier, stacked_tgm_lg.shape[0])
                     t_obs_tgm_lg, fdr_mask_tgm_lg, p_fdr_tgm_lg = bEEG_stats.perform_2d_fdr_correction_on_scores(
-                        stacked_tgm_lg, CHANCE_LEVEL_AUC_SCORE, alternative_hypothesis="greater")
+                        stacked_tgm_lg, CHANCE_LEVEL_AUC, alternative_hypothesis="greater")
                     if save_results_flag and group_summary_dir:
                         np.savez_compressed(os.path.join(group_summary_dir, "stats_lg_TGM_FDR_Main.npz"),
                                             t_obs=t_obs_tgm_lg, sig_mask=fdr_mask_tgm_lg, p_vals=p_fdr_tgm_lg, times=ref_times_1d)
                     if generate_plots_flag and group_summary_dir:
                         plot_group_tgm_statistics_lg(ref_times_1d, np.mean(stacked_tgm_lg, axis=0),
-                                                     f"{group_identifier} (LG TGM)", group_summary_dir, fdr_mask_tgm_lg, CHANCE_LEVEL_AUC_SCORE)
+                                                     f"{group_identifier} (LG TGM)", group_summary_dir, fdr_mask_tgm_lg, CHANCE_LEVEL_AUC)
                     logger_run_group_lg.info(
                         "LG Group %s TGM statistics completed.", group_identifier)
                 else:

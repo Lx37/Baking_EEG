@@ -8,7 +8,7 @@ from config.decoding_config import (
     PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
     FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
     N_PERMUTATIONS_GROUP_LEVEL, GROUP_LEVEL_STAT_THRESHOLD_TYPE,
-    T_THRESHOLD_FOR_GROUP_STAT_CLUSTERING, CHANCE_LEVEL_AUC_SCORE,
+    T_THRESHOLD_FOR_GROUP_STAT_CLUSTERING, CHANCE_LEVEL_AUC,
     INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
     CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT,
     SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS, N_JOBS_PROCESSING,
@@ -247,9 +247,9 @@ def execute_group_intra_subject_decoding_analysis(
         # Test statistique contre le niveau de chance
         if len(valid_global_auc_scores) >= 3:
             t_stat, p_val = scipy.stats.ttest_1samp(
-                valid_global_auc_scores, CHANCE_LEVEL_AUC_SCORE)
+                valid_global_auc_scores, CHANCE_LEVEL_AUC)
             logger_run_group.info("  One-sample t-test vs chance (%.2f): t=%.3f, p=%.6f",
-                                  CHANCE_LEVEL_AUC_SCORE, t_stat, p_val)
+                                  CHANCE_LEVEL_AUC, t_stat, p_val)
     else:
         logger_run_group.warning(
             "No valid global AUC scores for group '%s'", group_identifier)
@@ -300,7 +300,7 @@ def execute_group_intra_subject_decoding_analysis(
                 # Test pointwise FDR
                 try:
                     _, fdr_mask_group, fdr_pvalues_group = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
-                        temporal_scores_array, CHANCE_LEVEL_AUC_SCORE, alternative_hypothesis="greater"
+                        temporal_scores_array, CHANCE_LEVEL_AUC, alternative_hypothesis="greater"
                     )
                     group_temporal_results["group_temporal_fdr_mask"] = fdr_mask_group
                     group_temporal_results["group_temporal_fdr_pvalues"] = fdr_pvalues_group
@@ -318,7 +318,7 @@ def execute_group_intra_subject_decoding_analysis(
                     }
 
                     _, cluster_objects_group, cluster_pvalues_group, _ = bEEG_stats.perform_cluster_permutation_test(
-                        temporal_scores_array, CHANCE_LEVEL_AUC_SCORE, n_perms_for_group_cluster_test,
+                        temporal_scores_array, CHANCE_LEVEL_AUC, n_perms_for_group_cluster_test,
                         cluster_threshold_config_group, "greater", actual_n_jobs_group_stats
                     )
 
@@ -470,7 +470,7 @@ def execute_group_intra_subject_decoding_analysis(
 
             if len(valid_global_auc_scores) >= 3:
                 t_stat, p_val = scipy.stats.ttest_1samp(
-                    valid_global_auc_scores, CHANCE_LEVEL_AUC_SCORE)
+                    valid_global_auc_scores, CHANCE_LEVEL_AUC)
                 summary_data.update({
                     "t_stat_vs_chance": t_stat,
                     "p_val_vs_chance": p_val
@@ -506,7 +506,7 @@ def execute_group_intra_subject_decoding_analysis(
                     plot_group_mean_scores_barplot(
                         group_results_collection["subject_global_auc_scores"],
                         group_identifier,
-                        CHANCE_LEVEL_AUC_SCORE,
+                        CHANCE_LEVEL_AUC,
                         plots_dir
                     )
                     logger_run_group.info(
@@ -521,7 +521,7 @@ def execute_group_intra_subject_decoding_analysis(
                     plot_group_temporal_decoding_statistics(
                         group_temporal_results,
                         group_identifier,
-                        CHANCE_LEVEL_AUC_SCORE,
+                        CHANCE_LEVEL_AUC,
                         plots_dir
                     )
                     logger_run_group.info(
@@ -536,7 +536,7 @@ def execute_group_intra_subject_decoding_analysis(
                     plot_group_tgm_statistics(
                         group_tgm_results,
                         group_identifier,
-                        CHANCE_LEVEL_AUC_SCORE,
+                        CHANCE_LEVEL_AUC,
                         plots_dir
                     )
                     logger_run_group.info(

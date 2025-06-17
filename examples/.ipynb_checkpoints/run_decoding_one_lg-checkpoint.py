@@ -6,6 +6,24 @@ This script performs Local-Global protocol decoding analysis for a single
 subject using the _4_decoding_core module.
 """
 
+from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
+from utils.vizualization_utils_LG import create_subject_decoding_dashboard_plots_lg
+from utils.utils import (
+    configure_project_paths, setup_analysis_results_directory
+)
+from utils.loading_LG_utils import load_epochs_data_for_lg_decoding
+from utils import stats_utils as bEEG_stats
+from config.config import ALL_SUBJECT_GROUPS
+from config.decoding_config import (
+    CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
+    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
+    PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
+    FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
+    CHANCE_LEVEL_AUC, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
+    COMPUTE_INTRA_SUBJECT_STATISTICS, COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
+    CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG, SAVE_ANALYSIS_RESULTS,
+    GENERATE_PLOTS, N_JOBS_PROCESSING
+)
 import sys
 import os
 import logging
@@ -28,24 +46,6 @@ if PROJECT_ROOT not in sys.path:
 
 # Import project modules
 
-from config.decoding_config import (
-    CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
-    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
-    PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
-    FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
-    CHANCE_LEVEL_AUC_SCORE, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
-    COMPUTE_INTRA_SUBJECT_STATISTICS, COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
-    CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG, SAVE_ANALYSIS_RESULTS,
-    GENERATE_PLOTS, N_JOBS_PROCESSING
-)
-from config.config import ALL_SUBJECT_GROUPS
-from utils import stats_utils as bEEG_stats
-from utils.loading_LG_utils import load_epochs_data_for_lg_decoding
-from utils.utils import (
-    configure_project_paths, setup_analysis_results_directory
-)
-from utils.vizualization_utils_LG import create_subject_decoding_dashboard_plots_lg
-from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
 # Logging configuration
 LOG_DIR = './logs_run_single_subject_lg'
 os.makedirs(LOG_DIR, exist_ok=True)
@@ -312,7 +312,7 @@ def execute_single_subject_lg_decoding(
                             n_perms_for_intra_subject_clusters),
                         compute_temporal_generalization_matrix=(
                             compute_tgm_flag),
-                        chance_level=CHANCE_LEVEL_AUC_SCORE,
+                        chance_level=CHANCE_LEVEL_AUC,
                         cluster_threshold_config_intra_fold=(
                             cluster_threshold_config_intra_fold)
                     )
@@ -447,7 +447,7 @@ def execute_single_subject_lg_decoding(
                                     n_permutations_for_intra_fold_clusters=(
                                         n_perms_for_intra_subject_clusters),
                                     compute_temporal_generalization_matrix=True,
-                                    chance_level=CHANCE_LEVEL_AUC_SCORE,
+                                    chance_level=CHANCE_LEVEL_AUC,
                                     cluster_threshold_config_intra_fold=(
                                         cluster_threshold_config_intra_fold)
                                 ))
@@ -513,7 +513,7 @@ def execute_single_subject_lg_decoding(
 
                 _, fdr_mask_stack, fdr_pval_stack = (
                     bEEG_stats.perform_pointwise_fdr_correction_on_scores(
-                        stacked_specific_curves, CHANCE_LEVEL_AUC_SCORE,
+                        stacked_specific_curves, CHANCE_LEVEL_AUC,
                         alternative_hypothesis="greater"))
 
                 subject_results["lg_mean_specific_fdr"] = {
@@ -524,7 +524,7 @@ def execute_single_subject_lg_decoding(
 
                 _, clu_obj_stack, p_clu_stack, _ = (
                     bEEG_stats.perform_cluster_permutation_test(
-                        stacked_specific_curves, CHANCE_LEVEL_AUC_SCORE,
+                        stacked_specific_curves, CHANCE_LEVEL_AUC,
                         n_perms_for_intra_subject_clusters,
                         cluster_threshold_config_intra_fold,
                         "greater", actual_n_jobs))
@@ -636,7 +636,7 @@ def execute_single_subject_lg_decoding(
                         "subject_identifier": subject_identifier,
                         "group_identifier": group_affiliation,
                         "output_directory_path": subject_results_dir,
-                        "chance_level_auc_score": CHANCE_LEVEL_AUC_SCORE,
+                        "CHANCE_LEVEL_AUC": CHANCE_LEVEL_AUC,
                         "protocol_type": "LG",
 
                         "lg_main_original_labels_array": (

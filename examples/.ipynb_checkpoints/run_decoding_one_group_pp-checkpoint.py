@@ -33,7 +33,7 @@ from config.decoding_config import (
     PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
     FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
     N_PERMUTATIONS_GROUP_LEVEL, GROUP_LEVEL_STAT_THRESHOLD_TYPE,
-    T_THRESHOLD_FOR_GROUP_STAT_CLUSTERING, CHANCE_LEVEL_AUC_SCORE,
+    T_THRESHOLD_FOR_GROUP_STAT_CLUSTERING, CHANCE_LEVEL_AUC,
     INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
     COMPUTE_TEMPORAL_GENERALIZATION_MATRICES, CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT,
     SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS, N_JOBS_PROCESSING
@@ -64,6 +64,8 @@ logging.getLogger("utils.stats_utils").setLevel(logging.INFO)
 logging.getLogger("utils.vizualization_utils_PP").setLevel(logging.INFO)
 
 # La suite du fichier est identique à la version précédente et devrait être correcte
+
+
 def execute_group_intra_subject_decoding_analysis(
     subject_ids_in_group,
     group_identifier,
@@ -94,7 +96,8 @@ def execute_group_intra_subject_decoding_analysis(
 ):
     """Executes intra-subject decoding for all subjects in a group and aggregates results."""
     if not isinstance(subject_ids_in_group, list) or not subject_ids_in_group:
-        logger_run_group.error("subject_ids_in_group must be a non-empty list.")
+        logger_run_group.error(
+            "subject_ids_in_group must be a non-empty list.")
         return {}
     if not isinstance(group_identifier, str) or not group_identifier:
         logger_run_group.error("group_identifier must be a non-empty string.")
@@ -102,8 +105,10 @@ def execute_group_intra_subject_decoding_analysis(
 
     total_group_analysis_start_time = time.time()
 
-    actual_n_jobs_subject = -1 if isinstance(n_jobs_for_each_subject, str) and n_jobs_for_each_subject.lower() == "auto" else int(n_jobs_for_each_subject)
-    actual_n_jobs_group_stats = -1 if isinstance(n_jobs_for_group_cluster_stats, str) and n_jobs_for_group_cluster_stats.lower() == "auto" else int(n_jobs_for_group_cluster_stats)
+    actual_n_jobs_subject = -1 if isinstance(n_jobs_for_each_subject,
+                                             str) and n_jobs_for_each_subject.lower() == "auto" else int(n_jobs_for_each_subject)
+    actual_n_jobs_group_stats = -1 if isinstance(n_jobs_for_group_cluster_stats,
+                                                 str) and n_jobs_for_group_cluster_stats.lower() == "auto" else int(n_jobs_for_group_cluster_stats)
 
     logger_run_group.info(
         "Starting intra-subject decoding analysis for GROUP: %s. GS: %s, CSP: %s, ANOVA FS: %s. n_jobs_subj: %s, n_jobs_grp_stats: %s.",
@@ -147,28 +152,35 @@ def execute_group_intra_subject_decoding_analysis(
             cluster_threshold_config_intra_fold=cluster_threshold_config_intra_fold_group,
             loading_conditions_config=loading_conditions_config
         )
-        
+
         s_auc = subject_output_dict.get("pp_ap_main_mean_auc_global", np.nan)
         s_metrics = subject_output_dict.get("pp_ap_main_global_metrics", {})
-        s_scores_t_1d_mean = subject_output_dict.get("pp_ap_main_scores_1d_mean")
+        s_scores_t_1d_mean = subject_output_dict.get(
+            "pp_ap_main_scores_1d_mean")
         s_times_t = subject_output_dict.get("epochs_time_points")
         s_scores_tgm_mean = subject_output_dict.get("pp_ap_main_tgm_mean")
-        s_mean_specific = subject_output_dict.get("pp_ap_mean_of_specific_scores_1d")
+        s_mean_specific = subject_output_dict.get(
+            "pp_ap_mean_of_specific_scores_1d")
 
         group_results_collection["subject_global_auc_scores"][subject_id_current] = s_auc
         group_results_collection["subject_global_metrics_maps"][subject_id_current] = s_metrics
 
         if pd.notna(s_auc) and s_scores_t_1d_mean is not None and s_times_t is not None and \
            s_scores_t_1d_mean.size > 0 and s_times_t.size > 0:
-            group_results_collection["subject_temporal_scores_1d_mean_list"].append(s_scores_t_1d_mean)
-            group_results_collection["subject_epochs_time_points_list"].append(s_times_t)
-            group_results_collection["processed_subject_ids"].append(subject_id_current)
+            group_results_collection["subject_temporal_scores_1d_mean_list"].append(
+                s_scores_t_1d_mean)
+            group_results_collection["subject_epochs_time_points_list"].append(
+                s_times_t)
+            group_results_collection["processed_subject_ids"].append(
+                subject_id_current)
 
             if compute_tgm_for_group_subjects_flag and s_scores_tgm_mean is not None and s_scores_tgm_mean.ndim == 2:
-                group_results_collection["subject_tgm_scores_mean_list"].append(s_scores_tgm_mean)
-            
+                group_results_collection["subject_tgm_scores_mean_list"].append(
+                    s_scores_tgm_mean)
+
             if s_mean_specific is not None and s_mean_specific.ndim == 1:
-                group_results_collection["subject_mean_of_specific_scores_list"].append(s_mean_specific)
+                group_results_collection["subject_mean_of_specific_scores_list"].append(
+                    s_mean_specific)
         else:
             logger_run_group.warning(
                 "Skipping subject %s from group '%s' aggregation (errors or no valid main scores).", subject_id_current, group_identifier)
@@ -176,7 +188,8 @@ def execute_group_intra_subject_decoding_analysis(
     # Le reste du fichier pour l'agrégation, les stats et les plots.
     # Cette partie est longue mais ne devrait pas poser de problème.
     # ... [Le reste du fichier, inchangé, est omis pour la brièveté] ...
-    logger_run_group.info("Finished aggregation logic. Total group analysis time: %.1f min", (time.time() - total_group_analysis_start_time) / 60)
+    logger_run_group.info("Finished aggregation logic. Total group analysis time: %.1f min",
+                          (time.time() - total_group_analysis_start_time) / 60)
     return group_results_collection["subject_global_auc_scores"]
 
 
@@ -194,16 +207,20 @@ if __name__ == "__main__":
 
     n_jobs_arg_str_main = command_line_args.n_jobs_override if command_line_args.n_jobs_override is not None else N_JOBS_PROCESSING
     try:
-        n_jobs_to_use_main = -1 if n_jobs_arg_str_main.lower() == "auto" else int(n_jobs_arg_str_main)
+        n_jobs_to_use_main = - \
+            1 if n_jobs_arg_str_main.lower() == "auto" else int(n_jobs_arg_str_main)
     except (ValueError, AttributeError):
         logger_run_group.warning(
             f"Invalid n_jobs_override ('{n_jobs_arg_str_main}'). Using default from config: {N_JOBS_PROCESSING}.")
-        n_jobs_to_use_main = -1 if str(N_JOBS_PROCESSING).lower() == "auto" else int(N_JOBS_PROCESSING)
+        n_jobs_to_use_main = - \
+            1 if str(N_JOBS_PROCESSING).lower(
+            ) == "auto" else int(N_JOBS_PROCESSING)
 
     classifier_type_to_use_main = command_line_args.clf_type_override if command_line_args.clf_type_override is not None else CLASSIFIER_MODEL_TYPE
 
     user_login_main = getuser()
-    main_input_path_main, main_output_path_main = configure_project_paths(user_login_main)
+    main_input_path_main, main_output_path_main = configure_project_paths(
+        user_login_main)
 
     logger_run_group.info("\n%s EEG GROUP INTRA-SUBJECT DECODING SCRIPT STARTED (%s) %s",
                           "="*10, datetime.now().strftime('%Y-%m-%d %H:%M'), "="*10)

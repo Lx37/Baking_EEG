@@ -1,7 +1,5 @@
 # === BASE CONSTANTS ===
-CHANCE_LEVEL_AUC_SCORE = 0.5
-CHANCE_LEVEL_AUC = 0.5  # For compatibility
-DEFAULT_CHANCE_LEVEL_AUC = 0.5
+CHANCE_LEVEL_AUC = 0.5 
 DEFAULT_CLASSIFIER_TYPE_MODULE_INTERNAL = "svc"
 # For MNE's internal parallelism within Sliding/Generalizing Estimators
 INTERNAL_N_JOBS_FOR_MNE_DECODING = -1
@@ -114,6 +112,11 @@ COMPUTE_TGM_FOR_MAIN_COMPARISON = True  # PP/all vs AP/all only
 COMPUTE_TGM_FOR_SPECIFIC_COMPARISONS = False  # PP_spec vs AP_families
 COMPUTE_TGM_FOR_INTER_FAMILY_COMPARISONS = False  # AP_family vs AP_family
 
+
+# =========DECODING CORE =============
+USE_GRID_SEARCH=False,
+USE_CSP_FOR_TEMPORAL_PIPELINES=False,
+USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES=True,
 
 # === Hyperparameter grids for GridSearchCV ===
 PARAM_GRID_CONFIG_EXTENDED = {
