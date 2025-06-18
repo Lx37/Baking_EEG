@@ -105,7 +105,7 @@ def execute_single_subject_decoding(
     decoding_protocol_identifier="Single_Protocol_Analysis",
     # Utilisation des constantes importées pour les valeurs par défaut
     save_results_flag=None,
-    enable_verbose_logging=False,  # Mettre à True pour plus de détails
+    enable_verbose_logging=False,
     generate_plots_flag=None,
     base_input_data_path=None,
     base_output_results_path=None,
@@ -235,12 +235,7 @@ def execute_single_subject_decoding(
         subject_results["detected_protocol"] = detected_protocol
         subject_results["epochs_time_points"] = epochs_object.times.copy()
 
-        # Gestion de param_grid_config_for_subject et fixed_params_for_subject
-        # param_grid_config_for_subject est déjà conditionné par
-        # USE_GRID_SEARCH_OPTIMIZATION
-        # fixed_params_for_subject est déjà conditionné par
-        # not USE_GRID_SEARCH_OPTIMIZATION
-        # Il faut juste s'assurer que le bon sous-dictionnaire est extrait
+    
         current_fixed_params_for_clf_dict = None
         current_param_grid_for_clf_dict = None
 
@@ -382,8 +377,10 @@ def execute_single_subject_decoding(
                                 cv_splitter_task_spec = StratifiedKFold(
                                     n_splits=num_cv_task_spec, shuffle=True, random_state=42)
                                 specific_task_output = run_temporal_decoding_analysis(
-                                    epochs_data=task_data_specific_current, target_labels=task_labels_specific_orig,
-                                    classifier_model_type=classifier_type, use_grid_search=use_grid_search_for_subject,
+                                    epochs_data=task_data_specific_current,
+                                    target_labels=task_labels_specific_orig,
+                                    classifier_model_type=classifier_type,
+                                    use_grid_search=use_grid_search_for_subject,
                                     use_csp_for_temporal_pipelines=use_csp_for_temporal_subject,
                                     use_anova_fs_for_temporal_pipelines=use_anova_fs_for_temporal_subject,
                                     param_grid_config=current_param_grid_for_clf_dict,

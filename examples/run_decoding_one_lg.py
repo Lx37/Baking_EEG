@@ -296,10 +296,8 @@ def execute_single_subject_lg_decoding(
                         target_labels=main_lg_labels_orig,
                         classifier_model_type=classifier_type,
                         use_grid_search=use_grid_search_for_subject,
-                        use_csp_for_temporal_pipelines=(
-                            use_csp_for_temporal_subject),
-                        use_anova_fs_for_temporal_pipelines=(
-                            use_anova_fs_for_temporal_subject),
+                        use_csp_for_temporal_pipelines=use_csp_for_temporal_subject,
+                        use_anova_fs_for_temporal_pipelines=use_anova_fs_for_temporal_subject,
                         param_grid_config=current_param_grid_for_clf_dict,
                         cv_folds_for_gridsearch=cv_folds_for_gs_subject,
                         fixed_classifier_params=(
@@ -427,20 +425,13 @@ def execute_single_subject_lg_decoding(
                                     epochs_data=task_data_specific_current,
                                     target_labels=task_labels_specific_orig,
                                     classifier_model_type=classifier_type,
-                                    use_grid_search=(
-                                        use_grid_search_for_subject),
-                                    use_csp_for_temporal_pipelines=(
-                                        use_csp_for_temporal_subject),
-                                    use_anova_fs_for_temporal_pipelines=(
-                                        use_anova_fs_for_temporal_subject),
-                                    param_grid_config=(
-                                        current_param_grid_for_clf_dict),
-                                    cv_folds_for_gridsearch=(
-                                        cv_folds_for_gs_subject),
-                                    fixed_classifier_params=(
-                                        current_fixed_params_for_clf_dict),
-                                    cross_validation_splitter=(
-                                        cv_splitter_task_spec),
+                                    use_grid_search=use_grid_search_for_subject,
+                                    use_csp_for_temporal_pipelines=use_csp_for_temporal_subject,
+                                    use_anova_fs_for_temporal_pipelines=use_anova_fs_for_temporal_subject,
+                                    param_grid_config=current_param_grid_for_clf_dict,
+                                    cv_folds_for_gridsearch=cv_folds_for_gs_subject,
+                                    fixed_classifier_params=current_fixed_params_for_clf_dict,
+                                    cross_validation_splitter=cv_splitter_task_spec,
                                     n_jobs_external=actual_n_jobs,
                                     compute_intra_fold_stats=(
                                         compute_intra_subject_stats_flag),

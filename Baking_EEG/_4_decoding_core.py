@@ -41,8 +41,45 @@ def run_temporal_decoding_analysis(
     n_permutations_for_intra_fold_clusters=256,
     compute_temporal_generalization_matrix=COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
     cluster_threshold_config_intra_fold=None,
-):
-    """Run temporal decoding, TGM, and global decoding with optional GS and stats."""
+    random_state=42):
+    """
+    Analyze epochs using temporal decoding with optional TGM and global decoding.
+    
+    Returns:
+        Tuple of decoding results
+    """
+    
+   
+    if isinstance(use_csp_for_temporal_pipelines, tuple):
+        logger_decoding_core.warning(
+            "CORRECTION: use_csp_for_temporal_pipelines était un tuple %s, conversion en booléen",
+            use_csp_for_temporal_pipelines
+        )
+        use_csp_for_temporal_pipelines = bool(use_csp_for_temporal_pipelines[0]) if use_csp_for_temporal_pipelines else False
+    
+    if isinstance(use_anova_fs_for_temporal_pipelines, tuple):
+        logger_decoding_core.warning(
+            "CORRECTION: use_anova_fs_for_temporal_pipelines était un tuple %s, conversion en booléen",
+            use_anova_fs_for_temporal_pipelines
+        )
+        use_anova_fs_for_temporal_pipelines = bool(use_anova_fs_for_temporal_pipelines[0]) if use_anova_fs_for_temporal_pipelines else False
+    
+    # DEBUG: Examiner le type de use_csp_for_temporal_pipelines
+    logger_decoding_core.info(
+        "DEBUG: use_csp_for_temporal_pipelines type=%s, value=%s, bool()=%s",
+        type(use_csp_for_temporal_pipelines).__name__,
+        repr(use_csp_for_temporal_pipelines),
+        bool(use_csp_for_temporal_pipelines)
+    )
+    
+    # DEBUG: Vérifier le type de use_csp_for_temporal_pipelines
+    logger_decoding_core.info(
+        "DEBUG: use_csp_for_temporal_pipelines type=%s, value=%s, bool()=%s",
+        type(use_csp_for_temporal_pipelines).__name__,
+        repr(use_csp_for_temporal_pipelines),
+        bool(use_csp_for_temporal_pipelines)
+    )
+    
     logger_decoding_core.info("--- Temporal Ddcoding Analysis ---")
     logger_decoding_core.info(
         "Clf: %s, GS: %s, CSP (temporal): %s, ANOVA FS (temporal): %s",
@@ -91,6 +128,12 @@ def run_temporal_decoding_analysis(
             "epochs_data has zero time points. Cannot proceed.")
         return empty_results_tuple
 
+  
+    if isinstance(use_csp_for_temporal_pipelines, tuple):
+        use_csp_for_temporal_pipelines = use_csp_for_temporal_pipelines[0] if len(use_csp_for_temporal_pipelines) > 0 else False
+    if isinstance(use_anova_fs_for_temporal_pipelines, tuple):
+        use_anova_fs_for_temporal_pipelines = use_anova_fs_for_temporal_pipelines[0] if len(use_anova_fs_for_temporal_pipelines) > 0 else False
+        
     # --- Prepare classifier/pipeline for MNE (Sliding/Generalizing) ---
 
     pipeline_mne, clf_name_mne, fs_name_mne, csp_name_mne = \

@@ -1,0 +1,28 @@
+submitit INFO (2025-06-18 12:18:59,806) - Starting with JobEnvironment(job_id=298378, hostname=node8, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-18 12:18:59,806) - Loading pickle: /home/tom.balay/Baking_EEG/bash/logs_submitit_jobs/20250618_121856_TpSM49_LG/298378_submitted.pkl
+[2025-06-18 12:18:59] WORKER-INFO: === DÉBUT DU WORKER SUBMITIT ===
+[2025-06-18 12:18:59] WORKER-INFO: Arguments reçus: ['subject_identifier', 'group_affiliation', 'base_input_data_path', 'base_output_results_path', 'n_jobs_for_processing', 'save_results_flag', 'generate_plots_flag', 'loading_conditions_config', 'classifier_type', 'use_grid_search_for_subject', 'param_grid_config_for_subject', 'cv_folds_for_gs_subject', 'fixed_params_for_subject', 'compute_intra_subject_stats_flag', 'n_perms_for_intra_subject_clusters', 'compute_tgm_flag', 'cluster_threshold_config_intra_fold', 'use_csp_for_temporal_subject', 'use_anova_fs_for_temporal_subject']
+[2025-06-18 12:18:59] WORKER-INFO: sys.path initial: ['/home/tom.balay/Baking_EEG/bash', '/usr/lib/python311.zip', '/usr/lib/python3.11']...
+[2025-06-18 12:18:59] WORKER-INFO: Chemin racine défini: /home/tom.balay/Baking_EEG
+[2025-06-18 12:18:59] WORKER-INFO: Chemin racine ajouté au sys.path: /home/tom.balay/Baking_EEG
+[2025-06-18 12:18:59] WORKER-INFO: sys.path après modification: ['/home/tom.balay/Baking_EEG', '/home/tom.balay/Baking_EEG/bash', '/usr/lib/python311.zip', '/usr/lib/python3.11', '/usr/lib/python3.11/lib-dynload']...
+[2025-06-18 12:18:59] WORKER-INFO: Vérification du dossier examples: /home/tom.balay/Baking_EEG/examples
+[2025-06-18 12:18:59] WORKER-INFO: Dossier examples existe. Contenu: ['run_decoding_one_lg.py.backup', 'check_normality_Vera.py', 'run_decoding_one_pp.py', 'single_sub_connectivity.py', 'run_decoding_one_pp.py.backup', 'run_decoding_one_group_lg.py', 'run_decoding_one_lg.py', 'run_decoding_cross.py', 'permutation_clustering.py', 'multi_sub_connectivity.py']...
+[2025-06-18 12:18:59] WORKER-INFO: Script run_decoding_one_lg.py trouvé: /home/tom.balay/Baking_EEG/examples/run_decoding_one_lg.py
+[2025-06-18 12:18:59] WORKER-INFO: Tentative d'import de run_decoding_one_lg...
+2025-06-18 12:19:08,412 - INFO - examples.run_decoding_one_group_pp - [<module>:54] - Tentative d'import de execute_single_subject_decoding...
+2025-06-18 12:19:08,412 - INFO - examples.run_decoding_one_group_pp - [<module>:57] - ✅ Import de execute_single_subject_decoding réussi
+[2025-06-18 12:19:08] WORKER-INFO: Import réussi de execute_single_subject_lg_decoding
+[2025-06-18 12:19:08] WORKER-INFO: Sujet à traiter: TpSM49, Groupe: DELIRIUM +
+[2025-06-18 12:19:08] WORKER-INFO: Début de l'exécution de execute_single_subject_lg_decoding...
+2025-06-18 12:19:08,417 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:196] - Starting LG decoding for subject: TpSM49 (Group: DELIRIUM +, Task Set ID: Single_LG_Protocol_Analysis, Classifier: svc, GS: False, CSP: (False,), ANOVA FS: (True,), n_jobs: 40)
+2025-06-18 12:19:08,417 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:207] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-06-18 12:19:08,418 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:90] - Original group path for 'DELIRIUM +' not found for subject 'TpSM49'. Subject found in group 'DELIRIUM +'. Using its path convention.
+2025-06-18 12:19:08,418 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:114] - Data directory for subject 'TpSM49' (group: 'DELIRIUM +') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/Baking_EEG_data'.
+2025-06-18 12:19:08,418 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:216] - Epochs object loading failed for TpSM49. Aborting subject.
+[2025-06-18 12:19:08] WORKER-INFO: Exécution terminée avec succès. Type de résultat: <class 'dict'>
+[2025-06-18 12:19:08] WORKER-INFO: === FIN DU WORKER SUBMITIT ===
+submitit INFO (2025-06-18 12:19:08,419) - Job completed successfully
+2025-06-18 12:19:08,419 - INFO - submitit - [process_job:56] - Job completed successfully
+submitit INFO (2025-06-18 12:19:08,421) - Exiting after successful completion
+2025-06-18 12:19:08,421 - INFO - submitit - [process_job:61] - Exiting after successful completion

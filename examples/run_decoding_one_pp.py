@@ -235,12 +235,7 @@ def execute_single_subject_decoding(
         subject_results["detected_protocol"] = detected_protocol
         subject_results["epochs_time_points"] = epochs_object.times.copy()
 
-        # Gestion de param_grid_config_for_subject et fixed_params_for_subject
-        # param_grid_config_for_subject est déjà conditionné par
-        # USE_GRID_SEARCH_OPTIMIZATION
-        # fixed_params_for_subject est déjà conditionné par
-        # not USE_GRID_SEARCH_OPTIMIZATION
-        # Il faut juste s'assurer que le bon sous-dictionnaire est extrait
+    
         current_fixed_params_for_clf_dict = None
         current_param_grid_for_clf_dict = None
 

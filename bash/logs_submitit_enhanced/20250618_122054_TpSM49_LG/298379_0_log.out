@@ -1,0 +1,25 @@
+submitit INFO (2025-06-18 12:20:57,754) - Starting with JobEnvironment(job_id=298379, hostname=node8, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-18 12:20:57,754) - Loading pickle: /home/tom.balay/Baking_EEG/bash/logs_submitit_enhanced/20250618_122054_TpSM49_LG/298379_submitted.pkl
+2025-06-18 12:21:06,668 - INFO - examples.run_decoding_one_group_pp - [<module>:54] - Tentative d'import de execute_single_subject_decoding...
+2025-06-18 12:21:06,668 - INFO - examples.run_decoding_one_group_pp - [<module>:57] - ✅ Import de execute_single_subject_decoding réussi
+2025-06-18 12:21:06,672 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:300] - ✓ execute_single_subject_lg_decoding importé avec succès
+2025-06-18 12:21:06,672 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:305] - Paramètres principaux - Sujet: TpSM49, Groupe: DELIRIUM +
+2025-06-18 12:21:06,673 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:312] - === DÉBUT EXÉCUTION ===
+2025-06-18 12:21:06,673 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:314] - Heure de début: 2025-06-18 12:21:06.673268
+2025-06-18 12:21:06,673 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:196] - Starting LG decoding for subject: TpSM49 (Group: DELIRIUM +, Task Set ID: Single_LG_Protocol_Analysis, Classifier: svc, GS: False, CSP: (False,), ANOVA FS: (True,), n_jobs: 40)
+2025-06-18 12:21:06,673 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:207] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-06-18 12:21:06,675 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:90] - Original group path for 'DELIRIUM +' not found for subject 'TpSM49'. Subject found in group 'DELIRIUM +'. Using its path convention.
+2025-06-18 12:21:06,675 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:114] - Data directory for subject 'TpSM49' (group: 'DELIRIUM +') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/Baking_EEG_data'.
+2025-06-18 12:21:06,675 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:216] - Epochs object loading failed for TpSM49. Aborting subject.
+2025-06-18 12:21:06,676 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:320] - Heure de fin: 2025-06-18 12:21:06.676210
+2025-06-18 12:21:06,676 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:321] - Durée d'exécution: 0:00:00.002942
+2025-06-18 12:21:06,676 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:322] - Type de résultat: <class 'dict'>
+2025-06-18 12:21:06,676 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:325] - Clés du résultat: ['subject_id', 'group', 'decoding_protocol_identifier', 'classifier_type_used', 'epochs_time_points', 'lg_main_original_labels', 'lg_main_pred_probas_global', 'lg_main_pred_labels_global', 'lg_main_cv_global_scores', 'lg_main_scores_1d_all_folds', 'lg_main_scores_1d_mean', 'lg_main_temporal_1d_fdr', 'lg_main_temporal_1d_cluster', 'lg_main_tgm_all_folds', 'lg_main_tgm_mean', 'lg_main_tgm_fdr', 'lg_main_mean_auc_global', 'lg_main_global_metrics', 'lg_specific_comparison_results', 'lg_mean_of_specific_scores_1d', 'lg_sem_of_specific_scores_1d', 'lg_mean_specific_fdr', 'lg_mean_specific_cluster', 'lg_global_effect_results', 'lg_local_effect_centric_avg_results']
+2025-06-18 12:21:06,677 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:327] - ✓ EXÉCUTION TERMINÉE AVEC SUCCÈS
+2025-06-18 12:21:06,677 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:342] - ================================================================================
+2025-06-18 12:21:06,677 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:343] - === FIN DU WORKER SUBMITIT ===
+2025-06-18 12:21:06,677 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:344] - ================================================================================
+submitit INFO (2025-06-18 12:21:06,678) - Job completed successfully
+2025-06-18 12:21:06,678 - INFO - submitit - [process_job:56] - Job completed successfully
+submitit INFO (2025-06-18 12:21:06,679) - Exiting after successful completion
+2025-06-18 12:21:06,679 - INFO - submitit - [process_job:61] - Exiting after successful completion

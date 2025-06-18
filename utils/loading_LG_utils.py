@@ -5,9 +5,8 @@ import logging
 import numpy as np
 import mne
 from config.config import ALL_SUBJECT_GROUPS
-from config.decoding_config import CONFIG_LOAD_MAIN_LG_DECODING, CONFIG_LOAD_LG_COMPARISONS,EVENT_ID_LG
+from config.decoding_config import CONFIG_LOAD_MAIN_LG_DECODING, CONFIG_LOAD_LG_COMPARISONS, EVENT_ID_LG
 logger_data_loading = logging.getLogger(__name__)
-
 
 
 def load_epochs_data_for_lg_decoding(
@@ -79,6 +78,19 @@ def load_epochs_data_for_lg_decoding(
         )
         if os.path.isdir(potential_path):
             data_root_path = potential_path
+    # Handle DELIRIUM + and DELIRIUM - groups
+    elif group_affiliation_lower in ["delirium +", "delirium+"]:
+        potential_path = os.path.join(
+            base_input_data_path, "LG_PATIENTS_DEL_0.5"
+        )
+        if os.path.isdir(potential_path):
+            data_root_path = potential_path
+    elif group_affiliation_lower in ["delirium -", "delirium-"]:
+        potential_path = os.path.join(
+            base_input_data_path, "LG_PATIENTS_NODEL_0.5"
+        )
+        if os.path.isdir(potential_path):
+            data_root_path = potential_path
 
     # Fallback path logic if primary path fails
     if not data_root_path:
@@ -101,6 +113,14 @@ def load_epochs_data_for_lg_decoding(
                     base_input_data_path,
                     f"LG_PATIENTS_{detected_group.upper()}_0.5"
                 )
+            elif group_affiliation_lower in ["delirium +", "delirium+"]:
+                data_root_path = os.path.join(
+                    base_input_data_path, "LG_PATIENTS_DEL_0.5"
+                )
+            elif group_affiliation_lower in ["delirium -", "delirium-"]:
+                data_root_path = os.path.join(
+                    base_input_data_path, "LG_PATIENTS_NODEL_0.5"
+                )
         else:  # Generic fallback
             potential_path_generic = os.path.join(
                 base_input_data_path, f"LG_{group_affiliation.upper()}_0.5"
@@ -108,7 +128,23 @@ def load_epochs_data_for_lg_decoding(
             if os.path.isdir(potential_path_generic):
                 data_root_path = potential_path_generic
             else:
-                data_root_path = base_input_data_path  # Last resort
+                # Try alternative mappings for DELIRIUM groups
+                if "delirium" in group_affiliation.lower():
+                    if "+" in group_affiliation:
+                        alt_path = os.path.join(
+                            base_input_data_path, "LG_PATIENTS_DEL_0.5")
+                    elif "-" in group_affiliation:
+                        alt_path = os.path.join(
+                            base_input_data_path, "LG_PATIENTS_NODEL_0.5")
+                    else:
+                        alt_path = None
+
+                    if alt_path and os.path.isdir(alt_path):
+                        data_root_path = alt_path
+                    else:
+                        data_root_path = base_input_data_path  # Last resort
+                else:
+                    data_root_path = base_input_data_path  # Last resort
 
     if not data_root_path or not os.path.isdir(data_root_path):
         logger_data_loading.error(

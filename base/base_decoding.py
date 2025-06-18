@@ -23,7 +23,6 @@ def _build_standard_classifier_pipeline(
     use_grid_search=False,
     add_csp_step=False,
     add_anova_fs_step=False,
-    # Fixed hyperparameters (used if use_grid_search=False AND step is added)
     svc_c=1.0, svc_kernel='linear', svc_gamma='scale',
     logreg_c=1.0, logreg_penalty='l2',
     rf_n_estimators=100, rf_max_depth=None,
@@ -59,6 +58,12 @@ def _build_standard_classifier_pipeline(
     pipeline_clf_name = ""
     anova_fs_name = None
     csp_name = None
+
+
+    logger_base_decoding.info("DEBUG: add_csp_step type=%s, value=%s, bool()=%s", 
+                              type(add_csp_step).__name__, 
+                              repr(add_csp_step), 
+                              bool(add_csp_step))
 
     if add_csp_step:
         csp_name = "csp_feature_extraction"

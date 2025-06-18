@@ -1,0 +1,70 @@
+================================================================================
+COMPREHENSIVE EEG DECODING ANALYSIS REPORT
+================================================================================
+Generated on: 2025-06-18 15:20:52
+
+
+PROTOCOL: PP
+----------------------------------------
+
+GROUP STATISTICS:
+
+DELIRIUM -:
+  N subjects: 24
+  Mean AUC: 0.5254
+  Peak AUC: 0.5770 at 0.172s
+  FDR significant points: 507
+  Significant time windows: 0
+
+controls:
+  N subjects: 13
+  Mean AUC: 0.5194
+  Peak AUC: 0.5571 at 0.346s
+  FDR significant points: 48
+  Significant time windows: 0
+
+DELIRIUM +:
+  N subjects: 21
+  Mean AUC: 0.5012
+  Peak AUC: 0.5528 at 0.156s
+  FDR significant points: 81
+  Significant time windows: 0
+
+THREE-GROUP COMPARISON:
+  Global ANOVA: F = 3.9715, p = 0.024485
+  Significant time points (ANOVA): 2
+
+PAIRWISE COMPARISONS:
+  DELIRIUM -_vs_controls:
+    Significant time points: 0
+    Max effect size: 1.3227
+    Max t-statistic: 3.7382
+  DELIRIUM -_vs_DELIRIUM +:
+    Significant time points: 2
+    Max effect size: 1.5016
+    Max t-statistic: 5.0660
+  controls_vs_DELIRIUM +:
+    Significant time points: 0
+    Max effect size: 1.1230
+    Max t-statistic: 3.5723
+
+INDIVIDUAL PAIRWISE STATISTICAL TESTS:
+  DELIRIUM -_vs_controls:
+    Groups compared: DELIRIUM - vs controls
+    Significant time points (FDR): 581.2081726193908
+    Max |t-statistic|: 3.8410
+    Max |mean difference|: 0.0606
+  DELIRIUM -_vs_DELIRIUM +:
+    Groups compared: DELIRIUM - vs DELIRIUM +
+    Significant time points (FDR): 279.0573146603842
+    Max |t-statistic|: 5.0253
+    Max |mean difference|: 0.0797
+  controls_vs_DELIRIUM +:
+    Groups compared: controls vs DELIRIUM +
+    Significant time points (FDR): 426.40664764255087
+    Max |t-statistic|: 3.1822
+    Max |mean difference|: 0.0633
+
+================================================================================
+ANALYSIS COMPLETED
+================================================================================

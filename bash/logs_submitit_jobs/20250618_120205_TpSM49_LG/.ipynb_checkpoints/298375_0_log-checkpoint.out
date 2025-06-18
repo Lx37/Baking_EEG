@@ -1,0 +1,13 @@
+submitit INFO (2025-06-18 12:02:08,616) - Starting with JobEnvironment(job_id=298375, hostname=node8, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-18 12:02:08,616) - Loading pickle: /home/tom.balay/Baking_EEG/bash/logs_submitit_jobs/20250618_120205_TpSM49_LG/298375_submitted.pkl
+2025-06-18 12:02:17,653 - INFO - examples.run_decoding_one_group_pp - [<module>:54] - Tentative d'import de execute_single_subject_decoding...
+2025-06-18 12:02:17,654 - INFO - examples.run_decoding_one_group_pp - [<module>:57] - ✅ Import de execute_single_subject_decoding réussi
+2025-06-18 12:02:17,660 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:196] - Starting LG decoding for subject: TpSM49 (Group: DELIRIUM +, Task Set ID: Single_LG_Protocol_Analysis, Classifier: svc, GS: False, CSP: (False,), ANOVA FS: (True,), n_jobs: 40)
+2025-06-18 12:02:17,660 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:207] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-06-18 12:02:17,662 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:90] - Original group path for 'DELIRIUM +' not found for subject 'TpSM49'. Subject found in group 'DELIRIUM +'. Using its path convention.
+2025-06-18 12:02:17,662 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:114] - Data directory for subject 'TpSM49' (group: 'DELIRIUM +') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/Baking_EEG_data'.
+2025-06-18 12:02:17,662 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:216] - Epochs object loading failed for TpSM49. Aborting subject.
+submitit INFO (2025-06-18 12:02:17,663) - Job completed successfully
+2025-06-18 12:02:17,663 - INFO - submitit - [process_job:56] - Job completed successfully
+submitit INFO (2025-06-18 12:02:17,664) - Exiting after successful completion
+2025-06-18 12:02:17,664 - INFO - submitit - [process_job:61] - Exiting after successful completion

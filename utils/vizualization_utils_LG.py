@@ -1,5 +1,6 @@
-# Visualization utilities for LG (Local-Global) protocol
+# Visualization utilities for LG (Local-Global) protocol - NOUVELLE VERSION
 
+import sys
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
@@ -18,6 +19,18 @@ FONT_SIZE_LABEL = 12
 FONT_SIZE_TICK = 10
 FONT_SIZE_LEGEND = 11
 DPI_VALUE = 150
+
+# Import stats utilities
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
+try:
+    from utils import stats_utils as bEEG_stats
+except ImportError:
+    logger_viz_lg.warning(
+        "Could not import stats_utils. Statistical tests will be disabled.")
+    bEEG_stats = None
 
 
 def create_subject_decoding_dashboard_plots_lg(
@@ -48,32 +61,15 @@ def create_subject_decoding_dashboard_plots_lg(
     lg_local_effect_centric_average_results_list=None
 ):
     """
-    Create a comprehensive dashboard of LG decoding results plots for a single subject.
+    Create LG decoding plots - 6 specific comparisons with 2 plots per page.
 
-    Parameters
-    ----------
-    main_epochs_time_points : array-like
-        Time points of the epochs.
-    classifier_name_for_title : str
-        Name of the classifier for plot titles.
-    subject_identifier : str
-        Subject ID.
-    group_identifier : str
-        Group ID.
-    output_directory_path : str
-        Directory to save plots.
-    CHANCE_LEVEL_AUC : float, optional
-        Chance level for AUC, by default 0.5.
-    protocol_type : str, optional
-        Protocol type identifier, by default "LG".
-    lg_main_* : various
-        LG main decoding results.
-    lg_specific_* : various
-        LG specific comparison results.
-    lg_global_effect_results : list, optional
-        Global effect analysis results.
-    lg_local_effect_centric_average_results_list : list, optional
-        Local effect centric average results.
+    Les 6 comparaisons demandées:
+    1. LD_ALL vs LS_ALL (AUC + TGM)
+    2. GD_ALL vs GS_ALL (AUC + TGM)  
+    3. LSGS vs LSGD (AUC)
+    4. LDGS vs LDGD (AUC)
+    5. LSGS vs LDGS (AUC)
+    6. LSGD vs LDGD (AUC)
     """
     try:
         logger_viz_lg.info(
@@ -83,257 +79,89 @@ def create_subject_decoding_dashboard_plots_lg(
         plt.style.use('default')
         sns.set_palette("husl")
 
-        # Create main figure with subplots
-        fig = plt.figure(figsize=(20, 24))
-
-        # 1. Main LG decoding temporal curve
-        ax1 = plt.subplot(5, 3, 1)
-        if lg_main_mean_temporal_decoding_scores_1d is not None and main_epochs_time_points is not None:
-            ax1.plot(main_epochs_time_points, lg_main_mean_temporal_decoding_scores_1d,
-                     'b-', linewidth=2, label='LS vs LD Main')
-            ax1.axhline(y=CHANCE_LEVEL_AUC, color='gray',
-                        linestyle='--', alpha=0.7, label='Chance')
-
-            # Add significance markers
-            if lg_main_temporal_1d_fdr_sig_data is not None and lg_main_temporal_1d_fdr_sig_data.get("mask") is not None:
-                sig_mask = lg_main_temporal_1d_fdr_sig_data["mask"]
-                if len(sig_mask) == len(main_epochs_time_points):
-                    sig_times = main_epochs_time_points[sig_mask]
-                    if len(sig_times) > 0:
-                        ax1.scatter(sig_times, [max(lg_main_mean_temporal_decoding_scores_1d) * 1.02] * len(sig_times),
-                                    marker='*', color='red', s=30, label='FDR p<0.05')
-
-            if lg_main_temporal_1d_cluster_sig_data is not None and lg_main_temporal_1d_cluster_sig_data.get("mask") is not None:
-                cluster_mask = lg_main_temporal_1d_cluster_sig_data["mask"]
-                if len(cluster_mask) == len(main_epochs_time_points):
-                    for i, is_sig in enumerate(cluster_mask):
-                        if is_sig:
-                            ax1.axvspan(main_epochs_time_points[i] - 0.002, main_epochs_time_points[i] + 0.002,
-                                        alpha=0.3, color='orange')
-
-            ax1.set_xlabel('Time (s)', fontsize=FONT_SIZE_LABEL)
-            ax1.set_ylabel('AUC Score', fontsize=FONT_SIZE_LABEL)
-            ax1.set_title(
-                f'LG Main Decoding (LS vs LD)\n{subject_identifier}', fontsize=FONT_SIZE_TITLE)
-            ax1.legend(fontsize=FONT_SIZE_LEGEND)
-            ax1.grid(True, alpha=0.3)
-
-        # 2. Cross-validation scores distribution
-        ax2 = plt.subplot(5, 3, 2)
-        if lg_main_cross_validation_global_scores is not None and len(lg_main_cross_validation_global_scores) > 0:
-            ax2.hist(lg_main_cross_validation_global_scores, bins=10,
-                     alpha=0.7, color='skyblue', edgecolor='black')
-            ax2.axvline(x=CHANCE_LEVEL_AUC, color='red',
-                        linestyle='--', alpha=0.7, label='Chance')
-            ax2.axvline(x=np.mean(lg_main_cross_validation_global_scores), color='blue', linestyle='-',
-                        linewidth=2, label=f'Mean: {np.mean(lg_main_cross_validation_global_scores):.3f}')
-            ax2.set_xlabel('AUC Score', fontsize=FONT_SIZE_LABEL)
-            ax2.set_ylabel('Frequency', fontsize=FONT_SIZE_LABEL)
-            ax2.set_title(
-                f'LG CV Scores Distribution\n{classifier_name_for_title}', fontsize=FONT_SIZE_TITLE)
-            ax2.legend(fontsize=FONT_SIZE_LEGEND)
-            ax2.grid(True, alpha=0.3)
-
-        # 3. Temporal Generalization Matrix
-        ax3 = plt.subplot(5, 3, 3)
-        if lg_main_mean_temporal_generalization_matrix_scores is not None and lg_main_mean_temporal_generalization_matrix_scores.ndim == 2:
-            tgm = lg_main_mean_temporal_generalization_matrix_scores
-            im = ax3.imshow(tgm, cmap='RdBu_r', aspect='auto', origin='lower',
-                            extent=[main_epochs_time_points[0], main_epochs_time_points[-1],
-                                    main_epochs_time_points[0], main_epochs_time_points[-1]],
-                            vmin=CHANCE_LEVEL_AUC - 0.1, vmax=CHANCE_LEVEL_AUC + 0.1)
-            ax3.set_xlabel('Testing Time (s)', fontsize=FONT_SIZE_LABEL)
-            ax3.set_ylabel('Training Time (s)', fontsize=FONT_SIZE_LABEL)
-            ax3.set_title('LG Temporal Generalization Matrix',
-                          fontsize=FONT_SIZE_TITLE)
-            plt.colorbar(im, ax=ax3, label='AUC Score')
-
-            # Add significance contours if available
-            if lg_main_tgm_fdr_sig_data is not None and lg_main_tgm_fdr_sig_data.get("mask") is not None:
-                sig_mask = lg_main_tgm_fdr_sig_data["mask"]
-                if sig_mask.shape == tgm.shape:
-                    ax3.contour(sig_mask, levels=[
-                                0.5], colors='black', linewidths=1, alpha=0.7)
-
-        # 4. LG Specific Comparisons
-        ax4 = plt.subplot(5, 3, 4)
-        if lg_specific_comparison_results is not None and len(lg_specific_comparison_results) > 0:
-            colors = plt.cm.Set1(np.linspace(
-                0, 1, len(lg_specific_comparison_results)))
+        # Apply statistical tests to comparison results if available
+        if lg_specific_comparison_results:
             for i, result in enumerate(lg_specific_comparison_results):
-                if result.get("scores_1d_mean") is not None and result.get("times") is not None:
-                    times = result["times"]
-                    scores = result["scores_1d_mean"]
-                    label = result.get("comparison_name", f"Comparison {i+1}")
-                    ax4.plot(times, scores,
-                             color=colors[i], linewidth=2, label=label)
+                lg_specific_comparison_results[i] = _apply_statistical_tests_to_comparison_data(
+                    result, main_epochs_time_points
+                )
 
-            ax4.axhline(y=CHANCE_LEVEL_AUC, color='gray',
-                        linestyle='--', alpha=0.7, label='Chance')
-            ax4.set_xlabel('Time (s)', fontsize=FONT_SIZE_LABEL)
-            ax4.set_ylabel('AUC Score', fontsize=FONT_SIZE_LABEL)
-            ax4.set_title('LG Specific Comparisons', fontsize=FONT_SIZE_TITLE)
-            ax4.legend(fontsize=FONT_SIZE_LEGEND - 2,
-                       bbox_to_anchor=(1.05, 1), loc='upper left')
-            ax4.grid(True, alpha=0.3)
+        # =================== PAGE 1: LD_ALL vs LS_ALL ===================
+        _create_lg_comparison_page(
+            main_epochs_time_points,
+            lg_specific_comparison_results,
+            "LD_ALL_vs_LS_ALL",
+            subject_identifier,
+            group_identifier,
+            output_directory_path,
+            classifier_name_for_title,
+            CHANCE_LEVEL_AUC,
+            include_tgm=True
+        )
 
-        # 5. Mean of specific scores with error bars
-        ax5 = plt.subplot(5, 3, 5)
-        if lg_mean_of_specific_scores_1d is not None and main_epochs_time_points is not None:
-            ax5.plot(main_epochs_time_points, lg_mean_of_specific_scores_1d, 'g-', linewidth=2,
-                     label='Mean LG Specific')
+        # =================== PAGE 2: GD_ALL vs GS_ALL ===================
+        _create_lg_comparison_page(
+            main_epochs_time_points,
+            lg_specific_comparison_results,
+            "GD_ALL_vs_GS_ALL",
+            subject_identifier,
+            group_identifier,
+            output_directory_path,
+            classifier_name_for_title,
+            CHANCE_LEVEL_AUC,
+            include_tgm=True
+        )
 
-            if lg_sem_of_specific_scores_1d is not None:
-                ax5.fill_between(main_epochs_time_points,
-                                 lg_mean_of_specific_scores_1d - lg_sem_of_specific_scores_1d,
-                                 lg_mean_of_specific_scores_1d + lg_sem_of_specific_scores_1d,
-                                 alpha=0.3, color='green')
+        # =================== PAGE 3: LSGS vs LSGD ===================
+        _create_lg_comparison_page(
+            main_epochs_time_points,
+            lg_specific_comparison_results,
+            "LSGS_vs_LSGD",
+            subject_identifier,
+            group_identifier,
+            output_directory_path,
+            classifier_name_for_title,
+            CHANCE_LEVEL_AUC,
+            include_tgm=False
+        )
 
-            ax5.axhline(y=CHANCE_LEVEL_AUC, color='gray',
-                        linestyle='--', alpha=0.7, label='Chance')
+        # =================== PAGE 4: LDGS vs LDGD ===================
+        _create_lg_comparison_page(
+            main_epochs_time_points,
+            lg_specific_comparison_results,
+            "LDGS_vs_LDGD",
+            subject_identifier,
+            group_identifier,
+            output_directory_path,
+            classifier_name_for_title,
+            CHANCE_LEVEL_AUC,
+            include_tgm=False
+        )
 
-            # Add significance markers for mean specific
-            if lg_mean_specific_fdr_sig_data is not None and lg_mean_specific_fdr_sig_data.get("mask") is not None:
-                sig_mask = lg_mean_specific_fdr_sig_data["mask"]
-                if len(sig_mask) == len(main_epochs_time_points):
-                    sig_times = main_epochs_time_points[sig_mask]
-                    if len(sig_times) > 0:
-                        ax5.scatter(sig_times, [max(lg_mean_of_specific_scores_1d) * 1.02] * len(sig_times),
-                                    marker='*', color='red', s=30, label='FDR p<0.05')
+        # =================== PAGE 5: LSGS vs LDGS ===================
+        _create_lg_comparison_page(
+            main_epochs_time_points,
+            lg_specific_comparison_results,
+            "LSGS_vs_LDGS",
+            subject_identifier,
+            group_identifier,
+            output_directory_path,
+            classifier_name_for_title,
+            CHANCE_LEVEL_AUC,
+            include_tgm=False
+        )
 
-            ax5.set_xlabel('Time (s)', fontsize=FONT_SIZE_LABEL)
-            ax5.set_ylabel('AUC Score', fontsize=FONT_SIZE_LABEL)
-            ax5.set_title('Mean LG Specific Scores', fontsize=FONT_SIZE_TITLE)
-            ax5.legend(fontsize=FONT_SIZE_LEGEND)
-            ax5.grid(True, alpha=0.3)
-
-        # 6. Global Effect Results
-        ax6 = plt.subplot(5, 3, 6)
-        if lg_global_effect_results is not None and len(lg_global_effect_results) > 0:
-            for i, result in enumerate(lg_global_effect_results):
-                if result.get("scores_1d_mean") is not None and result.get("times") is not None:
-                    times = result["times"]
-                    scores = result["scores_1d_mean"]
-                    label = result.get("comparison_name",
-                                       f"Global Effect {i+1}")
-                    ax6.plot(times, scores, linewidth=2, label=label)
-
-                    # Add significance markers
-                    if result.get("fdr_significance_data") is not None and result["fdr_significance_data"].get("mask") is not None:
-                        sig_mask = result["fdr_significance_data"]["mask"]
-                        if len(sig_mask) == len(times):
-                            sig_times = times[sig_mask]
-                            if len(sig_times) > 0:
-                                ax6.scatter(sig_times, [max(scores) * 1.02] * len(sig_times),
-                                            marker='*', color='red', s=20)
-
-            ax6.axhline(y=CHANCE_LEVEL_AUC, color='gray',
-                        linestyle='--', alpha=0.7, label='Chance')
-            ax6.set_xlabel('Time (s)', fontsize=FONT_SIZE_LABEL)
-            ax6.set_ylabel('AUC Score', fontsize=FONT_SIZE_LABEL)
-            ax6.set_title('LG Global Effect (GS vs GD)',
-                          fontsize=FONT_SIZE_TITLE)
-            ax6.legend(fontsize=FONT_SIZE_LEGEND)
-            ax6.grid(True, alpha=0.3)
-
-        # 7. Local Effect Centric Averages
-        ax7 = plt.subplot(5, 3, 7)
-        if lg_local_effect_centric_average_results_list is not None and len(lg_local_effect_centric_average_results_list) > 0:
-            colors = ['purple', 'orange', 'brown', 'pink']
-            for i, effect_result in enumerate(lg_local_effect_centric_average_results_list):
-                if effect_result.get("average_scores_1d") is not None and main_epochs_time_points is not None:
-                    scores = effect_result["average_scores_1d"]
-                    effect_type = effect_result.get(
-                        "effect_type", f"Local Effect {i+1}")
-                    color = colors[i % len(colors)]
-
-                    ax7.plot(main_epochs_time_points, scores,
-                             color=color, linewidth=2, label=effect_type)
-
-                    if effect_result.get("sem_scores_1d") is not None:
-                        sem = effect_result["sem_scores_1d"]
-                        ax7.fill_between(main_epochs_time_points, scores - sem, scores + sem,
-                                         alpha=0.3, color=color)
-
-                    # Add significance markers
-                    if effect_result.get("fdr_sig_data") is not None and effect_result["fdr_sig_data"].get("mask") is not None:
-                        sig_mask = effect_result["fdr_sig_data"]["mask"]
-                        if len(sig_mask) == len(main_epochs_time_points):
-                            sig_times = main_epochs_time_points[sig_mask]
-                            if len(sig_times) > 0:
-                                ax7.scatter(sig_times, [max(scores) * 1.02] * len(sig_times),
-                                            marker='*', color='red', s=20)
-
-            ax7.axhline(y=CHANCE_LEVEL_AUC, color='gray',
-                        linestyle='--', alpha=0.7, label='Chance')
-            ax7.set_xlabel('Time (s)', fontsize=FONT_SIZE_LABEL)
-            ax7.set_ylabel('AUC Score', fontsize=FONT_SIZE_LABEL)
-            ax7.set_title('LG Local Effect Averages', fontsize=FONT_SIZE_TITLE)
-            ax7.legend(fontsize=FONT_SIZE_LEGEND)
-            ax7.grid(True, alpha=0.3)
-
-        # 8. Performance metrics summary
-        ax8 = plt.subplot(5, 3, 8)
-        if lg_main_decoding_global_metrics_for_plot is not None and len(lg_main_decoding_global_metrics_for_plot) > 0:
-            metrics_names = list(
-                lg_main_decoding_global_metrics_for_plot.keys())
-            metrics_values = list(
-                lg_main_decoding_global_metrics_for_plot.values())
-
-            bars = ax8.bar(range(len(metrics_names)),
-                           metrics_values, alpha=0.7, color='lightcoral')
-            ax8.set_xticks(range(len(metrics_names)))
-            ax8.set_xticklabels(metrics_names, rotation=45,
-                                ha='right', fontsize=FONT_SIZE_TICK)
-            ax8.set_ylabel('Score', fontsize=FONT_SIZE_LABEL)
-            ax8.set_title('LG Global Metrics', fontsize=FONT_SIZE_TITLE)
-            ax8.grid(True, alpha=0.3, axis='y')
-
-            # Add value labels on bars
-            for bar, value in zip(bars, metrics_values):
-                if pd.notna(value):
-                    ax8.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01,
-                             f'{value:.3f}', ha='center', va='bottom', fontsize=FONT_SIZE_TICK)
-
-        # 9. All folds temporal scores (if available)
-        ax9 = plt.subplot(5, 3, 9)
-        if lg_main_temporal_scores_1d_all_folds is not None and main_epochs_time_points is not None:
-            # (n_folds, n_timepoints)
-            if lg_main_temporal_scores_1d_all_folds.ndim == 2:
-                for fold_idx in range(lg_main_temporal_scores_1d_all_folds.shape[0]):
-                    ax9.plot(main_epochs_time_points, lg_main_temporal_scores_1d_all_folds[fold_idx, :],
-                             alpha=0.5, linewidth=1, label=f'Fold {fold_idx+1}')
-
-                # Plot mean on top
-                if lg_main_mean_temporal_decoding_scores_1d is not None:
-                    ax9.plot(main_epochs_time_points, lg_main_mean_temporal_decoding_scores_1d,
-                             'black', linewidth=3, label='Mean')
-
-            ax9.axhline(y=CHANCE_LEVEL_AUC, color='gray',
-                        linestyle='--', alpha=0.7, label='Chance')
-            ax9.set_xlabel('Time (s)', fontsize=FONT_SIZE_LABEL)
-            ax9.set_ylabel('AUC Score', fontsize=FONT_SIZE_LABEL)
-            ax9.set_title('LG All CV Folds', fontsize=FONT_SIZE_TITLE)
-            ax9.legend(fontsize=FONT_SIZE_LEGEND-2,
-                       bbox_to_anchor=(1.05, 1), loc='upper left')
-            ax9.grid(True, alpha=0.3)
-
-        # Adjust layout and save
-        plt.tight_layout()
-
-        # Save the main dashboard
-        dashboard_filename = f"lg_decoding_dashboard_{subject_identifier}_{group_identifier}_{classifier_name_for_title}.png"
-        dashboard_path = os.path.join(
-            output_directory_path, dashboard_filename)
-        plt.savefig(dashboard_path, dpi=DPI_VALUE, bbox_inches='tight')
-        logger_viz_lg.info("LG Dashboard saved to: %s", dashboard_path)
-
-        plt.close()
-
-        # Create additional detailed plots
-        _create_detailed_lg_comparison_plots(
-            lg_specific_comparison_results, main_epochs_time_points,
-            subject_identifier, output_directory_path, CHANCE_LEVEL_AUC
+        # =================== PAGE 6: LSGD vs LDGD ===================
+        _create_lg_comparison_page(
+            main_epochs_time_points,
+            lg_specific_comparison_results,
+            "LSGD_vs_LDGD",
+            subject_identifier,
+            group_identifier,
+            output_directory_path,
+            classifier_name_for_title,
+            CHANCE_LEVEL_AUC,
+            include_tgm=False
         )
 
         logger_viz_lg.info(
@@ -344,8 +172,240 @@ def create_subject_decoding_dashboard_plots_lg(
                             subject_identifier, e, exc_info=True)
 
 
+def _create_lg_comparison_page(times, lg_results, comparison_name, subject_id, group_id,
+                               output_dir, classifier_name, chance_level, include_tgm=True):
+    """Create a single page with 2 plots for a specific LG comparison."""
+
+    try:
+        # Find the specific comparison result
+        comparison_data = None
+        if lg_results:
+            for result in lg_results:
+                result_name = result.get(
+                    'comparison_name', '').replace(' ', '_').upper()
+                if result_name == comparison_name.upper():
+                    comparison_data = result
+                    break
+
+        if comparison_data is None:
+            logger_viz_lg.warning(
+                f"No data found for comparison {comparison_name}")
+            return
+
+        # Create figure with 2 subplots (1 row, 2 columns) or 1 subplot for AUC only
+        if include_tgm:
+            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
+        else:
+            fig, ax1 = plt.subplots(1, 1, figsize=(12, 8))
+            ax2 = None
+
+        # =================== Plot 1: AUC temporal curve ===================
+        mean_scores = comparison_data.get('scores_1d_mean')
+        all_folds_scores = comparison_data.get('all_folds_scores_1d')
+        fdr_data = comparison_data.get('fdr_significance_data')
+        cluster_data = comparison_data.get('cluster_significance_data')
+
+        if mean_scores is not None and times is not None:
+            _plot_lg_temporal_auc(ax1, times, mean_scores, all_folds_scores,
+                                  fdr_data, cluster_data, comparison_name,
+                                  chance_level, subject_id)
+
+        # =================== Plot 2: TGM (if included) ===================
+        if include_tgm and ax2 is not None:
+            tgm_scores = comparison_data.get('tgm_mean')
+            tgm_fdr_data = comparison_data.get('tgm_fdr_data')
+
+            if tgm_scores is not None:
+                _plot_lg_tgm(ax2, times, tgm_scores, tgm_fdr_data,
+                             comparison_name, chance_level)
+
+        # Adjust layout and save
+        plt.tight_layout()
+
+        # Save the plot
+        safe_comparison_name = comparison_name.replace(
+            '_vs_', '_vs_').replace('_ALL', '_ALL')
+        filename = f"lg_{safe_comparison_name}_{subject_id}_{group_id}_{classifier_name}.png"
+        filepath = os.path.join(output_dir, filename)
+
+        plt.savefig(filepath, dpi=DPI_VALUE, bbox_inches='tight')
+        logger_viz_lg.info(f"LG comparison plot saved to: {filepath}")
+
+        plt.close()
+
+    except Exception as e:
+        logger_viz_lg.error(f"Error creating LG comparison page {comparison_name}: {e}",
+                            exc_info=True)
+
+
+def _plot_lg_temporal_auc(ax, times, mean_scores, all_folds_scores, fdr_data,
+                          cluster_data, comparison_name, chance_level, subject_id):
+    """Plot temporal AUC curve with statistical significance and individual folds."""
+
+    # Plot individual folds (with transparency)
+    if all_folds_scores is not None and all_folds_scores.ndim == 2:
+        for i, fold_scores in enumerate(all_folds_scores):
+            if not np.all(np.isnan(fold_scores)):
+                ax.plot(times, fold_scores, color='lightgray', alpha=0.5,
+                        linewidth=0.8, label='Individual folds' if i == 0 else "")
+
+    # Plot mean curve
+    if mean_scores is not None:
+        ax.plot(times, mean_scores, 'b-', linewidth=3, label='Mean AUC')
+
+        # Calculate and plot confidence interval/SEM
+        if all_folds_scores is not None and all_folds_scores.ndim == 2:
+            sem_scores = scipy.stats.sem(
+                all_folds_scores, axis=0, nan_policy='omit')
+            ci_lower = mean_scores - 1.96 * sem_scores
+            ci_upper = mean_scores + 1.96 * sem_scores
+            ax.fill_between(times, ci_lower, ci_upper, alpha=0.3,
+                            color='blue', label='95% CI')
+
+    # Add chance level
+    ax.axhline(y=chance_level, color='red', linestyle='--',
+               alpha=0.7, label=f'Chance ({chance_level})')
+
+    # Add stimulus onset marker
+    ax.axvline(x=0, color='black', linestyle=':', alpha=0.8,
+               label='Stimulus Onset')
+
+    # Add FDR significance markers
+    if fdr_data and fdr_data.get('mask') is not None:
+        fdr_mask = fdr_data['mask']
+        if np.any(fdr_mask):
+            # Create significance bar at bottom
+            y_min, y_max = ax.get_ylim()
+            y_sig_fdr = y_min + 0.02 * (y_max - y_min)
+            ax.fill_between(times, y_sig_fdr - 0.01, y_sig_fdr,
+                            where=fdr_mask, color='green', alpha=0.7,
+                            step='mid', label="FDR p<0.05")
+
+    # Add cluster significance markers
+    if cluster_data and cluster_data.get('mask') is not None:
+        cluster_mask = cluster_data['mask']
+        if np.any(cluster_mask):
+            # Create significance bar slightly below FDR
+            y_min, y_max = ax.get_ylim()
+            y_sig_cluster = y_min + 0.04 * (y_max - y_min)
+            ax.fill_between(times, y_sig_cluster - 0.01, y_sig_cluster,
+                            where=cluster_mask, color='orange', alpha=0.7,
+                            step='mid', label="Cluster p<0.05")
+
+    # Formatting
+    ax.set_xlabel('Time (s)', fontsize=FONT_SIZE_LABEL)
+    ax.set_ylabel('AUC Score', fontsize=FONT_SIZE_LABEL)
+    ax.set_title(f'{comparison_name.replace("_", " ")} - Subject {subject_id}',
+                 fontsize=FONT_SIZE_TITLE)
+    ax.legend(fontsize=FONT_SIZE_LEGEND)
+    ax.grid(True, alpha=0.3)
+
+    # Add peak AUC info
+    if mean_scores is not None:
+        peak_auc = np.max(mean_scores)
+        peak_time = times[np.argmax(mean_scores)]
+        ax.text(0.02, 0.98, f'Peak AUC: {peak_auc:.3f}\nat {peak_time:.3f}s',
+                transform=ax.transAxes, va='top', ha='left',
+                bbox=dict(boxstyle='round', facecolor='white', alpha=0.8),
+                fontsize=FONT_SIZE_LEGEND)
+
+
+def _plot_lg_tgm(ax, times, tgm_scores, tgm_fdr_data, comparison_name, chance_level):
+    """Plot Temporal Generalization Matrix."""
+
+    if tgm_scores is None or tgm_scores.ndim != 2:
+        logger_viz_lg.warning(f"Invalid TGM data for {comparison_name}")
+        return
+
+    # Plot TGM heatmap
+    vmin = chance_level - 0.1
+    vmax = chance_level + 0.1
+
+    im = ax.imshow(tgm_scores, cmap='RdBu_r', aspect='auto', origin='lower',
+                   extent=[times[0], times[-1], times[0], times[-1]],
+                   vmin=vmin, vmax=vmax)
+
+    # Add stimulus onset lines
+    ax.axvline(x=0, color='black', linestyle=':', alpha=0.8)
+    ax.axhline(y=0, color='black', linestyle=':', alpha=0.8)
+
+    # Add FDR significance contours if available
+    if tgm_fdr_data and tgm_fdr_data.get('mask') is not None:
+        fdr_mask = tgm_fdr_data['mask']
+        if np.any(fdr_mask) and fdr_mask.shape == tgm_scores.shape:
+            X, Y = np.meshgrid(times, times)
+            ax.contourf(X, Y, fdr_mask.astype(float),
+                        levels=[0.5, 1.5], colors="none",
+                        hatches=["///"], alpha=0.4)
+
+    # Formatting
+    ax.set_xlabel('Testing Time (s)', fontsize=FONT_SIZE_LABEL)
+    ax.set_ylabel('Training Time (s)', fontsize=FONT_SIZE_LABEL)
+    ax.set_title(f'{comparison_name.replace("_", " ")} - TGM',
+                 fontsize=FONT_SIZE_TITLE)
+
+    # Add colorbar
+    cbar = plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+    cbar.set_label('AUC Score', fontsize=FONT_SIZE_LABEL)
+    cbar.ax.axhline(chance_level, color="black", linestyle="--", lw=1)
+
+
+def _apply_statistical_tests_to_comparison_data(comparison_data, times, n_permutations=1024):
+    """Apply FDR and cluster permutation tests to comparison data."""
+
+    if not bEEG_stats or not comparison_data:
+        return comparison_data
+
+    all_folds_scores = comparison_data.get('all_folds_scores_1d')
+
+    if all_folds_scores is None or all_folds_scores.ndim != 2:
+        return comparison_data
+
+    try:
+        # FDR test
+        _, fdr_mask, fdr_p = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
+            all_folds_scores,
+            chance_level=0.5,
+            alternative_hypothesis="greater"
+        )
+        comparison_data['fdr_significance_data'] = {
+            'mask': fdr_mask,
+            'p_values': fdr_p,
+            'method': 'FDR'
+        }
+
+        # Cluster permutation test
+        t_obs, clusters, cluster_p, _ = bEEG_stats.perform_cluster_permutation_test(
+            all_folds_scores,
+            chance_level=0.5,
+            n_permutations=n_permutations,
+            cluster_threshold_config={"start": 0.1, "step": 0.1},
+            alternative_hypothesis="greater"
+        )
+
+        # Create combined cluster mask
+        cluster_mask = np.zeros(len(times), dtype=bool)
+        if clusters and cluster_p is not None:
+            for cluster, p_val in zip(clusters, cluster_p):
+                if p_val < 0.05:
+                    cluster_mask = np.logical_or(cluster_mask, cluster)
+
+        comparison_data['cluster_significance_data'] = {
+            'mask': cluster_mask,
+            'p_values': cluster_p,
+            'method': 'Cluster_Permutation'
+        }
+
+    except Exception as e:
+        logger_viz_lg.error(f"Error applying statistical tests: {e}")
+
+    return comparison_data
+
+
+# =================== FONCTIONS DE COMPATIBILITÉ POUR L'ANCIEN CODE ===================
+
 def _create_detailed_lg_comparison_plots(lg_specific_results, times, subject_id, output_dir, chance_level):
-    """Create detailed plots for LG specific comparisons."""
+    """Create detailed plots for LG specific comparisons - backward compatibility."""
     if lg_specific_results is None or len(lg_specific_results) == 0:
         return
 
@@ -379,16 +439,6 @@ def _create_detailed_lg_comparison_plots(lg_specific_results, times, subject_id,
                             if len(sig_times) > 0:
                                 ax.scatter(sig_times, [max(scores) * 1.02] * len(sig_times),
                                            marker='*', color='red', s=30, label='FDR p<0.05')
-
-                if result.get("cluster_significance_data") is not None:
-                    cluster_data = result["cluster_significance_data"]
-                    if cluster_data.get("mask") is not None:
-                        cluster_mask = cluster_data["mask"]
-                        if len(cluster_mask) == len(times_res):
-                            for j, is_sig in enumerate(cluster_mask):
-                                if is_sig:
-                                    ax.axvspan(times_res[j] - 0.002, times_res[j] + 0.002,
-                                               alpha=0.3, color='orange')
 
                 ax.set_xlabel('Time (s)', fontsize=FONT_SIZE_LABEL)
                 ax.set_ylabel('AUC Score', fontsize=FONT_SIZE_LABEL)
@@ -489,6 +539,10 @@ def plot_group_temporal_decoding_statistics_lg(times, mean_scores, title, output
         ax.axhline(y=chance_level, color='gray', linestyle='--',
                    alpha=0.7, label=f'Chance ({chance_level})')
 
+        # Add stimulus onset
+        ax.axvline(x=0, color='black', linestyle=':', alpha=0.8,
+                   label='Stimulus Onset')
+
         # Add FDR significance markers
         if fdr_mask is not None and len(fdr_mask) == len(times):
             sig_times = times[fdr_mask]
@@ -547,6 +601,11 @@ def plot_group_tgm_statistics_lg(times, mean_tgm, title, output_dir, fdr_mask=No
         ax1.set_xlabel('Testing Time (s)', fontsize=FONT_SIZE_LABEL)
         ax1.set_ylabel('Training Time (s)', fontsize=FONT_SIZE_LABEL)
         ax1.set_title(f'{title} - Mean TGM', fontsize=FONT_SIZE_TITLE)
+
+        # Add stimulus onset lines
+        ax1.axvline(x=0, color='black', linestyle=':', alpha=0.8)
+        ax1.axhline(y=0, color='black', linestyle=':', alpha=0.8)
+
         plt.colorbar(im, ax=ax1, label='AUC Score')
 
         # Add significance contours
@@ -561,6 +620,8 @@ def plot_group_tgm_statistics_lg(times, mean_tgm, title, output_dir, fdr_mask=No
                  linewidth=3, label='Diagonal TGM')
         ax2.axhline(y=chance_level, color='gray', linestyle='--',
                     alpha=0.7, label=f'Chance ({chance_level})')
+        ax2.axvline(x=0, color='black', linestyle=':', alpha=0.8,
+                    label='Stimulus Onset')
 
         if fdr_mask is not None:
             diagonal_sig = np.diag(fdr_mask)
