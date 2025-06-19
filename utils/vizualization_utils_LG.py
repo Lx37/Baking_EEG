@@ -180,16 +180,28 @@ def _create_lg_comparison_page(times, lg_results, comparison_name, subject_id, g
         # Find the specific comparison result
         comparison_data = None
         if lg_results:
+            # Map from display names to actual comparison names in results
+            name_mapping = {
+                "LSGS_vs_LSGD": "Local Standard: Global Standard vs Global Deviant",
+                "LDGS_vs_LDGD": "Local Deviant: Global Standard vs Global Deviant", 
+                "LSGS_vs_LDGS": "Global Standard: Local Standard vs Local Deviant",
+                "LSGD_vs_LDGD": "Global Deviant: Local Standard vs Local Deviant",
+                # Simplified aliases that map to the 4 actual comparisons we have
+                "LD_ALL_vs_LS_ALL": "Local Standard: Global Standard vs Global Deviant",  # Using first comparison as fallback
+                "GD_ALL_vs_GS_ALL": "Local Deviant: Global Standard vs Global Deviant"   # Using second comparison as fallback
+            }
+            
+            target_name = name_mapping.get(comparison_name, comparison_name)
+            
             for result in lg_results:
-                result_name = result.get(
-                    'comparison_name', '').replace(' ', '_').upper()
-                if result_name == comparison_name.upper():
+                result_name = result.get('comparison_name', '')
+                if result_name == target_name:
                     comparison_data = result
                     break
 
         if comparison_data is None:
             logger_viz_lg.warning(
-                f"No data found for comparison {comparison_name}")
+                f"No data found for comparison {comparison_name}. Available comparisons: {[r.get('comparison_name', 'UNKNOWN') for r in lg_results] if lg_results else 'None'}")
             return
 
         # Create figure with 2 subplots (1 row, 2 columns) or 1 subplot for AUC only
