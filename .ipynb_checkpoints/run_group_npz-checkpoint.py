@@ -1,49 +1,30 @@
 #!/usr/bin/env python3
-# Available keys: ['subject_id', 'group', 'decoding_protocol_identifier', 'classifier_type_used', 'epochs_time_points', 'pp_ap_main_original_labels', 'pp_ap_main_pred_probas_global', 'pp_ap_main_pred_labels_global', 'pp_ap_main_cv_global_scores', 'pp_ap_main_scores_1d_all_folds', 'pp_ap_main_scores_1d_mean', 'pp_ap_main_temporal_1d_fdr', 'pp_ap_main_temporal_1d_cluster', 'pp_ap_main_tgm_all_folds', 'pp_ap_main_tgm_mean', 'pp_ap_main_tgm_fdr', 'pp_ap_main_mean_auc_global', 'pp_ap_main_global_metrics', 'pp_ap_specific_ap_results', 'pp_ap_mean_of_specific_scores_1d', 'pp_ap_sem_of_specific_scores_1d', 'pp_ap_mean_specific_fdr', 'pp_ap_mean_specific_cluster', 'pp_ap_ap_vs_ap_results', 'pp_ap_ap_centric_avg_results', 'detected_protocol'
-
 """
-Enhanced EEG Decoding Group Analysis with Advanced Statistical Methods
+Enhanced EEG Decoding Group Analysis Script.
 
-This script provides comprehensive analysis and visualization of EEG decoding results
-for scientific publications. It processes individual subject NPZ files and generates
-publication-quality figures with extensive statistical analyses using permutation tests,
-FDR correction, and three-group comparisons.
-
-Key Features:
-- Three-group simultaneous comparisons (DELIRIUM +, DELIRIUM -, controls)
-- Permutation cluster tests for robust statistical inference
-- FDR correction for multiple comparisons
-- Detailed latency analysis
-- Publication-quality visualizations (max 2 plots per page)
-- Integration with project's statistical utilities
-
+Available keys: ['subject_id', 'group', 'decoding_protocol_identifier',
+'classifier_type_used', 'epochs_time_points', 'pp_ap_main_original_labels',
+'pp_ap_main_pred_probas_global', 'pp_ap_main_pred_labels_global',
+'pp_ap_main_cv_global_scores', 'pp_ap_main_scores_1d_all_folds',
+'pp_ap_main_scores_1d_mean', 'pp_ap_main_temporal_1d_fdr',
+'pp_ap_main_temporal_1d_cluster', 'pp_ap_main_tgm_all_folds',
+'pp_ap_main_tgm_mean', 'pp_ap_main_tgm_fdr', 'pp_ap_main_mean_auc_global',
+'pp_ap_main_global_metrics', 'pp_ap_specific_ap_results',
+'pp_ap_mean_of_specific_scores_1d', 'pp_ap_sem_of_specific_scores_1d',
+'pp_ap_mean_specific_fdr', 'pp_ap_mean_specific_cluster',
+'pp_ap_ap_vs_ap_results', 'pp_ap_ap_centric_avg_results', 'detected_protocol']
 """
 
-from utils import stats_utils as bEEG_stats
 import os
 import sys
 import glob
 import logging
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-from matplotlib.colors import LinearSegmentedColormap
-import seaborn as sns
-from scipy import stats
-from scipy.stats import ttest_1samp, ttest_ind, f_oneway, wilcoxon, mannwhitneyu
-from scipy.stats import pearsonr, spearmanr, kruskal
-from scipy.ndimage import gaussian_filter1d
-from statsmodels.stats.multitest import multipletests
-from statsmodels.stats.proportion import proportion_confint
-from datetime import datetime
 import warnings
-from typing import Dict, List, Tuple, Optional, Any, Union
-import getpass
-from itertools import combinations
+from datetime import datetime
+from typing import Dict, List, Optional, Any
 
-# Import project-specific statistical utilities
-sys.path.append('/Users/tom/Desktop/ENSC/Stage CAP/BakingEEG/Baking_EEG/utils')
+import numpy as np
+import matplotlib.pyplot as plt
 
 # Suppress warnings for cleaner output
 warnings.filterwarnings('ignore')
@@ -100,10 +81,12 @@ logger = logging.getLogger(__name__)
 
 def find_npz_files(base_path: str) -> Dict[str, Dict[str, List[str]]]:
     """
-    Recursively find and organize NPZ files based on the specific directory structure.
-    Structure attendue : {base_path}/intra_subject_results/{group_name}/.../decoding_results_full.npz
+    Recursively find and organize NPZ files based on directory structure.
+
+    Structure attendue : {base_path}/intra_subject_results/{group_name}/...
+    /decoding_results_full.npz
     """
-    logger.info(f"Searching for NPZ files in: {base_path}")
+    logger.info("Searching for NPZ files in: %s", base_path)
     organized_data = {'PP': {}}  # Protocole unique 'PP'
 
     search_pattern = os.path.join(
@@ -112,46 +95,51 @@ def find_npz_files(base_path: str) -> Dict[str, Dict[str, List[str]]]:
 
     if not all_files:
         logger.warning(
-            f"No 'decoding_results_full.npz' files found with pattern: {search_pattern}")
+            "No 'decoding_results_full.npz' files found with pattern: %s",
+            search_pattern)
         return {}
 
-    logger.info(f"Found {len(all_files)} potential result files.")
+    logger.info("Found %d potential result files.", len(all_files))
 
     for file_path in all_files:
         try:
             rel_path = os.path.relpath(file_path, base_path)
             path_parts = rel_path.split(os.sep)
 
-            if len(path_parts) > 2 and path_parts[0] == 'intra_subject_results':
+            if (len(path_parts) > 2 and
+                    path_parts[0] == 'intra_subject_results'):
                 group_folder = path_parts[1]
-                group_name = GROUP_NAME_MAPPING.get(group_folder, group_folder)
+                group_name = GROUP_NAME_MAPPING.get(group_folder,
+                                                    group_folder)
 
                 if group_name not in organized_data['PP']:
                     organized_data['PP'][group_name] = []
                 organized_data['PP'][group_name].append(file_path)
             else:
                 logger.warning(
-                    f"File path does not match expected structure, skipping: {file_path}")
+                    "File path does not match expected structure, "
+                    "skipping: %s", file_path)
 
         except Exception as e:
-            logger.warning(f"Error processing file path {file_path}: {e}")
+            logger.warning("Error processing file path %s: %s", file_path, e)
 
     # Log summary
     logger.info("=== COLLECTED DATA SUMMARY ===")
     for protocol, groups in organized_data.items():
         if not groups:
-            logger.warning(f"No groups found for protocol {protocol}.")
+            logger.warning("No groups found for protocol %s.", protocol)
             continue
-        logger.info(f"Protocol {protocol}:")
+        logger.info("Protocol %s:", protocol)
         for group, files in groups.items():
-            logger.info(f"  - Group '{group}': {len(files)} subjects found.")
+            logger.info("  - Group '%s': %d subjects found.", group,
+                        len(files))
 
     return organized_data
 
 
 def load_npz_data(file_path: str) -> Optional[Dict[str, Any]]:
     """
-    Load and validate NPZ file data, using the correct keys found in the files.
+    Load and validate NPZ file data, using the correct keys found in files.
     """
     try:
         with np.load(file_path, allow_pickle=True) as data:
@@ -165,7 +153,8 @@ def load_npz_data(file_path: str) -> Optional[Dict[str, Any]]:
             for key in required_keys:
                 if key not in data_keys:
                     logger.warning(
-                        f"Missing required field '{key}' in {file_path}. Available keys: {data_keys}")
+                        "Missing required field '%s' in %s. "
+                        "Available keys: %s", key, file_path, data_keys)
                     return None
 
             # Extraire le nom du sujet à partir du chemin
@@ -187,46 +176,52 @@ def load_npz_data(file_path: str) -> Optional[Dict[str, Any]]:
             if actual_fdr_key in data_keys:
                 fdr_data = data[actual_fdr_key]
                 # Vérifier si c'est un dictionnaire contenant 'mask'
-                if isinstance(fdr_data, np.ndarray) and fdr_data.dtype == object:
+                if (isinstance(fdr_data, np.ndarray) and
+                        fdr_data.dtype == object):
                     try:
-                        fdr_dict = fdr_data.item()  # Extraire le dictionnaire de l'array
+                        # Extraire le dictionnaire de l'array
+                        fdr_dict = fdr_data.item()
                         if isinstance(fdr_dict, dict) and 'mask' in fdr_dict:
                             result['fdr_mask'] = fdr_dict['mask']
                             logger.debug(
-                                f"Loaded FDR mask for {subject_id}: {np.sum(fdr_dict['mask'])} significant points")
+                                "Loaded FDR mask for %s: %d significant points",
+                                subject_id, np.sum(fdr_dict['mask']))
                         else:
                             logger.warning(
-                                f"FDR data structure not recognized for {subject_id}")
+                                "FDR data structure not recognized for %s",
+                                subject_id)
                             result['fdr_mask'] = np.zeros_like(
                                 data[actual_score_key], dtype=bool)
                     except Exception as e:
                         logger.warning(
-                            f"Error extracting FDR mask for {subject_id}: {e}")
+                            "Error extracting FDR mask for %s: %s",
+                            subject_id, e)
                         result['fdr_mask'] = np.zeros_like(
                             data[actual_score_key], dtype=bool)
                 else:
                     logger.warning(
-                        f"FDR data is not in expected format for {subject_id}")
+                        "FDR data is not in expected format for %s",
+                        subject_id)
                     result['fdr_mask'] = np.zeros_like(
                         data[actual_score_key], dtype=bool)
             else:
-                logger.warning(f"FDR data not found in {file_path}")
+                logger.warning("FDR data not found in %s", file_path)
                 result['fdr_mask'] = np.zeros_like(
                     data[actual_score_key], dtype=bool)
 
             if result['scores'] is None or result['times'] is None:
-                logger.warning(
-                    f"Data for scores or times is None in {file_path}")
+                logger.warning("Data for scores or times is None in %s",
+                               file_path)
                 return None
             if len(result['scores']) == 0 or len(result['times']) == 0:
-                logger.warning(
-                    f"Data for scores or times is empty in {file_path}")
+                logger.warning("Data for scores or times is empty in %s",
+                               file_path)
                 return None
 
             return result
 
     except Exception as e:
-        logger.error(f"Error loading or processing {file_path}: {e}")
+        logger.error("Error loading or processing %s: %s", file_path, e)
         return None
 
 
@@ -248,9 +243,9 @@ def calculate_basic_statistics(scores: np.ndarray, times: np.ndarray,
     group_sem = group_std / \
         np.sqrt(n_subjects) if n_subjects > 1 else np.zeros_like(group_mean)
 
-    # Confidence intervals (95%)
-    ci_lower = group_mean - 1.96 * group_sem
-    ci_upper = group_mean + 1.96 * group_sem
+    # SEM bounds for visualization
+    sem_lower = group_mean - group_sem
+    sem_upper = group_mean + group_sem
 
     # Individual subject statistics
     subject_means = np.mean(scores, axis=1)
@@ -300,8 +295,8 @@ def calculate_basic_statistics(scores: np.ndarray, times: np.ndarray,
         'group_mean': group_mean,
         'group_std': group_std,
         'group_sem': group_sem,
-        'ci_lower': ci_lower,
-        'ci_upper': ci_upper,
+        'sem_lower': sem_lower,
+        'sem_upper': sem_upper,
         'subject_means': subject_means,
         'subject_peaks': subject_peaks,
         'subject_peak_times': subject_peak_times,
@@ -363,96 +358,22 @@ def find_peak_latencies(scores: np.ndarray, times: np.ndarray, sig_mask: np.ndar
 
 def perform_three_group_comparison(group_stats: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
     """
-    Perform comprehensive three-group comparison using ANOVA and post-hoc tests.
+    Simplified three-group comparison without statistical tests - just for visualization.
     """
     group_names = list(group_stats.keys())
     if len(group_names) != 3:
         logger.warning(f"Expected 3 groups, got {len(group_names)}")
         return {}
 
-    # Extract data
-    all_scores = [group_stats[name]['scores'] for name in group_names]
+    # Extract basic info for visualization
     times = group_stats[group_names[0]]['times']
-    n_timepoints = len(times)
-
-    # Point-by-point ANOVA
-    f_stats = np.zeros(n_timepoints)
-    p_values_anova = np.ones(n_timepoints)
-
-    for t in range(n_timepoints):
-        scores_at_t = [scores[:, t] for scores in all_scores]
-        try:
-            f_stat, p_val = f_oneway(*scores_at_t)
-            f_stats[t] = f_stat
-            p_values_anova[t] = p_val
-        except:
-            f_stats[t] = 0
-            p_values_anova[t] = 1
-
-    # FDR correction for ANOVA
-    p_corrected_anova = multipletests(p_values_anova, method='fdr_bh')[1]
-    significant_anova = p_corrected_anova < 0.05
-
-    # Post-hoc pairwise comparisons
-    pairwise_results = {}
-    for i, j in combinations(range(len(group_names)), 2):
-        group1_name = group_names[i]
-        group2_name = group_names[j]
-
-        scores1 = all_scores[i]
-        scores2 = all_scores[j]
-
-        # Point-by-point t-tests
-        t_stats = np.zeros(n_timepoints)
-        p_values = np.ones(n_timepoints)
-        effect_sizes = np.zeros(n_timepoints)
-
-        for t in range(n_timepoints):
-            try:
-                t_stat, p_val = ttest_ind(
-                    scores1[:, t], scores2[:, t], equal_var=False)
-                t_stats[t] = t_stat
-                p_values[t] = p_val
-
-                # Cohen's d
-                n1, n2 = len(scores1), len(scores2)
-                pooled_std = np.sqrt(((n1 - 1) * np.var(scores1[:, t], ddof=1) +
-                                     (n2 - 1) * np.var(scores2[:, t], ddof=1)) / (n1 + n2 - 2))
-                if pooled_std > 0:
-                    effect_sizes[t] = (
-                        np.mean(scores1[:, t]) - np.mean(scores2[:, t])) / pooled_std
-            except:
-                t_stats[t] = 0
-                p_values[t] = 1
-                effect_sizes[t] = 0
-
-        p_corrected = multipletests(p_values, method='fdr_bh')[1]
-
-        pairwise_results[f"{group1_name}_vs_{group2_name}"] = {
-            'group1_name': group1_name,
-            'group2_name': group2_name,
-            't_stats': t_stats,
-            'p_values': p_values,
-            'p_corrected': p_corrected,
-            'effect_sizes': effect_sizes,
-            'significant_points': p_corrected < 0.05
-        }
-
-    # Global comparisons
+    
+    # Global means for summary
     global_means = [np.mean(group_stats[name]['subject_means'])
                     for name in group_names]
-    global_f_stat, global_p_anova = f_oneway(
-        *[group_stats[name]['subject_means'] for name in group_names])
 
     return {
         'group_names': group_names,
-        'f_stats': f_stats,
-        'p_values_anova': p_values_anova,
-        'p_corrected_anova': p_corrected_anova,
-        'significant_anova': significant_anova,
-        'pairwise_results': pairwise_results,
-        'global_f_stat': global_f_stat,
-        'global_p_anova': global_p_anova,
         'global_means': global_means
     }
 
@@ -460,49 +381,16 @@ def perform_three_group_comparison(group_stats: Dict[str, Dict[str, Any]]) -> Di
 def create_streamlined_group_visualization(group_stats: Dict[str, Any], group_name: str,
                                            output_dir: str, protocol: str) -> str:
     """
-    Create streamlined group visualization focusing on temporal curves and TGM.
-    Maximum 2 plots per page for clarity.
-    """
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 8))
 
+    """
+    fig, ax1 = plt.subplots(1, 1, figsize=(14, 8))
+    # === PANEL 1: Average TGM (if available) ===
+    # For now, we'll create a placeholder TGM or load if available
+    # This would need to be implemented based on your TGM data structure
+    
     scores = group_stats['scores']
     times = group_stats['times']
     n_subjects = group_stats['n_subjects']
-
-    # === PANEL 1: Temporal decoding curves ===
-
-    # Plot individual subjects with transparency
-    for i in range(min(n_subjects, 20)):  # Limit to 20 for clarity
-        ax1.plot(times, scores[i, :], color='lightgray',
-                 alpha=0.4, linewidth=1)
-
-    # Plot group average with confidence interval
-    ax1.fill_between(times, group_stats['ci_lower'], group_stats['ci_upper'],
-                     alpha=0.3, color=COLORS_PALETTE[0], label='95% CI')
-    ax1.plot(times, group_stats['group_mean'], color=COLORS_PALETTE[0], linewidth=3,
-             label=f'Group Mean (n={n_subjects})')
-
-    ax1.axhline(y=CHANCE_LEVEL, color='red', linestyle='--', linewidth=2,
-                alpha=0.8, label='Chance Level')
-    ax1.axvline(x=0, color='black', linestyle=':',
-                linewidth=1, alpha=0.8, label='Stimulus Onset')
-
-    ax1.set_xlabel('Time (s)', fontsize=14)
-    ax1.set_ylabel('Decoding Accuracy (AUC)', fontsize=14)
-    ax1.set_title(f'{group_name} - Temporal Decoding\n'
-                  f'Mean AUC: {group_stats["global_auc"]:.3f} | '
-                  f'Peak: {group_stats["peak_latencies"]["global_peak_value"]:.3f} at '
-                  f'{group_stats["peak_latencies"]["global_peak_time"]:.3f}s',
-                  fontsize=16, fontweight='bold')
-    ax1.grid(True, alpha=0.3)
-    ax1.legend(fontsize=11, loc='upper right')
-    ax1.set_ylim([0.35, 0.85])
-    ax1.set_xlim([-0.2, 1.0])
-
-    # === PANEL 2: Average TGM (if available) ===
-    # For now, we'll create a placeholder TGM or load if available
-    # This would need to be implemented based on your TGM data structure
-
     # Create a synthetic TGM for demonstration - replace with actual TGM data loading
     tgm_times = times
     n_times = len(times)
@@ -518,19 +406,19 @@ def create_streamlined_group_visualization(group_stats: Dict[str, Any], group_na
             tgm_matrix[i, j] = base_score * temporal_decay + \
                 CHANCE_LEVEL * (1 - temporal_decay)
 
-    im = ax2.imshow(tgm_matrix, cmap='RdBu_r', aspect='auto', origin='lower',
+    im = ax1.imshow(tgm_matrix, cmap='RdBu_r', aspect='auto', origin='lower',
                     extent=[times[0], times[-1], times[0], times[-1]],
                     vmin=CHANCE_LEVEL - 0.1, vmax=CHANCE_LEVEL + 0.1)
-    ax2.set_xlabel('Testing Time (s)', fontsize=14)
-    ax2.set_ylabel('Training Time (s)', fontsize=14)
-    ax2.set_title(f'{group_name} - Average TGM',
+    ax1.set_xlabel('Testing Time (s)', fontsize=14)
+    ax1.set_ylabel('Training Time (s)', fontsize=14)
+    ax1.set_title(f'{group_name} - Average TGM',
                   fontsize=16, fontweight='bold')
 
     # Add stimulus onset lines
-    ax2.axvline(x=0, color='black', linestyle=':', alpha=0.8)
-    ax2.axhline(y=0, color='black', linestyle=':', alpha=0.8)
+    ax1.axvline(x=0, color='black', linestyle=':', alpha=0.8)
+    ax1.axhline(y=0, color='black', linestyle=':', alpha=0.8)
 
-    plt.colorbar(im, ax=ax2, label='AUC Score')
+    plt.colorbar(im, ax=ax1, label='AUC Score')
 
     plt.tight_layout()
 
@@ -583,14 +471,10 @@ def create_individual_group_plot(group_stats: Dict[str, Any], group_name: str,
     # Ligne de chance
     ax.axhline(y=CHANCE_LEVEL, color='black', linestyle='--', linewidth=2,
                alpha=0.7, label='Niveau de Chance (0.5)', zorder=3)
-    # Marquer les points significatifs FDR (utiliser fdr_counts_per_timepoint)
-    if np.any(group_stats['fdr_mask']):
-        y_fdr = 0.37
-        sig_times = times[group_stats['fdr_mask']]
-        sig_values = np.full_like(sig_times, y_fdr)
-        sig_values = np.full_like(sig_times, y_fdr)
-        ax.scatter(sig_times, sig_values, color='blue', marker='|', s=60,
-                   alpha=0.8, label='Significatif FDR (p<0.05)', zorder=4)
+
+    # Ligne de stimulus onset
+    ax.axvline(x=0, color='red', linestyle='--', linewidth=2,
+               alpha=0.8, label='Stimulus Onset', zorder=4)
 
     # Configuration des axes - Extension temporelle complète
     ax.set_xlabel('Temps (s)', fontsize=14)
@@ -599,15 +483,10 @@ def create_individual_group_plot(group_stats: Dict[str, Any], group_name: str,
                  f'AUC Moyenne: {group_stats["global_auc"]:.3f} ± {np.std(group_stats["subject_means"]):.3f}',
                  fontsize=16, fontweight='bold')
 
-    ax.set_xlim([-0.2, 1.0])  # Extension complète de -0.2 à 1.0 seconde
+    ax.set_xlim([-0.2, 1.0])  
     ax.set_ylim([0.35, 0.85])
     ax.grid(True, alpha=0.3)
     ax.legend(fontsize=12, loc='upper right')
-
-    # Ajouter statistiques dans un encadré
-    stats_text = f'Points significatifs FDR: {np.sum(group_stats["fdr_mask"])}'
-    ax.text(0.02, 0.98, stats_text, transform=ax.transAxes, fontsize=10,
-            verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
 
     plt.tight_layout()
 
@@ -628,9 +507,9 @@ def create_three_group_temporal_comparison(group_stats: Dict[str, Dict[str, Any]
                                            three_group_results: Dict[str, Any],
                                            output_dir: str, protocol: str) -> str:
     """
-    Créer une comparaison détaillée des 3 groupes avec SEM et points significatifs.
+    Créer une comparaison simple des 3 groupes avec SEM seulement - sans tests statistiques.
     """
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(16, 12))
+    fig, ax = plt.subplots(1, 1, figsize=(16, 8))
 
     group_names = three_group_results['group_names']
     times = group_stats[group_names[0]]['times']
@@ -642,116 +521,63 @@ def create_three_group_temporal_comparison(group_stats: Dict[str, Dict[str, Any]
         'controls': '#2ca02c'
     }
 
-    # === PANNEAU 1: Comparaison des moyennes avec SEM ===
-
+    # Comparaison des moyennes avec SEM
     for group_name in group_names:
         stats = group_stats[group_name]
         color = colors.get(group_name, COLORS_PALETTE[0])
 
         # Zone SEM
-        ax1.fill_between(times,
+        ax.fill_between(times,
                          stats['group_mean'] - stats['group_sem'],
                          stats['group_mean'] + stats['group_sem'],
                          alpha=0.2, color=color, zorder=1)
 
         # Ligne moyenne
-        ax1.plot(times, stats['group_mean'], color=color, linewidth=3,
+        ax.plot(times, stats['group_mean'], color=color, linewidth=3,
                  label=f'{group_name} (n={stats["n_subjects"]})', zorder=2)
 
     # Ligne de chance
-    ax1.axhline(y=CHANCE_LEVEL, color='black', linestyle='--', linewidth=2,
+    ax.axhline(y=CHANCE_LEVEL, color='black', linestyle='--', linewidth=2,
                 alpha=0.7, label='Niveau de Chance', zorder=2)
 
-    # Marquer les points significatifs ANOVA
-    if np.any(three_group_results['significant_anova']):
-        y_sig = 0.37
-        sig_times = times[three_group_results['significant_anova']]
-        sig_values = np.full_like(sig_times, y_sig)
-        ax1.scatter(sig_times, sig_values, color='purple', marker='s', s=40,
-                    alpha=0.8, label='ANOVA Significatif (p<0.05)', zorder=3)
-
-    ax1.set_xlabel('Temps (s)', fontsize=14)
-    ax1.set_ylabel('Précision de Décodage (AUC)', fontsize=14)
-    ax1.set_title(f'Comparaison Temporelle des Trois Groupes\n'
-                  f'ANOVA Global: F = {three_group_results["global_f_stat"]:.3f}, '
-                  f'p = {three_group_results["global_p_anova"]:.4f}',
+    ax.set_xlabel('Temps (s)', fontsize=14)
+    ax.set_ylabel('Précision de Décodage (AUC)', fontsize=14)
+    ax.set_title(f'Comparaison Temporelle des Trois Groupes (Protocole {protocol})',
                   fontsize=16, fontweight='bold')
 
-    ax1.set_xlim([-0.2, 1.0])  # Extension complète de -0.2 à 1.0 seconde
-    ax1.set_ylim([0.40, 0.60])
-    ax1.grid(True, alpha=0.3)
-    ax1.legend(fontsize=12, loc='upper right')
+    ax.set_xlim([-0.2, 1.0])
+    ax.set_ylim([0.40, 0.60])
+    ax.grid(True, alpha=0.3)
+    ax.legend(fontsize=12, loc='upper right')
 
-    # === PANNEAU 2: Comparaisons par paires avec différences ===
+    # Ajouter statistiques dans un encadré
+    stats_text = "Moyennes AUC globales:\n"
+    for i, group_name in enumerate(group_names):
+        mean_auc = three_group_results['global_means'][i]
+        stats_text += f"{group_name}: {mean_auc:.3f}\n"
 
-    # Calculer et afficher les différences entre groupes
-    pairwise_colors = ['blue', 'red', 'green']
-    y_offset = 0
-
-    for i, (comparison_name, results) in enumerate(three_group_results['pairwise_results'].items()):
-        group1_name = results['group1_name']
-        group2_name = results['group2_name']
-
-        # Calculer la différence des moyennes
-        diff_means = group_stats[group1_name]['group_mean'] - \
-            group_stats[group2_name]['group_mean']
-
-        # Plot la différence
-        ax2.plot(times, diff_means + y_offset, color=pairwise_colors[i], linewidth=2,
-                 label=f'{group1_name} - {group2_name}', alpha=0.8)
-
-        # Marquer les points significatifs
-        if np.any(results['significant_points']):
-            sig_times = times[results['significant_points']]
-            sig_diffs = diff_means[results['significant_points']] + y_offset
-            ax2.scatter(sig_times, sig_diffs, color=pairwise_colors[i], marker='o', s=30,
-                        alpha=0.9, zorder=3)
-
-        # Ligne de référence pour cette comparaison
-        ax2.axhline(
-            y=y_offset, color=pairwise_colors[i], linestyle=':', alpha=0.5)
-
-        y_offset += 0.1  # Décaler verticalement pour la prochaine comparaison
-
-    ax2.set_xlabel('Temps (s)', fontsize=14)
-    ax2.set_ylabel('Différence AUC (Groupe1 - Groupe2)', fontsize=14)
-    ax2.set_title('Différences Par Paires Entre Groupes\n'
-                  'Points marqués = Significatifs (FDR p<0.05)',
-                  fontsize=14, fontweight='bold')
-
-    ax2.set_xlim([-0.2, 1.0])  # Extension complète de -0.2 à 1.0 seconde
-    ax2.grid(True, alpha=0.3)
-    ax2.legend(fontsize=11, loc='upper right')
-
-    # Ajouter statistiques résumées
-    stats_text = "Résumé des comparaisons:\n"
-    for comparison_name, results in three_group_results['pairwise_results'].items():
-        n_sig = np.sum(results['significant_points'])
-        max_effect = np.max(np.abs(results['effect_sizes']))
-        stats_text += f"{comparison_name}: {n_sig} pts sig., d_max={max_effect:.2f}\n"
-
-    ax2.text(0.02, 0.98, stats_text, transform=ax2.transAxes, fontsize=10,
+    ax.text(0.02, 0.98, stats_text, transform=ax.transAxes, fontsize=10,
              verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.9))
 
     plt.tight_layout()
 
     # Sauvegarder
-    filename = f"{protocol}_three_groups_detailed_temporal_comparison.png"
+    filename = f"{protocol}_three_groups_simple_comparison.png"
     output_path = os.path.join(output_dir, filename)
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close()
 
-    logger.info(f"Comparaison détaillée des 3 groupes sauvée: {output_path}")
+    logger.info(f"Comparaison simple des 3 groupes sauvée: {output_path}")
     return output_path
 
 
-def create_fdr_significance_histogram(group_stats: Dict[str, Any], group_name: str,
-                                      output_dir: str, protocol: str) -> str:
+def create_subject_fdr_significance_plot(group_stats: Dict[str, Any], group_name: str,
+                                        output_dir: str, protocol: str) -> str:
     """
-    Créer un histogramme/graphique en points montrant le nombre de sujets 
-    avec significativité déjà calculée (pp_ap_main_temporal_1d_fdr) à chaque point temporel.
+    Créer un plot avec les ID des sujets sur l'axe Y et leurs points significatifs FDR.
+    Chaque ligne correspond à un sujet avec ses points significatifs marqués.
     """
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(16, 10))
+    fig, ax = plt.subplots(1, 1, figsize=(16, max(8, group_stats['n_subjects'] * 0.5)))
 
     # Couleurs pour chaque groupe
     colors = {
@@ -762,97 +588,286 @@ def create_fdr_significance_histogram(group_stats: Dict[str, Any], group_name: s
 
     times = group_stats['times']
     n_subjects = group_stats['n_subjects']
+    subject_ids = group_stats['subject_ids']
+    individual_fdr_masks = group_stats['individual_fdr_masks']
     color = colors.get(group_name, COLORS_PALETTE[0])
 
-    # Utiliser les comptes de significativité déjà calculés à partir des données NPZ
-    if 'fdr_counts_per_timepoint' in group_stats:
-        significance_counts = group_stats['fdr_counts_per_timepoint']
-        logger.info(f"DEBUG: Found fdr_counts_per_timepoint - Shape: {significance_counts.shape}, "
-                    f"Min: {np.min(significance_counts)}, Max: {np.max(significance_counts)}, "
-                    f"Sum: {np.sum(significance_counts)}")
-    else:
-        logger.warning(
-            "Pas de données de significativité disponibles, utilisation de données de fallback")
-        significance_counts = np.zeros(len(times))
+    # Créer une grille pour afficher chaque sujet
+    for i, (subj_id, fdr_mask) in enumerate(zip(subject_ids, individual_fdr_masks)):
+        y_position = i
+        
+        # Afficher les points significatifs pour ce sujet
+        if np.any(fdr_mask):
+            sig_times = times[fdr_mask]
+            sig_y = np.full_like(sig_times, y_position)
+            ax.scatter(sig_times, sig_y, color=color, marker='|', s=80,
+                      alpha=0.8, linewidths=2)
+        
+        # Ligne de fond pour chaque sujet
+        ax.plot([times[0], times[-1]], [y_position, y_position], 
+               color='lightgray', alpha=0.3, linewidth=1)
 
-    # DEBUG: Vérifier les masques FDR individuels aussi
-    if 'individual_fdr_masks' in group_stats:
-        logger.info(
-            f"DEBUG: Found {len(group_stats['individual_fdr_masks'])} individual FDR masks")
-        # Check first 3
-        for i, mask in enumerate(group_stats['individual_fdr_masks'][:3]):
-            logger.info(
-                f"DEBUG: Subject {i} FDR mask - Shape: {mask.shape}, Sum: {np.sum(mask)}")
+    # Configuration des axes
+    ax.set_xlabel('Temps (s)', fontsize=14)
+    ax.set_ylabel('Sujets', fontsize=14)
+    ax.set_title(f'{group_name} - Points significatifs FDR par sujet\n'
+                 f'(n={n_subjects} sujets)', fontsize=16, fontweight='bold')
 
-    # Afficher où sont les points significatifs s'il y en a
-    if np.sum(significance_counts) > 0:
-        sig_indices = np.where(significance_counts > 0)[0]
-        # First 10
-        logger.info(
-            f"DEBUG: Points significatifs trouvés aux indices: {sig_indices[:10]}...")
-        logger.info(
-            f"DEBUG: Temps correspondants: {times[sig_indices[:10]]}...")
-    else:
-        logger.warning(
-            f"ATTENTION: Aucune donnée significative réelle trouvée pour {group_name}")
-        logger.info(
-            "Possible problème avec les masques FDR dans les fichiers NPZ")
-        logger.info("Affichage de l'histogramme vide pour diagnostic")
-
-    # Panel 1: Histogramme des comptes de significativité
-    # Utiliser une largeur plus appropriée pour la visualisation
-    time_step = times[1] - times[0] if len(times) > 1 else 0.002
-    width = time_step * 0.8  # 80% de l'espacement temporel
-
-    bars = ax1.bar(times, significance_counts, width=width,
-                   color=color, alpha=0.7, edgecolor='black', linewidth=0.5)
-
-    # Afficher quelques statistiques pour debugging
-    logger.info(
-        f"DEBUG: Plotting {len(significance_counts)} bars with max height {np.max(significance_counts)}")
-    ax1.set_xlabel('Temps (s)', fontsize=12)
-    ax1.set_ylabel('Nombre de sujets significatifs', fontsize=12)
-    ax1.set_title(f'{group_name} - Nombre de sujets significatifs par point temporel\n'
-                  f'(n={n_subjects} sujets, données des fichiers NPZ)', fontsize=14, fontweight='bold')
-    ax1.set_xlim([-0.2, 1.0])
-    ax1.set_ylim([0, n_subjects + 1])
-    ax1.grid(True, alpha=0.3)
+    # Définir les étiquettes de l'axe Y
+    ax.set_yticks(range(n_subjects))
+    ax.set_yticklabels([f'ID: {subj_id}' for subj_id in subject_ids], fontsize=10)
+    
+    ax.set_xlim([-0.2, 1.0])
+    ax.set_ylim([-0.5, n_subjects - 0.5])
+    ax.grid(True, alpha=0.3, axis='x')
 
     # Ajouter ligne de stimulus onset
-    ax1.axvline(x=0, color='red', linestyle='--', linewidth=2,
-                alpha=0.8, label='Stimulus Onset')
-    ax1.legend()
+    ax.axvline(x=0, color='red', linestyle='--', linewidth=2,
+              alpha=0.8, label='Stimulus Onset')
+    ax.legend()
 
-    # Panel 2: Proportion de sujets significatifs (graphique en points)
-    proportion_significant = significance_counts / \
-        n_subjects if n_subjects > 0 else np.zeros_like(significance_counts)
-    ax2.plot(times, proportion_significant, color=color,
-             linewidth=2, marker='o', markersize=3, alpha=0.8)
-    ax2.fill_between(times, 0, proportion_significant, color=color, alpha=0.3)
-    ax2.set_xlabel('Temps (s)', fontsize=12)
-    ax2.set_ylabel('Proportion de sujets significatifs', fontsize=12)
-    ax2.set_title(f'{group_name} - Proportion de sujets significatifs',
-                  fontsize=14, fontweight='bold')
-    ax2.set_xlim([-0.2, 1.0])
-    ax2.set_ylim([0, 1])
-    ax2.grid(True, alpha=0.3)
-
-    # Ajouter ligne de stimulus onset
-    ax2.axvline(x=0, color='red', linestyle='--', linewidth=2,
-                alpha=0.8, label='Stimulus Onset')
-    ax2.legend()
+    # Ajouter statistiques dans un encadré
+    total_sig_points = sum(np.sum(mask) for mask in individual_fdr_masks)
+    stats_text = f'Total points significatifs: {total_sig_points}'
+    ax.text(0.02, 0.98, stats_text, transform=ax.transAxes, fontsize=10,
+            verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
 
     plt.tight_layout()
 
     # Sauvegarder
-    safe_name = group_name.replace(' ', '_').replace(
-        '+', 'pos').replace('-', 'neg')
-    filename = f"{protocol}_{safe_name}_significance_histogram.png"
+    safe_name = group_name.replace(' ', '_').replace('+', 'pos').replace('-', 'neg')
+    filename = f"{protocol}_{safe_name}_subject_fdr_plot.png"
     output_path = os.path.join(output_dir, filename)
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close()
 
-    logger.info(f"Histogramme FDR significatif sauvé: {output_path}")
+    logger.info(f"Plot FDR par sujet sauvé: {output_path}")
+    return output_path
+
+
+def create_combined_all_subjects_plot(all_group_stats: Dict[str, Dict[str, Any]], 
+                                    output_dir: str, protocol: str) -> str:
+    """
+    Créer un grand plot combiné montrant le cumul des plots FDR des 3 groupes.
+    Chaque ligne correspond à un sujet avec ses points significatifs FDR marqués.
+    """
+    fig, ax = plt.subplots(1, 1, figsize=(20, 14))
+    
+    # Couleurs pour chaque groupe
+    colors = {
+        'DELIRIUM +': '#d62728',
+        'DELIRIUM -': '#ff7f0e', 
+        'controls': '#2ca02c'
+    }
+    
+    # Récupérer les temps (identiques pour tous les groupes)
+    times = list(all_group_stats.values())[0]['times']
+    
+    # Calculer le nombre total de sujets pour organiser l'affichage
+    total_subjects = sum(stats['n_subjects'] for stats in all_group_stats.values())
+    
+    # Position Y pour chaque sujet
+    current_y_position = 0
+    group_y_positions = {}
+    
+    # Tracer les points significatifs FDR pour chaque groupe
+    for group_name, stats in all_group_stats.items():
+        color = colors.get(group_name, COLORS_PALETTE[0])
+        subject_ids = stats['subject_ids']
+        individual_fdr_masks = stats['individual_fdr_masks']
+        n_subjects = stats['n_subjects']
+        
+        group_start_position = current_y_position
+        
+        # Pour chaque sujet dans le groupe
+        for i, (subj_id, fdr_mask) in enumerate(zip(subject_ids, individual_fdr_masks)):
+            y_position = current_y_position
+            
+            # Afficher les points significatifs pour ce sujet
+            if np.any(fdr_mask):
+                sig_times = times[fdr_mask]
+                sig_y = np.full_like(sig_times, y_position)
+                ax.scatter(sig_times, sig_y, color=color, marker='|', s=100,
+                          alpha=0.8, linewidths=2)
+            
+            # Ligne de fond pour chaque sujet
+            ax.plot([times[0], times[-1]], [y_position, y_position], 
+                   color='lightgray', alpha=0.3, linewidth=1)
+            
+            # Label du sujet sur l'axe Y
+            ax.text(-0.24, y_position, f'{subj_id}', fontsize=8, 
+                   verticalalignment='center', color=color, fontweight='bold')
+            
+            current_y_position += 1
+        
+        # Ajouter une séparation entre les groupes
+        if group_name != list(all_group_stats.keys())[-1]:  # Pas pour le dernier groupe
+            ax.axhline(y=current_y_position - 0.5, color='black', linestyle='-', 
+                      linewidth=2, alpha=0.5)
+        
+        # Ajouter le nom du groupe sur le côté
+        group_center_y = group_start_position + (n_subjects - 1) / 2
+        ax.text(-0.27, group_center_y, group_name, fontsize=12, fontweight='bold',
+               verticalalignment='center', rotation=90, color=color)
+        
+        group_y_positions[group_name] = (group_start_position, current_y_position - 1)
+    
+    # Configuration des axes
+    ax.set_xlabel('Temps (s)', fontsize=16)
+    ax.set_title(f'Points significatifs FDR - Tous les groupes\n'
+                 f'Protocole {protocol} (n={total_subjects} sujets)', 
+                 fontsize=18, fontweight='bold')
+    
+    # Masquer les étiquettes Y par défaut et configurer les limites
+    ax.set_yticks([])
+    ax.set_xlim([-0.2, 1.0])
+    ax.set_ylim([-0.5, total_subjects - 0.5])
+    ax.grid(True, alpha=0.3, axis='x')
+    
+    # Ligne de stimulus onset
+    ax.axvline(x=0, color='red', linestyle='--', linewidth=3,
+              alpha=0.8, label='Stimulus Onset')
+
+    legend_elements = []
+    for group_name, stats in all_group_stats.items():
+        color = colors.get(group_name, COLORS_PALETTE[0])
+        legend_elements.append(plt.Line2D([0], [0], marker='|',
+                                          color=color,linewidth=0, markersize=15,
+                                          label=f'{group_name} (n={stats["n_subjects"]})'))
+    
+    # Ajouter ligne de stimulus onset à la légende
+    legend_elements.append(plt.Line2D([0], [0], color='red', linestyle='--', 
+                                    linewidth=3, label='Stimulus Onset'))
+    
+    ax.legend(handles=legend_elements, fontsize=12, loc='upper right')
+    
+    
+    plt.tight_layout()
+    
+    # Sauvegarder
+    filename = f"{protocol}_combined_all_subjects_plot.png"
+    output_path = os.path.join(output_dir, filename)
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    logger.info(f"Plot combiné FDR de tous les sujets sauvé: {output_path}")
+    return output_path
+
+
+def create_stacked_vertical_plot(all_group_stats: Dict[str, Dict[str, Any]], 
+                               output_dir: str, protocol: str) -> str:
+    """
+    Créer un plot avec les données empilées verticalement.
+    Chaque groupe est affiché dans un subplot vertical séparé.
+    """
+    n_groups = len(all_group_stats)
+    fig, axes = plt.subplots(n_groups, 1, figsize=(16, 6 * n_groups), 
+                            sharex=True, gridspec_kw={'hspace': 0.3})
+    
+    # Si un seul groupe, s'assurer que axes est une liste
+    if n_groups == 1:
+        axes = [axes]
+    
+    # Couleurs pour chaque groupe
+    colors = {
+        'DELIRIUM +': '#d62728',
+        'DELIRIUM -': '#ff7f0e', 
+        'controls': '#2ca02c'
+    }
+    
+    # Récupérer les temps (identiques pour tous les groupes)
+    times = list(all_group_stats.values())[0]['times']
+    
+    # Tracer chaque groupe dans son propre subplot
+    for idx, (group_name, stats) in enumerate(all_group_stats.items()):
+        ax = axes[idx]
+        color = colors.get(group_name, COLORS_PALETTE[0])
+        
+        subject_ids = stats['subject_ids']
+        individual_fdr_masks = stats['individual_fdr_masks']
+        n_subjects = stats['n_subjects']
+        
+        # Pour chaque sujet dans le groupe
+        for i, (subj_id, fdr_mask) in enumerate(zip(subject_ids, individual_fdr_masks)):
+            y_position = i
+            
+            # Afficher les points significatifs pour ce sujet
+            if np.any(fdr_mask):
+                sig_times = times[fdr_mask]
+                sig_y = np.full_like(sig_times, y_position)
+                ax.scatter(sig_times, sig_y, color=color, marker='|', s=120,
+                          alpha=0.8, linewidths=2.5)
+            
+            # Ligne de fond pour chaque sujet
+            ax.plot([times[0], times[-1]], [y_position, y_position], 
+                   color='lightgray', alpha=0.3, linewidth=1)
+            
+            # Label du sujet sur l'axe Y
+            ax.text(-0.24, y_position, f'{subj_id}', fontsize=9, 
+                   verticalalignment='center', color=color, fontweight='bold')
+        
+        # Configuration du subplot
+        ax.set_title(f'{group_name} (n={n_subjects})', fontsize=14, 
+                    fontweight='bold', color=color, pad=15)
+        ax.set_yticks([])
+        ax.set_xlim([-0.22, 1.0])
+        ax.set_ylim([-0.5, n_subjects - 0.5])
+        ax.grid(True, alpha=0.3, axis='x')
+        
+        # Ligne de stimulus onset
+        ax.axvline(x=0, color='red', linestyle='--', linewidth=2,
+                  alpha=0.8)
+        
+        # Ajouter les moyennes du groupe si disponibles
+        if 'group_mean' in stats:
+            group_mean = stats['group_mean']
+            # Normaliser pour l'affichage (optionnel)
+            if np.max(group_mean) > np.min(group_mean):  # Éviter la division par zéro
+                normalized_mean = (group_mean - np.min(group_mean)) / (np.max(group_mean) - np.min(group_mean))
+                normalized_mean = normalized_mean * (n_subjects - 1)  # Échelle sur la hauteur du subplot
+                
+                # Créer un axe secondaire pour la courbe moyenne
+                ax2 = ax.twinx()
+                ax2.plot(times, normalized_mean, color=color, linewidth=3, 
+                        alpha=0.7, label=f'Moyenne {group_name}')
+                ax2.set_ylabel('Score moyen (normalisé)', fontsize=10, color=color)
+                ax2.tick_params(axis='y', labelcolor=color)
+                ax2.set_ylim([0, n_subjects - 1])
+    
+    # Configuration globale
+    axes[-1].set_xlabel('Temps (s)', fontsize=14, fontweight='bold')
+    
+    # Titre général
+    total_subjects = sum(stats['n_subjects'] for stats in all_group_stats.values())
+    fig.suptitle(f'Points significatifs FDR - Affichage empilé vertical\n'
+                 f'Protocole {protocol} (n={total_subjects} sujets)', 
+                 fontsize=16, fontweight='bold', y=0.98)
+    
+    # Légende globale
+    legend_elements = []
+    for group_name, stats in all_group_stats.items():
+        color = colors.get(group_name, COLORS_PALETTE[0])
+        legend_elements.append(plt.Line2D([0], [0], marker='|',
+                                          color=color, linewidth=0, markersize=15,
+                                          label=f'{group_name} (n={stats["n_subjects"]})'))
+    
+    # Ajouter ligne de stimulus onset à la légende
+    legend_elements.append(plt.Line2D([0], [0], color='red', linestyle='--', 
+                                    linewidth=2, label='Stimulus Onset'))
+    
+    # Placer la légende en haut à droite du premier subplot
+    axes[0].legend(handles=legend_elements, fontsize=11, loc='upper right',
+                   bbox_to_anchor=(1.0, 1.0))
+    
+    plt.tight_layout()
+    
+    # Sauvegarder
+    filename = f"{protocol}_stacked_vertical_plot.png"
+    output_path = os.path.join(output_dir, filename)
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    logger.info(f"Plot empilé vertical sauvé: {output_path}")
     return output_path
 
 
@@ -964,73 +979,16 @@ def create_global_fdr_significance_histogram(all_group_stats: Dict[str, Dict[str
     return output_path
 
 
-def calculate_pairwise_statistical_tests(group_stats_dict: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
-    """
-    Calculer les tests statistiques sur les différences pairées entre groupes.
-    """
-    group_names = list(group_stats_dict.keys())
-    n_groups = len(group_names)
-    pairwise_results = {}
-
-    if n_groups < 2:
-        logger.warning(
-            "Moins de 2 groupes disponibles pour les comparaisons pairées")
-        return pairwise_results
-
-    # Générer toutes les combinaisons pairées
-    for i, group1 in enumerate(group_names):
-        for j, group2 in enumerate(group_names[i+1:], i+1):
-            pair_name = f"{group1}_vs_{group2}"
-
-            # [n_subjects1, n_timepoints]
-            scores1 = group_stats_dict[group1]['scores']
-            # [n_subjects2, n_timepoints]
-            scores2 = group_stats_dict[group2]['scores']
-            times = group_stats_dict[group1]['times']
-
-            n_timepoints = len(times)
-
-            # Tests t indépendants à chaque point temporel
-            t_stats = []
-            p_values = []
-
-            for t_idx in range(n_timepoints):
-                t_stat, p_val = ttest_ind(scores1[:, t_idx], scores2[:, t_idx])
-                t_stats.append(t_stat)
-                p_values.append(p_val)
-
-            # Correction FDR
-            _, fdr_mask, _, fdr_pvals = multipletests(
-                p_values, alpha=FDR_ALPHA, method='fdr_bh')
-
-            pairwise_results[pair_name] = {
-                'group1': group1,
-                'group2': group2,
-                'times': times,
-                't_stats': np.array(t_stats),
-                'p_values': np.array(p_values),
-                'fdr_mask': fdr_mask,
-                'fdr_pvals': fdr_pvals,
-                'n_significant': np.sum(fdr_mask),
-                'mean_diff': np.mean(scores1, axis=0) - np.mean(scores2, axis=0)
-            }
-
-            logger.info(
-                f"Comparaison pairée {pair_name}: {np.sum(fdr_mask)} points significatifs")
-
-    return pairwise_results
-
-
 def generate_comprehensive_report(all_results: Dict[str, Any], output_dir: str) -> str:
     """
-    Generate a comprehensive text report with all statistical results.
+    Generate a comprehensive text report with descriptive statistics only.
     """
     report_path = os.path.join(
-        output_dir, "comprehensive_statistical_report.txt")
+        output_dir, "comprehensive_descriptive_report.txt")
 
     with open(report_path, 'w') as f:
         f.write("=" * 80 + "\n")
-        f.write("COMPREHENSIVE EEG DECODING ANALYSIS REPORT\n")
+        f.write("COMPREHENSIVE EEG DECODING DESCRIPTIVE ANALYSIS REPORT\n")
         f.write("=" * 80 + "\n")
         f.write(
             f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
@@ -1045,6 +1003,7 @@ def generate_comprehensive_report(all_results: Dict[str, Any], output_dir: str) 
                 f.write(f"\n{group_name}:\n")
                 f.write(f"  N subjects: {stats['n_subjects']}\n")
                 f.write(f"  Mean AUC: {stats['global_auc']:.4f}\n")
+                f.write(f"  Standard deviation: {np.std(stats['subject_means']):.4f}\n")
                 f.write(
                     f"  Peak AUC: {stats['peak_latencies']['global_peak_value']:.4f} ")
                 f.write(
@@ -1062,46 +1021,136 @@ def generate_comprehensive_report(all_results: Dict[str, Any], output_dir: str) 
                         f.write(
                             f"(duration: {window['duration']:.3f}s, peak: {window['peak_value']:.4f})\n")
 
-            # Three-group comparison
+            # Three-group comparison (descriptive only)
             if 'three_group_comparison' in results:
                 comp = results['three_group_comparison']
-                f.write(f"\nTHREE-GROUP COMPARISON:\n")
-                f.write(
-                    f"  Global ANOVA: F = {comp['global_f_stat']:.4f}, p = {comp['global_p_anova']:.6f}\n")
-                f.write(
-                    f"  Significant time points (ANOVA): {np.sum(comp['significant_anova'])}\n")
-
-                f.write(f"\nPAIRWISE COMPARISONS:\n")
-                for comparison_name, pairwise in comp['pairwise_results'].items():
-                    f.write(f"  {comparison_name}:\n")
-                    f.write(
-                        f"    Significant time points: {np.sum(pairwise['significant_points'])}\n")
-                    f.write(
-                        f"    Max effect size: {np.max(np.abs(pairwise['effect_sizes'])):.4f}\n")
-                    f.write(
-                        f"    Max t-statistic: {np.max(np.abs(pairwise['t_stats'])):.4f}\n")
-
-            # Individual pairwise tests section
-            if 'pairwise_tests' in results:
-                pairwise_tests = results['pairwise_tests']
-                f.write(f"\nINDIVIDUAL PAIRWISE STATISTICAL TESTS:\n")
-                for pair_name, pair_data in pairwise_tests.items():
-                    f.write(f"  {pair_name}:\n")
-                    f.write(
-                        f"    Groups compared: {pair_data['group1']} vs {pair_data['group2']}\n")
-                    f.write(
-                        f"    Significant time points (FDR): {pair_data['n_significant']}\n")
-                    f.write(
-                        f"    Max |t-statistic|: {np.max(np.abs(pair_data['t_stats'])):.4f}\n")
-                    f.write(
-                        f"    Max |mean difference|: {np.max(np.abs(pair_data['mean_diff'])):.4f}\n")
+                f.write(f"\nTHREE-GROUP DESCRIPTIVE COMPARISON:\n")
+                f.write("  Group means comparison:\n")
+                for i, group_name in enumerate(comp['group_names']):
+                    f.write(f"    {group_name}: {comp['global_means'][i]:.4f}\n")
 
         f.write("\n" + "=" * 80 + "\n")
-        f.write("ANALYSIS COMPLETED\n")
+        f.write("DESCRIPTIVE ANALYSIS COMPLETED\n")
         f.write("=" * 80 + "\n")
 
-    logger.info(f"Comprehensive report saved: {report_path}")
+    logger.info(f"Comprehensive descriptive report saved: {report_path}")
     return report_path
+
+
+def create_stacked_vertical_plot(all_group_stats: Dict[str, Dict[str, Any]], 
+                               output_dir: str, protocol: str) -> str:
+    """
+    Créer un plot avec les données empilées verticalement.
+    Chaque groupe est affiché dans un subplot vertical séparé.
+    """
+    n_groups = len(all_group_stats)
+    fig, axes = plt.subplots(n_groups, 1, figsize=(16, 6 * n_groups), 
+                            sharex=True, gridspec_kw={'hspace': 0.3})
+    
+    # Si un seul groupe, s'assurer que axes est une liste
+    if n_groups == 1:
+        axes = [axes]
+    
+    # Couleurs pour chaque groupe
+    colors = {
+        'DELIRIUM +': '#d62728',
+        'DELIRIUM -': '#ff7f0e', 
+        'controls': '#2ca02c'
+    }
+    
+    # Récupérer les temps (identiques pour tous les groupes)
+    times = list(all_group_stats.values())[0]['times']
+    
+    # Tracer chaque groupe dans son propre subplot
+    for idx, (group_name, stats) in enumerate(all_group_stats.items()):
+        ax = axes[idx]
+        color = colors.get(group_name, COLORS_PALETTE[0])
+        
+        subject_ids = stats['subject_ids']
+        individual_fdr_masks = stats['individual_fdr_masks']
+        n_subjects = stats['n_subjects']
+        
+        # Pour chaque sujet dans le groupe
+        for i, (subj_id, fdr_mask) in enumerate(zip(subject_ids, individual_fdr_masks)):
+            y_position = i
+            
+            # Afficher les points significatifs pour ce sujet
+            if np.any(fdr_mask):
+                sig_times = times[fdr_mask]
+                sig_y = np.full_like(sig_times, y_position)
+                ax.scatter(sig_times, sig_y, color=color, marker='|', s=120,
+                          alpha=0.8, linewidths=2.5)
+            
+            # Ligne de fond pour chaque sujet
+            ax.plot([times[0], times[-1]], [y_position, y_position], 
+                   color='lightgray', alpha=0.3, linewidth=1)
+            
+            # Label du sujet sur l'axe Y
+            ax.text(-0.24, y_position, f'{subj_id}', fontsize=9, 
+                   verticalalignment='center', color=color, fontweight='bold')
+        
+        # Configuration du subplot
+        ax.set_title(f'{group_name} (n={n_subjects})', fontsize=14, 
+                    fontweight='bold', color=color, pad=15)
+        ax.set_yticks([])
+        ax.set_xlim([-0.22, 1.0])
+        ax.set_ylim([-0.5, n_subjects - 0.5])
+        ax.grid(True, alpha=0.3, axis='x')
+        
+        # Ligne de stimulus onset
+        ax.axvline(x=0, color='red', linestyle='--', linewidth=2,
+                  alpha=0.8)
+        
+        # Ajouter les moyennes du groupe si disponibles
+        if 'group_mean_scores' in stats:
+            group_mean = stats['group_mean_scores']
+            # Normaliser pour l'affichage (optionnel)
+            normalized_mean = (group_mean - np.min(group_mean)) / (np.max(group_mean) - np.min(group_mean))
+            normalized_mean = normalized_mean * (n_subjects - 1)  # Échelle sur la hauteur du subplot
+            
+            # Créer un axe secondaire pour la courbe moyenne
+            ax2 = ax.twinx()
+            ax2.plot(times, normalized_mean, color=color, linewidth=3, 
+                    alpha=0.7, label=f'Moyenne {group_name}')
+            ax2.set_ylabel('Score moyen (normalisé)', fontsize=10, color=color)
+            ax2.tick_params(axis='y', labelcolor=color)
+            ax2.set_ylim([0, n_subjects - 1])
+    
+    # Configuration globale
+    axes[-1].set_xlabel('Temps (s)', fontsize=14, fontweight='bold')
+    
+    # Titre général
+    total_subjects = sum(stats['n_subjects'] for stats in all_group_stats.values())
+    fig.suptitle(f'Points significatifs FDR - cluster - Mean des 6 courbes \n'
+                 f'Protocole {protocol} (n={total_subjects} sujets)', 
+                 fontsize=16, fontweight='bold', y=0.98)
+    
+    # Légende globale
+    legend_elements = []
+    for group_name, stats in all_group_stats.items():
+        color = colors.get(group_name, COLORS_PALETTE[0])
+        legend_elements.append(plt.Line2D([0], [0], marker='|',
+                                          color=color, linewidth=0, markersize=15,
+                                          label=f'{group_name} (n={stats["n_subjects"]})'))
+    
+    # Ajouter ligne de stimulus onset à la légende
+    legend_elements.append(plt.Line2D([0], [0], color='red', linestyle='--', 
+                                    linewidth=2, label='Stimulus Onset'))
+    
+    # Placer la légende en haut à droite du premier subplot
+    axes[0].legend(handles=legend_elements, fontsize=11, loc='upper right',
+                   bbox_to_anchor=(1.0, 1.0))
+    
+    plt.tight_layout()
+    
+    # Sauvegarder
+    filename = f"{protocol}_stacked_vertical_plot.png"
+    output_path = os.path.join(output_dir, filename)
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    logger.info(f"Plot empilé vertical sauvé: {output_path}")
+    return output_path
 
 
 def main():
@@ -1237,34 +1286,26 @@ def main():
             create_individual_group_plot(
                 stats, group_name, output_dir, protocol)
 
-            # Créer l'histogramme de significativité par sujet
-            create_fdr_significance_histogram(
+            # Créer l'histogramme de significativité par sujet (avec ID sur l'axe Y)
+            create_subject_fdr_significance_plot(
                 stats, group_name, output_dir, protocol)
 
-        # 3.4. Créer l'histogramme global avec tous les groupes
+        # 3.4. Créer le plot combiné de tous les sujets avec les FDR individuels
         valid_groups = {g: s for g, s in protocol_stats.items()
                         if s and s.get('n_subjects', 0) > 0}
         
         if len(valid_groups) >= 2:
-            logger.info("\n--- Creating Global FDR Significance Histogram ---")
-            create_global_fdr_significance_histogram(
+            # Créer le plot combiné de tous les sujets
+            logger.info("\n--- Creating Combined All Subjects FDR Plot ---")
+            create_combined_all_subjects_plot(
+                valid_groups, output_dir, protocol)
+            
+            # Créer le plot empilé vertical
+            logger.info("\n--- Creating Stacked Vertical Plot ---")
+            create_stacked_vertical_plot(
                 valid_groups, output_dir, protocol)
 
-        # 3.5. Perform pairwise statistical tests
-        
-        if len(valid_groups) >= 2:
-            logger.info("\n--- Performing Pairwise Statistical Tests ---")
-            pairwise_results = calculate_pairwise_statistical_tests(
-                valid_groups)
-            all_results[protocol]['pairwise_tests'] = pairwise_results
-
-            # Log results
-            for pair_name, pair_data in pairwise_results.items():
-                logger.info(
-                    f"Comparaison {pair_name}: {pair_data['n_significant']} points significatifs")
-
         # 4. Perform three-group comparison if we have exactly 3 groups
-
         if len(valid_groups) == 3:
             logger.info("\n--- Performing Three-Group Comparison ---")
             three_group_results = perform_three_group_comparison(valid_groups)
@@ -1275,9 +1316,8 @@ def main():
             create_three_group_temporal_comparison(
                 valid_groups, three_group_results, output_dir, protocol)
 
-            logger.info(f"Three-group ANOVA: "
-                        f"F = {three_group_results['global_f_stat']:.3f}, "
-                        f"p = {three_group_results['global_p_anova']:.4f}")
+            logger.info(f"Three-group comparison completed with means: "
+                        f"{[f'{name}: {mean:.3f}' for name, mean in zip(three_group_results['group_names'], three_group_results['global_means'])]}")
         else:
             logger.warning(f"Expected 3 groups for comparison, "
                            f"got {len(valid_groups)}")
@@ -1288,12 +1328,14 @@ def main():
     logger.info("\n" + "=" * 80)
     logger.info("ENHANCED ANALYSIS COMPLETE")
     logger.info("=" * 80)
-    logger.info(f"All results saved in: {os.path.abspath(output_dir)}")
+    logger.info("All results saved in: %s", os.path.abspath(output_dir))
     logger.info("Generated files:")
     logger.info("  - Enhanced group visualizations (2 panels each)")
-    logger.info("  - Three-group comprehensive comparison")
-    logger.info("  - Detailed latency analysis")
-    logger.info("  - Comprehensive statistical report")
+    logger.info("  - Individual group plots with SEM (without group-level statistics)")
+    logger.info("  - Subject-level FDR significance plots")
+    logger.info("  - Combined FDR plot showing all subjects from all groups")
+    logger.info("  - Three-group simple comparison")
+    logger.info("  - Comprehensive descriptive report")
 
 
 if __name__ == "__main__":

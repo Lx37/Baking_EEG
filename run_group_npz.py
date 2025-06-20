@@ -140,12 +140,16 @@ def find_npz_files(base_path: str) -> Dict[str, Dict[str, List[str]]]:
 def load_npz_data(file_path: str) -> Optional[Dict[str, Any]]:
     """
     Load and validate NPZ file data, using the correct keys found in files.
+    Now includes specific FDR and cluster masks.
     """
     try:
         with np.load(file_path, allow_pickle=True) as data:
             actual_score_key = 'pp_ap_main_scores_1d_mean'
             actual_time_key = 'epochs_time_points'
             actual_fdr_key = 'pp_ap_main_temporal_1d_fdr'
+            # Nouvelles clés spécifiques
+            specific_fdr_key = 'pp_ap_mean_specific_fdr'
+            specific_cluster_key = 'pp_ap_mean_specific_cluster'
 
             data_keys = list(data.keys())
             required_keys = [actual_score_key, actual_time_key]
@@ -209,6 +213,70 @@ def load_npz_data(file_path: str) -> Optional[Dict[str, Any]]:
                 result['fdr_mask'] = np.zeros_like(
                     data[actual_score_key], dtype=bool)
 
+            # Ajouter les masques spécifiques FDR
+            if specific_fdr_key in data_keys:
+                specific_fdr_data = data[specific_fdr_key]
+                if (isinstance(specific_fdr_data, np.ndarray) and
+                        specific_fdr_data.dtype == object):
+                    try:
+                        specific_fdr_dict = specific_fdr_data.item()
+                        if isinstance(specific_fdr_dict, dict) and 'mask' in specific_fdr_dict:
+                            result['specific_fdr_mask'] = specific_fdr_dict['mask']
+                            logger.debug(
+                                "Loaded specific FDR mask for %s: %d significant points",
+                                subject_id, np.sum(specific_fdr_dict['mask']))
+                        else:
+                            logger.warning(
+                                "Specific FDR data structure not recognized for %s",
+                                subject_id)
+                            result['specific_fdr_mask'] = np.zeros_like(
+                                data[actual_score_key], dtype=bool)
+                    except Exception as e:
+                        logger.warning(
+                            "Error extracting specific FDR mask for %s: %s",
+                            subject_id, e)
+                        result['specific_fdr_mask'] = np.zeros_like(
+                            data[actual_score_key], dtype=bool)
+                else:
+                    result['specific_fdr_mask'] = np.zeros_like(
+                        data[actual_score_key], dtype=bool)
+            else:
+                logger.warning("Specific FDR data not found in %s", file_path)
+                result['specific_fdr_mask'] = np.zeros_like(
+                    data[actual_score_key], dtype=bool)
+
+            # Ajouter les masques spécifiques cluster
+            if specific_cluster_key in data_keys:
+                specific_cluster_data = data[specific_cluster_key]
+                if (isinstance(specific_cluster_data, np.ndarray) and
+                        specific_cluster_data.dtype == object):
+                    try:
+                        specific_cluster_dict = specific_cluster_data.item()
+                        if isinstance(specific_cluster_dict, dict) and 'mask' in specific_cluster_dict:
+                            result['specific_cluster_mask'] = specific_cluster_dict['mask']
+                            logger.debug(
+                                "Loaded specific cluster mask for %s: %d significant points",
+                                subject_id, np.sum(specific_cluster_dict['mask']))
+                        else:
+                            logger.warning(
+                                "Specific cluster data structure not recognized for %s",
+                                subject_id)
+                            result['specific_cluster_mask'] = np.zeros_like(
+                                data[actual_score_key], dtype=bool)
+                    except Exception as e:
+                        logger.warning(
+                            "Error extracting specific cluster mask for %s: %s",
+                            subject_id, e)
+                        result['specific_cluster_mask'] = np.zeros_like(
+                            data[actual_score_key], dtype=bool)
+                else:
+                    result['specific_cluster_mask'] = np.zeros_like(
+                        data[actual_score_key], dtype=bool)
+            else:
+                logger.warning("Specific cluster data not found in %s", file_path)
+                result['specific_cluster_mask'] = np.zeros_like(
+                    data[actual_score_key], dtype=bool)
+
             if result['scores'] is None or result['times'] is None:
                 logger.warning("Data for scores or times is None in %s",
                                file_path)
@@ -226,10 +294,13 @@ def load_npz_data(file_path: str) -> Optional[Dict[str, Any]]:
 
 
 def calculate_basic_statistics(scores: np.ndarray, times: np.ndarray,
-                               subject_ids: List[str], fdr_masks: np.ndarray = None) -> Dict[str, Any]:
+                               subject_ids: List[str], fdr_masks: np.ndarray = None,
+                               specific_fdr_masks: np.ndarray = None,
+                               specific_cluster_masks: np.ndarray = None) -> Dict[str, Any]:
     """
     Calculate basic statistical measures using individual subject FDR masks from NPZ files.
     Focus on individual subject analysis and removing group-level statistical tests.
+    Now includes specific FDR and cluster masks.
     """
     if scores.ndim == 1:
         scores = scores[np.newaxis, :]
@@ -307,6 +378,10 @@ def calculate_basic_statistics(scores: np.ndarray, times: np.ndarray,
         'individual_fdr_masks': individual_fdr_masks,
         'fdr_counts_per_timepoint': fdr_counts_per_timepoint,
         'fdr_mask': fdr_counts_per_timepoint > 0,  # Mock FDR mask for compatibility
+        
+        # Specific FDR and cluster masks
+        'specific_fdr_masks': specific_fdr_masks if specific_fdr_masks is not None else np.zeros_like(scores, dtype=bool),
+        'specific_cluster_masks': specific_cluster_masks if specific_cluster_masks is not None else np.zeros_like(scores, dtype=bool),
     }
 
 
@@ -754,7 +829,166 @@ def create_combined_all_subjects_plot(all_group_stats: Dict[str, Dict[str, Any]]
     return output_path
 
 
+def create_stacked_vertical_plot_with_specific_masks(all_group_stats: Dict[str, Dict[str, Any]], 
+                                                   output_dir: str, protocol: str) -> str:
+    """
+    Créer un grand plot combiné montrant les masques FDR et cluster spécifiques des 3 groupes.
+    Chaque ligne correspond à un sujet avec ses points significatifs FDR et cluster marqués.
+    Style similaire à create_combined_all_subjects_plot mais avec deux types de masques.
+    """
+    fig, ax = plt.subplots(1, 1, figsize=(20, 14))
+    
+    # Couleurs pour chaque groupe
+    colors = {
+        'DELIRIUM +': '#d62728',
+        'DELIRIUM -': '#ff7f0e', 
+        'controls': '#2ca02c'
+    }
+    
+    # Couleurs pastel pour les clusters (versions plus claires)
+    pastel_colors = {
+        'DELIRIUM +': '#ffb3ba',  # Rouge pastel
+        'DELIRIUM -': '#ffd1a3',  # Orange pastel
+        'controls': '#b3e5b3'     # Vert pastel
+    }
+    
+    # Marqueurs identiques mais couleurs différentes pour FDR et cluster
+    fdr_marker = '|'  # Barre verticale pour FDR
+    cluster_marker = '|'  # Barre verticale pour cluster (même forme)
+    
+    # Récupérer les temps (identiques pour tous les groupes)
+    times = list(all_group_stats.values())[0]['times']
+    
+    # Calculer le nombre total de sujets pour organiser l'affichage
+    total_subjects = sum(stats['n_subjects'] for stats in all_group_stats.values())
+    
+    # Position Y pour chaque sujet
+    current_y_position = 0
+    group_y_positions = {}
+    
+    # Tracer les points significatifs FDR et cluster pour chaque groupe
+    for group_name, stats in all_group_stats.items():
+        color = colors.get(group_name, COLORS_PALETTE[0])
+        pastel_color = pastel_colors.get(group_name, color)  # Couleur pastel pour cluster
+        subject_ids = stats['subject_ids']
+        n_subjects = stats['n_subjects']
+        
+        # Récupérer les masques spécifiques FDR et cluster
+        specific_fdr_masks = stats.get('specific_fdr_masks', np.zeros((n_subjects, len(times)), dtype=bool))
+        specific_cluster_masks = stats.get('specific_cluster_masks', np.zeros((n_subjects, len(times)), dtype=bool))
+        
+        # Vérifier les dimensions
+        if specific_fdr_masks.shape != (n_subjects, len(times)):
+            logger.warning(f"Forme incorrecte pour specific_fdr_masks dans {group_name}: {specific_fdr_masks.shape}, attendu: {(n_subjects, len(times))}")
+            specific_fdr_masks = np.zeros((n_subjects, len(times)), dtype=bool)
+            
+        if specific_cluster_masks.shape != (n_subjects, len(times)):
+            logger.warning(f"Forme incorrecte pour specific_cluster_masks dans {group_name}: {specific_cluster_masks.shape}, attendu: {(n_subjects, len(times))}")
+            specific_cluster_masks = np.zeros((n_subjects, len(times)), dtype=bool)
+        
+        group_start_position = current_y_position
+        
+        # Pour chaque sujet dans le groupe
+        for i, subj_id in enumerate(subject_ids):
+            y_position = current_y_position
+            
+            # Afficher les points significatifs FDR spécifiques
+            if i < specific_fdr_masks.shape[0] and np.any(specific_fdr_masks[i, :]):
+                fdr_sig_times = times[specific_fdr_masks[i, :]]
+                fdr_sig_y = np.full_like(fdr_sig_times, y_position)  # Même hauteur
+                ax.scatter(fdr_sig_times, fdr_sig_y, color=color, marker=fdr_marker, s=120,
+                          alpha=0.8, linewidths=3)
+            
+            # Afficher les points significatifs cluster spécifiques
+            if i < specific_cluster_masks.shape[0] and np.any(specific_cluster_masks[i, :]):
+                cluster_sig_times = times[specific_cluster_masks[i, :]]
+                cluster_sig_y = np.full_like(cluster_sig_times, y_position)  # Même hauteur que FDR
+                ax.scatter(cluster_sig_times, cluster_sig_y, color=pastel_color, marker=cluster_marker, s=100,
+                          alpha=0.8, linewidths=2)
+            
+            # Ligne de fond pour chaque sujet
+            ax.plot([times[0], times[-1]], [y_position, y_position], 
+                   color='lightgray', alpha=0.3, linewidth=1)
+            
+            # Label du sujet sur l'axe Y
+            ax.text(-0.24, y_position, f'{subj_id}', fontsize=8, 
+                   verticalalignment='center', color=color, fontweight='bold')
+            
+            current_y_position += 1
+        
+        # Ajouter une séparation entre les groupes
+        if group_name != list(all_group_stats.keys())[-1]:  # Pas pour le dernier groupe
+            ax.axhline(y=current_y_position - 0.5, color='black', linestyle='-', 
+                      linewidth=2, alpha=0.5)
+        
+        # Ajouter le nom du groupe sur le côté
+        group_center_y = group_start_position + (n_subjects - 1) / 2
+        ax.text(-0.27, group_center_y, group_name, fontsize=12, fontweight='bold',
+               verticalalignment='center', rotation=90, color=color)
+        
+        group_y_positions[group_name] = (group_start_position, current_y_position - 1)
+    
+    # Configuration des axes
+    ax.set_xlabel('Temps (s)', fontsize=16)
+    ax.set_title(f'Masques FDR et Cluster spécifiques - Tous les groupes\n'
+                 f'Protocole {protocol} (n={total_subjects} sujets)', 
+                 fontsize=18, fontweight='bold')
+    
+    # Masquer les étiquettes Y par défaut et configurer les limites
+    ax.set_yticks([])
+    ax.set_xlim([-0.2, 1.0])
+    ax.set_ylim([-0.5, total_subjects - 0.5])
+    ax.grid(True, alpha=0.3, axis='x')
+    
+    # Ligne de stimulus onset
+    ax.axvline(x=0, color='red', linestyle='--', linewidth=3,
+              alpha=0.8, label='Stimulus Onset')
 
+    # Créer la légende
+    legend_elements = []
+    
+    # Ajouter les éléments de groupe avec les deux types de marqueurs
+    for group_name, stats in all_group_stats.items():
+        color = colors.get(group_name, COLORS_PALETTE[0])
+        pastel_color = pastel_colors.get(group_name, color)
+        legend_elements.append(plt.Line2D([0], [0], marker=fdr_marker,
+                                          color=color, linewidth=0, markersize=15,
+                                          label=f'{group_name} FDR (n={stats["n_subjects"]})'))
+        legend_elements.append(plt.Line2D([0], [0], marker=cluster_marker,
+                                          color=pastel_color, linewidth=0, markersize=15,
+                                          label=f'{group_name} Cluster'))
+    
+    # Ajouter ligne de stimulus onset à la légende
+    legend_elements.append(plt.Line2D([0], [0], color='red', linestyle='--', 
+                                    linewidth=3, label='Stimulus Onset'))
+    
+    ax.legend(handles=legend_elements, fontsize=10, loc='upper right', ncol=2)
+    
+    # Ajouter statistiques globales dans un encadré
+    total_fdr_points = 0
+    total_cluster_points = 0
+    for stats in all_group_stats.values():
+        specific_fdr_masks = stats.get('specific_fdr_masks', np.array([]))
+        specific_cluster_masks = stats.get('specific_cluster_masks', np.array([]))
+        if specific_fdr_masks.size > 0:
+            total_fdr_points += np.sum(specific_fdr_masks)
+        if specific_cluster_masks.size > 0:
+            total_cluster_points += np.sum(specific_cluster_masks)
+    
+    stats_text = f'Total FDR spécifique: {total_fdr_points} points\nTotal Cluster spécifique: {total_cluster_points} points'
+    ax.text(0.02, 0.98, stats_text, transform=ax.transAxes, fontsize=10,
+           verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+    
+    plt.tight_layout()
+    
+    # Sauvegarder
+    filename = f"{protocol}_combined_specific_masks_plot.png"
+    output_path = os.path.join(output_dir, filename)
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    logger.info(f"Plot combiné avec masques spécifiques sauvé: {output_path}")
+    return output_path
 
 
 def create_global_fdr_significance_histogram(all_group_stats: Dict[str, Dict[str, Any]], 
@@ -923,6 +1157,8 @@ def generate_comprehensive_report(all_results: Dict[str, Any], output_dir: str) 
     return report_path
 
 
+
+
 def main():
     """
     Main function to run the enhanced analysis pipeline.
@@ -996,6 +1232,8 @@ def main():
 
             # Charger les données de chaque sujet en utilisant la fenêtre temporelle fixe
             group_fdr_masks = []
+            group_specific_fdr_masks = []
+            group_specific_cluster_masks = []
             for file_path in file_list:
                 data = load_npz_data(file_path)
                 # Vérifier que les données du sujet couvrent bien notre fenêtre
@@ -1004,7 +1242,7 @@ def main():
                     group_scores.append(data['scores'][start_idx:end_idx])
                     group_subject_ids.append(data['subject_id'])
 
-                    # Extraire également le masque FDR si disponible
+                    # Extraire le masque FDR principal si disponible
                     if ('fdr_mask' in data and
                         isinstance(data['fdr_mask'], np.ndarray) and
                             len(data['fdr_mask']) >= end_idx):
@@ -1017,6 +1255,26 @@ def main():
                         if 'fdr_mask' in data:
                             logger.debug(
                                 f"FDR mask for {data['subject_id']} has wrong shape: {data['fdr_mask'].shape if hasattr(data['fdr_mask'], 'shape') else type(data['fdr_mask'])}")
+
+                    # Extraire le masque FDR spécifique si disponible
+                    if ('specific_fdr_mask' in data and
+                        isinstance(data['specific_fdr_mask'], np.ndarray) and
+                            len(data['specific_fdr_mask']) >= end_idx):
+                        group_specific_fdr_masks.append(
+                            data['specific_fdr_mask'][start_idx:end_idx])
+                    else:
+                        group_specific_fdr_masks.append(
+                            np.zeros(end_idx - start_idx, dtype=bool))
+
+                    # Extraire le masque cluster spécifique si disponible
+                    if ('specific_cluster_mask' in data and
+                        isinstance(data['specific_cluster_mask'], np.ndarray) and
+                            len(data['specific_cluster_mask']) >= end_idx):
+                        group_specific_cluster_masks.append(
+                            data['specific_cluster_mask'][start_idx:end_idx])
+                    else:
+                        group_specific_cluster_masks.append(
+                            np.zeros(end_idx - start_idx, dtype=bool))
                 else:
                     if data:
                         logger.warning(
@@ -1034,13 +1292,16 @@ def main():
             # Convertir en matrice numpy avec tous les sujets ayant exactement la même longueur
             scores_matrix = np.array(group_scores)
             fdr_masks_matrix = np.array(group_fdr_masks)
+            specific_fdr_masks_matrix = np.array(group_specific_fdr_masks)
+            specific_cluster_masks_matrix = np.array(group_specific_cluster_masks)
             logger.info(
                 f"  Conservé {len(group_scores)} sujets pour le groupe '{group_name}' "
                 f"avec {scores_matrix.shape[1]} points temporels")
 
             # Calculer les statistiques améliorées
             stats = calculate_basic_statistics(
-                scores_matrix, times_ref, group_subject_ids, fdr_masks_matrix)
+                scores_matrix, times_ref, group_subject_ids, fdr_masks_matrix,
+                specific_fdr_masks_matrix, specific_cluster_masks_matrix)
             protocol_stats[group_name] = stats
 
             logger.info(f"  Groupe '{group_name}' - statistiques calculées:")
@@ -1068,6 +1329,11 @@ def main():
             # Créer le plot combiné de tous les sujets
             logger.info("\n--- Creating Combined All Subjects FDR Plot ---")
             create_combined_all_subjects_plot(
+                valid_groups, output_dir, protocol)
+            
+            # Créer le plot empilé vertical avec masques spécifiques FDR et cluster
+            logger.info("\n--- Creating Stacked Vertical Plot with Specific Masks ---")
+            create_stacked_vertical_plot_with_specific_masks(
                 valid_groups, output_dir, protocol)
 
         # 4. Perform three-group comparison if we have exactly 3 groups
