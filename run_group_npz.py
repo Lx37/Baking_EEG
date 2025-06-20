@@ -789,7 +789,7 @@ def create_combined_all_subjects_plot(all_group_stats: Dict[str, Dict[str, Any]]
     
     # Configuration des axes
     ax.set_xlabel('Temps (s)', fontsize=16)
-    ax.set_title(f'Points significatifs FDR - Tous les groupes\n'
+    ax.set_title(f'Points significatifs FDR - PP/AP class balanced\n'
                  f'Protocole {protocol} (n={total_subjects} sujets)', 
                  fontsize=18, fontweight='bold')
     
@@ -930,7 +930,7 @@ def create_stacked_vertical_plot_with_specific_masks(all_group_stats: Dict[str, 
     
     # Configuration des axes
     ax.set_xlabel('Temps (s)', fontsize=16)
-    ax.set_title(f'Masques FDR et Cluster spécifiques - Tous les groupes\n'
+    ax.set_title(f'Masques FDR et Cluster PP/AP mean\n'
                  f'Protocole {protocol} (n={total_subjects} sujets)', 
                  fontsize=18, fontweight='bold')
     
@@ -975,10 +975,6 @@ def create_stacked_vertical_plot_with_specific_masks(all_group_stats: Dict[str, 
         if specific_cluster_masks.size > 0:
             total_cluster_points += np.sum(specific_cluster_masks)
     
-    stats_text = f'Total FDR spécifique: {total_fdr_points} points\nTotal Cluster spécifique: {total_cluster_points} points'
-    ax.text(0.02, 0.98, stats_text, transform=ax.transAxes, fontsize=10,
-           verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
-    
     plt.tight_layout()
     
     # Sauvegarder
@@ -988,114 +984,6 @@ def create_stacked_vertical_plot_with_specific_masks(all_group_stats: Dict[str, 
     plt.close()
     
     logger.info(f"Plot combiné avec masques spécifiques sauvé: {output_path}")
-    return output_path
-
-
-def create_global_fdr_significance_histogram(all_group_stats: Dict[str, Dict[str, Any]], 
-                                           output_dir: str, protocol: str) -> str:
-    """
-    Créer un histogramme global montrant le nombre de sujets significatifs 
-    pour tous les groupes sur le même graphique.
-    """
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(18, 12))
-    
-    # Couleurs pour chaque groupe
-    colors = {
-        'DELIRIUM +': '#d62728', 
-        'DELIRIUM -': '#ff7f0e',
-        'controls': '#2ca02c'
-    }
-    
-    # Vérifier que tous les groupes ont les mêmes temps
-    times = None
-    max_subjects_total = 0
-    
-    for group_name, stats in all_group_stats.items():
-        if times is None:
-            times = stats['times']
-        max_subjects_total += stats['n_subjects']
-    
-    # Panel 1: Histogrammes superposés pour chaque groupe
-    bar_width = (times[1] - times[0]) * 0.25 if len(times) > 1 else 0.0005  # Barres plus fines
-    
-    group_names = list(all_group_stats.keys())
-    for i, group_name in enumerate(group_names):
-        stats = all_group_stats[group_name]
-        color = colors.get(group_name, COLORS_PALETTE[i])
-        n_subjects = stats['n_subjects']
-        
-        if 'fdr_counts_per_timepoint' in stats:
-            significance_counts = stats['fdr_counts_per_timepoint']
-        else:
-            significance_counts = np.zeros(len(times))
-        
-        # Décaler les barres pour éviter la superposition
-        time_offset = bar_width * (i - len(group_names)/2 + 0.5)
-        
-        ax1.bar(times + time_offset, significance_counts, width=bar_width,
-               color=color, alpha=0.7, label=f'{group_name} (n={n_subjects})',
-               edgecolor='black', linewidth=0.3)
-    
-    ax1.set_xlabel('Temps (s)', fontsize=14)
-    ax1.set_ylabel('Nombre de sujets significatifs', fontsize=14)
-    ax1.set_title(f'Comparaison globale - Nombre de sujets significatifs par groupe\n'
-                  f'(Protocole {protocol}, données FDR des fichiers NPZ)', 
-                  fontsize=16, fontweight='bold')
-    ax1.set_xlim([-0.2, 1.0])
-    ax1.set_ylim([0, max([stats['n_subjects'] for stats in all_group_stats.values()]) + 1])
-    ax1.grid(True, alpha=0.3)
-    ax1.axvline(x=0, color='red', linestyle='--', linewidth=2, 
-               alpha=0.8, label='Stimulus Onset')
-    ax1.legend(fontsize=12, loc='upper right')
-    
-    # Panel 2: Proportions superposées pour chaque groupe
-    for i, group_name in enumerate(group_names):
-        stats = all_group_stats[group_name]
-        color = colors.get(group_name, COLORS_PALETTE[i])
-        n_subjects = stats['n_subjects']
-        
-        if 'fdr_counts_per_timepoint' in stats:
-            significance_counts = stats['fdr_counts_per_timepoint']
-        else:
-            significance_counts = np.zeros(len(times))
-        
-        proportion_significant = significance_counts / n_subjects if n_subjects > 0 else np.zeros_like(significance_counts)
-        
-        ax2.plot(times, proportion_significant, color=color, linewidth=3, 
-                alpha=0.8, label=f'{group_name} (n={n_subjects})')
-        ax2.fill_between(times, 0, proportion_significant, color=color, alpha=0.2)
-    
-    ax2.set_xlabel('Temps (s)', fontsize=14)
-    ax2.set_ylabel('Proportion de sujets significatifs', fontsize=14)
-    ax2.set_title(f'Comparaison globale - Proportion de sujets significatifs par groupe', 
-                  fontsize=16, fontweight='bold')
-    ax2.set_xlim([-0.2, 1.0])
-    ax2.set_ylim([0, 1])
-    ax2.grid(True, alpha=0.3)
-    ax2.axvline(x=0, color='red', linestyle='--', linewidth=2, 
-               alpha=0.8, label='Stimulus Onset')
-    ax2.legend(fontsize=12, loc='upper right')
-    
-    plt.tight_layout()
-    
-    # Sauvegarder
-    filename = f"{protocol}_global_significance_histogram_all_groups.png"
-    output_path = os.path.join(output_dir, filename)
-    plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    plt.close()
-    
-    # Statistiques résumées
-    logger.info("=== RÉSUMÉ GLOBAL DES SIGNIFICATIVITÉS FDR ===")
-    for group_name, stats in all_group_stats.items():
-        if 'fdr_counts_per_timepoint' in stats:
-            total_sig = np.sum(stats['fdr_counts_per_timepoint'])
-            max_subjects_at_timepoint = np.max(stats['fdr_counts_per_timepoint'])
-            n_timepoints_with_sig = np.sum(stats['fdr_counts_per_timepoint'] > 0)
-            logger.info(f"{group_name}: {total_sig} points significatifs totaux, "
-                       f"max {max_subjects_at_timepoint} sujets/point temporel, "
-                       f"{n_timepoints_with_sig} points temporels avec significativité")
-    
-    logger.info(f"Histogramme global sauvé: {output_path}")
     return output_path
 
 
