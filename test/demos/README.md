@@ -1,3 +1,0 @@
-# DEMOS
-
-Scripts de démonstration

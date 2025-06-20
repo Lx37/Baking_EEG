@@ -1,3 +1,0 @@
-# TEMPLATES
-
-Modèles de diagrammes

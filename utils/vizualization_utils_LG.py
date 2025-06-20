@@ -183,16 +183,18 @@ def _create_lg_comparison_page(times, lg_results, comparison_name, subject_id, g
             # Map from display names to actual comparison names in results
             name_mapping = {
                 "LSGS_vs_LSGD": "Local Standard: Global Standard vs Global Deviant",
-                "LDGS_vs_LDGD": "Local Deviant: Global Standard vs Global Deviant", 
+                "LDGS_vs_LDGD": "Local Deviant: Global Standard vs Global Deviant",
                 "LSGS_vs_LDGS": "Global Standard: Local Standard vs Local Deviant",
                 "LSGD_vs_LDGD": "Global Deviant: Local Standard vs Local Deviant",
                 # Simplified aliases that map to the 4 actual comparisons we have
-                "LD_ALL_vs_LS_ALL": "Local Standard: Global Standard vs Global Deviant",  # Using first comparison as fallback
-                "GD_ALL_vs_GS_ALL": "Local Deviant: Global Standard vs Global Deviant"   # Using second comparison as fallback
+                # Using first comparison as fallback
+                "LD_ALL_vs_LS_ALL": "Local Standard: Global Standard vs Global Deviant",
+                # Using second comparison as fallback
+                "GD_ALL_vs_GS_ALL": "Local Deviant: Global Standard vs Global Deviant"
             }
-            
+
             target_name = name_mapping.get(comparison_name, comparison_name)
-            
+
             for result in lg_results:
                 result_name = result.get('comparison_name', '')
                 if result_name == target_name:

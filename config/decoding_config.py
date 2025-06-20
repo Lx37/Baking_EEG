@@ -1,5 +1,5 @@
 # === BASE CONSTANTS ===
-CHANCE_LEVEL_AUC = 0.5 
+CHANCE_LEVEL_AUC = 0.5
 DEFAULT_CLASSIFIER_TYPE_MODULE_INTERNAL = "svc"
 # For MNE's internal parallelism within Sliding/Generalizing Estimators
 INTERNAL_N_JOBS_FOR_MNE_DECODING = -1
@@ -33,10 +33,14 @@ CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT = {
 }
 # Local Global protocol event mapping
 # Event mapping for different LG condition comparisons:
-# LSGD versus LDGD (Local Standard Global Deviant vs Local Deviant Global Deviant)
-# LSGS versus LSGD (Local Standard Global Standard vs Local Standard Global Deviant)
-# LDGS versus LDGD (Local Deviant Global Standard vs Local Deviant Global Deviant)
-# LSGS versus LDGS (Local Standard Global Standard vs Local Deviant Global Standard)
+# LSGD versus LDGD (Local Standard Global Deviant vs Local Deviant
+# Global Deviant)
+# LSGS versus LSGD (Local Standard Global Standard vs Local Standard
+# Global Deviant)
+# LDGS versus LDGD (Local Deviant Global Standard vs Local Deviant
+# Global Deviant)
+# LSGS versus LDGS (Local Standard Global Standard vs Local Deviant
+# Global Standard)
 EVENT_ID_LG = {
     'LS/GS': 11,  # Local Standard, Global Standard
     'LS/GD': 12,  # Local Standard, Global Deviant
@@ -114,9 +118,10 @@ COMPUTE_TGM_FOR_INTER_FAMILY_COMPARISONS = False  # AP_family vs AP_family
 
 
 # =========DECODING CORE =============
-USE_GRID_SEARCH=False,
-USE_CSP_FOR_TEMPORAL_PIPELINES=False,
-USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES=True,
+# Note: USE_GRID_SEARCH_OPTIMIZATION is the main flag used in the code
+USE_GRID_SEARCH = USE_GRID_SEARCH_OPTIMIZATION  # Keep consistent
+USE_CSP_FOR_TEMPORAL_PIPELINES = False
+USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES = True
 
 # === Hyperparameter grids for GridSearchCV ===
 PARAM_GRID_CONFIG_EXTENDED = {

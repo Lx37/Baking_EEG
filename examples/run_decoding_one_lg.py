@@ -6,24 +6,7 @@ This script performs Local-Global protocol decoding analysis for a single
 subject using the _4_decoding_core module.
 """
 
-from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
-from utils.vizualization_utils_LG import create_subject_decoding_dashboard_plots_lg
-from utils.utils import (
-    configure_project_paths, setup_analysis_results_directory
-)
-from utils.loading_LG_utils import load_epochs_data_for_lg_decoding
-from utils import stats_utils as bEEG_stats
-from config.config import ALL_SUBJECT_GROUPS
-from config.decoding_config import (
-    CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
-    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
-    PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
-    FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
-    CHANCE_LEVEL_AUC, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
-    COMPUTE_INTRA_SUBJECT_STATISTICS, COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
-    CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG, SAVE_ANALYSIS_RESULTS,
-    GENERATE_PLOTS, N_JOBS_PROCESSING
-)
+
 import sys
 import os
 import logging
@@ -45,7 +28,24 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 # Import project modules
-
+from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
+from utils.vizualization_utils_LG import create_subject_decoding_dashboard_plots_lg
+from utils.utils import (
+    configure_project_paths, setup_analysis_results_directory
+)
+from utils.loading_LG_utils import load_epochs_data_for_lg_decoding
+from utils import stats_utils as bEEG_stats
+from config.config import ALL_SUBJECT_GROUPS
+from config.decoding_config import (
+    CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
+    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
+    PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
+    FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
+    CHANCE_LEVEL_AUC, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
+    COMPUTE_INTRA_SUBJECT_STATISTICS, COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
+    CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG, SAVE_ANALYSIS_RESULTS,
+    GENERATE_PLOTS, N_JOBS_PROCESSING
+)
 # Logging configuration
 LOG_DIR = './logs_run_single_subject_lg'
 os.makedirs(LOG_DIR, exist_ok=True)

@@ -32,20 +32,25 @@ def _build_standard_classifier_pipeline(
     """
     Construit un pipeline de classification scikit-learn.
 
-    Pipeline: Scaler -> [CSP (optionnel)] -> [ANOVA FS (optionnel)] -> Classifier.
-    Les hyperparamètres sont pris des arguments si use_grid_search=False, sinon
-    ils sont généralement optimisés par GridSearchCV.
+    Pipeline: Scaler -> [CSP (optionnel)] -> [ANOVA FS (optionnel)] ->
+    Classifier.
+    Les hyperparamètres sont pris des arguments si use_grid_search=False,
+    sinon ils sont généralement optimisés par GridSearchCV.
 
     Args:
         classifier_model_type (str): 'svc', 'logreg', ou 'rf'.
         random_seed_state (int): État aléatoire pour la reproductibilité.
-        use_grid_search (bool): Si True, les paramètres fixes sont des valeurs par défaut.
+        use_grid_search (bool): Si True, les paramètres fixes sont des
+            valeurs par défaut.
         add_csp_step (bool): Si True, ajoute CSP.
-        add_anova_fs_step (bool): Si True, ajoute la sélection de caractéristiques ANOVA.
-        svc_c, svc_kernel, ...: Hyperparamètres fixes pour les composants si pas de GS.
+        add_anova_fs_step (bool): Si True, ajoute la sélection de
+            caractéristiques ANOVA.
+        svc_c, svc_kernel, ...: Hyperparamètres fixes pour les composants
+            si pas de GS.
 
     Returns:
-        tuple: (pipeline, nom_étape_classifier, nom_étape_anova_fs, nom_étape_csp)
+        tuple: (pipeline, nom_étape_classifier, nom_étape_anova_fs,
+                nom_étape_csp)
     """
     log_prefix = ("Pipeline de base pour GridSearchCV" if use_grid_search
                   else "Pipeline à hyperparamètres fixes")
@@ -60,10 +65,11 @@ def _build_standard_classifier_pipeline(
     csp_name = None
 
 
-    logger_base_decoding.info("DEBUG: add_csp_step type=%s, value=%s, bool()=%s", 
-                              type(add_csp_step).__name__, 
-                              repr(add_csp_step), 
-                              bool(add_csp_step))
+    logger_base_decoding.info("DEBUG: add_csp_step type=%s, value=%s, "
+                               "bool()=%s",
+                               type(add_csp_step).__name__,
+                               repr(add_csp_step),
+                               bool(add_csp_step))
 
     if add_csp_step:
         csp_name = "csp_feature_extraction"
@@ -81,7 +87,7 @@ def _build_standard_classifier_pipeline(
         steps.append((anova_fs_name, SelectPercentile(f_classif,
                                                       percentile=percentile_val)))
         log_detail_fs = ("percentile à optimiser" if use_grid_search
-                         else f"percentile fixe={fs_percentile}")
+                          else f"percentile fixe={fs_percentile}")
         logger_base_decoding.info("   Étape ANOVA FS '%s' ajoutée (%s).",
                                anova_fs_name, log_detail_fs)
 

@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-Script de soumission Submitit ROBUSTE avec diagnostics complets - Protocole LG.
-Version améliorée avec logs détaillés et diagnostics approfondis.
-"""
 
 import os
 import sys
@@ -20,7 +14,7 @@ import socket
 
 def setup_enhanced_logging():
     """Configure un système de logging avancé avec plusieurs handlers."""
-    # Format de log détaillé
+   
     detailed_format = '%(asctime)s | %(levelname)8s | %(name)s:%(funcName)s:%(lineno)d | %(message)s'
 
     # Logger principal
@@ -32,7 +26,7 @@ def setup_enhanced_logging():
     console_handler.setLevel(logging.INFO)
     console_handler.setFormatter(logging.Formatter(detailed_format))
 
-    # Supprimer les handlers existants
+   
     for handler in logger.handlers[:]:
         logger.removeHandler(handler)
 
@@ -40,7 +34,6 @@ def setup_enhanced_logging():
 
     return logging.getLogger(__name__)
 
-# === FONCTIONS UTILITAIRES DE LOGGING ===
 
 
 def log_info(message, logger=None):
@@ -71,10 +64,9 @@ def log_warning(message, logger=None):
     logger.warning(f"[WARNING] {message}")
 
 
-# === CONFIGURATION INITIALE ===
+
 logger = setup_enhanced_logging()
 
-# --- ÉTAPE 1: DÉTERMINATION DE LA RACINE DU PROJET ---
 try:
     PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     log_info(f"PROJECT_ROOT calculé: {PROJECT_ROOT}", logger)
@@ -83,12 +75,12 @@ except NameError as e:
     log_warning(
         f"Utilisation du fallback PROJECT_ROOT: {PROJECT_ROOT}, erreur: {e}", logger)
 
-# Validation de la racine du projet
+
 if not os.path.exists(PROJECT_ROOT):
     log_error(f"PROJECT_ROOT n'existe pas: {PROJECT_ROOT}", logger)
     raise FileNotFoundError(f"PROJECT_ROOT invalide: {PROJECT_ROOT}")
 
-# --- ÉTAPE 2: CONFIGURATION DU PATH ---
+
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
     log_info(f"PROJECT_ROOT ajouté au sys.path: {PROJECT_ROOT}", logger)
@@ -97,7 +89,7 @@ else:
 
 log_debug(f"sys.path (premiers éléments): {sys.path[:3]}", logger)
 
-# --- ÉTAPE 3: VALIDATION DE LA STRUCTURE DU PROJET ---
+
 
 
 def validate_project_structure(project_root):
@@ -112,7 +104,7 @@ def validate_project_structure(project_root):
         'utils/utils.py'
     ]
 
-    # Vérification des dossiers
+
     for dir_name in required_dirs:
         dir_path = os.path.join(project_root, dir_name)
         if os.path.exists(dir_path):
@@ -121,7 +113,7 @@ def validate_project_structure(project_root):
             log_error(f"✗ Dossier manquant: {dir_name} ({dir_path})", logger)
             return False
 
-    # Vérification des fichiers critiques
+    
     for file_path in required_files:
         full_path = os.path.join(project_root, file_path)
         if os.path.exists(full_path):
@@ -134,12 +126,12 @@ def validate_project_structure(project_root):
     return True
 
 
-# Validation
+
 if not validate_project_structure(PROJECT_ROOT):
     log_error("Structure du projet invalide, arrêt du script", logger)
     sys.exit(1)
 
-# --- ÉTAPE 4: IMPORTS DES CONFIGURATIONS ---
+
 
 
 def import_configurations():
@@ -197,10 +189,10 @@ def import_configurations():
         raise
 
 
-# Import des configurations
+
 configs = import_configurations()
 
-# --- ÉTAPE 5: FONCTION WRAPPER POUR LE WORKER SLURM ---
+
 
 
 def enhanced_decoding_task_wrapper(**kwargs):
@@ -447,7 +439,7 @@ def main():
 
     executor = submitit.AutoExecutor(folder=log_folder)
 
-    # Paramètres Slurm optimisés
+
     slurm_params = {
         "timeout_min": 24 * 60,  # 24h timeout
         "slurm_partition": "CPU",
