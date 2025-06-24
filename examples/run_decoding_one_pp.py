@@ -217,6 +217,31 @@ def execute_single_subject_decoding(
                 "Epochs object loading failed for %s. Aborting subject.", subject_identifier)
             return subject_results
 
+        # Check if we have any valid data before proceeding
+        total_valid_epochs = sum(
+            arr.shape[0] for arr in returned_data_dict.values()
+            if hasattr(arr, 'shape') and arr.ndim == 3 and arr.shape[0] > 0
+        )
+        
+        if total_valid_epochs == 0:
+            logger_run_one.error(
+                "No valid epoch data loaded for subject %s. "
+                "Available conditions: %s. Aborting analysis.",
+                subject_identifier, list(returned_data_dict.keys())
+            )
+            # Log what was actually loaded for debugging
+            for condition, data in returned_data_dict.items():
+                if hasattr(data, 'shape'):
+                    logger_run_one.info("  %s: shape %s", condition, data.shape)
+                else:
+                    logger_run_one.info("  %s: %s", condition, type(data))
+            return subject_results
+        
+        logger_run_one.info(
+            "Successfully loaded %d total epochs across all conditions for %s",
+            total_valid_epochs, subject_identifier
+        )
+
         # Store protocol information and epoch times
         subject_results["detected_protocol"] = detected_protocol
         subject_results["epochs_time_points"] = epochs_object.times.copy()
@@ -267,31 +292,6 @@ def execute_single_subject_decoding(
             else:
                 min_samples_main = np.min(np.bincount(main_labels_encoded))
                 num_cv_splits_main = min(
-                    10, min_samples_main) if min_samples_main >= 2 else 0
-                if num_cv_splits_main < 2:
-                    logger_run_one.error(
-                        "Subj %s: Not enough samples for CV in main decoding (%d splits). Skipping.", subject_identifier, num_cv_splits_main)
-                    # Retourner les résultats actuels au lieu de continuer
-                    return subject_results
-                else:
-                    cv_splitter_main = StratifiedKFold(
-                        n_splits=num_cv_splits_main, shuffle=True, random_state=42)
-                    main_decoding_output = run_temporal_decoding_analysis(
-                        epochs_data=main_protocol_data, target_labels=main_protocol_labels_orig,
-                        classifier_model_type=classifier_type,
-                        use_grid_search=use_grid_search_for_subject,
-                        use_csp_for_temporal_pipelines=use_csp_for_temporal_subject,
-                        use_anova_fs_for_temporal_pipelines=use_anova_fs_for_temporal_subject,
-                        # Passer le dict complet (filtrage interne à la fonction)
-                        param_grid_config=current_param_grid_for_clf_dict,
-                        cv_folds_for_gridsearch=cv_folds_for_gs_subject,
-                        # Passer le dict spécifique au clf
-                        fixed_classifier_params=current_fixed_params_for_clf_dict,
-                        cross_validation_splitter=cv_splitter_main,
-                        n_jobs_external=actual_n_jobs,  # Utiliser la variable convertie
-                        compute_intra_fold_stats=compute_intra_subject_stats_flag,
-                        n_permutations_for_intra_fold_clusters=n_perms_for_intra_subject_clusters,
-                        compute_temporal_generalization_matrix=COMPUTE_TGM_FOR_MAIN_COMPARISON,
                         chance_level=CHANCE_LEVEL_AUC,
                         cluster_threshold_config_intra_fold=cluster_threshold_config_intra_fold
                     )

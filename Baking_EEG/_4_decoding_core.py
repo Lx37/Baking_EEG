@@ -12,6 +12,7 @@ import scipy.stats
 from base.base_decoding import (_build_standard_classifier_pipeline,
                                  _execute_global_decoding_for_one_fold)
 from utils import stats_utils as bEEG_stats
+
 from config.decoding_config import (DEFAULT_CLASSIFIER_TYPE_MODULE_INTERNAL,
                                      CHANCE_LEVEL_AUC,
                                      INTERNAL_N_JOBS_FOR_MNE_DECODING,
@@ -38,7 +39,7 @@ def run_temporal_decoding_analysis(
     group_labels_for_cv=None,  # For GroupKFold
     compute_intra_fold_stats=True,
     chance_level=CHANCE_LEVEL_AUC,
-    n_permutations_for_intra_fold_clusters=256,
+    n_permutations_for_intra_fold_clusters=1000,
     compute_temporal_generalization_matrix=COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
     cluster_threshold_config_intra_fold=None,
     random_state=42):
@@ -247,21 +248,18 @@ def run_temporal_decoding_analysis(
     num_cv_splits = actual_cv_splitter.get_n_splits(
         X=epochs_data, y=target_labels_enc, groups=group_labels_for_cv)
 
-    # --- Sample weights ---
+    # --- Sample weights strategy ---
+    # Instead of calculating global weights, we'll determine the strategy and calculate per-fold
+    use_fold_specific_weights = False
     effective_sample_weights = None
+    
     if isinstance(trial_sample_weights, str) and trial_sample_weights.lower() == "auto":
-        if n_classes >= 2:
-            class_counts = np.bincount(target_labels_enc) #count the number of occurencies
-            # Avoid division by zero if a class has 0 samples (though n_classes < 2 check should catch this)
-            weights_map = {cls_idx: n_trials / (n_classes * count) if count > 0 else 0
-                           for cls_idx, count in enumerate(class_counts)}
-            effective_sample_weights = np.array(
-                [weights_map[label] for label in target_labels_enc])
-            logger_decoding_core.info("Sample weights: Auto-calculated.")
+        use_fold_specific_weights = True
+        logger_decoding_core.info("Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).")
     elif isinstance(trial_sample_weights, np.ndarray):
         if trial_sample_weights.shape == (n_trials,):
             effective_sample_weights = trial_sample_weights
-            logger_decoding_core.info("Sample weights: Provided by user.")
+            logger_decoding_core.info("Sample weights: Provided by user (global weights).")
         else:
             logger_decoding_core.warning(
                 "Provided sample_weights shape mismatch. Disabling sample weights.")
@@ -286,23 +284,27 @@ def run_temporal_decoding_analysis(
     cv_groups_mne = group_labels_for_cv if isinstance(
         actual_cv_splitter, GroupKFold) else None
     fit_params_mne = {}
+    
     # Sample weights for MNE estimators:
-    # If GridSearchCV is used, its internal CV relies on `class_weight='balanced'` in the classifier.
-    # If not GS, we can pass sample_weight via fit_params to cross_val_multiscore.
-    if effective_sample_weights is not None:
+    # For fold-specific weights, we need to use class_weight='balanced' in classifier
+    # or implement custom CV handling
+    if use_fold_specific_weights:
+        # For fold-specific weights, we recommend using 'class_weight=balanced' in classifier
+        # MNE's cross_val_multiscore will handle this automatically per fold
+        logger_decoding_core.info(
+            "MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).")
+        # Note: The classifier should have been built with class_weight='balanced' in _build_standard_classifier_pipeline
+    elif effective_sample_weights is not None:
         if not use_grid_search:
             if clf_name_mne:  # Ensure classifier step name is known
-                # MNE's cross_val_multiscore expects sample_weight directly if not in a pipeline
-                # or a dict of {step_name__sample_weight: weights} if it's a pipeline.
-                # Our final_estimator_mne is a pipeline.
+                # For global weights, pass them to MNE
                 fit_params_mne[f"{clf_name_mne}__sample_weight"] = effective_sample_weights
                 logger_decoding_core.info(
-                    "MNE Estimators (Fixed mode): Passing sample_weight to %s.", clf_name_mne)
+                    "MNE Estimators (Fixed mode): Passing global sample_weight to %s.", clf_name_mne)
         else:  # Using GridSearchCV
-            # GridSearchCV itself doesn't take sample_weight in fit_params for cross_val_multiscore.
-        
+            # GridSearchCV with global weights - pass to fit_params
             logger_decoding_core.info(
-                "MNE Estimators (GridSearch mode): Relying on 'class_weight=balanced' or balanced data for imbalance.")
+                "MNE Estimators (GridSearch mode): Using global sample weights in fit_params.")
 
     # 1D Temporal Decoding (SlidingEstimator)
     logger_decoding_core.info(
@@ -395,7 +397,7 @@ def run_temporal_decoding_analysis(
             target_labels_enc,
             train_idx,
             test_idx,
-            effective_sample_weights,  # Pass full array, slicing done inside helper
+            effective_sample_weights if not use_fold_specific_weights else "auto",  # Pass "auto" for fold-specific
             clf_name_global if use_grid_search else None  # Name of clf step if GS, for fit_params
         ) for train_idx, test_idx in cv_splits_global
     )
@@ -493,9 +495,15 @@ def run_temporal_decoding_analysis(
                 "p_values": fdr_p_1d, "method": "FDR_CV_Folds_1D"}
 
             t_obs_clu, clu_1d, p_clu_1d, _ = bEEG_stats.perform_cluster_permutation_test(
-                scores_1d_all_folds, chance_level, n_permutations_for_intra_fold_clusters,
-                cluster_threshold_config_intra_fold, "greater", INTERNAL_N_JOBS_FOR_MNE_DECODING
-            )
+            scores_1d_all_folds, 
+            chance_level, 
+            n_permutations_for_intra_fold_clusters,
+            cluster_threshold_config_intra_fold, 
+            "greater", 
+            INTERNAL_N_JOBS_FOR_MNE_DECODING,
+            stat_function_to_use="_custom_stat_function_ttest_1samp",
+            random_seed=random_state,
+        )
             combined_mask_clu1d = np.zeros(n_time_points, dtype=bool)
             sig_clu_obj1d = []
             if clu_1d and p_clu_1d is not None: # clu_1d is a list of boolean masks
@@ -541,3 +549,43 @@ def run_temporal_decoding_analysis(
         fdr_tgm_data, None,  # Placeholder for TGM cluster data
         tgm_all_folds
     )
+
+def calculate_fold_sample_weights(train_labels_enc):
+    """Calculate sample weights for a specific training fold.
+    
+    This ensures that class balancing is computed based on the actual
+    class distribution in each training fold, which is more accurate
+    than using global weights when using StratifiedKFold.
+    
+    Args:
+        train_labels_enc (np.ndarray): Encoded labels for training fold
+        
+    Returns:
+        np.ndarray: Sample weights for the training fold
+    """
+    n_trials_fold = len(train_labels_enc)
+    unique_classes = np.unique(train_labels_enc)
+    n_classes_fold = len(unique_classes)
+    
+    if n_classes_fold < 2:
+        # Single class, return uniform weights
+        return np.ones(n_trials_fold)
+    
+    # Count occurrences of each class in this fold
+    class_counts_fold = np.bincount(train_labels_enc, minlength=n_classes_fold)
+    
+    # Calculate balanced weights: inverse frequency weighting
+    weights_map_fold = {}
+    for cls_idx in unique_classes:
+        count = class_counts_fold[cls_idx]
+        if count > 0:
+            weights_map_fold[cls_idx] = n_trials_fold / (n_classes_fold * count)
+        else:
+            weights_map_fold[cls_idx] = 0.0
+    
+    # Apply weights to each sample
+    sample_weights_fold = np.array([
+        weights_map_fold[label] for label in train_labels_enc
+    ])
+    
+    return sample_weights_fold

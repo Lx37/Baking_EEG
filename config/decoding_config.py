@@ -231,25 +231,7 @@ CONFIG_LOAD_PPEXT3_PROTOCOL = {
     "AP_FAMILY_6": ["AP/6/Music/", "AP/6/Noise/", "AP/6/Conv/", "AP/6/Dio/"],
 }
 
-# Protocol detection configuration
-PROTOCOL_DETECTION_CONFIG = {
-    "delirium": {
-        "expected_events": ["AP", "PP", "AP/", "PP/"],
-        "expected_epoch_count": 64,  # Approximate
-        "description": "Standard Delirium protocol with AP/PP events"
-    },
-    "battery": {
-        "expected_events": ["AP/Music/", "AP/Conv/", "PP/Music/", "PP/Conv/"],
-        "expected_epoch_count": 128,
-        "description": "Battery protocol with Music/Conversation analysis"
-    },
-    "ppext3": {
-        "expected_events": ["AP/Music/", "AP/Noise/", "AP/Conv/", "AP/Dio/",
-                            "PP/Music/", "PP/Noise/", "PP/Conv/", "PP/Dio/"],
-        "expected_epoch_count": 278,
-        "description": "Extended PPext3 protocol with Music-Noise and Conv-Dio conditions"
-    }
-}
+
 
 # Function to get protocol-specific configuration
 

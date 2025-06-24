@@ -61,7 +61,7 @@ def perform_cluster_permutation_test(
     cluster_threshold_config=None,  # e.g., TFCE dict or t-stat float
     alternative_hypothesis="greater",  # 'greater', 'less', or 'two-sided'
     n_jobs=1,  # Number of jobs for MNE parallelization
-    stat_function_to_use="auto",  # 'auto' for MNE default, or custom function
+    stat_function_to_use="_custom_stat_function_ttest_1samp",  # 'auto' for MNE default, or custom function
     random_seed=None,  # Seed for reproducibility
     connectivity_matrix=None,  # Connectivity for spatial clustering
     tfr_like_input=False  # Hint if input is (n_obs, n_freqs, n_times)
@@ -222,6 +222,15 @@ def perform_cluster_permutation_test(
             permutation_cluster_1samp_test(
                 data_array_vs_chance, **test_args_mne)
 
+#observed_t_values =  t test for my reel data on each temporal point (it means if I have 10 CV fold),
+#it measures that for 10 AUC score at one temporal point ==> (mean_scores - chance_level) / SD 
+
+#cluster_definitions_masks = list of boolean masks for each cluster found
+
+#cluster_p_values = p-values for each cluster, indicating significance if <0.05 (sign). 
+#p value is calculated  (number of permutations with cluster ≥ cluster_observed) / number_total_permutations
+
+#H0_distribution = distribution of max cluster statistics under the null hypothesis
     except Exception as e_perm_test:
         logger_stats_decoding.error(
             f"Error during mne.stats.permutation_cluster_1samp_test: {e_perm_test}",
@@ -230,7 +239,7 @@ def perform_cluster_permutation_test(
         return np.array([]), [], np.array([]), np.array([])
 
   # === POST-PROCESSING RESULTS ===
-    # Squeeze t-values if original input was 1D
+    # Squeeze t-values if original input was 1D bcs MNE transform in (n_obs, 1) 
     if input_data_array.ndim == 1 and observed_t_values.ndim >= 1:
         observed_t_values = observed_t_values.squeeze()
 
@@ -282,17 +291,17 @@ def perform_cluster_permutation_test(
         f"{len(cluster_definitions_masks_for_output)} initial clusters found (after processing slices)."
     )
 
-    if cluster_definitions_masks_for_output and cluster_p_values is not None:  # Modifié
+    if cluster_definitions_masks_for_output and cluster_p_values is not None:  
         num_significant_clusters_logged = 0
         # Make sure to iterate up to the minimum length of processed masks and p_values
         num_clusters_to_log = min(
             len(cluster_definitions_masks_for_output), len(cluster_p_values))
 
-        for i_cluster_log in range(num_clusters_to_log):  # Modifié
+        for i_cluster_log in range(num_clusters_to_log):  
             p_val_cluster_log = cluster_p_values[i_cluster_log]
             if p_val_cluster_log < 0.05:  # Standard alpha for significance
                 num_significant_clusters_logged += 1
-                # Modifié
+       
                 current_mask_details_log = cluster_definitions_masks_for_output[i_cluster_log]
 
                 # This check is now safer as current_mask_details_log should be an ndarray
@@ -305,11 +314,11 @@ def perform_cluster_permutation_test(
                     f"p-value = {p_val_cluster_log:.4f}. {log_mask_info}"
                 )
 
-        if num_significant_clusters_logged == 0 and num_clusters_to_log > 0:  # Modifié
+        if num_significant_clusters_logged == 0 and num_clusters_to_log > 0:  
             logger_stats_decoding.info(
                 "No clusters found to be statistically significant (p < 0.05)."
             )
-    elif not cluster_definitions_masks_for_output:  # Modifié
+    elif not cluster_definitions_masks_for_output: 
         logger_stats_decoding.info(
             "No clusters identified (e.g., no data points passed the initial threshold or masks were invalid)."
         )

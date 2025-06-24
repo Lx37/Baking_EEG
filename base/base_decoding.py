@@ -136,7 +136,11 @@ def _execute_global_decoding_for_one_fold(
     trial_sample_weights_fold,
     clf_step_name_in_pipeline_for_gs=None
 ):
-    """Exécute le décodage global pour un seul fold CV (helper pour la parallélisation)."""
+    """Exécute le décodage global pour un seul fold CV (helper pour la parallélisation).
+    
+    Args:
+        trial_sample_weights_fold: Can be None, np.ndarray (global weights), or "auto" (fold-specific)
+    """
     x_train = epochs_data_flat_fold[train_indices]
     x_test = epochs_data_flat_fold[test_indices]
     y_train = target_labels_encoded_fold[train_indices]
@@ -145,15 +149,27 @@ def _execute_global_decoding_for_one_fold(
     fit_params = {}
     is_gs = isinstance(estimator_for_fold, GridSearchCV)
 
-    if trial_sample_weights_fold is not None:
+    # Handle sample weights
+    sample_weights_train = None
+    sample_weights_test = None
+    
+    if trial_sample_weights_fold == "auto":
+        # Calculate fold-specific weights
+        sample_weights_train = calculate_fold_sample_weights(y_train)
+        sample_weights_test = calculate_fold_sample_weights(y_test)  # For scoring
+    elif isinstance(trial_sample_weights_fold, np.ndarray):
+        # Use provided global weights
+        sample_weights_train = trial_sample_weights_fold[train_indices]
+        sample_weights_test = trial_sample_weights_fold[test_indices]
+
+    # Set up fit parameters for training
+    if sample_weights_train is not None:
         if is_gs:
             if clf_step_name_in_pipeline_for_gs:
-                fit_params[f"estimator__{clf_step_name_in_pipeline_for_gs}__sample_weight"] = \
-                    trial_sample_weights_fold[train_indices]
+                fit_params[f"estimator__{clf_step_name_in_pipeline_for_gs}__sample_weight"] = sample_weights_train
         else:
             final_estimator_name = estimator_for_fold.steps[-1][0]
-            fit_params[f"{final_estimator_name}__sample_weight"] = \
-                trial_sample_weights_fold[train_indices]
+            fit_params[f"{final_estimator_name}__sample_weight"] = sample_weights_train
 
     try:
         if fit_params:
@@ -178,8 +194,7 @@ def _execute_global_decoding_for_one_fold(
         try:
             roc_auc_fold = roc_auc_score(
                 y_test, predicted_probas_test[:, 1],
-                sample_weight=(trial_sample_weights_fold[test_indices]
-                               if trial_sample_weights_fold is not None else None),
+                sample_weight=sample_weights_test,  # Use fold-specific weights for scoring too
                 average="weighted"
             )
         except ValueError as e_auc:
@@ -190,3 +205,44 @@ def _execute_global_decoding_for_one_fold(
             "ROC AUC ignoré (classe unique dans y_test pour le fold).")
 
     return predicted_probas_test, predicted_labels_test, roc_auc_fold
+
+
+def calculate_fold_sample_weights(train_labels_enc):
+    """Calculate sample weights for a specific training fold.
+    
+    This ensures that class balancing is computed based on the actual
+    class distribution in each training fold, which is more accurate
+    than using global weights when using StratifiedKFold.
+    
+    Args:
+        train_labels_enc (np.ndarray): Encoded labels for training fold
+        
+    Returns:
+        np.ndarray: Sample weights for the training fold
+    """
+    n_trials_fold = len(train_labels_enc)
+    unique_classes = np.unique(train_labels_enc)
+    n_classes_fold = len(unique_classes)
+    
+    if n_classes_fold < 2:
+        # Single class, return uniform weights
+        return np.ones(n_trials_fold)
+    
+    # Count occurrences of each class in this fold
+    class_counts_fold = np.bincount(train_labels_enc, minlength=max(unique_classes) + 1)
+    
+    # Calculate balanced weights: inverse frequency weighting
+    weights_map_fold = {}
+    for cls_idx in unique_classes:
+        count = class_counts_fold[cls_idx]
+        if count > 0:
+            weights_map_fold[cls_idx] = n_trials_fold / (n_classes_fold * count)
+        else:
+            weights_map_fold[cls_idx] = 0.0
+    
+    # Apply weights to each sample
+    sample_weights_fold = np.array([
+        weights_map_fold[label] for label in train_labels_enc
+    ])
+    
+    return sample_weights_fold
