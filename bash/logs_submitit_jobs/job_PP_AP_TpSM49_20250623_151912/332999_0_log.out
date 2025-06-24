@@ -1,0 +1,59 @@
+submitit INFO (2025-06-23 15:19:14,013) - Starting with JobEnvironment(job_id=332999, hostname=node7, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-23 15:19:14,013) - Loading pickle: /home/tom.balay/Baking_EEG/bash/logs_submitit_jobs/job_PP_AP_TpSM49_20250623_151912/332999_submitted.pkl
+2025-06-23 15:19:17,294 - INFO - examples.run_decoding_one_group_pp - [<module>:54] - Tentative d'import de execute_single_subject_decoding...
+2025-06-23 15:19:17,295 - INFO - examples.run_decoding_one_group_pp - [<module>:57] - ✅ Import de execute_single_subject_decoding réussi
+2025-06-23 15:19:17,297 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Starting decoding for subject: TpSM49 (Group: DELIRIUM+, Task Set ID: Analysis_PP_AP_Individual, Classifier: svc, GS: True, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 40)
+2025-06-23 15:19:17,297 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-23 15:19:19,428 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:411] - CRITICAL: No data loaded for ANY specified conditions for subject TpSM49.
+2025-06-23 15:19:19,428 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:418] - Empty data array for condition 'temp' (specifier: 'AP') for subject TpSM49.
+2025-06-23 15:19:19,428 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:746] - Auto-detected protocol 'delirium' for subject 'TpSM49' (file hint: legacy)
+2025-06-23 15:19:19,428 - INFO - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:78] - Found epochs file: /mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/data_epochs/TpSM49_PP_preproc_noICA_PP-epo_ar.fif (protocol: legacy, pattern: legacy)
+2025-06-23 15:19:19,429 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:302] - Loading epoch data for subject 'TpSM49' from: /mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/data_epochs/TpSM49_PP_preproc_noICA_PP-epo_ar.fif (file protocol: legacy)
+2025-06-23 15:19:19,914 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:313] - Event IDs available for TpSM49:
+2025-06-23 15:19:19,915 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'PP/10': 110
+2025-06-23 15:19:19,915 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'PP/20': 120
+2025-06-23 15:19:19,915 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'PP/30': 130
+2025-06-23 15:19:19,915 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'AP/11': 111
+2025-06-23 15:19:19,915 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'AP/12': 112
+2025-06-23 15:19:19,915 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'AP/13': 113
+2025-06-23 15:19:19,915 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'AP/14': 114
+2025-06-23 15:19:19,915 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'AP/15': 115
+2025-06-23 15:19:19,915 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'AP/16': 116
+2025-06-23 15:19:19,915 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'AP/21': 121
+2025-06-23 15:19:19,915 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'AP/22': 122
+2025-06-23 15:19:19,915 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'AP/23': 123
+2025-06-23 15:19:19,915 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'AP/24': 124
+2025-06-23 15:19:19,915 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'AP/25': 125
+2025-06-23 15:19:19,915 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'AP/26': 126
+2025-06-23 15:19:19,916 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'AP/31': 131
+2025-06-23 15:19:19,916 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'AP/32': 132
+2025-06-23 15:19:19,916 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'AP/33': 133
+2025-06-23 15:19:19,916 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'AP/34': 134
+2025-06-23 15:19:19,916 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'AP/35': 135
+2025-06-23 15:19:19,916 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:317] -   - 'AP/36': 136
+2025-06-23 15:19:20,165 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:337] - Processing conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-23 15:19:20,795 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:428] -   Data shapes for 'TpSM49': XPP_ALL=(70, 124, 601), XAP_ALL=(406, 124, 601), PP_FOR_SPECIFIC_COMPARISON=(70, 124, 601), AP_FAMILY_1=(68, 124, 601), AP_FAMILY_2=(67, 124, 601), AP_FAMILY_3=(71, 124, 601), AP_FAMILY_4=(66, 124, 601), AP_FAMILY_5=(69, 124, 601), AP_FAMILY_6=(65, 124, 601). Loaded in 1.37s
+2025-06-23 15:19:20,796 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:210] - Detected protocol 'delirium' for subject TpSM49
+2025-06-23 15:19:20,796 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:244] - --- Starting Main Protocol Decoding for TpSM49 ---
+2025-06-23 15:19:20,797 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:247] -   --- 1. Main Decoding (e.g., PP/all vs AP/all) for TpSM49 ---
+2025-06-23 15:19:20,917 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - DEBUG: use_csp_for_temporal_pipelines type=bool, value=False, bool()=False
+2025-06-23 15:19:20,918 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:76] - DEBUG: use_csp_for_temporal_pipelines type=bool, value=False, bool()=False
+2025-06-23 15:19:20,918 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:83] - --- Temporal Ddcoding Analysis ---
+2025-06-23 15:19:20,918 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:84] - Clf: svc, GS: True, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-23 15:19:20,922 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline de base pour GridSearchCV: type='svc', CSP: False, ANOVA FS: True
+2025-06-23 15:19:20,922 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-23 15:19:20,922 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile à optimiser).
+2025-06-23 15:19:20,922 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-23 15:19:20,922 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:161] - Using provided (filtered) param_grid for MNE GS: {'svc_classifier__C': [0.01, 0.1, 1, 10, 100], 'svc_classifier__kernel': ['linear', 'rbf'], 'svc_classifier__gamma': ['scale', 'auto', 0.001, 0.01, 0.1], 'anova_feature_selection__percentile': [10, 20, 30, 50, 75]}
+2025-06-23 15:19:20,922 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline de base pour GridSearchCV: type='svc', CSP: False, ANOVA FS: False
+2025-06-23 15:19:20,922 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-23 15:19:20,922 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-23 15:19:20,923 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:208] - Using (classifier-only) param_grid for Global GS: {'svc_classifier__C': [0.01, 0.1, 1, 10, 100], 'svc_classifier__kernel': ['linear', 'rbf'], 'svc_classifier__gamma': ['scale', 'auto', 0.001, 0.01, 0.1]}
+2025-06-23 15:19:20,923 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:261] - CV strategy: StratifiedKFold with 5 splits.
+2025-06-23 15:19:20,923 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:276] - Sample weights: Auto-calculated.
+2025-06-23 15:19:20,930 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:320] - MNE Estimators (GridSearch mode): Relying on 'class_weight=balanced' or balanced data for imbalance.
+2025-06-23 15:19:20,930 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:324] - Starting 1D temporal decoding (SlidingEstimator)...
+submitit WARNING (2025-06-23 15:40:04,399) - Bypassing signal SIGCONT
+2025-06-23 15:40:04,399 - WARNING - submitit - [bypass:196] - Bypassing signal SIGCONT
+submitit WARNING (2025-06-23 15:40:04,419) - Bypassing signal SIGTERM
+2025-06-23 15:40:04,419 - WARNING - submitit - [bypass:196] - Bypassing signal SIGTERM

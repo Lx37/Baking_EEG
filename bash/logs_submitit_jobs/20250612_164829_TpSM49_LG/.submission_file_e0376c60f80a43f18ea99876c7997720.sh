@@ -1,1 +1,0 @@
-/home/tom.balay/Baking_EEG/bash/logs_submitit_jobs/20250612_164829_TpSM49_LG/296311_submission.sh

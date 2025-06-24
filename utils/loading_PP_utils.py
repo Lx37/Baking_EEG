@@ -153,10 +153,21 @@ def load_epochs_data_for_decoding_delirium(
         potential_path = os.path.join(base_input_data_path, "PP_CONTROLS_0.5")
         if os.path.isdir(potential_path):
             data_root_path = potential_path
-    elif group_affiliation_lower in ["del", "nodel"]:
+    elif group_affiliation_lower == "controls_coma":
+        potential_path = os.path.join(base_input_data_path, "PP_CONTROLS_COMA_01HZ")
+        if os.path.isdir(potential_path):
+            data_root_path = potential_path
+    elif group_affiliation_lower in ["del", "delirium+"]:
         potential_path = os.path.join(
             base_input_data_path,
-            f"PP_PATIENTS_{group_affiliation.upper()}_0.5"
+            "PP_PATIENTS_DELIRIUM+_0.5"
+        )
+        if os.path.isdir(potential_path):
+            data_root_path = potential_path
+    elif group_affiliation_lower in ["nodel", "delirium-"]:
+        potential_path = os.path.join(
+            base_input_data_path,
+            "PP_PATIENTS_DELIRIUM-_0.5"
         )
         if os.path.isdir(potential_path):
             data_root_path = potential_path
@@ -304,6 +315,8 @@ def load_epochs_data_for_decoding_delirium(
             if epochs_object.event_id:
                 for desc, code in epochs_object.event_id.items():
                     logger_data_loading.info("  - '%s': %d", desc, code)
+                # Detailed event inspection for debugging
+                inspect_epochs_events(epochs_fif_filename, subject_identifier, verbose=True)
             else:
                 logger_data_loading.info(
                     "  - No event_id found in epochs_object.")
@@ -317,10 +330,14 @@ def load_epochs_data_for_decoding_delirium(
     num_eeg_channels = len(epochs_object.copy().pick(picks="eeg").ch_names)
     num_time_points = len(epochs_object.times)
     extracted_data = {}
-    actual_conditions_to_process = (
-        conditions_to_load if conditions_to_load is not None
-        else CONFIG_LOAD_MAIN_DECODING
-    )
+    
+    # Adaptively adjust conditions based on available events
+    if conditions_to_load is None:
+        actual_conditions_to_process = adapt_loading_conditions_to_available_events(
+            epochs_object, subject_identifier, verbose_logging
+        )
+    else:
+        actual_conditions_to_process = conditions_to_load
 
     if verbose_logging:
         logger_data_loading.info(
@@ -339,6 +356,28 @@ def load_epochs_data_for_decoding_delirium(
                 event_keys_to_select = [
                     k for k in epochs_object.event_id if k.startswith(prefix)
                 ]
+                
+                # Fallback: try simple event names without prefixes for legacy data
+                if not event_keys_to_select and prefix in ['PP', 'AP']:
+                    # For legacy data, try just 'PP' or 'AP' as exact match
+                    if prefix in epochs_object.event_id:
+                        event_keys_to_select = [prefix]
+                    else:
+                        # Try numbered variants like PP1, AP1, etc.
+                        numbered_variants = [
+                            k for k in epochs_object.event_id 
+                            if k.startswith(prefix) and k[len(prefix):].isdigit()
+                        ]
+                        if numbered_variants:
+                            event_keys_to_select = numbered_variants
+                        else:
+                            # Try with underscore variants PP_1, AP_1, etc.
+                            underscore_variants = [
+                                k for k in epochs_object.event_id 
+                                if k.startswith(prefix + '_') or k.startswith(prefix + '/')
+                            ]
+                            event_keys_to_select = underscore_variants
+                            
             elif specifier in epochs_object.event_id:
                 event_keys_to_select = [specifier]
         elif isinstance(specifier, list):
@@ -421,10 +460,6 @@ def load_epochs_data_for_decoding_delirium(
     return epochs_object, extracted_data
 
 
-# the classifier outputs a predicted probability of belonging to the standard
-# class (S). Note that the probability of belonging to the other, deviant
-# class (D) c
-# PPext3
 
 def load_epochs_data_for_decoding_battery(
     subject_identifier,
@@ -706,10 +741,17 @@ def load_epochs_data_auto_protocol(
     group_affiliation_lower = group_affiliation.lower()
     if group_affiliation_lower == "controls":
         data_root_path = os.path.join(base_input_data_path, "PP_CONTROLS_0.5")
-    elif group_affiliation_lower in ["del", "nodel"]:
+    elif group_affiliation_lower == "controls_coma":
+        data_root_path = os.path.join(base_input_data_path, "PP_CONTROLS_COMA_01HZ")
+    elif group_affiliation_lower in ["del", "delirium+"]:
         data_root_path = os.path.join(
             base_input_data_path,
-            f"PP_PATIENTS_{group_affiliation.upper()}_0.5"
+            "PP_PATIENTS_DELIRIUM+_0.5"
+        )
+    elif group_affiliation_lower in ["nodel", "delirium-"]:
+        data_root_path = os.path.join(
+            base_input_data_path,
+            "PP_PATIENTS_DELIRIUM-_0.5"
         )
     elif group_affiliation_lower in ["coma"]:
         data_root_path = os.path.join(base_input_data_path, "PP_COMA_1HZ")
@@ -752,3 +794,121 @@ def load_epochs_data_auto_protocol(
         )
 
     return epochs_object, extracted_data, protocol_type
+
+
+def inspect_epochs_events(epochs_file_path, subject_identifier, verbose=True):
+    """Inspect available events in an epochs file for debugging.
+    
+    Args:
+        epochs_file_path (str): Path to the epochs file
+        subject_identifier (str): Subject ID for logging
+        verbose (bool): Enable verbose output
+        
+    Returns:
+        dict: Dictionary with event_id information
+    """
+    try:
+        with mne.utils.use_log_level("WARNING"):
+            epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+        
+        event_info = {
+            'event_id': epochs.event_id,
+            'n_events': len(epochs.events),
+            'event_counts': {}
+        }
+        
+        # Count events per type
+        for event_name, event_code in epochs.event_id.items():
+            count = sum(epochs.events[:, 2] == event_code)
+            event_info['event_counts'][event_name] = count
+        
+        if verbose:
+            logger_data_loading.info(
+                "=== EVENT INSPECTION FOR %s ===", subject_identifier
+            )
+            logger_data_loading.info("File: %s", epochs_file_path)
+            logger_data_loading.info("Total events: %d", event_info['n_events'])
+            logger_data_loading.info("Event types and counts:")
+            for event_name, count in event_info['event_counts'].items():
+                logger_data_loading.info("  - '%s' (code %d): %d epochs", 
+                                       event_name, epochs.event_id[event_name], count)
+                                       
+        return event_info
+        
+    except Exception as e:
+        logger_data_loading.error(
+            "Failed to inspect events for %s: %s", subject_identifier, e
+        )
+        return {}
+
+
+def adapt_loading_conditions_to_available_events(epochs_object, subject_identifier, verbose_logging=True):
+    """Adapt loading conditions based on actually available events in the data.
+    
+    Args:
+        epochs_object (mne.Epochs): The loaded epochs object
+        subject_identifier (str): Subject ID for logging
+        verbose_logging (bool): Enable detailed logging
+        
+    Returns:
+        dict: Adapted conditions configuration
+    """
+    if not epochs_object or not hasattr(epochs_object, 'event_id'):
+        return CONFIG_LOAD_MAIN_DECODING
+    
+    available_events = list(epochs_object.event_id.keys())
+    adapted_conditions = {}
+    
+    # Try to find PP events
+    pp_events = [k for k in available_events if 'PP' in k.upper()]
+    if pp_events:
+        if any(k.startswith('PP/') for k in pp_events):
+            adapted_conditions['XPP_ALL'] = 'PP/'
+        elif 'PP' in available_events:
+            adapted_conditions['XPP_ALL'] = 'PP'
+        else:
+            # Use all PP-containing events
+            adapted_conditions['XPP_ALL'] = pp_events
+    
+    # Try to find AP events  
+    ap_events = [k for k in available_events if 'AP' in k.upper()]
+    if ap_events:
+        if any(k.startswith('AP/') for k in ap_events):
+            adapted_conditions['XAP_ALL'] = 'AP/'
+        elif 'AP' in available_events:
+            adapted_conditions['XAP_ALL'] = 'AP'
+        else:
+            # Use all AP-containing events
+            adapted_conditions['XAP_ALL'] = ap_events
+    
+    # Try to find specific PP events for comparison
+    pp_specific = [k for k in available_events if k.startswith('PP/') and any(x in k for x in ['10', '20', '30'])]
+    if pp_specific:
+        adapted_conditions['PP_FOR_SPECIFIC_COMPARISON'] = pp_specific
+    
+    # Try to find AP families
+    for family_num in range(1, 7):
+        family_events = [k for k in available_events 
+                        if k.startswith('AP/') and k.endswith(str(family_num))]
+        if family_events:
+            adapted_conditions[f'AP_FAMILY_{family_num}'] = family_events
+    
+    if verbose_logging:
+        logger_data_loading.info(
+            "Adapted loading conditions for %s: %s", 
+            subject_identifier, adapted_conditions
+        )
+        logger_data_loading.info(
+            "Available events were: %s", available_events
+        )
+    
+    # Fallback to original config if nothing found
+    if not adapted_conditions:
+        if verbose_logging:
+            logger_data_loading.warning(
+                "No PP/AP events found for %s, using default config", 
+                subject_identifier
+            )
+        return CONFIG_LOAD_MAIN_DECODING
+    
+    return adapted_conditions

@@ -318,7 +318,7 @@ EGI_con_chan_BRU = [
 ######### ID of SUBJECT  ########
 
 ALL_SUBJECT_GROUPS = {
-    "controls": [
+    "CONTROLS": [
         "AO05",
         "BT13",
         "FP102",
@@ -461,7 +461,7 @@ ALL_SUBJECT_GROUPS = {
         "MC40",
         "ML33",
     ],
-    "MCS": [
+    "MCS+": [
         "AG42",
         "CW41",
         "DA75",
@@ -485,7 +485,7 @@ ALL_SUBJECT_GROUPS = {
   #      "TpAF11J8",
    #     "TpJM2J8",
     #],
-    "DELIRIUM +": [
+    "DELIRIUM+": [
         "TpAB19",
         "TpAK24",
         "TpAK27",
@@ -512,7 +512,7 @@ ALL_SUBJECT_GROUPS = {
         "TpRD38",
         "TpSM49",
     ],
-    "DELIRIUM -": [
+    "DELIRIUM-": [
         "TpAC23",
         "TpAG51",
         "TpAM43",

@@ -1,0 +1,10 @@
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:309: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/data_epochs/TpSM49_PP_preproc_noICA_PP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:309: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/data_epochs/TpSM49_PP_preproc_noICA_PP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 40 concurrent workers.
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+submitit WARNING (2025-06-23 15:40:04,399) - Bypassing signal SIGCONT
+slurmstepd: error: *** JOB 332999 ON node7 CANCELLED AT 2025-06-23T15:40:04 ***
+slurmstepd: error: *** STEP 332999.0 ON node7 CANCELLED AT 2025-06-23T15:40:04 ***
+submitit WARNING (2025-06-23 15:40:04,419) - Bypassing signal SIGTERM

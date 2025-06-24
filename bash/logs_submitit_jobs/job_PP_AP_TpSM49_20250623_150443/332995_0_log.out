@@ -1,0 +1,17 @@
+submitit INFO (2025-06-23 15:04:45,280) - Starting with JobEnvironment(job_id=332995, hostname=node7, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-23 15:04:45,280) - Loading pickle: /home/tom.balay/Baking_EEG/bash/logs_submitit_jobs/job_PP_AP_TpSM49_20250623_150443/332995_submitted.pkl
+2025-06-23 15:04:50,376 - INFO - examples.run_decoding_one_group_pp - [<module>:54] - Tentative d'import de execute_single_subject_decoding...
+2025-06-23 15:04:50,376 - INFO - examples.run_decoding_one_group_pp - [<module>:57] - ✅ Import de execute_single_subject_decoding réussi
+2025-06-23 15:04:50,380 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Starting decoding for subject: TpSM49 (Group: DELIRIUM+, Task Set ID: Analysis_PP_AP_Individual, Classifier: svc, GS: True, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 40)
+2025-06-23 15:04:50,380 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-23 15:04:50,381 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:187] - Original group path for 'DELIRIUM+' not found for subject 'TpSM49'. Subject found in group 'DELIRIUM+'. Using its path convention.
+2025-06-23 15:04:50,381 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:242] - Data directory for subject 'TpSM49' (group: 'DELIRIUM+') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-23 15:04:50,381 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:731] - Auto-detected protocol 'unknown' for subject 'TpSM49' (file hint: None)
+2025-06-23 15:04:50,381 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:187] - Original group path for 'DELIRIUM+' not found for subject 'TpSM49'. Subject found in group 'DELIRIUM+'. Using its path convention.
+2025-06-23 15:04:50,381 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:242] - Data directory for subject 'TpSM49' (group: 'DELIRIUM+') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-23 15:04:50,381 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:210] - Detected protocol 'unknown' for subject TpSM49
+2025-06-23 15:04:50,382 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:216] - Epochs object loading failed for TpSM49. Aborting subject.
+submitit INFO (2025-06-23 15:04:50,382) - Job completed successfully
+2025-06-23 15:04:50,382 - INFO - submitit - [process_job:56] - Job completed successfully
+submitit INFO (2025-06-23 15:04:50,383) - Exiting after successful completion
+2025-06-23 15:04:50,383 - INFO - submitit - [process_job:61] - Exiting after successful completion

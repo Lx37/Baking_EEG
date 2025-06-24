@@ -53,23 +53,7 @@ from sklearn.pipeline import Pipeline
 from mne.decoding import CSP
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
-# --- Project module imports (standardized) ---
 
-import sys
-import os
-from sklearn.linear_model import LogisticRegression
-from sklearn.pipeline import Pipeline
-try:
-    from mne.decoding import CSP
-except ImportError:
-    CSP = None
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-
-# Ajouter le répertoire parent (racine du projet) au chemin Python
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-
-
-# Tous les autres imports partent de la racine (utils, config...)
 
 # --- Configuration du Logging ---
 LOG_DIR_RUN_ONE = './logs_run_single_subject'  # Dossier de logs spécifique
@@ -282,7 +266,7 @@ def execute_single_subject_decoding(
             else:
                 min_samples_main = np.min(np.bincount(main_labels_encoded))
                 num_cv_splits_main = min(
-                    5, min_samples_main) if min_samples_main >= 2 else 0
+                    10, min_samples_main) if min_samples_main >= 2 else 0
                 if num_cv_splits_main < 2:
                     logger_run_one.error(
                         "Subj %s: Not enough samples for CV in main decoding (%d splits). Skipping.", subject_identifier, num_cv_splits_main)

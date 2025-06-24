@@ -1,0 +1,44 @@
+================================================================================
+COMPREHENSIVE EEG DECODING DESCRIPTIVE ANALYSIS REPORT
+================================================================================
+Generated on: 2025-06-20 17:42:04
+
+
+PROTOCOL: PP
+----------------------------------------
+
+GROUP STATISTICS:
+
+DELIRIUM -:
+  N subjects: 24
+  Mean AUC: 0.5254
+  Standard deviation: 0.0345
+  Peak AUC: 0.5770 at 0.172s
+  FDR significant points: 507
+  Significant time windows: 0
+
+controls:
+  N subjects: 13
+  Mean AUC: 0.5194
+  Standard deviation: 0.0125
+  Peak AUC: 0.5571 at 0.346s
+  FDR significant points: 48
+  Significant time windows: 0
+
+DELIRIUM +:
+  N subjects: 21
+  Mean AUC: 0.5012
+  Standard deviation: 0.0285
+  Peak AUC: 0.5528 at 0.156s
+  FDR significant points: 81
+  Significant time windows: 0
+
+THREE-GROUP DESCRIPTIVE COMPARISON:
+  Group means comparison:
+    DELIRIUM -: 0.5254
+    controls: 0.5194
+    DELIRIUM +: 0.5012
+
+================================================================================
+DESCRIPTIVE ANALYSIS COMPLETED
+================================================================================

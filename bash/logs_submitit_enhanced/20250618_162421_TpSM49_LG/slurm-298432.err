@@ -1,2 +1,0 @@
-srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
-slurmstepd: error: *** JOB 298432 ON node8 CANCELLED AT 2025-06-18T16:27:13 ***

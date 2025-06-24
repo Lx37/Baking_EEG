@@ -43,42 +43,26 @@ def run_temporal_decoding_analysis(
     cluster_threshold_config_intra_fold=None,
     random_state=42):
     """
-    Analyze epochs using temporal decoding with optional TGM and global decoding.
+    Core function / backend of decoding
+
     
-    Returns:
-        Tuple of decoding results
     """
     
    
     if isinstance(use_csp_for_temporal_pipelines, tuple):
         logger_decoding_core.warning(
-            "CORRECTION: use_csp_for_temporal_pipelines était un tuple %s, conversion en booléen",
+            " conversion en booléen",
             use_csp_for_temporal_pipelines
         )
         use_csp_for_temporal_pipelines = bool(use_csp_for_temporal_pipelines[0]) if use_csp_for_temporal_pipelines else False
     
     if isinstance(use_anova_fs_for_temporal_pipelines, tuple):
         logger_decoding_core.warning(
-            "CORRECTION: use_anova_fs_for_temporal_pipelines était un tuple %s, conversion en booléen",
+            " conversion en booléen",
             use_anova_fs_for_temporal_pipelines
         )
         use_anova_fs_for_temporal_pipelines = bool(use_anova_fs_for_temporal_pipelines[0]) if use_anova_fs_for_temporal_pipelines else False
     
-    # DEBUG: Examiner le type de use_csp_for_temporal_pipelines
-    logger_decoding_core.info(
-        "DEBUG: use_csp_for_temporal_pipelines type=%s, value=%s, bool()=%s",
-        type(use_csp_for_temporal_pipelines).__name__,
-        repr(use_csp_for_temporal_pipelines),
-        bool(use_csp_for_temporal_pipelines)
-    )
-    
-    # DEBUG: Vérifier le type de use_csp_for_temporal_pipelines
-    logger_decoding_core.info(
-        "DEBUG: use_csp_for_temporal_pipelines type=%s, value=%s, bool()=%s",
-        type(use_csp_for_temporal_pipelines).__name__,
-        repr(use_csp_for_temporal_pipelines),
-        bool(use_csp_for_temporal_pipelines)
-    )
     
     logger_decoding_core.info("--- Temporal Ddcoding Analysis ---")
     logger_decoding_core.info(
@@ -158,7 +142,7 @@ def run_temporal_decoding_analysis(
                 (fs_name_mne and k.startswith(f"{fs_name_mne}__")) or
                    (csp_name_mne and k.startswith(f"{csp_name_mne}__"))
             }
-            logger_decoding_core.info("Using provided (filtered) param_grid for MNE GS: %s",
+            logger_decoding_core.info(" param_grid for MNE GS: %s",
                                    current_grid_mne)
         else:
             logger_decoding_core.warning(
@@ -186,7 +170,7 @@ def run_temporal_decoding_analysis(
     else:
         final_estimator_mne = pipeline_mne
 
-    # --- Prepare classifier/pipeline for Global Decoding ---
+    # --- Prepare classifier/pipeline for global decoding ---
     # Global decoding typically doesn't use CSP/ANOVA FS in this setup
     pipeline_global, clf_name_global, _, _ = _build_standard_classifier_pipeline(
         classifier_model_type=classifier_model_type, use_grid_search=use_grid_search,
@@ -198,7 +182,7 @@ def run_temporal_decoding_analysis(
     if use_grid_search:
         current_grid_global = {}
         if param_grid_config and classifier_model_type in param_grid_config:
-            # Filter for classifier-only params for global GS
+           
             full_grid_for_clf = param_grid_config[classifier_model_type]
             current_grid_global = {
                 k: v for k, v in full_grid_for_clf.items()
@@ -267,7 +251,7 @@ def run_temporal_decoding_analysis(
     effective_sample_weights = None
     if isinstance(trial_sample_weights, str) and trial_sample_weights.lower() == "auto":
         if n_classes >= 2:
-            class_counts = np.bincount(target_labels_enc)
+            class_counts = np.bincount(target_labels_enc) #count the number of occurencies
             # Avoid division by zero if a class has 0 samples (though n_classes < 2 check should catch this)
             weights_map = {cls_idx: n_trials / (n_classes * count) if count > 0 else 0
                            for cls_idx, count in enumerate(class_counts)}

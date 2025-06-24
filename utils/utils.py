@@ -27,12 +27,12 @@ def configure_project_paths(current_user_login):
 
     # User-specific input data paths
     user_input_data_paths = {
-        "tom.balay": "/mnt/data/tom.balay/data/Baking_EEG_data/Baking_EEG_data",
+        "tom.balay": "/mnt/data/tom.balay/data/Baking_EEG_data/",
         "tkz": ("/home/tkz/Projets/0_FPerrin_FFerre_2024_Baking_EEG_CAP/"
                 "Baking_EEG_data"),
         "adminlocal": ("C:\\Users\\adminlocal\\Desktop\\ConnectDoc\\"
                        "EEG_2025_CAP_FPerrin_Vera"),
-        "tom": "/Users/tom/Desktop/ENSC/2A/PII/Tom/Baking_EEG_data",
+        "tom": "/Users/tom/Desktop/ENSC/Stage CAP/BakingEEG_data",
         # Add other users and their paths here
     }
     base_input_data_path = user_input_data_paths.get(
@@ -54,7 +54,7 @@ def configure_project_paths(current_user_login):
     user_output_results_paths = {
         "tom.balay": (f"/home/tom.balay/results/"
                       f"Baking_EEG_results_{output_version_folder_name}"),
-        "tom": (f"/Users/tom/Desktop/ENSC/2A/PII/Tom/"
+        "tom": (f"/Users/tom/Desktop/ENSC/Stage CAP/"
                 f"Baking_EEG_results_{output_version_folder_name}"),
         # Add other users and their output paths here
     }

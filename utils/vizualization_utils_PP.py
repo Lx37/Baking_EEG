@@ -21,6 +21,7 @@ def plot_group_mean_scores_barplot(
     subject_to_score_mapping,
     group_identifier_for_plot_title,
     output_directory_path=None,
+    n_folds=None,
     score_metric_name="ROC AUC",
     chance_level_value=CHANCE_LEVEL_AUC,
 ):
@@ -56,8 +57,11 @@ def plot_group_mean_scores_barplot(
 
     ax_bar.set_ylabel(f"Score ({score_metric_name})")
     ax_bar.set_xlabel("Subject ID")
-    ax_bar.set_title(f"Individual subject performance: {group_identifier_for_plot_title}",
-                     fontweight="bold")
+    # Title with optional CV folds info
+    title_str = f"Individual subject performance: {group_identifier_for_plot_title}"
+    if n_folds:
+        title_str += f" ({n_folds}-fold CV)"
+    ax_bar.set_title(title_str, fontweight="bold")
     ax_bar.set_xticks(range(n_subjects))
     ax_bar.set_xticklabels(subject_ids, rotation=60, ha="right", fontsize=10)
 
@@ -795,7 +799,7 @@ def create_subject_decoding_dashboard_plots(
                     for i_fold, fold_scores in enumerate(main_temporal_scores_1d_all_folds):
                         if not np.all(np.isnan(fold_scores)):
                             ax1_temp.plot(main_epochs_time_points, fold_scores, color='gray',
-                                          alpha=0.3, lw=0.7, label='CV Folds' if i_fold == 0 else None)
+                                          alpha=0.3, lw=0.7, label=f'{n_folds}-CV Folds' if i_fold == 0 else None)
 
                 # Plot de la moyenne
                 ax1_temp.plot(main_epochs_time_points, main_mean_temporal_decoding_scores_1d,
@@ -866,7 +870,7 @@ def create_subject_decoding_dashboard_plots(
                            color='skyblue', label='ROC AUC/fold')
                 ax1_cv.axhline(mean_cv_score_p1, color='r', ls='--',
                                label=f'Mean: {mean_cv_score_p1:.3f}')
-                ax1_cv.set_xlabel('CV Fold')
+                ax1_cv.set_xlabel(f'{n_folds}-CV Folds')
                 ax1_cv.set_ylabel('ROC AUC')
                 ax1_cv.set_xticks(range(1, num_folds_p1 + 1))
                 ax1_cv.set_ylim(0.0, 1.05)
@@ -1039,7 +1043,7 @@ def create_subject_decoding_dashboard_plots(
                 fontsize=16, fontweight="bold"
             )
             ax3_tgm = fig3.add_subplot(111)
-            plot_title_tgm_p3 = f"TGM (Mean AUC over CV folds)"
+            plot_title_tgm_p3 = f"TGM (Mean AUC over {n_folds}-CV folds)"
 
             # Vérification que toutes les données pour pretty_gat sont valides
             if main_mean_temporal_generalization_matrix_scores is not None and \
@@ -1144,7 +1148,7 @@ def create_subject_decoding_dashboard_plots(
                             for i_f, f_s in enumerate(all_folds_scores_p4):
                                 if not np.all(np.isnan(f_s)):
                                     ax_p4.plot(main_epochs_time_points, f_s, color='gray', alpha=0.25, lw=0.5,
-                                               label='CV Folds' if i_f == 0 else None)
+                                               label=f'{n_folds}-CV Folds' if i_f == 0 else None)
 
                         ax_p4.plot(main_epochs_time_points, mean_scores_p4,
                                    color='blue', lw=1.5, label='Mean AUC')
@@ -1349,6 +1353,7 @@ def create_subject_decoding_dashboard_plots(
                         if all_folds_p6 is not None and all_folds_p6.shape[0] > 1:
                             sem_p6 = scipy.stats.sem(
                                 all_folds_p6, axis=0, nan_policy='omit')
+
                             if sem_p6 is not None and not np.all(np.isnan(sem_p6)):
                                 ax_p6.fill_between(main_epochs_time_points, mean_scores_p6 - sem_p6,
                                                    mean_scores_p6 + sem_p6, color='c', alpha=0.2, label='SEM')

@@ -146,14 +146,13 @@ def perform_cluster_permutation_test(
     elif alternative_hypothesis.lower() == "less":
         tail_param_mne = -1
 
-    # Conservative parallelism management to prevent conflicts
-    # Limit n_jobs if it's set to 1, 0, or exceeds available CPUs in a non-optimal way.
-    # This aims for a balance, often 4 jobs or half the CPUs can be a safe bet.
+    
+    # not to over parralelise 
     if n_jobs == 1 or n_jobs == 0 or (os.cpu_count() is not None and n_jobs > os.cpu_count()):
         effective_n_jobs = min(
             4, max(1, os.cpu_count() // 2 if os.cpu_count() is not None else 2)
         )
-        if n_jobs != effective_n_jobs:  # Log only if a change was made
+        if n_jobs != effective_n_jobs:  
             logger_stats_decoding.info(
                 f"Adjusting MNE parallelism from requested n_jobs={n_jobs} "
                 f"to effective_n_jobs={effective_n_jobs} for resource management."
@@ -279,7 +278,7 @@ def perform_cluster_permutation_test(
     # === RESULT LOGGING ===
     logger_stats_decoding.info(
         f"Cluster permutation test completed. "
-        # Modifié
+ 
         f"{len(cluster_definitions_masks_for_output)} initial clusters found (after processing slices)."
     )
 

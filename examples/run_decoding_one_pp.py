@@ -8,7 +8,11 @@
 # - Inter-family comparisons: AP_family vs AP_family
 # - Statistical testing with FDR and cluster-based permutation tests
 # - Optional Temporal Generalization Matrix (TGM) computation
+import sys
+import os
 
+# Ajouter le répertoire parent (racine du projet) au chemin Python
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from config.decoding_config import (
     CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
     USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
@@ -35,8 +39,7 @@ from utils.utils import (
 )
 from utils.vizualization_utils_PP import create_subject_decoding_dashboard_plots
 from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
-import sys
-import os
+
 import logging
 import time
 import argparse
@@ -52,7 +55,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from mne.decoding import CSP
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-
 
 
 # --- Configuration du Logging ---
@@ -219,7 +221,6 @@ def execute_single_subject_decoding(
         subject_results["detected_protocol"] = detected_protocol
         subject_results["epochs_time_points"] = epochs_object.times.copy()
 
-    
         current_fixed_params_for_clf_dict = None
         current_param_grid_for_clf_dict = None
 
@@ -266,7 +267,7 @@ def execute_single_subject_decoding(
             else:
                 min_samples_main = np.min(np.bincount(main_labels_encoded))
                 num_cv_splits_main = min(
-                    5, min_samples_main) if min_samples_main >= 2 else 0
+                    10, min_samples_main) if min_samples_main >= 2 else 0
                 if num_cv_splits_main < 2:
                     logger_run_one.error(
                         "Subj %s: Not enough samples for CV in main decoding (%d splits). Skipping.", subject_identifier, num_cv_splits_main)
@@ -353,7 +354,7 @@ def execute_single_subject_decoding(
                             min_samples_task_spec = np.min(
                                 np.bincount(task_labels_specific_enc))
                             num_cv_task_spec = min(
-                                5, min_samples_task_spec) if min_samples_task_spec >= 2 else 0
+                                10, min_samples_task_spec) if min_samples_task_spec >= 2 else 0
                             if num_cv_task_spec < 2:
                                 logger_run_one.warning(
                                     "Subj %s, Task '%s': Not enough samples for CV (%d splits). Skipping.", subject_identifier, comparison_name_specific, num_cv_task_spec)
@@ -437,7 +438,7 @@ def execute_single_subject_decoding(
                             sig_clu_objects_stack.append(
                                 c_mask_item_stack)  # MODIFIED
                             combined_mask_clu_stack = np.logical_or(
-                                combined_mask_clu_stack, c_mask_item_stack)  # MODIFIED
+                                combined_mask_clu_stack, c_mask_item_stack)  
                 subject_results["pp_ap_mean_specific_cluster"] = {"mask": combined_mask_clu_stack, "cluster_objects": sig_clu_objects_stack,
                                                                   "p_values_all_clusters": p_clu_stack, "method": f"CluPerm on stack of {len(valid_mean_scores_for_stack)} specific curves"}
                 logger_run_one.info(
@@ -472,7 +473,7 @@ def execute_single_subject_decoding(
                         min_samples_ap_vs_ap = np.min(
                             np.bincount(task_labels_ap_vs_ap_enc))
                         num_cv_ap_vs_ap = min(
-                            5, min_samples_ap_vs_ap) if min_samples_ap_vs_ap >= 2 else 0
+                            10, min_samples_ap_vs_ap) if min_samples_ap_vs_ap >= 2 else 0
                         if num_cv_ap_vs_ap < 2:
                             logger_run_one.warning(
                                 "Subj %s, Task '%s': Not enough samples for CV (%d splits). Skipping.", subject_identifier, comparison_name_ap_vs_ap, num_cv_ap_vs_ap)
@@ -680,7 +681,7 @@ def execute_single_subject_decoding(
                     "subject_identifier": subject_identifier,
                     "group_identifier": group_affiliation,
                     "output_directory_path": subject_results_dir,
-                    "CHANCE_LEVEL_AUC": CHANCE_LEVEL_AUC,  # Constante importée
+                    "CHANCE_LEVEL_AUC": CHANCE_LEVEL_AUC, 
                     "protocol_type": "PP_AP",  # Ou un autre identifiant si vous généralisez
 
                     "main_original_labels_array": subject_results.get("pp_ap_main_original_labels"),
