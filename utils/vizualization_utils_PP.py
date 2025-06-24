@@ -104,6 +104,7 @@ def plot_group_temporal_decoding_statistics(
     std_error_group_temporal_scores=None,
     cluster_p_value_map_1d=None,
     fdr_significance_mask_1d=None,
+    fdr_test_info=None,  # New parameter for FDR test information
     chance_level=CHANCE_LEVEL_AUC,
 ):
     """Plots group-level temporal decoding stats with significance overlays."""
@@ -161,10 +162,23 @@ def plot_group_temporal_decoding_statistics(
     if fdr_significance_mask_1d is not None and \
        fdr_significance_mask_1d.shape == time_points_array.shape and \
        np.any(fdr_significance_mask_1d):
+        # Create FDR label with test information
+        fdr_label = "FDR p<0.05"
+        if fdr_test_info is not None:
+            test_type = fdr_test_info.get("test_type", "unknown")
+            if test_type == "adaptive":
+                n_ttest = fdr_test_info.get("ttest_features", 0)
+                n_wilcoxon = fdr_test_info.get("wilcoxon_features", 0)
+                fdr_label = f"FDR p<0.05 (adaptive: {n_ttest}t-test, {n_wilcoxon}Wilcoxon)"
+            elif test_type == "ttest":
+                fdr_label = "FDR p<0.05 (t-test)"
+            elif test_type == "wilcoxon":
+                fdr_label = "FDR p<0.05 (Wilcoxon)"
+        
         ax.fill_between(
             time_points_array, current_y_pos, current_y_pos + sig_bar_height,
             where=fdr_significance_mask_1d, color="deepskyblue", alpha=0.7,
-            step="mid", label="FDR p<0.05",
+            step="mid", label=fdr_label,
         )
         current_y_pos -= (sig_bar_height + 0.005)
 
@@ -220,6 +234,7 @@ def plot_group_tgm_statistics(
     output_directory_path,
     observed_t_values_map_tgm=None,
     fdr_significance_mask_tgm=None,
+    fdr_test_info_tgm=None,  # New parameter for TGM FDR test information
     chance_level=0.5,
     plot_vmin=None,
     plot_vmax=None,
@@ -283,7 +298,19 @@ def plot_group_tgm_statistics(
     plot_title = f"Group TGM: {group_identifier_for_plot}"
     sig_info_parts = []
     if fdr_significance_mask_tgm is not None and np.any(fdr_significance_mask_tgm):
-        sig_info_parts.append("FDR sig. hatched")
+        # Add FDR test information to the title
+        fdr_info = "FDR sig. hatched"
+        if fdr_test_info_tgm is not None:
+            test_type = fdr_test_info_tgm.get("test_type", "unknown")
+            if test_type == "adaptive":
+                n_ttest = fdr_test_info_tgm.get("ttest_features", 0)
+                n_wilcoxon = fdr_test_info_tgm.get("wilcoxon_features", 0)
+                fdr_info = f"FDR sig. hatched (adaptive: {n_ttest}t-test, {n_wilcoxon}Wilcoxon)"
+            elif test_type == "ttest":
+                fdr_info = "FDR sig. hatched (t-test)"
+            elif test_type == "wilcoxon":
+                fdr_info = "FDR sig. hatched (Wilcoxon)"
+        sig_info_parts.append(fdr_info)
     if sig_info_parts:
         plot_title += f"\n({', '.join(sig_info_parts)}, p<0.05)"
     ax.set_title(plot_title)
@@ -837,17 +864,50 @@ def create_subject_decoding_dashboard_plots(
 
                 if main_temporal_1d_fdr_sig_data and main_temporal_1d_fdr_sig_data.get('mask') is not None and \
                    np.any(main_temporal_1d_fdr_sig_data['mask']):
+                    # Créer le label FDR avec l'information du test
+                    fdr_label = "FDR p<0.05"
+                    test_info = main_temporal_1d_fdr_sig_data.get('test_info', {})
+                    if test_info:
+                        test_type = test_info.get("test_type", "unknown")
+                        if test_type == "adaptive":
+                            n_ttest = test_info.get("ttest_features", 0)
+                            n_wilcoxon = test_info.get("wilcoxon_features", 0)
+                            fdr_label = f"FDR p<0.05 (adaptive: {n_ttest}t-test, {n_wilcoxon}Wilcoxon)"
+                        elif test_type == "ttest":
+                            fdr_label = "FDR p<0.05 (t-test)"
+                        elif test_type == "wilcoxon":
+                            fdr_label = "FDR p<0.05 (Wilcoxon)"
+                    
                     ax1_temp.fill_between(main_epochs_time_points, current_y_sig_p1 - sig_bar_height_p1, current_y_sig_p1,
                                           where=main_temporal_1d_fdr_sig_data['mask'], color='deepskyblue',
-                                          alpha=0.7, step='mid', label="Mean FDR p<0.05")
+                                          alpha=0.7, step='mid', label=fdr_label)
                     # Décalage pour la prochaine barre
                     current_y_sig_p1 -= (sig_bar_height_p1 + 0.005)
+                else:
+                    # Afficher le label FDR même si pas significatif, avec info du test si disponible
+                    fdr_label = "FDR (no sig.)"
+                    test_info = main_temporal_1d_fdr_sig_data.get('test_info', {}) if main_temporal_1d_fdr_sig_data else {}
+                    if test_info:
+                        test_type = test_info.get("test_type", "unknown")
+                        if test_type == "adaptive":
+                            n_ttest = test_info.get("ttest_features", 0)
+                            n_wilcoxon = test_info.get("wilcoxon_features", 0)
+                            fdr_label = f"FDR (no sig., adaptive: {n_ttest}t-test, {n_wilcoxon}Wilcoxon)"
+                        elif test_type == "ttest":
+                            fdr_label = "FDR (no sig., t-test)"
+                        elif test_type == "wilcoxon":
+                            fdr_label = "FDR (no sig., Wilcoxon)"
+                    # Ajouter une ligne invisible pour la légende
+                    ax1_temp.plot([], [], color='deepskyblue', alpha=0.7, label=fdr_label)
 
                 if main_temporal_1d_cluster_sig_data and main_temporal_1d_cluster_sig_data.get('mask') is not None and \
                    np.any(main_temporal_1d_cluster_sig_data['mask']):
                     ax1_temp.fill_between(main_epochs_time_points, current_y_sig_p1 - sig_bar_height_p1, current_y_sig_p1,
                                           where=main_temporal_1d_cluster_sig_data['mask'], color='orangered',
-                                          alpha=0.7, step='mid', label="Mean Cluster p<0.05")
+                                          alpha=0.7, step='mid', label="Cluster p<0.05")
+                else:
+                    # Afficher le label cluster même si pas significatif
+                    ax1_temp.plot([], [], color='orangered', alpha=0.7, label="Cluster (no sig.)")
 
                 ax1_temp.axhline(CHANCE_LEVEL_AUC, color='k',
                                  ls='--', label=f'Chance ({CHANCE_LEVEL_AUC})')
@@ -1180,13 +1240,45 @@ def create_subject_decoding_dashboard_plots(
                         sig_bar_h_sp_p4, cur_y_sig_sp_p4 = 0.01, y_base_sig_sp_p4
 
                         if fdr_data_p4 and fdr_data_p4.get('mask') is not None and np.any(fdr_data_p4['mask']):
+                            # Créer le label FDR avec l'information du test
+                            fdr_label_p4 = "FDR p<0.05"
+                            test_info_p4 = fdr_data_p4.get('test_info', {})
+                            if test_info_p4:
+                                test_type = test_info_p4.get("test_type", "unknown")
+                                if test_type == "adaptive":
+                                    n_ttest = test_info_p4.get("ttest_features", 0)
+                                    n_wilcoxon = test_info_p4.get("wilcoxon_features", 0)
+                                    fdr_label_p4 = f"FDR p<0.05 (adaptive: {n_ttest}t, {n_wilcoxon}W)"
+                                elif test_type == "ttest":
+                                    fdr_label_p4 = "FDR p<0.05 (t-test)"
+                                elif test_type == "wilcoxon":
+                                    fdr_label_p4 = "FDR p<0.05 (Wilcoxon)"
+                            
                             ax_p4.fill_between(main_epochs_time_points, cur_y_sig_sp_p4 - sig_bar_h_sp_p4, cur_y_sig_sp_p4,
-                                               where=fdr_data_p4['mask'], color='deepskyblue', alpha=0.7, step='mid', label="Mean FDR p<0.05")
+                                               where=fdr_data_p4['mask'], color='deepskyblue', alpha=0.7, step='mid', label=fdr_label_p4)
                             cur_y_sig_sp_p4 -= (sig_bar_h_sp_p4 + 0.005)
+                        else:
+                            # Afficher le label FDR même si pas significatif
+                            fdr_label_p4 = "FDR (no sig.)"
+                            test_info_p4 = fdr_data_p4.get('test_info', {}) if fdr_data_p4 else {}
+                            if test_info_p4:
+                                test_type = test_info_p4.get("test_type", "unknown")
+                                if test_type == "adaptive":
+                                    n_ttest = test_info_p4.get("ttest_features", 0)
+                                    n_wilcoxon = test_info_p4.get("wilcoxon_features", 0)
+                                    fdr_label_p4 = f"FDR (no sig., adaptive: {n_ttest}t, {n_wilcoxon}W)"
+                                elif test_type == "ttest":
+                                    fdr_label_p4 = "FDR (no sig., t-test)"
+                                elif test_type == "wilcoxon":
+                                    fdr_label_p4 = "FDR (no sig., Wilcoxon)"
+                            ax_p4.plot([], [], color='deepskyblue', alpha=0.7, label=fdr_label_p4)
 
                         if cluster_data_p4 and cluster_data_p4.get('mask') is not None and np.any(cluster_data_p4['mask']):
                             ax_p4.fill_between(main_epochs_time_points, cur_y_sig_sp_p4 - sig_bar_h_sp_p4, cur_y_sig_sp_p4,
-                                               where=cluster_data_p4['mask'], color='orangered', alpha=0.7, step='mid', label="Mean Cluster p<0.05")
+                                               where=cluster_data_p4['mask'], color='orangered', alpha=0.7, step='mid', label="Cluster p<0.05")
+                        else:
+                            # Afficher le label cluster même si pas significatif
+                            ax_p4.plot([], [], color='orangered', alpha=0.7, label="Cluster (no sig.)")
 
                         ax_p4.axhline(CHANCE_LEVEL_AUC, color='k',
                                       ls='--', label=f'Chance ({CHANCE_LEVEL_AUC})')
@@ -1263,17 +1355,41 @@ def create_subject_decoding_dashboard_plots(
             # FDR sur la moyenne des courbes spécifiques
             if mean_specific_fdr_sig_data and mean_specific_fdr_sig_data.get('mask') is not None:
                 if np.any(mean_specific_fdr_sig_data['mask']):
+                    # Créer le label FDR avec l'information du test
+                    fdr_label_p5 = "FDR p<0.05"
+                    test_info_p5 = mean_specific_fdr_sig_data.get('test_info', {})
+                    if test_info_p5:
+                        test_type = test_info_p5.get("test_type", "unknown")
+                        if test_type == "adaptive":
+                            n_ttest = test_info_p5.get("ttest_features", 0)
+                            n_wilcoxon = test_info_p5.get("wilcoxon_features", 0)
+                            fdr_label_p5 = f"FDR p<0.05 (adaptive: {n_ttest}t, {n_wilcoxon}W)"
+                        elif test_type == "ttest":
+                            fdr_label_p5 = "FDR p<0.05 (t-test)"
+                        elif test_type == "wilcoxon":
+                            fdr_label_p5 = "FDR p<0.05 (Wilcoxon)"
+                    
                     ax5_mean_spec.fill_between(main_epochs_time_points, cur_y_sig_msp_p5 - sig_bar_h_msp_p5, cur_y_sig_msp_p5,
                                                where=mean_specific_fdr_sig_data['mask'], color='deepskyblue', alpha=0.7,
-                                               step='mid', label="FDR p<0.05 ")
+                                               step='mid', label=fdr_label_p5)
                 else:  # Pas de significativité mais la donnée existe
-                    # Pour la légende
-                    ax5_mean_spec.plot(
-                        [], [], color='deepskyblue', alpha=0.7, label="FDR (no sig)")
+                    fdr_label_p5 = "FDR (no sig.)"
+                    test_info_p5 = mean_specific_fdr_sig_data.get('test_info', {})
+                    if test_info_p5:
+                        test_type = test_info_p5.get("test_type", "unknown")
+                        if test_type == "adaptive":
+                            n_ttest = test_info_p5.get("ttest_features", 0)
+                            n_wilcoxon = test_info_p5.get("wilcoxon_features", 0)
+                            fdr_label_p5 = f"FDR (no sig., adaptive: {n_ttest}t, {n_wilcoxon}W)"
+                        elif test_type == "ttest":
+                            fdr_label_p5 = "FDR (no sig., t-test)"
+                        elif test_type == "wilcoxon":
+                            fdr_label_p5 = "FDR (no sig., Wilcoxon)"
+                    ax5_mean_spec.plot([], [], color='deepskyblue', alpha=0.7, label=fdr_label_p5)
                 cur_y_sig_msp_p5 -= (sig_bar_h_msp_p5 + 0.005)
             else:  # Donnée FDR non disponible
                 ax5_mean_spec.plot([], [], color='deepskyblue',
-                                   alpha=0.7, label="FDR (N/A )")
+                                   alpha=0.7, label="FDR (N/A)")
 
             # Cluster sur la moyenne des courbes spécifiques
             if mean_specific_cluster_sig_data and mean_specific_cluster_sig_data.get('mask') is not None:
@@ -1376,12 +1492,45 @@ def create_subject_decoding_dashboard_plots(
                                       0 else CHANCE_LEVEL_AUC, CHANCE_LEVEL_AUC) - 0.02
                         s_h_ap6, cur_y_ap6 = 0.01, y_b_ap6
                         if fdr_data_p6 and fdr_data_p6.get('mask') is not None and np.any(fdr_data_p6['mask']):
+                            # Créer le label FDR avec l'information du test
+                            fdr_label_p6 = "FDR p<0.05"
+                            test_info_p6 = fdr_data_p6.get('test_info', {})
+                            if test_info_p6:
+                                test_type = test_info_p6.get("test_type", "unknown")
+                                if test_type == "adaptive":
+                                    n_ttest = test_info_p6.get("ttest_features", 0)
+                                    n_wilcoxon = test_info_p6.get("wilcoxon_features", 0)
+                                    fdr_label_p6 = f"FDR p<0.05 (adap: {n_ttest}t, {n_wilcoxon}W)"
+                                elif test_type == "ttest":
+                                    fdr_label_p6 = "FDR p<0.05 (t-test)"
+                                elif test_type == "wilcoxon":
+                                    fdr_label_p6 = "FDR p<0.05 (Wilcoxon)"
+                            
                             ax_p6.fill_between(main_epochs_time_points, cur_y_ap6 - s_h_ap6, cur_y_ap6,
-                                               where=fdr_data_p6['mask'], color='deepskyblue', alpha=0.7, step='mid', label="Mean FDR p<0.05")
+                                               where=fdr_data_p6['mask'], color='deepskyblue', alpha=0.7, step='mid', label=fdr_label_p6)
                             cur_y_ap6 -= (s_h_ap6 + 0.005)
+                        else:
+                            # Afficher le label FDR même si pas significatif
+                            fdr_label_p6 = "FDR (no sig.)"
+                            test_info_p6 = fdr_data_p6.get('test_info', {}) if fdr_data_p6 else {}
+                            if test_info_p6:
+                                test_type = test_info_p6.get("test_type", "unknown")
+                                if test_type == "adaptive":
+                                    n_ttest = test_info_p6.get("ttest_features", 0)
+                                    n_wilcoxon = test_info_p6.get("wilcoxon_features", 0)
+                                    fdr_label_p6 = f"FDR (no sig., adap: {n_ttest}t, {n_wilcoxon}W)"
+                                elif test_type == "ttest":
+                                    fdr_label_p6 = "FDR (no sig., t-test)"
+                                elif test_type == "wilcoxon":
+                                    fdr_label_p6 = "FDR (no sig., Wilcoxon)"
+                            ax_p6.plot([], [], color='deepskyblue', alpha=0.7, label=fdr_label_p6)
+                            
                         if cluster_data_p6 and cluster_data_p6.get('mask') is not None and np.any(cluster_data_p6['mask']):
                             ax_p6.fill_between(main_epochs_time_points, cur_y_ap6 - s_h_ap6, cur_y_ap6,
-                                               where=cluster_data_p6['mask'], color='orangered', alpha=0.7, step='mid', label="Mean Cluster p<0.05")
+                                               where=cluster_data_p6['mask'], color='orangered', alpha=0.7, step='mid', label="Cluster p<0.05")
+                        else:
+                            # Afficher le label cluster même si pas significatif
+                            ax_p6.plot([], [], color='orangered', alpha=0.7, label="Cluster (no sig.)")
 
                         ax_p6.axhline(CHANCE_LEVEL_AUC, color='k', ls='--',
                                       lw=1, label=f'Chance ({CHANCE_LEVEL_AUC:.1f})')
@@ -1471,12 +1620,45 @@ def create_subject_decoding_dashboard_plots(
                                       0 else CHANCE_LEVEL_AUC, CHANCE_LEVEL_AUC) - 0.02
                         s_h_ap7, cur_y_ap7 = 0.01, y_b_ap7
                         if fdr_d_p7 and fdr_d_p7.get('mask') is not None and np.any(fdr_d_p7['mask']):
+                            # Créer le label FDR avec l'information du test
+                            fdr_label_p7 = "FDR p<0.05"
+                            test_info_p7 = fdr_d_p7.get('test_info', {})
+                            if test_info_p7:
+                                test_type = test_info_p7.get("test_type", "unknown")
+                                if test_type == "adaptive":
+                                    n_ttest = test_info_p7.get("ttest_features", 0)
+                                    n_wilcoxon = test_info_p7.get("wilcoxon_features", 0)
+                                    fdr_label_p7 = f"FDR p<0.05 (adap: {n_ttest}t, {n_wilcoxon}W)"
+                                elif test_type == "ttest":
+                                    fdr_label_p7 = "FDR p<0.05 (t-test)"
+                                elif test_type == "wilcoxon":
+                                    fdr_label_p7 = "FDR p<0.05 (Wilcoxon)"
+                            
                             ax_p7.fill_between(main_epochs_time_points, cur_y_ap7 - s_h_ap7, cur_y_ap7,
-                                               where=fdr_d_p7['mask'], color='deepskyblue', alpha=0.7, step='mid', label="Mean FDR p<0.05")
+                                               where=fdr_d_p7['mask'], color='deepskyblue', alpha=0.7, step='mid', label=fdr_label_p7)
                             cur_y_ap7 -= (s_h_ap7 + 0.005)
+                        else:
+                            # Afficher le label FDR même si pas significatif
+                            fdr_label_p7 = "FDR (no sig.)"
+                            test_info_p7 = fdr_d_p7.get('test_info', {}) if fdr_d_p7 else {}
+                            if test_info_p7:
+                                test_type = test_info_p7.get("test_type", "unknown")
+                                if test_type == "adaptive":
+                                    n_ttest = test_info_p7.get("ttest_features", 0)
+                                    n_wilcoxon = test_info_p7.get("wilcoxon_features", 0)
+                                    fdr_label_p7 = f"FDR (no sig., adap: {n_ttest}t, {n_wilcoxon}W)"
+                                elif test_type == "ttest":
+                                    fdr_label_p7 = "FDR (no sig., t-test)"
+                                elif test_type == "wilcoxon":
+                                    fdr_label_p7 = "FDR (no sig., Wilcoxon)"
+                            ax_p7.plot([], [], color='deepskyblue', alpha=0.7, label=fdr_label_p7)
+                            
                         if clu_d_p7 and clu_d_p7.get('mask') is not None and np.any(clu_d_p7['mask']):
                             ax_p7.fill_between(main_epochs_time_points, cur_y_ap7 - s_h_ap7, cur_y_ap7,
-                                               where=clu_d_p7['mask'], color='orangered', alpha=0.7, step='mid', label="Mean Cluster p<0.05")
+                                               where=clu_d_p7['mask'], color='orangered', alpha=0.7, step='mid', label="Cluster p<0.05")
+                        else:
+                            # Afficher le label cluster même si pas significatif
+                            ax_p7.plot([], [], color='orangered', alpha=0.7, label="Cluster (no sig.)")
 
                         ax_p7.axhline(CHANCE_LEVEL_AUC, color='k', ls='--',
                                       lw=1, label=f'Chance ({CHANCE_LEVEL_AUC:.1f})')

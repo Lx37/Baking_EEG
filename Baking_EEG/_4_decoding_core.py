@@ -488,12 +488,12 @@ def run_temporal_decoding_analysis(
     # --- Intra-fold Statistics ---
     if compute_intra_fold_stats and scores_1d_all_folds.shape[0] > 1 and n_time_points > 0:
         if not np.all(np.isnan(scores_1d_all_folds)):
-            _, fdr_mask_1d, fdr_p_1d = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
+            _, fdr_mask_1d, fdr_p_1d, fdr_test_info = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
                 scores_1d_all_folds, chance_level, alternative_hypothesis="greater",
-                statistical_test_type="wilcoxon", random_seed=random_state
+                statistical_test_type="adaptive"
             )
             fdr_1d_data = {"mask": fdr_mask_1d,
-                "p_values": fdr_p_1d, "method": "FDR_CV_Folds_1D"}
+                "p_values": fdr_p_1d, "method": "FDR_CV_Folds_1D", "test_info": fdr_test_info}
 
             t_obs_clu, clu_1d, p_clu_1d, _ = bEEG_stats.perform_cluster_permutation_test(
             scores_1d_all_folds, 
@@ -502,7 +502,6 @@ def run_temporal_decoding_analysis(
             cluster_threshold_config_intra_fold, 
             "greater", 
             INTERNAL_N_JOBS_FOR_MNE_DECODING,
-            stat_function_to_use="wilcoxon",
             random_seed=random_state,
         )
             combined_mask_clu1d = np.zeros(n_time_points, dtype=bool)
@@ -521,17 +520,18 @@ def run_temporal_decoding_analysis(
             n_f, n_tr, n_te = tgm_all_folds.shape
             if n_tr > 0 and n_te > 0:  # Ensure dimensions are positive
                 flat_tgm_scores = tgm_all_folds.reshape(n_f, n_tr * n_te)
-                _, fdr_mask_tgm_flat, pvals_tgm_flat = \
+                _, fdr_mask_tgm_flat, pvals_tgm_flat, fdr_test_info_tgm = \
                     bEEG_stats.perform_pointwise_fdr_correction_on_scores(
                         flat_tgm_scores, chance_level, alternative_hypothesis="greater",
-                        statistical_test_type="wilcoxon"
+                        statistical_test_type="adaptive"
                     )
                 fdr_tgm_data = {
                     "mask": (fdr_mask_tgm_flat.reshape(n_tr, n_te)
                              if hasattr(fdr_mask_tgm_flat, 'reshape') and fdr_mask_tgm_flat is not None else None),
                     "p_values": (pvals_tgm_flat.reshape(n_tr, n_te)
                                  if hasattr(pvals_tgm_flat, 'reshape') and pvals_tgm_flat is not None else None),
-                    "method": "FDR_CV_Folds_TGM"
+                    "method": "FDR_CV_Folds_TGM",
+                    "test_info": fdr_test_info_tgm
                 }
             else:
                 logger_decoding_core.warning(
