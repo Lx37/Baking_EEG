@@ -291,7 +291,17 @@ def execute_single_subject_decoding(
                     "Subj %s: Only one class for main decoding. Skipping.", subject_identifier)
             else:
                 min_samples_main = np.min(np.bincount(main_labels_encoded))
-                num_cv_splits_main = min(
+                num_cv_splits_main = min(10, min_samples_main)
+                
+                main_decoding_output = run_temporal_decoding_analysis(
+                        main_protocol_data, main_labels_encoded,
+                        classifier_type, use_grid_search_for_subject,
+                        use_csp_for_temporal_subject, use_anova_fs_for_temporal_subject,
+                        current_param_grid_for_clf_dict, current_fixed_params_for_clf_dict,
+                        cv_folds_for_gs_subject, num_cv_splits_main,
+                        compute_intra_subject_stats_flag, n_perms_for_intra_subject_clusters,
+                        actual_n_jobs, enable_verbose_logging,
+                        compute_tgm_flag if compute_tgm_flag is not None else COMPUTE_TGM_FOR_MAIN_COMPARISON,
                         chance_level=CHANCE_LEVEL_AUC,
                         cluster_threshold_config_intra_fold=cluster_threshold_config_intra_fold
                     )
@@ -432,11 +442,10 @@ def execute_single_subject_decoding(
                     subject_results["pp_ap_mean_of_specific_scores_1d"], dtype=bool) if subject_results["pp_ap_mean_of_specific_scores_1d"] is not None else np.array([], dtype=bool)
                 sig_clu_objects_stack = []
                 if clu_obj_stack and p_clu_stack is not None and combined_mask_clu_stack.size > 0:
-                    # MODIFIED
                     for i_c, c_mask_item_stack in enumerate(clu_obj_stack):
                         if p_clu_stack[i_c] < 0.05:
                             sig_clu_objects_stack.append(
-                                c_mask_item_stack)  # MODIFIED
+                                c_mask_item_stack)  
                             combined_mask_clu_stack = np.logical_or(
                                 combined_mask_clu_stack, c_mask_item_stack)  
                 subject_results["pp_ap_mean_specific_cluster"] = {"mask": combined_mask_clu_stack, "cluster_objects": sig_clu_objects_stack,
@@ -585,13 +594,13 @@ def execute_single_subject_decoding(
                                 ap_centric_avg_item["average_scores_1d"], dtype=bool) if ap_centric_avg_item["average_scores_1d"] is not None else np.array([], dtype=bool)
                             sig_clu_objects_centric = []
                             if clu_obj_centric and p_clu_centric is not None and combined_mask_clu_centric.size > 0:
-                                # MODIFIED
+                                
                                 for i_cc, c_mask_item_centric in enumerate(clu_obj_centric):
                                     if p_clu_centric[i_cc] < 0.05:
                                         sig_clu_objects_centric.append(
-                                            c_mask_item_centric)  # MODIFIED
+                                            c_mask_item_centric)  
                                         combined_mask_clu_centric = np.logical_or(
-                                            combined_mask_clu_centric, c_mask_item_centric)  # MODIFIED
+                                            combined_mask_clu_centric, c_mask_item_centric)  
                             ap_centric_avg_item["cluster_sig_data"] = {"mask": combined_mask_clu_centric, "cluster_objects": sig_clu_objects_centric,
                                                                        "p_values_all_clusters": p_clu_centric, "method": f"CluPerm on stack for {anchor_ap_display_name}"}
                             logger_run_one.info("  Anchor-centric avg for %s from %d curves. Found: %s",
