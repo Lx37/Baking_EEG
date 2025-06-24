@@ -8,7 +8,11 @@
 # - Inter-family comparisons: AP_family vs AP_family
 # - Statistical testing with FDR and cluster-based permutation tests
 # - Optional Temporal Generalization Matrix (TGM) computation
+import sys
+import os
 
+# Ajouter le répertoire parent (racine du projet) au chemin Python
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from config.decoding_config import (
     CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
     USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
@@ -35,8 +39,7 @@ from utils.utils import (
 )
 from utils.vizualization_utils_PP import create_subject_decoding_dashboard_plots
 from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
-import sys
-import os
+
 import logging
 import time
 import argparse
@@ -52,7 +55,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from mne.decoding import CSP
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-
 
 
 # --- Configuration du Logging ---
@@ -215,11 +217,35 @@ def execute_single_subject_decoding(
                 "Epochs object loading failed for %s. Aborting subject.", subject_identifier)
             return subject_results
 
+        # Check if we have any valid data before proceeding
+        total_valid_epochs = sum(
+            arr.shape[0] for arr in returned_data_dict.values()
+            if hasattr(arr, 'shape') and arr.ndim == 3 and arr.shape[0] > 0
+        )
+        
+        if total_valid_epochs == 0:
+            logger_run_one.error(
+                "No valid epoch data loaded for subject %s. "
+                "Available conditions: %s. Aborting analysis.",
+                subject_identifier, list(returned_data_dict.keys())
+            )
+            # Log what was actually loaded for debugging
+            for condition, data in returned_data_dict.items():
+                if hasattr(data, 'shape'):
+                    logger_run_one.info("  %s: shape %s", condition, data.shape)
+                else:
+                    logger_run_one.info("  %s: %s", condition, type(data))
+            return subject_results
+        
+        logger_run_one.info(
+            "Successfully loaded %d total epochs across all conditions for %s",
+            total_valid_epochs, subject_identifier
+        )
+
         # Store protocol information and epoch times
         subject_results["detected_protocol"] = detected_protocol
         subject_results["epochs_time_points"] = epochs_object.times.copy()
 
-    
         current_fixed_params_for_clf_dict = None
         current_param_grid_for_clf_dict = None
 
@@ -266,35 +292,10 @@ def execute_single_subject_decoding(
             else:
                 min_samples_main = np.min(np.bincount(main_labels_encoded))
                 num_cv_splits_main = min(
-                    10, min_samples_main) if min_samples_main >= 2 else 0
-                if num_cv_splits_main < 2:
-                    logger_run_one.error(
-                        "Subj %s: Not enough samples for CV in main decoding (%d splits). Skipping.", subject_identifier, num_cv_splits_main)
-                    # Retourner les résultats actuels au lieu de continuer
-                    return subject_results
-                else:
-                    cv_splitter_main = StratifiedKFold(
-                        n_splits=num_cv_splits_main, shuffle=True, random_state=42)
-                    main_decoding_output = run_temporal_decoding_analysis(
-                        epochs_data=main_protocol_data, target_labels=main_protocol_labels_orig,
-                        classifier_model_type=classifier_type,
-                        use_grid_search=use_grid_search_for_subject,
-                        use_csp_for_temporal_pipelines=use_csp_for_temporal_subject,
-                        use_anova_fs_for_temporal_pipelines=use_anova_fs_for_temporal_subject,
-                        # Passer le dict complet (filtrage interne à la fonction)
-                        param_grid_config=current_param_grid_for_clf_dict,
-                        cv_folds_for_gridsearch=cv_folds_for_gs_subject,
-                        # Passer le dict spécifique au clf
-                        fixed_classifier_params=current_fixed_params_for_clf_dict,
-                        cross_validation_splitter=cv_splitter_main,
-                        n_jobs_external=actual_n_jobs,  # Utiliser la variable convertie
-                        compute_intra_fold_stats=compute_intra_subject_stats_flag,
-                        n_permutations_for_intra_fold_clusters=n_perms_for_intra_subject_clusters,
-                        compute_temporal_generalization_matrix=COMPUTE_TGM_FOR_MAIN_COMPARISON,
                         chance_level=CHANCE_LEVEL_AUC,
                         cluster_threshold_config_intra_fold=cluster_threshold_config_intra_fold
                     )
-                    subject_results.update({
+                subject_results.update({
                         "pp_ap_main_pred_probas_global": main_decoding_output[0],
                         "pp_ap_main_pred_labels_global": main_decoding_output[1],
                         "pp_ap_main_cv_global_scores": main_decoding_output[2],
@@ -307,10 +308,10 @@ def execute_single_subject_decoding(
                         "pp_ap_main_tgm_fdr": main_decoding_output[9],
                         "pp_ap_main_tgm_all_folds": main_decoding_output[11],
                     })
-                    mean_auc_val = np.nanmean(
+                mean_auc_val = np.nanmean(
                         main_decoding_output[2]) if main_decoding_output[2] is not None and main_decoding_output[2].size > 0 else np.nan
-                    subject_results["pp_ap_main_mean_auc_global"] = mean_auc_val
-                    logger_run_one.info("Main Decoding for %s DONE. Mean Global AUC: %.3f",
+                subject_results["pp_ap_main_mean_auc_global"] = mean_auc_val
+                logger_run_one.info("Main Decoding for %s DONE. Mean Global AUC: %.3f",
                                         subject_identifier, mean_auc_val if pd.notna(mean_auc_val) else -1)
         else:
             logger_run_one.warning(
@@ -353,7 +354,7 @@ def execute_single_subject_decoding(
                             min_samples_task_spec = np.min(
                                 np.bincount(task_labels_specific_enc))
                             num_cv_task_spec = min(
-                                5, min_samples_task_spec) if min_samples_task_spec >= 2 else 0
+                                10, min_samples_task_spec) if min_samples_task_spec >= 2 else 0
                             if num_cv_task_spec < 2:
                                 logger_run_one.warning(
                                     "Subj %s, Task '%s': Not enough samples for CV (%d splits). Skipping.", subject_identifier, comparison_name_specific, num_cv_task_spec)
@@ -437,7 +438,7 @@ def execute_single_subject_decoding(
                             sig_clu_objects_stack.append(
                                 c_mask_item_stack)  # MODIFIED
                             combined_mask_clu_stack = np.logical_or(
-                                combined_mask_clu_stack, c_mask_item_stack)  # MODIFIED
+                                combined_mask_clu_stack, c_mask_item_stack)  
                 subject_results["pp_ap_mean_specific_cluster"] = {"mask": combined_mask_clu_stack, "cluster_objects": sig_clu_objects_stack,
                                                                   "p_values_all_clusters": p_clu_stack, "method": f"CluPerm on stack of {len(valid_mean_scores_for_stack)} specific curves"}
                 logger_run_one.info(
@@ -472,7 +473,7 @@ def execute_single_subject_decoding(
                         min_samples_ap_vs_ap = np.min(
                             np.bincount(task_labels_ap_vs_ap_enc))
                         num_cv_ap_vs_ap = min(
-                            5, min_samples_ap_vs_ap) if min_samples_ap_vs_ap >= 2 else 0
+                            10, min_samples_ap_vs_ap) if min_samples_ap_vs_ap >= 2 else 0
                         if num_cv_ap_vs_ap < 2:
                             logger_run_one.warning(
                                 "Subj %s, Task '%s': Not enough samples for CV (%d splits). Skipping.", subject_identifier, comparison_name_ap_vs_ap, num_cv_ap_vs_ap)
@@ -680,7 +681,7 @@ def execute_single_subject_decoding(
                     "subject_identifier": subject_identifier,
                     "group_identifier": group_affiliation,
                     "output_directory_path": subject_results_dir,
-                    "CHANCE_LEVEL_AUC": CHANCE_LEVEL_AUC,  # Constante importée
+                    "CHANCE_LEVEL_AUC": CHANCE_LEVEL_AUC, 
                     "protocol_type": "PP_AP",  # Ou un autre identifiant si vous généralisez
 
                     "main_original_labels_array": subject_results.get("pp_ap_main_original_labels"),

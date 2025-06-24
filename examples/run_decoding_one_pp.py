@@ -295,7 +295,7 @@ def execute_single_subject_decoding(
                         chance_level=CHANCE_LEVEL_AUC,
                         cluster_threshold_config_intra_fold=cluster_threshold_config_intra_fold
                     )
-                    subject_results.update({
+                subject_results.update({
                         "pp_ap_main_pred_probas_global": main_decoding_output[0],
                         "pp_ap_main_pred_labels_global": main_decoding_output[1],
                         "pp_ap_main_cv_global_scores": main_decoding_output[2],
@@ -308,10 +308,10 @@ def execute_single_subject_decoding(
                         "pp_ap_main_tgm_fdr": main_decoding_output[9],
                         "pp_ap_main_tgm_all_folds": main_decoding_output[11],
                     })
-                    mean_auc_val = np.nanmean(
+                mean_auc_val = np.nanmean(
                         main_decoding_output[2]) if main_decoding_output[2] is not None and main_decoding_output[2].size > 0 else np.nan
-                    subject_results["pp_ap_main_mean_auc_global"] = mean_auc_val
-                    logger_run_one.info("Main Decoding for %s DONE. Mean Global AUC: %.3f",
+                subject_results["pp_ap_main_mean_auc_global"] = mean_auc_val
+                logger_run_one.info("Main Decoding for %s DONE. Mean Global AUC: %.3f",
                                         subject_identifier, mean_auc_val if pd.notna(mean_auc_val) else -1)
         else:
             logger_run_one.warning(
