@@ -489,7 +489,8 @@ def run_temporal_decoding_analysis(
     if compute_intra_fold_stats and scores_1d_all_folds.shape[0] > 1 and n_time_points > 0:
         if not np.all(np.isnan(scores_1d_all_folds)):
             _, fdr_mask_1d, fdr_p_1d = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
-                scores_1d_all_folds, chance_level, alternative_hypothesis="greater"
+                scores_1d_all_folds, chance_level, alternative_hypothesis="greater",
+                statistical_test_type="wilcoxon", random_seed=random_state
             )
             fdr_1d_data = {"mask": fdr_mask_1d,
                 "p_values": fdr_p_1d, "method": "FDR_CV_Folds_1D"}
@@ -501,7 +502,7 @@ def run_temporal_decoding_analysis(
             cluster_threshold_config_intra_fold, 
             "greater", 
             INTERNAL_N_JOBS_FOR_MNE_DECODING,
-            stat_function_to_use="_custom_stat_function_ttest_1samp",
+            stat_function_to_use="wilcoxon",
             random_seed=random_state,
         )
             combined_mask_clu1d = np.zeros(n_time_points, dtype=bool)
@@ -522,7 +523,8 @@ def run_temporal_decoding_analysis(
                 flat_tgm_scores = tgm_all_folds.reshape(n_f, n_tr * n_te)
                 _, fdr_mask_tgm_flat, pvals_tgm_flat = \
                     bEEG_stats.perform_pointwise_fdr_correction_on_scores(
-                        flat_tgm_scores, chance_level, alternative_hypothesis="greater"
+                        flat_tgm_scores, chance_level, alternative_hypothesis="greater",
+                        statistical_test_type="wilcoxon"
                     )
                 fdr_tgm_data = {
                     "mask": (fdr_mask_tgm_flat.reshape(n_tr, n_te)

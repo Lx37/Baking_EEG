@@ -26,6 +26,14 @@ from typing import Dict, List, Optional, Any
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Import stats functions for group-level statistical tests
+sys.path.append('.')
+from utils.stats_utils import (
+    perform_pointwise_fdr_correction_on_scores,
+    perform_cluster_permutation_test,
+    compare_global_scores_to_chance
+)
+
 # Suppress warnings for cleaner output
 warnings.filterwarnings('ignore')
 
@@ -358,6 +366,99 @@ def calculate_basic_statistics(scores: np.ndarray, times: np.ndarray,
     peak_latencies = find_peak_latencies(
         group_mean, times, np.zeros(n_timepoints, dtype=bool))
 
+    # === GROUP-LEVEL STATISTICAL TESTS ===
+    # Only perform group-level stats if we have multiple subjects
+    group_fdr_results = None
+    group_cluster_results = None
+    group_global_test_results = None
+    
+    if n_subjects >= 2:
+        logger.info(f"Performing group-level statistical tests for {n_subjects} subjects")
+        
+        try:
+            # 1. FDR correction on temporal scores
+            logger.info("Computing group FDR correction...")
+            fdr_stats, fdr_mask_group, fdr_pvals = perform_pointwise_fdr_correction_on_scores(
+                scores,  # shape: (n_subjects, n_timepoints)
+                chance_level=CHANCE_LEVEL,
+                alpha_significance_level=FDR_ALPHA,
+                statistical_test_type="wilcoxon"
+            )
+            
+            group_fdr_results = {
+                'fdr_stats': fdr_stats,
+                'fdr_mask': fdr_mask_group,
+                'fdr_pvals': fdr_pvals,
+                'n_significant_timepoints': np.sum(fdr_mask_group)
+            }
+            
+            logger.info(f"FDR: {np.sum(fdr_mask_group)}/{len(fdr_mask_group)} timepoints significant")
+            
+        except Exception as e:
+            logger.error(f"Error in group FDR correction: {e}")
+            group_fdr_results = None
+        
+        try:
+            # 2. Cluster-based permutation test
+            logger.info("Computing group cluster permutation test...")
+            cluster_stats, cluster_masks, cluster_pvals, h0_dist = perform_cluster_permutation_test(
+                scores,  # shape: (n_subjects, n_timepoints)
+                chance_level=CHANCE_LEVEL,
+                n_permutations=N_PERMUTATIONS,
+                cluster_threshold_config=CLUSTER_THRESHOLD,
+                stat_function_to_use="wilcoxon"
+            )
+            
+            # Create a combined cluster mask (any significant cluster)
+            combined_cluster_mask = np.zeros(n_timepoints, dtype=bool)
+            n_sig_clusters = 0
+            if cluster_masks and cluster_pvals is not None:
+                for i, (mask, pval) in enumerate(zip(cluster_masks, cluster_pvals)):
+                    if pval < 0.05:
+                        combined_cluster_mask |= mask
+                        n_sig_clusters += 1
+            
+            group_cluster_results = {
+                'cluster_stats': cluster_stats,
+                'cluster_masks': cluster_masks,
+                'cluster_pvals': cluster_pvals,
+                'combined_cluster_mask': combined_cluster_mask,
+                'n_significant_clusters': n_sig_clusters,
+                'h0_distribution': h0_dist
+            }
+            
+            logger.info(f"Cluster: {n_sig_clusters} significant clusters found, "
+                       f"{np.sum(combined_cluster_mask)}/{len(combined_cluster_mask)} timepoints in clusters")
+            
+        except Exception as e:
+            logger.error(f"Error in group cluster permutation: {e}")
+            group_cluster_results = None
+        
+        try:
+            # 3. Global score comparison
+            logger.info("Computing global score significance test...")
+            global_stat, global_pval = compare_global_scores_to_chance(
+                subject_means,  # 1D array of mean scores per subject
+                chance_level=CHANCE_LEVEL,
+                statistical_test_type="wilcoxon"
+            )
+            
+            group_global_test_results = {
+                'global_statistic': global_stat,
+                'global_pvalue': global_pval,
+                'is_significant': global_pval < 0.05 if global_pval is not None else False
+            }
+            
+            logger.info(f"Global test: statistic={global_stat:.3f}, p={global_pval:.4f}, "
+                       f"significant={'Yes' if global_pval < 0.05 else 'No'}")
+            
+        except Exception as e:
+            logger.error(f"Error in global score comparison: {e}")
+            group_global_test_results = None
+    
+    else:
+        logger.info(f"Skipping group-level statistical tests (only {n_subjects} subject(s))")
+
     return {
         'n_subjects': n_subjects,
         'subject_ids': subject_ids,
@@ -382,6 +483,11 @@ def calculate_basic_statistics(scores: np.ndarray, times: np.ndarray,
         # Specific FDR and cluster masks
         'specific_fdr_masks': specific_fdr_masks if specific_fdr_masks is not None else np.zeros_like(scores, dtype=bool),
         'specific_cluster_masks': specific_cluster_masks if specific_cluster_masks is not None else np.zeros_like(scores, dtype=bool),
+        
+        # === NEW: GROUP-LEVEL STATISTICAL RESULTS ===
+        'group_fdr_results': group_fdr_results,
+        'group_cluster_results': group_cluster_results,
+        'group_global_test_results': group_global_test_results,
     }
 
 
@@ -551,12 +657,50 @@ def create_individual_group_plot(group_stats: Dict[str, Any], group_name: str,
     ax.axvline(x=0, color='red', linestyle='--', linewidth=2,
                alpha=0.8, label='Stimulus Onset', zorder=4)
 
+    # === AJOUTER LES RÉSULTATS STATISTIQUES DE GROUPE ===
+    # FDR significance regions
+    if group_stats.get('group_fdr_results') and group_stats['group_fdr_results']['fdr_mask'] is not None:
+        fdr_mask = group_stats['group_fdr_results']['fdr_mask']
+        n_fdr_sig = group_stats['group_fdr_results']['n_significant_timepoints']
+        
+        if np.any(fdr_mask):
+            # Highlight FDR significant regions
+            for i, is_sig in enumerate(fdr_mask):
+                if is_sig:
+                    ax.axvspan(times[i] - 0.005, times[i] + 0.005, 
+                              alpha=0.6, color='gold', zorder=5)
+            
+            logger.info(f"Added FDR significance overlay: {n_fdr_sig} significant timepoints")
+
+    # Cluster significance regions
+    if group_stats.get('group_cluster_results') and group_stats['group_cluster_results']['combined_cluster_mask'] is not None:
+        cluster_mask = group_stats['group_cluster_results']['combined_cluster_mask']
+        n_cluster_sig = group_stats['group_cluster_results']['n_significant_clusters']
+        
+        if np.any(cluster_mask):
+            # Highlight cluster significant regions with different style
+            sig_times = times[cluster_mask]
+            ax.scatter(sig_times, [0.37] * len(sig_times), 
+                      marker='|', s=50, color='purple', alpha=0.8, zorder=6,
+                      label=f'Cluster Sig. (n={n_cluster_sig})')
+            
+            logger.info(f"Added cluster significance overlay: {n_cluster_sig} significant clusters")
+
     # Configuration des axes - Extension temporelle complète
     ax.set_xlabel('Temps (s)', fontsize=14)
     ax.set_ylabel('Précision de Décodage (AUC)', fontsize=14)
-    ax.set_title(f'{group_name} - Décodage Temporel (n={n_subjects})\n'
-                 f'AUC Moyenne: {group_stats["global_auc"]:.3f} ± {np.std(group_stats["subject_means"]):.3f}',
-                 fontsize=16, fontweight='bold')
+    
+    # Enhanced title with statistical results
+    title_text = f'{group_name} - Décodage Temporel (n={n_subjects})\n'
+    title_text += f'AUC Moyenne: {group_stats["global_auc"]:.3f} ± {np.std(group_stats["subject_means"]):.3f}'
+    
+    # Add global statistical test result to title
+    if group_stats.get('group_global_test_results'):
+        global_results = group_stats['group_global_test_results']
+        if global_results['global_pvalue'] is not None:
+            title_text += f' (p={global_results["global_pvalue"]:.4f})'
+    
+    ax.set_title(title_text, fontsize=16, fontweight='bold')
 
     ax.set_xlim([-0.2, 1.0])  
     ax.set_ylim([0.35, 0.85])
@@ -582,9 +726,9 @@ def create_three_group_temporal_comparison(group_stats: Dict[str, Dict[str, Any]
                                            three_group_results: Dict[str, Any],
                                            output_dir: str, protocol: str) -> str:
     """
-    Créer une comparaison simple des 3 groupes avec SEM seulement - sans tests statistiques.
+    Créer une comparaison des 3 groupes avec SEM et résultats statistiques de groupe.
     """
-    fig, ax = plt.subplots(1, 1, figsize=(16, 8))
+    fig, ax = plt.subplots(1, 1, figsize=(16, 10))
 
     group_names = three_group_results['group_names']
     times = group_stats[group_names[0]]['times']
@@ -611,27 +755,73 @@ def create_three_group_temporal_comparison(group_stats: Dict[str, Dict[str, Any]
         ax.plot(times, stats['group_mean'], color=color, linewidth=3,
                  label=f'{group_name} (n={stats["n_subjects"]})', zorder=2)
 
+        # === AJOUTER LES RÉSULTATS STATISTIQUES POUR CHAQUE GROUPE ===
+        # FDR significance pour ce groupe
+        if stats.get('group_fdr_results') and stats['group_fdr_results']['fdr_mask'] is not None:
+            fdr_mask = stats['group_fdr_results']['fdr_mask']
+            if np.any(fdr_mask):
+                # Utiliser une position Y légèrement différente pour chaque groupe
+                y_positions = {'DELIRIUM +': 0.575, 'DELIRIUM -': 0.565, 'controls': 0.555}
+                y_pos = y_positions.get(group_name, 0.555)
+                
+                sig_times = times[fdr_mask]
+                ax.scatter(sig_times, [y_pos] * len(sig_times), 
+                          marker='s', s=15, color=color, alpha=0.8, zorder=6)
+
+        # Cluster significance pour ce groupe
+        if stats.get('group_cluster_results') and stats['group_cluster_results']['combined_cluster_mask'] is not None:
+            cluster_mask = stats['group_cluster_results']['combined_cluster_mask']
+            if np.any(cluster_mask):
+                # Position Y légèrement en dessous des marqueurs FDR
+                y_positions = {'DELIRIUM +': 0.410, 'DELIRIUM -': 0.415, 'controls': 0.420}
+                y_pos = y_positions.get(group_name, 0.410)
+                
+                sig_times = times[cluster_mask]
+                ax.scatter(sig_times, [y_pos] * len(sig_times), 
+                          marker='|', s=30, color=color, alpha=0.8, zorder=6)
+
     # Ligne de chance
     ax.axhline(y=CHANCE_LEVEL, color='black', linestyle='--', linewidth=2,
                 alpha=0.7, label='Niveau de Chance', zorder=2)
 
     ax.set_xlabel('Temps (s)', fontsize=14)
     ax.set_ylabel('Précision de Décodage (AUC)', fontsize=14)
-    ax.set_title(f'Comparaison Temporelle des Trois Groupes (Protocole {protocol})',
+    ax.set_title(f'Comparaison Temporelle des Trois Groupes avec Tests Statistiques\nProtocole {protocol}',
                   fontsize=16, fontweight='bold')
 
     ax.set_xlim([-0.2, 1.0])
     ax.set_ylim([0.40, 0.60])
     ax.grid(True, alpha=0.3)
-    ax.legend(fontsize=12, loc='upper right')
+    ax.legend(fontsize=11, loc='upper right')
 
-    # Ajouter statistiques dans un encadré
-    stats_text = "Moyennes AUC globales:\n"
+    # === STATISTIQUES DÉTAILLÉES DANS L'ENCADRÉ ===
+    stats_text = "Moyennes AUC globales et tests statistiques:\n"
     for i, group_name in enumerate(group_names):
         mean_auc = three_group_results['global_means'][i]
-        stats_text += f"{group_name}: {mean_auc:.3f}\n"
+        stats_text += f"{group_name}: {mean_auc:.3f}"
+        
+        # Ajouter les résultats des tests globaux
+        if group_stats[group_name].get('group_global_test_results'):
+            global_pval = group_stats[group_name]['group_global_test_results']['global_pvalue']
+            if global_pval is not None:
+                sig_marker = "*" if global_pval < 0.05 else ""
+                stats_text += f" (p={global_pval:.3f}{sig_marker})"
+        
+        # Ajouter les counts des tests FDR et cluster
+        if group_stats[group_name].get('group_fdr_results'):
+            n_fdr = group_stats[group_name]['group_fdr_results']['n_significant_timepoints']
+            stats_text += f"\n  FDR: {n_fdr} points sig."
+        
+        if group_stats[group_name].get('group_cluster_results'):
+            n_clusters = group_stats[group_name]['group_cluster_results']['n_significant_clusters']
+            stats_text += f" | Clusters: {n_clusters}"
+        
+        stats_text += "\n"
 
-    ax.text(0.02, 0.98, stats_text, transform=ax.transAxes, fontsize=10,
+    # Ajouter légende pour les marqueurs statistiques
+    stats_text += "\nMarqueurs: □ = FDR sig., | = Cluster sig.\n* = p < 0.05"
+
+    ax.text(0.02, 0.98, stats_text, transform=ax.transAxes, fontsize=9,
              verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.9))
 
     plt.tight_layout()
@@ -1016,8 +1206,39 @@ def generate_comprehensive_report(all_results: Dict[str, Any], output_dir: str) 
                     f"  Peak AUC: {stats['peak_latencies']['global_peak_value']:.4f} ")
                 f.write(
                     f"at {stats['peak_latencies']['global_peak_time']:.3f}s\n")
-                f.write(
-                    f"  FDR significant points: {np.sum(stats['fdr_mask'])}\n")
+                
+                # === NOUVEAUX RÉSULTATS STATISTIQUES DE GROUPE ===
+                # Global significance test
+                if stats.get('group_global_test_results'):
+                    global_results = stats['group_global_test_results']
+                    f.write(f"  Global significance test (Wilcoxon):\n")
+                    f.write(f"    Statistic: {global_results['global_statistic']:.4f}\n")
+                    f.write(f"    P-value: {global_results['global_pvalue']:.6f}\n")
+                    f.write(f"    Significant: {'Yes' if global_results['is_significant'] else 'No'}\n")
+                
+                # FDR results
+                if stats.get('group_fdr_results'):
+                    fdr_results = stats['group_fdr_results']
+                    f.write(f"  FDR correction results (Wilcoxon):\n")
+                    f.write(f"    Significant timepoints: {fdr_results['n_significant_timepoints']}\n")
+                    f.write(f"    Total timepoints tested: {len(fdr_results['fdr_mask'])}\n")
+                    f.write(f"    Proportion significant: {fdr_results['n_significant_timepoints']/len(fdr_results['fdr_mask']):.3f}\n")
+                
+                # Cluster results
+                if stats.get('group_cluster_results'):
+                    cluster_results = stats['group_cluster_results']
+                    f.write(f"  Cluster permutation results (Wilcoxon):\n")
+                    f.write(f"    Significant clusters: {cluster_results['n_significant_clusters']}\n")
+                    f.write(f"    Timepoints in significant clusters: {np.sum(cluster_results['combined_cluster_mask'])}\n")
+                    
+                    if cluster_results['cluster_pvals'] is not None and len(cluster_results['cluster_pvals']) > 0:
+                        f.write(f"    Cluster p-values: ")
+                        for i, pval in enumerate(cluster_results['cluster_pvals']):
+                            f.write(f"C{i+1}={pval:.4f} ")
+                        f.write("\n")
+                
+                # Individual subject FDR (existing)
+                f.write(f"  Individual subject FDR significant points: {np.sum(stats['fdr_mask'])}\n")
                 f.write(
                     f"  Significant time windows: {stats['peak_latencies']['n_significant_windows']}\n")
 

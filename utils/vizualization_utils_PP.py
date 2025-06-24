@@ -656,6 +656,7 @@ def create_subject_decoding_dashboard_plots(
     group_identifier,
     output_directory_path=None,
     protocol_type="PP_AP",  # Pour la logique conditionnelle et les titres
+    n_folds=None,  # Number of CV folds, computed dynamically if None
 
     # Arguments spécifiques au protocole PP_AP (seront None si protocol_type != "PP_AP")
     # Utilisé pour Page 4 (PP_AP: PP_spec vs AP_fam)
@@ -677,6 +678,18 @@ def create_subject_decoding_dashboard_plots(
         "Generating dashboard for Subject: %s (Group: %s, Classifier: %s, Protocol: %s)",
         subject_identifier, group_identifier, classifier_name_for_title, protocol_type
     )
+
+    # Dynamic calculation of n_folds if not provided
+    if n_folds is None:
+        if main_temporal_scores_1d_all_folds is not None and main_temporal_scores_1d_all_folds.ndim == 2:
+            n_folds = main_temporal_scores_1d_all_folds.shape[0]
+            logger_viz_utils.debug(f"Computed n_folds dynamically: {n_folds}")
+        elif main_cross_validation_global_scores is not None and hasattr(main_cross_validation_global_scores, '__len__'):
+            n_folds = len(main_cross_validation_global_scores)
+            logger_viz_utils.debug(f"Computed n_folds from CV scores: {n_folds}")
+        else:
+            n_folds = 10  # Default fallback value
+            logger_viz_utils.warning(f"Could not determine n_folds from data, using default: {n_folds}")
 
     if not isinstance(subject_identifier, str) or not subject_identifier:
         logger_viz_utils.error("Subject ID is required for dashboard.")

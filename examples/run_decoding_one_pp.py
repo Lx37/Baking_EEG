@@ -299,10 +299,13 @@ def execute_single_subject_decoding(
                         use_csp_for_temporal_subject, use_anova_fs_for_temporal_subject,
                         current_param_grid_for_clf_dict, current_fixed_params_for_clf_dict,
                         cv_folds_for_gs_subject, num_cv_splits_main,
-                        compute_intra_subject_stats_flag, n_perms_for_intra_subject_clusters,
-                        actual_n_jobs, enable_verbose_logging,
-                        compute_tgm_flag if compute_tgm_flag is not None else COMPUTE_TGM_FOR_MAIN_COMPARISON,
+                        trial_sample_weights="auto",
+                        n_jobs_external=actual_n_jobs,
+                        group_labels_for_cv=None,
+                        compute_intra_fold_stats=compute_intra_subject_stats_flag,
                         chance_level=CHANCE_LEVEL_AUC,
+                        n_permutations_for_intra_fold_clusters=n_perms_for_intra_subject_clusters,
+                        compute_temporal_generalization_matrix=compute_tgm_flag if compute_tgm_flag is not None else COMPUTE_TGM_FOR_MAIN_COMPARISON,
                         cluster_threshold_config_intra_fold=cluster_threshold_config_intra_fold
                     )
                 subject_results.update({

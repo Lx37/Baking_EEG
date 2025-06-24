@@ -54,6 +54,82 @@ def _custom_stat_function_ttest_1samp(
     return t_values_array
 
 
+def _custom_stat_function_wilcoxon_1samp(
+    data_array,
+    sigma_val=0.0,
+    method_mne="relative"
+):
+    """
+    Custom Wilcoxon signed-rank test statistics function compatible with MNE permutation tests.
+
+    This function applies Wilcoxon signed-rank test to each feature (time point, voxel, etc.)
+    for use in cluster-based permutation testing.
+
+    Args:
+        data_array (np.ndarray): Input data array of shape 
+                                 (n_observations, n_features...)
+                                 MNE expects the first dimension to be observations.
+        sigma_val (float): Value to test against (typically 0 for centered data).
+        method_mne (str): Unused for Wilcoxon, kept for compatibility.
+
+    Returns:
+        np.ndarray: Calculated W-statistics (converted to pseudo t-values), 
+                    with NaNs replaced by 0 for robust clustering.
+    """
+    
+    if data_array.ndim == 1:
+        # Single feature case
+        try:
+            if np.all(np.isclose(data_array - sigma_val, 0)):
+                return np.array([0.0])
+            else:
+                w_stat, _ = scipy.stats.wilcoxon(
+                    data_array - sigma_val, 
+                    zero_method="wilcox",
+                    alternative="two-sided"
+                )
+                # Convert W statistic to pseudo t-value for clustering
+                # Use sign of median to determine direction
+                median_diff = np.median(data_array - sigma_val)
+                pseudo_t = np.sign(median_diff) * np.sqrt(w_stat)
+                return np.array([pseudo_t])
+        except (ValueError, AttributeError):
+            return np.array([0.0])
+    
+    else:
+        # Multiple features case
+        n_features = data_array.shape[1] if data_array.ndim == 2 else np.prod(data_array.shape[1:])
+        data_reshaped = data_array.reshape(data_array.shape[0], -1)
+        
+        w_values = np.zeros(n_features)
+        
+        for i in range(n_features):
+            feature_data = data_reshaped[:, i] - sigma_val
+            
+            try:
+                if np.all(np.isclose(feature_data, 0)) or np.any(np.isnan(feature_data)):
+                    w_values[i] = 0.0
+                else:
+                    w_stat, _ = scipy.stats.wilcoxon(
+                        feature_data, 
+                        zero_method="wilcox",
+                        alternative="two-sided"
+                    )
+                    # Convert W statistic to pseudo t-value for clustering
+                    median_diff = np.median(feature_data)
+                    w_values[i] = np.sign(median_diff) * np.sqrt(w_stat)
+            except (ValueError, AttributeError):
+                w_values[i] = 0.0
+        
+        # Reshape back to original feature dimensions if needed
+        if data_array.ndim > 2:
+            w_values = w_values.reshape(data_array.shape[1:])
+    
+    # Replace NaNs with 0 for robust clustering
+    w_values[np.isnan(w_values)] = 0.0
+    return w_values
+
+
 def perform_cluster_permutation_test(
     input_data_array,
     chance_level=0.5,
@@ -61,7 +137,7 @@ def perform_cluster_permutation_test(
     cluster_threshold_config=None,  # e.g., TFCE dict or t-stat float
     alternative_hypothesis="greater",  # 'greater', 'less', or 'two-sided'
     n_jobs=1,  # Number of jobs for MNE parallelization
-    stat_function_to_use="_custom_stat_function_ttest_1samp",  # 'auto' for MNE default, or custom function
+    stat_function_to_use="wilcoxon",  # 'ttest', 'wilcoxon', or 'auto' for MNE default
     random_seed=None,  # Seed for reproducibility
     connectivity_matrix=None,  # Connectivity for spatial clustering
     tfr_like_input=False  # Hint if input is (n_obs, n_freqs, n_times)
@@ -173,10 +249,15 @@ def perform_cluster_permutation_test(
 
     # === STATISTICAL FUNCTION CONFIGURATION ===
     effective_stat_function = None
-    if stat_function_to_use == "_custom_stat_function_ttest_1samp":
+    if stat_function_to_use == "ttest" or stat_function_to_use == "_custom_stat_function_ttest_1samp":
         effective_stat_function = _custom_stat_function_ttest_1samp
+        logger_stats_decoding.info("  Using t-test based statistical function.")
+    elif stat_function_to_use == "wilcoxon" or stat_function_to_use == "_custom_stat_function_wilcoxon_1samp":
+        effective_stat_function = _custom_stat_function_wilcoxon_1samp
+        logger_stats_decoding.info("  Using Wilcoxon based statistical function.")
     elif callable(stat_function_to_use) and stat_function_to_use != "auto":
         effective_stat_function = stat_function_to_use
+        logger_stats_decoding.info(f"  Using provided custom stat_fun: {stat_function_to_use.__name__}")
     # If 'auto' or None, MNE's default will be used.
 
     # === PREPARE ARGUMENTS FOR MNE FUNCTION ===
@@ -333,9 +414,10 @@ def perform_pointwise_fdr_correction_on_scores(
     alpha_significance_level=0.05,
     fdr_correction_method="indep",  # Benjamini-Hochberg
     alternative_hypothesis="greater",
+    statistical_test_type="wilcoxon",  # 'ttest' or 'wilcoxon'
 ):
     """
-    Performs a pointwise one-sample t-test for each feature against a chance 
+    Performs a pointwise statistical test for each feature against a chance 
     level, followed by FDR correction on the resulting p-values.
 
     This function is useful for identifying time points or spatial locations 
@@ -353,12 +435,13 @@ def perform_pointwise_fdr_correction_on_scores(
                                     or 'negcorr' (Benjamini-Yekutieli for 
                                     negative correlations).
         alternative_hypothesis (str): 'two-sided', 'greater', or 'less' for 
-                                     scipy.stats.ttest_1samp.
+                                     statistical tests.
+        statistical_test_type (str): 'ttest' (parametric) or 'wilcoxon' (non-parametric).
 
     Returns:
-        tuple: (observed_t_values, fdr_significant_mask, fdr_corrected_p_values)
-            - observed_t_values (np.ndarray): T-values, shaped like the 
-                                             original features.
+        tuple: (observed_test_stats, fdr_significant_mask, fdr_corrected_p_values)
+            - observed_test_stats (np.ndarray): Test statistics, shaped like the 
+                                               original features.
             - fdr_significant_mask (np.ndarray): Boolean mask of significance 
                                                 after FDR.
             - fdr_corrected_p_values (np.ndarray): FDR-corrected p-values.
@@ -407,28 +490,91 @@ def perform_pointwise_fdr_correction_on_scores(
 
     # === PARAMETER LOGGING ===
     logger_stats_decoding.info(
-        f"Performing pointwise t-test with FDR correction. "
-        f"Data shape for t-test (obs, features if any): {data_for_ttest_fdr.shape}"
+        f"Performing pointwise {statistical_test_type} with FDR correction. "
+        f"Data shape for test (obs, features if any): {data_for_ttest_fdr.shape}"
     )
     logger_stats_decoding.info(
         f"  Parameters: chance={chance_level}, alpha={alpha_significance_level}, "
-        f"FDR_method='{fdr_correction_method}', alternative='{alternative_hypothesis}'"
-    )
+        f"test_type='{statistical_test_type}', FDR_method='{fdr_correction_method}', "
+        f"alternative='{alternative_hypothesis}'"
+    )    # === EXECUTE STATISTICAL TESTS ===
+    if statistical_test_type.lower() == "ttest":
+        # T-test = (x̄ - μ₀) / (s / √n)  
+        # x̄ = moyenne de l'échantillon (moyenne des scores AUC observés)
+        # μ₀ = moyenne de population sous H₀ (chance_level = 0.5)
+        # s = écart-type de l'échantillon
+        # n = taille de l'échantillon (nombre de folds CV)
+        
+        observed_test_stats_flat, uncorrected_p_values_flat = scipy.stats.ttest_1samp(
+            data_for_ttest_fdr,
+            popmean=chance_level,
+            axis=0,  # Perform test along the observation axis
+            nan_policy="propagate",  # If a feature column has NaNs, its result will be NaN
+            alternative=alternative_hypothesis,
+        )
+        
+    elif statistical_test_type.lower() == "wilcoxon":
+        # Wilcoxon signed-rank test
+        observed_test_stats_flat = []
+        uncorrected_p_values_flat = []
+        
+        # Apply Wilcoxon to each feature (column)
+        if data_for_ttest_fdr.ndim == 1:
+            # Single feature
+            differences = data_for_ttest_fdr - chance_level
+            try:
+                if np.all(np.isclose(differences, 0)):
+                    stat, p_val = 0.0, 1.0
+                else:
+                    stat, p_val = scipy.stats.wilcoxon(
+                        differences, 
+                        zero_method="wilcox",
+                        alternative=alternative_hypothesis
+                    )
+                observed_test_stats_flat.append(stat)
+                uncorrected_p_values_flat.append(p_val)
+            except ValueError:
+                observed_test_stats_flat.append(np.nan)
+                uncorrected_p_values_flat.append(np.nan)
+        else:
+            # Multiple features
+            for feature_idx in range(data_for_ttest_fdr.shape[1]):
+                feature_data = data_for_ttest_fdr[:, feature_idx]
+                differences = feature_data - chance_level
+                
+                # Check for NaNs
+                if np.any(np.isnan(differences)):
+                    observed_test_stats_flat.append(np.nan)
+                    uncorrected_p_values_flat.append(np.nan)
+                    continue
+                
+                try:
+                    if np.all(np.isclose(differences, 0)):
+                        stat, p_val = 0.0, 1.0
+                    else:
+                        stat, p_val = scipy.stats.wilcoxon(
+                            differences, 
+                            zero_method="wilcox",
+                            alternative=alternative_hypothesis
+                        )
+                    observed_test_stats_flat.append(stat)
+                    uncorrected_p_values_flat.append(p_val)
+                except ValueError:
+                    # Peut arriver si tous les échantillons sont identiques
+                    observed_test_stats_flat.append(np.nan)
+                    uncorrected_p_values_flat.append(np.nan)
+        
+        observed_test_stats_flat = np.array(observed_test_stats_flat)
+        uncorrected_p_values_flat = np.array(uncorrected_p_values_flat)
+        
+    else:
+        raise ValueError(f"Unsupported test type: {statistical_test_type}. Use 'ttest' or 'wilcoxon'.")
 
-    # === EXECUTE T-TESTS ===
-    observed_t_values_flat, uncorrected_p_values_flat = scipy.stats.ttest_1samp(
-        data_for_ttest_fdr,
-        popmean=chance_level,
-        axis=0,  # Perform test along the observation axis
-        nan_policy="propagate",  # If a feature column has NaNs, its result will be NaN
-        alternative=alternative_hypothesis,
-    )
-
-    # Ensure p-values and t-values are arrays, even if only one feature was tested
+    # Ensure p-values and test-statistics are arrays, even if only one feature was tested
     if np.isscalar(uncorrected_p_values_flat):
         uncorrected_p_values_flat = np.array([uncorrected_p_values_flat])
-    if np.isscalar(observed_t_values_flat):
-        observed_t_values_flat = np.array([observed_t_values_flat])
+    if np.isscalar(observed_test_stats_flat):
+        observed_test_stats_flat = np.array([observed_test_stats_flat])
 
     # === FDR CORRECTION ===
     # Perform FDR correction only on valid (non-NaN) p-values
@@ -468,14 +614,14 @@ def perform_pointwise_fdr_correction_on_scores(
     original_feature_shape_out = input_data_array.shape[1:] if original_ndim_fdr > 1 else (
         1,)
 
-    if original_ndim_fdr == 1 and observed_t_values_flat.size == 1:
+    if original_ndim_fdr == 1 and observed_test_stats_flat.size == 1:
         # Single feature input
-        observed_t_values_out = observed_t_values_flat
+        observed_test_stats_out = observed_test_stats_flat
         fdr_significant_mask_out = fdr_significant_mask_flat
         fdr_corrected_p_values_out = fdr_corrected_p_values_flat
     else:
         # Multi-feature input, reshape outputs
-        observed_t_values_out = observed_t_values_flat.reshape(
+        observed_test_stats_out = observed_test_stats_flat.reshape(
             original_feature_shape_out)
         fdr_significant_mask_out = fdr_significant_mask_flat.reshape(
             original_feature_shape_out)
@@ -489,13 +635,13 @@ def perform_pointwise_fdr_correction_on_scores(
         f"(p_fdr < {alpha_significance_level})."
     )
 
-    return observed_t_values_out, fdr_significant_mask_out, fdr_corrected_p_values_out
+    return observed_test_stats_out, fdr_significant_mask_out, fdr_corrected_p_values_out
 
 
 def compare_global_scores_to_chance(
     global_scores_array,
     chance_level=0.5,
-    statistical_test_type="ttest",  # 'ttest' or 'wilcoxon'
+    statistical_test_type="wilcoxon",  # 'ttest' or 'wilcoxon'
     alternative_hypothesis="greater",
 ):
     """
