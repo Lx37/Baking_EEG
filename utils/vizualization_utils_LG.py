@@ -287,17 +287,50 @@ def _plot_lg_temporal_auc(ax, times, mean_scores, all_folds_scores, fdr_data,
     # Add FDR significance markers
     if fdr_data and fdr_data.get('mask') is not None:
         fdr_mask = fdr_data['mask']
+        
+        # Créer le label FDR avec l'information détaillée du test
+        fdr_label = "FDR p<0.05"
+        test_info = fdr_data.get('test_info', {})
+        if test_info:
+            test_type = test_info.get("test_type", "unknown")
+            if test_type == "adaptive":
+                n_ttest = test_info.get("ttest_features", 0)
+                n_wilcoxon = test_info.get("wilcoxon_features", 0)
+                fdr_label = f"FDR p<0.05 (adap: {n_ttest}t, {n_wilcoxon}W)"
+            elif test_type == "ttest":
+                fdr_label = "FDR p<0.05 (t-test)"
+            elif test_type == "wilcoxon":
+                fdr_label = "FDR p<0.05 (Wilcoxon)"
+        
         if np.any(fdr_mask):
             # Create significance bar at bottom
             y_min, y_max = ax.get_ylim()
             y_sig_fdr = y_min + 0.02 * (y_max - y_min)
             ax.fill_between(times, y_sig_fdr - 0.01, y_sig_fdr,
                             where=fdr_mask, color='green', alpha=0.7,
-                            step='mid', label="FDR p<0.05")
+                            step='mid', label=fdr_label)
+        else:
+            # Afficher le label FDR même si pas significatif
+            fdr_label_no_sig = "FDR (no sig.)"
+            if test_info:
+                test_type = test_info.get("test_type", "unknown")
+                if test_type == "adaptive":
+                    n_ttest = test_info.get("ttest_features", 0)
+                    n_wilcoxon = test_info.get("wilcoxon_features", 0)
+                    fdr_label_no_sig = f"FDR (no sig., adap: {n_ttest}t, {n_wilcoxon}W)"
+                elif test_type == "ttest":
+                    fdr_label_no_sig = "FDR (no sig., t-test)"
+                elif test_type == "wilcoxon":
+                    fdr_label_no_sig = "FDR (no sig., Wilcoxon)"
+            ax.plot([], [], color='green', alpha=0.7, label=fdr_label_no_sig)
+    else:
+        # Pas de données FDR disponibles
+        ax.plot([], [], color='green', alpha=0.7, label="FDR (N/A)")
 
     # Add cluster significance markers
     if cluster_data and cluster_data.get('mask') is not None:
         cluster_mask = cluster_data['mask']
+        
         if np.any(cluster_mask):
             # Create significance bar slightly below FDR
             y_min, y_max = ax.get_ylim()
@@ -305,6 +338,12 @@ def _plot_lg_temporal_auc(ax, times, mean_scores, all_folds_scores, fdr_data,
             ax.fill_between(times, y_sig_cluster - 0.01, y_sig_cluster,
                             where=cluster_mask, color='orange', alpha=0.7,
                             step='mid', label="Cluster p<0.05")
+        else:
+            # Afficher le label cluster même si pas significatif
+            ax.plot([], [], color='orange', alpha=0.7, label="Cluster (no sig.)")
+    else:
+        # Pas de données cluster disponibles
+        ax.plot([], [], color='orange', alpha=0.7, label="Cluster (N/A)")
 
     # Formatting
     ax.set_xlabel('Time (s)', fontsize=FONT_SIZE_LABEL)
@@ -385,7 +424,8 @@ def _apply_statistical_tests_to_comparison_data(comparison_data, times, n_permut
         comparison_data['fdr_significance_data'] = {
             'mask': fdr_mask,
             'p_values': fdr_p,
-            'method': 'FDR'
+            'method': 'FDR',
+            'test_info': fdr_test_info
         }
 
         # Cluster permutation test

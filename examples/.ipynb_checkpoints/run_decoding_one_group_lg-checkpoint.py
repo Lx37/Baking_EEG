@@ -271,7 +271,7 @@ def execute_group_intra_subject_lg_decoding_analysis(
                 stacked_1d_lg = np.array(valid_1d_scores_lg_main)
                 logger_run_group_lg.info(
                     "LG Group %s (N=%d for Main 1D stats): Running group stats...", group_identifier, stacked_1d_lg.shape[0])
-                t_obs_fdr_lg, fdr_mask_lg, p_fdr_lg = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
+                t_obs_fdr_lg, fdr_mask_lg, p_fdr_lg, fdr_test_info_lg = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
                     stacked_1d_lg, CHANCE_LEVEL_AUC, alternative_hypothesis="greater")
                 if save_results_flag and group_summary_dir:
                     np.savez_compressed(os.path.join(group_summary_dir, "stats_lg_temp_1D_FDR_Main.npz"),
@@ -307,7 +307,7 @@ def execute_group_intra_subject_lg_decoding_analysis(
                 stacked_1d_lg_specific = np.array(valid_1d_scores_lg_specific)
                 logger_run_group_lg.info(
                     "LG Group %s (N=%d for Specific 1D stats): Running specific comparison group stats...", group_identifier, stacked_1d_lg_specific.shape[0])
-                t_obs_fdr_lg_spec, fdr_mask_lg_spec, p_fdr_lg_spec = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
+                t_obs_fdr_lg_spec, fdr_mask_lg_spec, p_fdr_lg_spec, fdr_test_info_lg_spec = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
                     stacked_1d_lg_specific, CHANCE_LEVEL_AUC, alternative_hypothesis="greater")
                 if save_results_flag and group_summary_dir:
                     np.savez_compressed(os.path.join(group_summary_dir, "stats_lg_temp_1D_FDR_Specific.npz"),
@@ -333,7 +333,7 @@ def execute_group_intra_subject_lg_decoding_analysis(
                 stacked_1d_lg_local = np.array(valid_1d_scores_lg_local)
                 logger_run_group_lg.info(
                     "LG Group %s (N=%d for Local Effect 1D stats): Running local effect group stats...", group_identifier, stacked_1d_lg_local.shape[0])
-                t_obs_fdr_lg_local, fdr_mask_lg_local, p_fdr_lg_local = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
+                t_obs_fdr_lg_local, fdr_mask_lg_local, p_fdr_lg_local, fdr_test_info_lg_local = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
                     stacked_1d_lg_local, CHANCE_LEVEL_AUC, alternative_hypothesis="greater")
                 if save_results_flag and group_summary_dir:
                     np.savez_compressed(os.path.join(group_summary_dir, "stats_lg_temp_1D_FDR_LocalEffect.npz"),

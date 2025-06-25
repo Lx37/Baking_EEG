@@ -1755,29 +1755,47 @@ def create_subject_decoding_dashboard_plots(
                     sig_bar_h_ac_p8, cur_y_sig_ac_p8 = 0.01, y_base_sig_ac_p8
 
                     # FDR sur la moyenne AP-centrique
-                    if fdr_data_p8 and fdr_data_p8.get('mask') is not None:
-                        if np.any(fdr_data_p8['mask']):
-                            ax_p8.fill_between(main_epochs_time_points, cur_y_sig_ac_p8 - sig_bar_h_ac_p8, cur_y_sig_ac_p8,
-                                               where=fdr_data_p8['mask'], color='deepskyblue', alpha=0.7, step='mid', label="FDR p<0.05")
-                        else:
-                            ax_p8.plot([], [], color='deepskyblue',
-                                       alpha=0.7, label="FDR (no sig)")
+                    if fdr_data_p8 and fdr_data_p8.get('mask') is not None and np.any(fdr_data_p8['mask']):
+                        # Créer le label FDR avec l'information du test
+                        fdr_label_p8 = "FDR p<0.05"
+                        test_info_p8 = fdr_data_p8.get('test_info', {})
+                        if test_info_p8:
+                            test_type = test_info_p8.get("test_type", "unknown")
+                            if test_type == "adaptive":
+                                n_ttest = test_info_p8.get("ttest_features", 0)
+                                n_wilcoxon = test_info_p8.get("wilcoxon_features", 0)
+                                fdr_label_p8 = f"FDR p<0.05 (adap: {n_ttest}t, {n_wilcoxon}W)"
+                            elif test_type == "ttest":
+                                fdr_label_p8 = "FDR p<0.05 (t-test)"
+                            elif test_type == "wilcoxon":
+                                fdr_label_p8 = "FDR p<0.05 (Wilcoxon)"
+                        
+                        ax_p8.fill_between(main_epochs_time_points, cur_y_sig_ac_p8 - sig_bar_h_ac_p8, cur_y_sig_ac_p8,
+                                           where=fdr_data_p8['mask'], color='deepskyblue', alpha=0.7, step='mid', label=fdr_label_p8)
                         cur_y_sig_ac_p8 -= (sig_bar_h_ac_p8 + 0.005)
                     else:
-                        ax_p8.plot([], [], color='deepskyblue',
-                                   alpha=0.7, label="FDR (N/A)")
+                        # Afficher le label FDR même si pas significatif
+                        fdr_label_p8 = "FDR (no sig.)"
+                        test_info_p8 = fdr_data_p8.get('test_info', {}) if fdr_data_p8 else {}
+                        if test_info_p8:
+                            test_type = test_info_p8.get("test_type", "unknown")
+                            if test_type == "adaptive":
+                                n_ttest = test_info_p8.get("ttest_features", 0)
+                                n_wilcoxon = test_info_p8.get("wilcoxon_features", 0)
+                                fdr_label_p8 = f"FDR (no sig., adap: {n_ttest}t, {n_wilcoxon}W)"
+                            elif test_type == "ttest":
+                                fdr_label_p8 = "FDR (no sig., t-test)"
+                            elif test_type == "wilcoxon":
+                                fdr_label_p8 = "FDR (no sig., Wilcoxon)"
+                        ax_p8.plot([], [], color='deepskyblue', alpha=0.7, label=fdr_label_p8)
 
                     # Cluster sur la moyenne AP-centrique
-                    if cluster_data_p8 and cluster_data_p8.get('mask') is not None:
-                        if np.any(cluster_data_p8['mask']):
-                            ax_p8.fill_between(main_epochs_time_points, cur_y_sig_ac_p8 - sig_bar_h_ac_p8, cur_y_sig_ac_p8,
-                                               where=cluster_data_p8['mask'], color='orangered', alpha=0.7, step='mid', label="Cluster p<0.05")
-                        else:
-                            ax_p8.plot([], [], color='orangered',
-                                       alpha=0.7, label="Cluster (no sig)")
+                    if cluster_data_p8 and cluster_data_p8.get('mask') is not None and np.any(cluster_data_p8['mask']):
+                        ax_p8.fill_between(main_epochs_time_points, cur_y_sig_ac_p8 - sig_bar_h_ac_p8, cur_y_sig_ac_p8,
+                                           where=cluster_data_p8['mask'], color='orangered', alpha=0.7, step='mid', label="Cluster p<0.05")
                     else:
-                        ax_p8.plot([], [], color='orangered',
-                                   alpha=0.7, label="Cluster (N/A)")
+                        # Afficher le label cluster même si pas significatif
+                        ax_p8.plot([], [], color='orangered', alpha=0.7, label="Cluster (no sig.)")
 
                     ax_p8.axhline(CHANCE_LEVEL_AUC, color='k',
                                   ls='--', label=f'Chance ({CHANCE_LEVEL_AUC})')
