@@ -299,7 +299,7 @@ def execute_group_intra_subject_decoding_analysis(
 
                 # Test pointwise FDR
                 try:
-                    _, fdr_mask_group, fdr_pvalues_group = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
+                    _, fdr_mask_group, fdr_pvalues_group, fdr_test_info_group = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
                         temporal_scores_array, CHANCE_LEVEL_AUC, alternative_hypothesis="greater"
                     )
                     group_temporal_results["group_temporal_fdr_mask"] = fdr_mask_group

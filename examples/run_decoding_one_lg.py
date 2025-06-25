@@ -502,7 +502,7 @@ def execute_single_subject_lg_decoding(
                         scipy.stats.sem(stacked_specific_curves, axis=0,
                                         nan_policy='omit'))
 
-                _, fdr_mask_stack, fdr_pval_stack = (
+                _, fdr_mask_stack, fdr_pval_stack, fdr_test_info_stack = (
                     bEEG_stats.perform_pointwise_fdr_correction_on_scores(
                         stacked_specific_curves, CHANCE_LEVEL_AUC,
                         alternative_hypothesis="greater"))

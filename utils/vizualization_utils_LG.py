@@ -377,7 +377,7 @@ def _apply_statistical_tests_to_comparison_data(comparison_data, times, n_permut
 
     try:
         # FDR test
-        _, fdr_mask, fdr_p = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
+        _, fdr_mask, fdr_p, fdr_test_info = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
             all_folds_scores,
             chance_level=0.5,
             alternative_hypothesis="greater"

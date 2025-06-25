@@ -431,7 +431,7 @@ def execute_single_subject_decoding(
                     subject_results["pp_ap_sem_of_specific_scores_1d"] = scipy.stats.sem(
                         stacked_specific_curves, axis=0, nan_policy='omit')
 
-                _, fdr_mask_stack, fdr_pval_stack = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
+                _, fdr_mask_stack, fdr_pval_stack, fdr_test_info_stack = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
                     stacked_specific_curves, CHANCE_LEVEL_AUC, alternative_hypothesis="greater"
                 )
                 subject_results["pp_ap_mean_specific_fdr"] = {
@@ -585,7 +585,7 @@ def execute_single_subject_decoding(
                                 ap_centric_avg_item["sem_scores_1d"] = scipy.stats.sem(
                                     stacked_curves_for_avg, axis=0, nan_policy='omit')
 
-                            _, fdr_mask_centric, fdr_pval_centric = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
+                            _, fdr_mask_centric, fdr_pval_centric, fdr_test_info_centric = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
                                 stacked_curves_for_avg, CHANCE_LEVEL_AUC, alternative_hypothesis="greater")
                             ap_centric_avg_item["fdr_sig_data"] = {
                                 "mask": fdr_mask_centric, "p_values": fdr_pval_centric, "method": f"FDR on stack for {anchor_ap_display_name}"}

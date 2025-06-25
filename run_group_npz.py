@@ -378,7 +378,7 @@ def calculate_basic_statistics(scores: np.ndarray, times: np.ndarray,
         try:
             # 1. FDR correction on temporal scores
             logger.info("Computing group FDR correction...")
-            fdr_stats, fdr_mask_group, fdr_pvals = perform_pointwise_fdr_correction_on_scores(
+            fdr_stats, fdr_mask_group, fdr_pvals, fdr_test_info = perform_pointwise_fdr_correction_on_scores(
                 scores,  # shape: (n_subjects, n_timepoints)
                 chance_level=CHANCE_LEVEL,
                 alpha_significance_level=FDR_ALPHA,
