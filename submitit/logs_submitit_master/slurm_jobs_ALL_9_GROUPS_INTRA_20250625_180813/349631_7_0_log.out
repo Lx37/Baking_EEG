@@ -1,0 +1,135 @@
+submitit INFO (2025-06-25 18:08:15,039) - Starting with JobEnvironment(job_id=349631_7, hostname=node10, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-25 18:08:15,039) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/logs_submitit_master/slurm_jobs_ALL_9_GROUPS_INTRA_20250625_180813/349631_7_submitted.pkl
+DEBUG Worker - project_root: /home/tom.balay/Baking_EEG
+DEBUG Worker - parent_dir: /home/tom.balay
+DEBUG Worker - sys.path: ['/home/tom.balay', '/home/tom.balay/Baking_EEG', '/home/tom.balay/Baking_EEG/submitit']...
+2025-06-25 18:08:18,331 - INFO - examples.run_decoding_one_group_pp - [<module>:39] - Tentative d'import de execute_single_subject_decoding...
+2025-06-25 18:08:18,331 - INFO - examples.run_decoding_one_group_pp - [<module>:42] - ✅ Import de execute_single_subject_decoding réussi
+2025-06-25 18:08:18,334 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:120] - Starting intra-subject decoding loop for GROUP: xx. GS: False, CSP: False, ANOVA FS: True. n_jobs_subj: 38.
+2025-06-25 18:08:18,334 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'xx': Processing Subject 1/12: AG98 ---
+2025-06-25 18:08:18,334 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: AG98 (Group: xx, Task Set ID: Group_Intra_xx_Subj_AG98, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-25 18:08:18,335 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-25 18:08:18,335 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'AG98' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,335 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'AG98' (file hint: None)
+2025-06-25 18:08:18,335 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'AG98' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,336 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject AG98
+2025-06-25 18:08:18,336 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for AG98. Aborting subject.
+2025-06-25 18:08:18,336 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject AG98 completed with errors or no valid AUC
+2025-06-25 18:08:18,336 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'xx': Processing Subject 2/12: AM88 ---
+2025-06-25 18:08:18,336 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: AM88 (Group: xx, Task Set ID: Group_Intra_xx_Subj_AM88, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-25 18:08:18,336 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-25 18:08:18,338 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:271] - No preprocessed epoch FIF file found for 'AM88' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ'. Tried protocol-specific detection and legacy fallback.
+2025-06-25 18:08:18,339 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'AM88' (file hint: None)
+2025-06-25 18:08:18,339 - WARNING - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:104] - No epochs file found for subject 'AM88' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ'
+2025-06-25 18:08:18,339 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:271] - No preprocessed epoch FIF file found for 'AM88' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ'. Tried protocol-specific detection and legacy fallback.
+2025-06-25 18:08:18,339 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject AM88
+2025-06-25 18:08:18,339 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for AM88. Aborting subject.
+2025-06-25 18:08:18,340 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject AM88 completed with errors or no valid AUC
+2025-06-25 18:08:18,340 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'xx': Processing Subject 3/12: LC97 ---
+2025-06-25 18:08:18,340 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: LC97 (Group: xx, Task Set ID: Group_Intra_xx_Subj_LC97, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-25 18:08:18,340 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-25 18:08:18,340 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'LC97' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,340 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'LC97' (file hint: None)
+2025-06-25 18:08:18,340 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'LC97' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,340 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject LC97
+2025-06-25 18:08:18,340 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for LC97. Aborting subject.
+2025-06-25 18:08:18,340 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject LC97 completed with errors or no valid AUC
+2025-06-25 18:08:18,340 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'xx': Processing Subject 4/12: MA101 ---
+2025-06-25 18:08:18,340 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: MA101 (Group: xx, Task Set ID: Group_Intra_xx_Subj_MA101, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-25 18:08:18,340 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-25 18:08:18,341 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'MA101' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,341 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'MA101' (file hint: None)
+2025-06-25 18:08:18,341 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'MA101' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,341 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject MA101
+2025-06-25 18:08:18,341 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for MA101. Aborting subject.
+2025-06-25 18:08:18,341 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject MA101 completed with errors or no valid AUC
+2025-06-25 18:08:18,341 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'xx': Processing Subject 5/12: MA99 ---
+2025-06-25 18:08:18,341 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: MA99 (Group: xx, Task Set ID: Group_Intra_xx_Subj_MA99, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-25 18:08:18,341 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-25 18:08:18,341 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'MA99' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,341 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'MA99' (file hint: None)
+2025-06-25 18:08:18,341 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'MA99' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,341 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject MA99
+2025-06-25 18:08:18,342 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for MA99. Aborting subject.
+2025-06-25 18:08:18,342 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject MA99 completed with errors or no valid AUC
+2025-06-25 18:08:18,342 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'xx': Processing Subject 6/12: MG96 ---
+2025-06-25 18:08:18,342 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: MG96 (Group: xx, Task Set ID: Group_Intra_xx_Subj_MG96, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-25 18:08:18,342 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-25 18:08:18,342 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'MG96' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,342 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'MG96' (file hint: None)
+2025-06-25 18:08:18,342 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'MG96' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,342 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject MG96
+2025-06-25 18:08:18,342 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for MG96. Aborting subject.
+2025-06-25 18:08:18,342 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject MG96 completed with errors or no valid AUC
+2025-06-25 18:08:18,342 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'xx': Processing Subject 7/12: MM87 ---
+2025-06-25 18:08:18,342 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: MM87 (Group: xx, Task Set ID: Group_Intra_xx_Subj_MM87, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-25 18:08:18,342 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-25 18:08:18,343 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'MM87' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,343 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'MM87' (file hint: None)
+2025-06-25 18:08:18,343 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'MM87' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,343 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject MM87
+2025-06-25 18:08:18,343 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for MM87. Aborting subject.
+2025-06-25 18:08:18,343 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject MM87 completed with errors or no valid AUC
+2025-06-25 18:08:18,343 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'xx': Processing Subject 8/12: PF100 ---
+2025-06-25 18:08:18,343 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: PF100 (Group: xx, Task Set ID: Group_Intra_xx_Subj_PF100, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-25 18:08:18,343 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-25 18:08:18,343 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'PF100' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,343 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'PF100' (file hint: None)
+2025-06-25 18:08:18,343 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'PF100' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,343 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject PF100
+2025-06-25 18:08:18,344 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for PF100. Aborting subject.
+2025-06-25 18:08:18,344 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject PF100 completed with errors or no valid AUC
+2025-06-25 18:08:18,344 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'xx': Processing Subject 9/12: PM95 ---
+2025-06-25 18:08:18,344 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: PM95 (Group: xx, Task Set ID: Group_Intra_xx_Subj_PM95, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-25 18:08:18,344 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-25 18:08:18,344 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'PM95' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,344 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'PM95' (file hint: None)
+2025-06-25 18:08:18,344 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'PM95' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,344 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject PM95
+2025-06-25 18:08:18,344 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for PM95. Aborting subject.
+2025-06-25 18:08:18,344 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject PM95 completed with errors or no valid AUC
+2025-06-25 18:08:18,344 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'xx': Processing Subject 10/12: SM51 ---
+2025-06-25 18:08:18,344 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: SM51 (Group: xx, Task Set ID: Group_Intra_xx_Subj_SM51, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-25 18:08:18,344 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-25 18:08:18,345 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'SM51' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,345 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'SM51' (file hint: None)
+2025-06-25 18:08:18,345 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'SM51' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,345 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject SM51
+2025-06-25 18:08:18,345 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for SM51. Aborting subject.
+2025-06-25 18:08:18,345 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject SM51 completed with errors or no valid AUC
+2025-06-25 18:08:18,345 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'xx': Processing Subject 11/12: VT47 ---
+2025-06-25 18:08:18,345 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: VT47 (Group: xx, Task Set ID: Group_Intra_xx_Subj_VT47, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-25 18:08:18,345 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-25 18:08:18,345 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'VT47' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,345 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'VT47' (file hint: None)
+2025-06-25 18:08:18,345 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'VT47' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,345 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject VT47
+2025-06-25 18:08:18,346 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for VT47. Aborting subject.
+2025-06-25 18:08:18,346 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject VT47 completed with errors or no valid AUC
+2025-06-25 18:08:18,346 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'xx': Processing Subject 12/12: XL89 ---
+2025-06-25 18:08:18,346 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: XL89 (Group: xx, Task Set ID: Group_Intra_xx_Subj_XL89, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-25 18:08:18,346 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-25 18:08:18,346 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'XL89' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,346 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'XL89' (file hint: None)
+2025-06-25 18:08:18,346 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:234] - Data directory for subject 'XL89' (group: 'xx') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-25 18:08:18,346 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject XL89
+2025-06-25 18:08:18,346 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for XL89. Aborting subject.
+2025-06-25 18:08:18,346 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject XL89 completed with errors or no valid AUC
+2025-06-25 18:08:18,346 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:168] - Successfully processed 0/12 subjects for group 'xx'
+2025-06-25 18:08:18,346 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:171] - Finished subject loop. Total analysis time: 0.0 min
+submitit INFO (2025-06-25 18:08:18,347) - Job completed successfully
+2025-06-25 18:08:18,347 - INFO - submitit - [process_job:56] - Job completed successfully
+submitit INFO (2025-06-25 18:08:18,347) - Exiting after successful completion
+2025-06-25 18:08:18,347 - INFO - submitit - [process_job:61] - Exiting after successful completion

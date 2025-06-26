@@ -1,0 +1,36 @@
+submitit INFO (2025-06-26 10:33:57,380) - Starting with JobEnvironment(job_id=349916_8, hostname=node11, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-26 10:33:57,380) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/logs_submitit_master/slurm_jobs_ALL_9_GROUPS_INTRA_20250626_103354/349916_8_submitted.pkl
+DEBUG Worker - project_root: /home/tom.balay/Baking_EEG
+DEBUG Worker - parent_dir: /home/tom.balay
+DEBUG Worker - sys.path: ['/home/tom.balay', '/home/tom.balay/Baking_EEG', '/home/tom.balay/Baking_EEG/submitit']...
+2025-06-26 10:34:01,866 - INFO - examples.run_decoding_one_group_pp - [<module>:39] - Tentative d'import de execute_single_subject_decoding...
+2025-06-26 10:34:01,866 - INFO - examples.run_decoding_one_group_pp - [<module>:42] - ✅ Import de execute_single_subject_decoding réussi
+2025-06-26 10:34:01,869 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:120] - Starting intra-subject decoding loop for GROUP: xxx. GS: False, CSP: False, ANOVA FS: True. n_jobs_subj: 38.
+2025-06-26 10:34:01,869 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'xxx': Processing Subject 1/2: DR92 ---
+2025-06-26 10:34:01,869 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: DR92 (Group: xxx, Task Set ID: Group_Intra_xxx_Subj_DR92, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-26 10:34:01,870 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-26 10:34:01,871 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:271] - No preprocessed epoch FIF file found for 'DR92' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ'. Tried protocol-specific detection and legacy fallback.
+2025-06-26 10:34:01,871 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'DR92' (file hint: None)
+2025-06-26 10:34:01,872 - WARNING - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:104] - No epochs file found for subject 'DR92' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ'
+2025-06-26 10:34:01,872 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:271] - No preprocessed epoch FIF file found for 'DR92' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ'. Tried protocol-specific detection and legacy fallback.
+2025-06-26 10:34:01,872 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject DR92
+2025-06-26 10:34:01,872 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for DR92. Aborting subject.
+2025-06-26 10:34:01,872 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject DR92 completed with errors or no valid AUC
+2025-06-26 10:34:01,872 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'xxx': Processing Subject 2/2: FP102 ---
+2025-06-26 10:34:01,872 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: FP102 (Group: xxx, Task Set ID: Group_Intra_xxx_Subj_FP102, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-26 10:34:01,872 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-26 10:34:01,873 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:271] - No preprocessed epoch FIF file found for 'FP102' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'. Tried protocol-specific detection and legacy fallback.
+2025-06-26 10:34:01,873 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'FP102' (file hint: None)
+2025-06-26 10:34:01,873 - WARNING - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:104] - No epochs file found for subject 'FP102' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'
+2025-06-26 10:34:01,873 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:271] - No preprocessed epoch FIF file found for 'FP102' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'. Tried protocol-specific detection and legacy fallback.
+2025-06-26 10:34:01,873 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject FP102
+2025-06-26 10:34:01,873 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for FP102. Aborting subject.
+2025-06-26 10:34:01,874 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject FP102 completed with errors or no valid AUC
+2025-06-26 10:34:01,874 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:168] - Successfully processed 0/2 subjects for group 'xxx'
+2025-06-26 10:34:01,874 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:171] - Finished subject loop. Total analysis time: 0.0 min
+submitit INFO (2025-06-26 10:34:01,874) - Job completed successfully
+2025-06-26 10:34:01,874 - INFO - submitit - [process_job:56] - Job completed successfully
+submitit INFO (2025-06-26 10:34:01,875) - Exiting after successful completion
+2025-06-26 10:34:01,875 - INFO - submitit - [process_job:61] - Exiting after successful completion

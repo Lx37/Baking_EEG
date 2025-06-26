@@ -50,7 +50,7 @@ def configure_project_paths(current_user_login):
         current_user_login, base_input_data_path
     )
 
-    output_version_folder_name = "V8"  # Versioning for results
+    output_version_folder_name = "V10"  # Versioning for results
     user_output_results_paths = {
         "tom.balay": (f"/home/tom.balay/results/"
                       f"Baking_EEG_results_{output_version_folder_name}"),
@@ -305,7 +305,7 @@ def setup_analysis_results_directory(base_output_path, analysis_type, subject_or
     Args:
         base_output_path (str): Base output directory path
         analysis_type (str): Type of analysis (e.g., 'single_subject', 'group_summary_intra_subject')
-        subject_or_group_id (str): Subject ID or group identifier
+        subject_or_group_id (str): Subject ID or group identifier (can include group_protocol format)
         method_suffix (str): Suffix describing the method used
         create_timestamp_subdir (bool): Whether to create timestamped subdirectory
 
@@ -314,7 +314,7 @@ def setup_analysis_results_directory(base_output_path, analysis_type, subject_or
     """
     from datetime import datetime
 
-    # Create main analysis directory
+    # Create main analysis directory with hierarchical structure
     analysis_dir = os.path.join(
         base_output_path, analysis_type, subject_or_group_id)
 
@@ -329,6 +329,15 @@ def setup_analysis_results_directory(base_output_path, analysis_type, subject_or
         os.makedirs(analysis_dir, exist_ok=True)
         logger_path_utils.info(
             f"Created analysis results directory: {analysis_dir}")
+        
+        # Log the hierarchical structure for clarity
+        if '_' in subject_or_group_id and len(subject_or_group_id.split('_')) >= 2:
+            parts = subject_or_group_id.split('_')
+            group_part = parts[0]
+            protocol_part = '_'.join(parts[1:])
+            logger_path_utils.info(
+                f"Organized by Group: {group_part}, Protocol: {protocol_part}")
+                
     except OSError as e:
         logger_path_utils.error(
             f"Failed to create analysis directory '{analysis_dir}': {e}")

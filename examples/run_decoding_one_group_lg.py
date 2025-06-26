@@ -1,4 +1,22 @@
-# Examples script for group-level LG analysis
+
+import os
+import sys
+import logging
+import time
+from datetime import datetime
+import argparse
+from getpass import getuser
+import numpy as np
+import pandas as pd
+import scipy.stats
+
+# --- Configuration du chemin pour les imports ---
+SCRIPT_DIR_EXAMPLE = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT_EXAMPLE = os.path.abspath(os.path.join(SCRIPT_DIR_EXAMPLE, ".."))
+if PROJECT_ROOT_EXAMPLE not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT_EXAMPLE)
+# --- Fin Configuration du chemin --
+
 
 
 from Baking_EEG.config.decoding_config import (
@@ -22,23 +40,6 @@ from Baking_EEG.utils import stats_utils as bEEG_stats
 from Baking_EEG.utils.utils import (
     configure_project_paths, setup_analysis_results_directory
 )
-import os
-import sys
-import logging
-import time
-from datetime import datetime
-import argparse
-from getpass import getuser
-import numpy as np
-import pandas as pd
-import scipy.stats
-
-# --- Configuration du chemin pour les imports ---
-SCRIPT_DIR_EXAMPLE = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT_EXAMPLE = os.path.abspath(os.path.join(SCRIPT_DIR_EXAMPLE, ".."))
-if PROJECT_ROOT_EXAMPLE not in sys.path:
-    sys.path.insert(0, PROJECT_ROOT_EXAMPLE)
-# --- Fin Configuration du chemin ---
 # La fonction execute_single_subject_lg_decoding est dans run_decoding_one_lg.py
 try:
     from Baking_EEG.examples.run_decoding_one_lg import (
@@ -232,8 +233,12 @@ def execute_group_intra_subject_lg_decoding_analysis(
     if save_results_flag or generate_plots_flag:
         dir_suffix = (
             f"LG_{classifier_type_for_group_runs}_GS{use_grid_search_for_group}_CSP{use_csp_for_temporal_group}_ANOVA{use_anova_fs_for_temporal_group}")
+        
+        # Create group_protocol path for better organization (LG protocol)
+        group_protocol_path = f"{group_identifier}_LG"
+        
         group_summary_dir = setup_analysis_results_directory(
-            base_output_results_path, "group_summary_intra_subject_lg", group_identifier, dir_suffix
+            base_output_results_path, "group_summary_intra_subject_lg", group_protocol_path, dir_suffix
         )
 
     valid_lg_global_scores = np.array(

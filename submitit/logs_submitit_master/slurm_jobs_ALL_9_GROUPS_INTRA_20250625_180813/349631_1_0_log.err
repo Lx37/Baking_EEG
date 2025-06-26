@@ -1,0 +1,204 @@
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/Battery/BS81_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/Battery/BS81_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/Battery/BS81_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/CS38_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/CS38_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/CS38_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/JC39_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/JC39_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/JC39_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/Battery/MP68_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/Battery/MP68_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/Battery/MP68_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/Battery/MV48_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/Battery/MV48_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/Battery/MV48_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/Battery/NN65_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/Battery/NN65_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/Battery/NN65_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpAB15J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpAB15J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpAB15J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpAF11J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpAF11J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpAF11J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpAT19J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpAT19J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpAT19J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpBD10J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpBD10J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpBD10J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpCF24J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpCF24J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpCF24J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpCL14j1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpCL14j1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpCL14j1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpDC12J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpDC12J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpDC12J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpDC12J8_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpDC12J8_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpDC12J8_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpDC22J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpDC22J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpDC22J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpDL8J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpDL8J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpDL8J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpDP7J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpDP7J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpDP7J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpDP7J8_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpDP7J8_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpDP7J8_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpEM13J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpEM13J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpEM13J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpEP16J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpEP16J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpEP16J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpEP20J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpEP20J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpEP20J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpFJ5J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpFJ5J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpFJ5J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpFJ5J8_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpFJ5J8_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpFJ5J8_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpFM25J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpFM25J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpFM25J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpJM2J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpJM2J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpJM2J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpLC21J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpLC21J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpLC21J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpLJ6J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpLJ6J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpLJ6J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpMD4J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpMD4J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpMD4J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpMG17J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpMG17J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpMG17J1_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpML3J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpML3J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpML3J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpPC23J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpPC23J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpPC23J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpTP1J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpTP1J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpTP1J1_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpTP1J8_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpTP1J8_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/PPext3/TpTP1J8_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/Battery/YG72_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:286: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/Battery/YG72_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:821: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/Battery/YG72_preproc_ICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)

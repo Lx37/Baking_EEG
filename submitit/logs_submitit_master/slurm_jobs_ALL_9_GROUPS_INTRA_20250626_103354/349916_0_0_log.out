@@ -1,0 +1,151 @@
+submitit INFO (2025-06-26 10:33:59,077) - Starting with JobEnvironment(job_id=349916_0, hostname=node2, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-26 10:33:59,077) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/logs_submitit_master/slurm_jobs_ALL_9_GROUPS_INTRA_20250626_103354/349916_0_submitted.pkl
+DEBUG Worker - project_root: /home/tom.balay/Baking_EEG
+DEBUG Worker - parent_dir: /home/tom.balay
+DEBUG Worker - sys.path: ['/home/tom.balay', '/home/tom.balay/Baking_EEG', '/home/tom.balay/Baking_EEG/submitit']...
+2025-06-26 10:34:10,847 - INFO - examples.run_decoding_one_group_pp - [<module>:39] - Tentative d'import de execute_single_subject_decoding...
+2025-06-26 10:34:10,848 - INFO - examples.run_decoding_one_group_pp - [<module>:42] - ✅ Import de execute_single_subject_decoding réussi
+2025-06-26 10:34:10,853 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:120] - Starting intra-subject decoding loop for GROUP: CONTROLS. GS: False, CSP: False, ANOVA FS: True. n_jobs_subj: 38.
+2025-06-26 10:34:10,854 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'CONTROLS': Processing Subject 1/39: AO05 ---
+2025-06-26 10:34:10,854 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: AO05 (Group: CONTROLS, Task Set ID: Group_Intra_CONTROLS_Subj_AO05, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-26 10:34:10,854 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-26 10:34:10,858 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:271] - No preprocessed epoch FIF file found for 'AO05' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'. Tried protocol-specific detection and legacy fallback.
+2025-06-26 10:34:10,858 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'AO05' (file hint: None)
+2025-06-26 10:34:10,859 - WARNING - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:104] - No epochs file found for subject 'AO05' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'
+2025-06-26 10:34:10,860 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:271] - No preprocessed epoch FIF file found for 'AO05' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'. Tried protocol-specific detection and legacy fallback.
+2025-06-26 10:34:10,860 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject AO05
+2025-06-26 10:34:10,860 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for AO05. Aborting subject.
+2025-06-26 10:34:10,860 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject AO05 completed with errors or no valid AUC
+2025-06-26 10:34:10,861 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'CONTROLS': Processing Subject 2/39: BT13 ---
+2025-06-26 10:34:10,861 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: BT13 (Group: CONTROLS, Task Set ID: Group_Intra_CONTROLS_Subj_BT13, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-26 10:34:10,861 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-26 10:34:10,863 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:271] - No preprocessed epoch FIF file found for 'BT13' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'. Tried protocol-specific detection and legacy fallback.
+2025-06-26 10:34:10,863 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'BT13' (file hint: None)
+2025-06-26 10:34:10,864 - WARNING - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:104] - No epochs file found for subject 'BT13' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'
+2025-06-26 10:34:10,864 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:271] - No preprocessed epoch FIF file found for 'BT13' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'. Tried protocol-specific detection and legacy fallback.
+2025-06-26 10:34:10,864 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject BT13
+2025-06-26 10:34:10,865 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for BT13. Aborting subject.
+2025-06-26 10:34:10,865 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject BT13 completed with errors or no valid AUC
+2025-06-26 10:34:10,865 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'CONTROLS': Processing Subject 3/39: FP102 ---
+2025-06-26 10:34:10,865 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: FP102 (Group: CONTROLS, Task Set ID: Group_Intra_CONTROLS_Subj_FP102, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-26 10:34:10,866 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-26 10:34:10,867 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:271] - No preprocessed epoch FIF file found for 'FP102' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'. Tried protocol-specific detection and legacy fallback.
+2025-06-26 10:34:10,868 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'FP102' (file hint: None)
+2025-06-26 10:34:10,868 - WARNING - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:104] - No epochs file found for subject 'FP102' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'
+2025-06-26 10:34:10,869 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:271] - No preprocessed epoch FIF file found for 'FP102' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'. Tried protocol-specific detection and legacy fallback.
+2025-06-26 10:34:10,869 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject FP102
+2025-06-26 10:34:10,869 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for FP102. Aborting subject.
+2025-06-26 10:34:10,869 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject FP102 completed with errors or no valid AUC
+2025-06-26 10:34:10,869 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'CONTROLS': Processing Subject 4/39: GA_FRA ---
+2025-06-26 10:34:10,870 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: GA_FRA (Group: CONTROLS, Task Set ID: Group_Intra_CONTROLS_Subj_GA_FRA, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-26 10:34:10,870 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-26 10:34:10,871 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:271] - No preprocessed epoch FIF file found for 'GA_FRA' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'. Tried protocol-specific detection and legacy fallback.
+2025-06-26 10:34:10,872 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'GA_FRA' (file hint: None)
+2025-06-26 10:34:10,873 - WARNING - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:104] - No epochs file found for subject 'GA_FRA' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'
+2025-06-26 10:34:10,873 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:271] - No preprocessed epoch FIF file found for 'GA_FRA' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'. Tried protocol-specific detection and legacy fallback.
+2025-06-26 10:34:10,873 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject GA_FRA
+2025-06-26 10:34:10,873 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for GA_FRA. Aborting subject.
+2025-06-26 10:34:10,874 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject GA_FRA completed with errors or no valid AUC
+2025-06-26 10:34:10,874 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'CONTROLS': Processing Subject 5/39: HM10 ---
+2025-06-26 10:34:10,874 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: HM10 (Group: CONTROLS, Task Set ID: Group_Intra_CONTROLS_Subj_HM10, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-26 10:34:10,874 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-26 10:34:10,876 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:271] - No preprocessed epoch FIF file found for 'HM10' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'. Tried protocol-specific detection and legacy fallback.
+2025-06-26 10:34:10,876 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'HM10' (file hint: None)
+2025-06-26 10:34:10,877 - WARNING - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:104] - No epochs file found for subject 'HM10' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'
+2025-06-26 10:34:10,877 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:271] - No preprocessed epoch FIF file found for 'HM10' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'. Tried protocol-specific detection and legacy fallback.
+2025-06-26 10:34:10,878 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject HM10
+2025-06-26 10:34:10,878 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for HM10. Aborting subject.
+2025-06-26 10:34:10,878 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject HM10 completed with errors or no valid AUC
+2025-06-26 10:34:10,878 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'CONTROLS': Processing Subject 6/39: JM14 ---
+2025-06-26 10:34:10,878 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: JM14 (Group: CONTROLS, Task Set ID: Group_Intra_CONTROLS_Subj_JM14, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-26 10:34:10,879 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-26 10:34:10,880 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:271] - No preprocessed epoch FIF file found for 'JM14' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'. Tried protocol-specific detection and legacy fallback.
+2025-06-26 10:34:10,881 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'unknown' for subject 'JM14' (file hint: None)
+2025-06-26 10:34:10,881 - WARNING - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:104] - No epochs file found for subject 'JM14' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'
+2025-06-26 10:34:10,882 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:271] - No preprocessed epoch FIF file found for 'JM14' in '/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5'. Tried protocol-specific detection and legacy fallback.
+2025-06-26 10:34:10,882 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'unknown' for subject JM14
+2025-06-26 10:34:10,882 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:207] - Epochs object loading failed for JM14. Aborting subject.
+2025-06-26 10:34:10,882 - WARNING - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:164] - Subject JM14 completed with errors or no valid AUC
+2025-06-26 10:34:10,883 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'CONTROLS': Processing Subject 7/39: LAB1 ---
+2025-06-26 10:34:10,883 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:183] - Starting decoding for subject: LAB1 (Group: CONTROLS, Task Set ID: Group_Intra_CONTROLS_Subj_LAB1, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 38)
+2025-06-26 10:34:10,883 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:192] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-26 10:34:15,865 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:416] - CRITICAL: No data loaded for ANY specified conditions for subject LAB1.
+2025-06-26 10:34:15,866 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:423] - Empty data array for condition 'temp' (specifier: 'AP') for subject LAB1.
+2025-06-26 10:34:15,867 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:783] - Auto-detected protocol 'delirium' for subject 'LAB1' (file hint: legacy)
+2025-06-26 10:34:15,868 - INFO - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:96] - Found epochs file: /mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5/LAB1_PP_preproc_noICA_PP-epo_ar.fif (protocol: legacy)
+2025-06-26 10:34:15,868 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:279] - Loading epoch data for subject 'LAB1' from: /mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5/LAB1_PP_preproc_noICA_PP-epo_ar.fif (file protocol: legacy)
+2025-06-26 10:34:17,137 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:290] - Event IDs available for LAB1:
+2025-06-26 10:34:17,138 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'PP/10': 110
+2025-06-26 10:34:17,138 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'PP/20': 120
+2025-06-26 10:34:17,138 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'PP/30': 130
+2025-06-26 10:34:17,138 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'AP/11': 111
+2025-06-26 10:34:17,138 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'AP/12': 112
+2025-06-26 10:34:17,139 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'AP/13': 113
+2025-06-26 10:34:17,139 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'AP/14': 114
+2025-06-26 10:34:17,139 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'AP/15': 115
+2025-06-26 10:34:17,139 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'AP/16': 116
+2025-06-26 10:34:17,139 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'AP/21': 121
+2025-06-26 10:34:17,140 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'AP/22': 122
+2025-06-26 10:34:17,140 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'AP/23': 123
+2025-06-26 10:34:17,140 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'AP/24': 124
+2025-06-26 10:34:17,140 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'AP/25': 125
+2025-06-26 10:34:17,140 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'AP/26': 126
+2025-06-26 10:34:17,141 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'AP/31': 131
+2025-06-26 10:34:17,141 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'AP/32': 132
+2025-06-26 10:34:17,141 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'AP/33': 133
+2025-06-26 10:34:17,141 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'AP/34': 134
+2025-06-26 10:34:17,141 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'AP/35': 135
+2025-06-26 10:34:17,141 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:294] -   - 'AP/36': 136
+2025-06-26 10:34:17,318 - INFO - utils.loading_PP_utils - [inspect_epochs_events:835] - === EVENT INSPECTION FOR LAB1 ===
+2025-06-26 10:34:17,318 - INFO - utils.loading_PP_utils - [inspect_epochs_events:838] - File: /mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5/LAB1_PP_preproc_noICA_PP-epo_ar.fif
+2025-06-26 10:34:17,319 - INFO - utils.loading_PP_utils - [inspect_epochs_events:839] - Total events: 421
+2025-06-26 10:34:17,319 - INFO - utils.loading_PP_utils - [inspect_epochs_events:840] - Event types and counts:
+2025-06-26 10:34:17,319 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'PP/10' (code 110): 19 epochs
+2025-06-26 10:34:17,320 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'PP/20' (code 120): 21 epochs
+2025-06-26 10:34:17,320 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'PP/30' (code 130): 21 epochs
+2025-06-26 10:34:17,320 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'AP/11' (code 111): 22 epochs
+2025-06-26 10:34:17,320 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'AP/12' (code 112): 21 epochs
+2025-06-26 10:34:17,320 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'AP/13' (code 113): 21 epochs
+2025-06-26 10:34:17,321 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'AP/14' (code 114): 19 epochs
+2025-06-26 10:34:17,321 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'AP/15' (code 115): 20 epochs
+2025-06-26 10:34:17,321 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'AP/16' (code 116): 20 epochs
+2025-06-26 10:34:17,321 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'AP/21' (code 121): 19 epochs
+2025-06-26 10:34:17,321 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'AP/22' (code 122): 21 epochs
+2025-06-26 10:34:17,322 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'AP/23' (code 123): 22 epochs
+2025-06-26 10:34:17,322 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'AP/24' (code 124): 22 epochs
+2025-06-26 10:34:17,322 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'AP/25' (code 125): 18 epochs
+2025-06-26 10:34:17,322 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'AP/26' (code 126): 18 epochs
+2025-06-26 10:34:17,322 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'AP/31' (code 131): 16 epochs
+2025-06-26 10:34:17,322 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'AP/32' (code 132): 16 epochs
+2025-06-26 10:34:17,323 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'AP/33' (code 133): 22 epochs
+2025-06-26 10:34:17,323 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'AP/34' (code 134): 21 epochs
+2025-06-26 10:34:17,323 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'AP/35' (code 135): 20 epochs
+2025-06-26 10:34:17,323 - INFO - utils.loading_PP_utils - [inspect_epochs_events:842] -   - 'AP/36' (code 136): 22 epochs
+2025-06-26 10:34:17,955 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:320] - Processing conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-26 10:34:19,578 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:433] -   Data shapes for 'LAB1': XPP_ALL=(61, 124, 701), XAP_ALL=(360, 124, 701), PP_FOR_SPECIFIC_COMPARISON=(61, 124, 701), AP_FAMILY_1=(57, 124, 701), AP_FAMILY_2=(58, 124, 701), AP_FAMILY_3=(65, 124, 701), AP_FAMILY_4=(62, 124, 701), AP_FAMILY_5=(58, 124, 701), AP_FAMILY_6=(60, 124, 701). Loaded in 3.71s
+2025-06-26 10:34:19,581 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:201] - Detected protocol 'delirium' for subject LAB1
+2025-06-26 10:34:19,581 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:231] - Successfully loaded 842 total epochs across all conditions for LAB1
+2025-06-26 10:34:19,581 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:260] - --- Starting Main Protocol Decoding for LAB1 ---
+2025-06-26 10:34:19,582 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:263] -   --- 1. Main Decoding (e.g., PP/all vs AP/all) for LAB1 ---
+2025-06-26 10:34:19,899 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-26 10:34:19,899 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-26 10:34:19,911 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-26 10:34:19,912 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-26 10:34:19,912 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-26 10:34:19,912 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-26 10:34:19,912 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-26 10:34:19,913 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-26 10:34:19,913 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-26 10:34:19,913 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-06-26 10:34:19,914 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-26 10:34:19,950 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-26 10:34:19,951 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-26 10:35:52,399 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.728
+2025-06-26 10:35:52,402 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:346] - Starting TGM computation (GeneralizingEstimator)...

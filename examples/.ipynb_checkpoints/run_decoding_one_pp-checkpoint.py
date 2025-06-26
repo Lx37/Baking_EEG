@@ -1,13 +1,4 @@
-# File: examples/run_decoding_one_pp.py
-# Single Subject PP (Primary-Associated Phonemes) Protocol Decoding Analysis
-#
-# This script performs PP protocol decoding analysis for a single subject
-# using the _4_decoding_core module. It implements:
-# - Main comparison: PP_all vs AP_all
-# - Specific comparisons: PP_specific vs AP_families
-# - Inter-family comparisons: AP_family vs AP_family
-# - Statistical testing with FDR and cluster-based permutation tests
-# - Optional Temporal Generalization Matrix (TGM) computation
+
 import sys
 import os
 
@@ -291,8 +282,26 @@ def execute_single_subject_decoding(
                     "Subj %s: Only one class for main decoding. Skipping.", subject_identifier)
             else:
                 min_samples_main = np.min(np.bincount(main_labels_encoded))
-                num_cv_splits_main = min(
+                num_cv_splits_main = min(10, min_samples_main)
+                
+                main_decoding_output = run_temporal_decoding_analysis(
+                        epochs_data=main_protocol_data, 
+                        target_labels=main_labels_encoded,
+                        classifier_model_type=classifier_type, 
+                        use_grid_search=use_grid_search_for_subject,
+                        use_csp_for_temporal_pipelines=use_csp_for_temporal_subject, 
+                        use_anova_fs_for_temporal_pipelines=use_anova_fs_for_temporal_subject,
+                        param_grid_config=current_param_grid_for_clf_dict, 
+                        cv_folds_for_gridsearch=cv_folds_for_gs_subject,
+                        fixed_classifier_params=current_fixed_params_for_clf_dict,
+                        cross_validation_splitter=num_cv_splits_main,
+                        trial_sample_weights="auto",
+                        n_jobs_external=actual_n_jobs,
+                        group_labels_for_cv=None,
+                        compute_intra_fold_stats=compute_intra_subject_stats_flag,
                         chance_level=CHANCE_LEVEL_AUC,
+                        n_permutations_for_intra_fold_clusters=n_perms_for_intra_subject_clusters,
+                        compute_temporal_generalization_matrix=compute_tgm_flag if compute_tgm_flag is not None else COMPUTE_TGM_FOR_MAIN_COMPARISON,
                         cluster_threshold_config_intra_fold=cluster_threshold_config_intra_fold
                     )
                 subject_results.update({
@@ -418,7 +427,7 @@ def execute_single_subject_decoding(
                     subject_results["pp_ap_sem_of_specific_scores_1d"] = scipy.stats.sem(
                         stacked_specific_curves, axis=0, nan_policy='omit')
 
-                _, fdr_mask_stack, fdr_pval_stack = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
+                _, fdr_mask_stack, fdr_pval_stack, fdr_test_info_stack = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
                     stacked_specific_curves, CHANCE_LEVEL_AUC, alternative_hypothesis="greater"
                 )
                 subject_results["pp_ap_mean_specific_fdr"] = {
@@ -432,11 +441,10 @@ def execute_single_subject_decoding(
                     subject_results["pp_ap_mean_of_specific_scores_1d"], dtype=bool) if subject_results["pp_ap_mean_of_specific_scores_1d"] is not None else np.array([], dtype=bool)
                 sig_clu_objects_stack = []
                 if clu_obj_stack and p_clu_stack is not None and combined_mask_clu_stack.size > 0:
-                    # MODIFIED
                     for i_c, c_mask_item_stack in enumerate(clu_obj_stack):
                         if p_clu_stack[i_c] < 0.05:
                             sig_clu_objects_stack.append(
-                                c_mask_item_stack)  # MODIFIED
+                                c_mask_item_stack)  
                             combined_mask_clu_stack = np.logical_or(
                                 combined_mask_clu_stack, c_mask_item_stack)  
                 subject_results["pp_ap_mean_specific_cluster"] = {"mask": combined_mask_clu_stack, "cluster_objects": sig_clu_objects_stack,
@@ -573,7 +581,7 @@ def execute_single_subject_decoding(
                                 ap_centric_avg_item["sem_scores_1d"] = scipy.stats.sem(
                                     stacked_curves_for_avg, axis=0, nan_policy='omit')
 
-                            _, fdr_mask_centric, fdr_pval_centric = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
+                            _, fdr_mask_centric, fdr_pval_centric, fdr_test_info_centric = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
                                 stacked_curves_for_avg, CHANCE_LEVEL_AUC, alternative_hypothesis="greater")
                             ap_centric_avg_item["fdr_sig_data"] = {
                                 "mask": fdr_mask_centric, "p_values": fdr_pval_centric, "method": f"FDR on stack for {anchor_ap_display_name}"}
@@ -585,13 +593,13 @@ def execute_single_subject_decoding(
                                 ap_centric_avg_item["average_scores_1d"], dtype=bool) if ap_centric_avg_item["average_scores_1d"] is not None else np.array([], dtype=bool)
                             sig_clu_objects_centric = []
                             if clu_obj_centric and p_clu_centric is not None and combined_mask_clu_centric.size > 0:
-                                # MODIFIED
+                                
                                 for i_cc, c_mask_item_centric in enumerate(clu_obj_centric):
                                     if p_clu_centric[i_cc] < 0.05:
                                         sig_clu_objects_centric.append(
-                                            c_mask_item_centric)  # MODIFIED
+                                            c_mask_item_centric)  
                                         combined_mask_clu_centric = np.logical_or(
-                                            combined_mask_clu_centric, c_mask_item_centric)  # MODIFIED
+                                            combined_mask_clu_centric, c_mask_item_centric)  
                             ap_centric_avg_item["cluster_sig_data"] = {"mask": combined_mask_clu_centric, "cluster_objects": sig_clu_objects_centric,
                                                                        "p_values_all_clusters": p_clu_centric, "method": f"CluPerm on stack for {anchor_ap_display_name}"}
                             logger_run_one.info("  Anchor-centric avg for %s from %d curves. Found: %s",
@@ -630,6 +638,10 @@ def execute_single_subject_decoding(
 
     if save_results_flag or generate_plots_flag:
         try:
+            # Get the detected protocol for folder organization
+            detected_protocol = subject_results.get("detected_protocol", "unknown")
+            
+            # Create hierarchical folder structure: Group / Protocol / Subject_details
             dec_prot_id_str = str(
                 decoding_protocol_identifier if decoding_protocol_identifier else "UnknownProtocolID")
             subfolder_name_components = [subject_identifier, dec_prot_id_str.replace(
@@ -637,8 +649,12 @@ def execute_single_subject_decoding(
             valid_subfolder_components = [
                 comp for comp in subfolder_name_components if comp]
             subfolder_name_for_setup = "_".join(valid_subfolder_components)
+            
+            # Create group_protocol path for better organization
+            group_protocol_path = f"{group_affiliation}_{detected_protocol}"
+            
             subject_results_dir = setup_analysis_results_directory(
-                base_output_results_path, "intra_subject_results", group_affiliation, subfolder_name_for_setup
+                base_output_results_path, "intra_subject_results", group_protocol_path, subfolder_name_for_setup
             )
         except Exception as e_setup_dir:
             logger_run_one.error(

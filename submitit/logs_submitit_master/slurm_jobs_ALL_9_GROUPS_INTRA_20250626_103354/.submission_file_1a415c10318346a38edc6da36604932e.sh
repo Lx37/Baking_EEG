@@ -1,0 +1,1 @@
+/home/tom.balay/Baking_EEG/submitit/logs_submitit_master/slurm_jobs_ALL_9_GROUPS_INTRA_20250626_103354/349916_submission.sh

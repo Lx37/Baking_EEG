@@ -1,13 +1,4 @@
-# File: examples/run_decoding_one_pp.py
-# Single Subject PP (Primary-Associated Phonemes) Protocol Decoding Analysis
-#
-# This script performs PP protocol decoding analysis for a single subject
-# using the _4_decoding_core module. It implements:
-# - Main comparison: PP_all vs AP_all
-# - Specific comparisons: PP_specific vs AP_families
-# - Inter-family comparisons: AP_family vs AP_family
-# - Statistical testing with FDR and cluster-based permutation tests
-# - Optional Temporal Generalization Matrix (TGM) computation
+
 import sys
 import os
 
@@ -294,11 +285,16 @@ def execute_single_subject_decoding(
                 num_cv_splits_main = min(10, min_samples_main)
                 
                 main_decoding_output = run_temporal_decoding_analysis(
-                        main_protocol_data, main_labels_encoded,
-                        classifier_type, use_grid_search_for_subject,
-                        use_csp_for_temporal_subject, use_anova_fs_for_temporal_subject,
-                        current_param_grid_for_clf_dict, current_fixed_params_for_clf_dict,
-                        cv_folds_for_gs_subject, num_cv_splits_main,
+                        epochs_data=main_protocol_data, 
+                        target_labels=main_labels_encoded,
+                        classifier_model_type=classifier_type, 
+                        use_grid_search=use_grid_search_for_subject,
+                        use_csp_for_temporal_pipelines=use_csp_for_temporal_subject, 
+                        use_anova_fs_for_temporal_pipelines=use_anova_fs_for_temporal_subject,
+                        param_grid_config=current_param_grid_for_clf_dict, 
+                        cv_folds_for_gridsearch=cv_folds_for_gs_subject,
+                        fixed_classifier_params=current_fixed_params_for_clf_dict,
+                        cross_validation_splitter=num_cv_splits_main,
                         trial_sample_weights="auto",
                         n_jobs_external=actual_n_jobs,
                         group_labels_for_cv=None,
@@ -642,6 +638,10 @@ def execute_single_subject_decoding(
 
     if save_results_flag or generate_plots_flag:
         try:
+            # Get the detected protocol for folder organization
+            detected_protocol = subject_results.get("detected_protocol", "unknown")
+            
+            # Create hierarchical folder structure: Group / Protocol / Subject_details
             dec_prot_id_str = str(
                 decoding_protocol_identifier if decoding_protocol_identifier else "UnknownProtocolID")
             subfolder_name_components = [subject_identifier, dec_prot_id_str.replace(
@@ -649,8 +649,12 @@ def execute_single_subject_decoding(
             valid_subfolder_components = [
                 comp for comp in subfolder_name_components if comp]
             subfolder_name_for_setup = "_".join(valid_subfolder_components)
+            
+            # Create group_protocol path for better organization
+            group_protocol_path = f"{group_affiliation}_{detected_protocol}"
+            
             subject_results_dir = setup_analysis_results_directory(
-                base_output_results_path, "intra_subject_results", group_affiliation, subfolder_name_for_setup
+                base_output_results_path, "intra_subject_results", group_protocol_path, subfolder_name_for_setup
             )
         except Exception as e_setup_dir:
             logger_run_one.error(

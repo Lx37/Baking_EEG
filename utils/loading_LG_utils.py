@@ -155,19 +155,21 @@ def load_epochs_data_for_lg_decoding(
         )
         return None, {}
 
-    epochs_file_path_base = os.path.join(data_root_path, "data_epochs")
+    # Les fichiers sont directement dans le dossier racine, pas dans data_epochs/
     possible_subject_ids = [subject_identifier,
                             subject_identifier.replace("Tp", "")]
-    possible_suffixes = ["noICA_LG", "ICA_LG", ""]  # Order by specificity
+    # Priority order: ICA_ar > ICA > noICA_ar > noICA
+    possible_suffixes = ["ICA_LG", "noICA_LG"]  # Order by preference ICA first
     fname_candidates = []
     for s_id_cand in possible_subject_ids:
         for suffix_cand in possible_suffixes:
-            base_name = f"{s_id_cand}_LG_preproc"
-            if suffix_cand:
-                base_name += f"_{suffix_cand}"
-            fname_candidates.append(
-                os.path.join(epochs_file_path_base, f"{base_name}-epo.fif")
-            )
+            # Format: {subject_id}_LG_preproc_{suffix}-epo.fif ou {subject_id}_LG_preproc_{suffix}-epo_ar.fif
+            base_name = f"{s_id_cand}_LG_preproc_{suffix_cand}"
+            # Priority: first _ar then without _ar for each suffix
+            fname_candidates.extend([
+                os.path.join(data_root_path, f"{base_name}-epo_ar.fif"),
+                os.path.join(data_root_path, f"{base_name}-epo.fif")
+            ])
     epochs_fif_filename = next(
         (f for f in fname_candidates if os.path.exists(f)), None
     )
@@ -176,7 +178,7 @@ def load_epochs_data_for_lg_decoding(
         logger_data_loading.error(
             "No preprocessed LG epoch FIF file found for '%s' "
             "in '%s'. Checked %d candidates (first 5: %s).",
-            subject_identifier, epochs_file_path_base,
+            subject_identifier, data_root_path,
             len(fname_candidates), fname_candidates[:5]
         )
         return None, {}

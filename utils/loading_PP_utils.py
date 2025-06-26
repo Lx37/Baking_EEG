@@ -32,55 +32,72 @@ def find_epochs_file_with_protocol_detection(
         subject_identifier, subject_identifier.replace("Tp", "")
     ]
 
-    # Define search patterns for different file naming conventions
-    file_patterns = {
-        'legacy': [
-            "{subject_id}_PP_preproc_noICA_PP-epo_ar.fif",
-            "{subject_id}_PP_preproc_ICA_PP-epo_ar.fif",
-            "{subject_id}_PP_preproc-epo_ar.fif"
-        ],
-        'new_format': [
-            "{subject_id}_preproc_noICA_PPAP-epo_ar.fif",
-            "{subject_id}_preproc_ICA_PPAP-epo_ar.fif",
-            "{subject_id}_preproc_PPAP-epo_ar.fif"
-        ]
-    }
-
-    # Define search locations in order of preference
-    search_locations = [
-        # Protocol-specific subdirectories (new structure)
-        ('battery', ['Battery', 'battery']),
-        ('ppext3', ['PPext3', 'ppext3', 'PPExt3']),
-        # Legacy data_epochs directory
-        ('legacy', ['data_epochs'])
+    # Define search patterns - Priority order: ICA_ar > ICA > noICA_ar > noICA
+    file_patterns = [
+        "{subject_id}_PP_preproc_ICA_PP-epo_ar.fif",      # 1st priority: ICA with _ar
+        "{subject_id}_PP_preproc_ICA_PP-epo.fif",         # 2nd priority: ICA without _ar
+        "{subject_id}_PP_preproc_noICA_PP-epo_ar.fif",    # 3rd priority: noICA with _ar
+        "{subject_id}_PP_preproc_noICA_PP-epo.fif"        # 4th priority: noICA without _ar
+    ]
+    
+    battery_patterns = [
+        "{subject_id}_preproc_ICA_PPAP-epo_ar.fif",       # 1st priority: ICA with _ar
+        "{subject_id}_preproc_ICA_PPAP-epo.fif",          # 2nd priority: ICA without _ar
+        "{subject_id}_preproc_noICA_PPAP-epo_ar.fif",     # 3rd priority: noICA with _ar
+        "{subject_id}_preproc_noICA_PPAP-epo.fif"         # 4th priority: noICA without _ar
     ]
 
-    for protocol_type, subdirs in search_locations:
-        for subdir in subdirs:
-            epochs_dir = os.path.join(data_root_path, subdir)
-            if not os.path.isdir(epochs_dir):
-                continue
+    # Check Battery subdirectory first
+    battery_path = os.path.join(data_root_path, "Battery")
+    if os.path.isdir(battery_path):
+        if verbose_logging:
+            logger_data_loading.debug("Searching in Battery directory: %s", battery_path)
+        
+        for subject_id in possible_subject_ids:
+            for pattern in battery_patterns:
+                filename = pattern.format(subject_id=subject_id)
+                full_path = os.path.join(battery_path, filename)
+                if os.path.exists(full_path):
+                    if verbose_logging:
+                        logger_data_loading.info(
+                            "Found epochs file: %s (protocol: battery)",
+                            full_path
+                        )
+                    return full_path, 'battery'
 
-            if verbose_logging:
-                logger_data_loading.debug(
-                    "Searching in %s directory: %s", protocol_type, epochs_dir
-                )
+    # Check PPext3 subdirectory
+    ppext3_path = os.path.join(data_root_path, "PPext3")
+    if os.path.isdir(ppext3_path):
+        if verbose_logging:
+            logger_data_loading.debug("Searching in PPext3 directory: %s", ppext3_path)
+        
+        for subject_id in possible_subject_ids:
+            for pattern in battery_patterns:  # Same format as Battery
+                filename = pattern.format(subject_id=subject_id)
+                full_path = os.path.join(ppext3_path, filename)
+                if os.path.exists(full_path):
+                    if verbose_logging:
+                        logger_data_loading.info(
+                            "Found epochs file: %s (protocol: ppext3)",
+                            full_path
+                        )
+                    return full_path, 'ppext3'
 
-            # Try both legacy and new file naming patterns
-            for pattern_type, patterns in file_patterns.items():
-                for subject_id in possible_subject_ids:
-                    for pattern in patterns:
-                        filename = pattern.format(subject_id=subject_id)
-                        full_path = os.path.join(epochs_dir, filename)
-
-                        if os.path.exists(full_path):
-                            if verbose_logging:
-                                logger_data_loading.info(
-                                    "Found epochs file: %s (protocol: %s, "
-                                    "pattern: %s)",
-                                    full_path, protocol_type, pattern_type
-                                )
-                            return full_path, protocol_type
+    # Check root directory (legacy format)
+    if verbose_logging:
+        logger_data_loading.debug("Searching in root directory: %s", data_root_path)
+    
+    for subject_id in possible_subject_ids:
+        for pattern in file_patterns:
+            filename = pattern.format(subject_id=subject_id)
+            full_path = os.path.join(data_root_path, filename)
+            if os.path.exists(full_path):
+                if verbose_logging:
+                    logger_data_loading.info(
+                        "Found epochs file: %s (protocol: legacy)",
+                        full_path
+                    )
+                return full_path, 'legacy'
 
     # If nothing found, return None
     if verbose_logging:
@@ -145,110 +162,73 @@ def load_epochs_data_for_decoding_delirium(
         return None, {}
 
     start_time = time.time()
-    group_affiliation_lower = group_affiliation.lower()
+    
+    # First, try to find the subject in ALL_SUBJECT_GROUPS to get the exact group name
+    detected_group = next(
+        (grp for grp, s_list in ALL_SUBJECT_GROUPS.items()
+         if subject_identifier in s_list), None,
+    )
+    
+    # Use detected group or provided group_affiliation
+    group_to_use = detected_group if detected_group else group_affiliation.upper()
+    
     data_root_path = None
 
-    # --- Path determination logic ---
-    if group_affiliation_lower == "controls":
+    # --- Path determination logic using exact group names ---
+    if group_to_use == "CONTROLS":
         potential_path = os.path.join(base_input_data_path, "PP_CONTROLS_0.5")
         if os.path.isdir(potential_path):
             data_root_path = potential_path
-    elif group_affiliation_lower == "controls_coma":
-        potential_path = os.path.join(base_input_data_path, "PP_CONTROLS_COMA_01HZ")
-        if os.path.isdir(potential_path):
-            data_root_path = potential_path
-    elif group_affiliation_lower in ["del", "delirium+"]:
+    elif group_to_use == "COMA":
+        # Try both 01HZ and 1HZ variants
+        for freq_suffix in ["_01HZ", "_1HZ"]:
+            potential_path = os.path.join(base_input_data_path, f"PP_COMA{freq_suffix}")
+            if os.path.isdir(potential_path):
+                data_root_path = potential_path
+                break
+    elif group_to_use == "MCS+":
+        # Try both 01HZ and 1HZ variants
+        for freq_suffix in ["_01HZ", "_1HZ"]:
+            potential_path = os.path.join(base_input_data_path, f"PP_MCS+{freq_suffix}")
+            if os.path.isdir(potential_path):
+                data_root_path = potential_path
+                break
+    elif group_to_use == "MCS-":
+        # Try both 01HZ and 1HZ variants
+        for freq_suffix in ["_01HZ", "_1HZ"]:
+            potential_path = os.path.join(base_input_data_path, f"PP_MCS-{freq_suffix}")
+            if os.path.isdir(potential_path):
+                data_root_path = potential_path
+                break
+    elif group_to_use == "VS":
+        # Try both 01HZ and 1HZ variants (VS corresponds to VS in your folder structure)
+        for freq_suffix in ["_01HZ", "_1HZ"]:
+            potential_path = os.path.join(base_input_data_path, f"PP_VS{freq_suffix}")
+            if os.path.isdir(potential_path):
+                data_root_path = potential_path
+                break
+    elif group_to_use == "DELIRIUM+":
         potential_path = os.path.join(
             base_input_data_path,
             "PP_PATIENTS_DELIRIUM+_0.5"
         )
         if os.path.isdir(potential_path):
             data_root_path = potential_path
-    elif group_affiliation_lower in ["nodel", "delirium-"]:
+    elif group_to_use == "DELIRIUM-":
         potential_path = os.path.join(
             base_input_data_path,
             "PP_PATIENTS_DELIRIUM-_0.5"
         )
         if os.path.isdir(potential_path):
             data_root_path = potential_path
-    # New group support: COMA, MCS, MCS-, VG with 1HZ frequency
-    elif group_affiliation_lower in ["coma"]:
-        potential_path = os.path.join(base_input_data_path, "PP_COMA_1HZ")
-        if os.path.isdir(potential_path):
-            data_root_path = potential_path
-    elif group_affiliation_lower in ["mcs"]:
-        potential_path = os.path.join(base_input_data_path, "PP_MCS_1HZ")
-        if os.path.isdir(potential_path):
-            data_root_path = potential_path
-    elif group_affiliation_lower in ["mcs-", "mcs_minus"]:
-        potential_path = os.path.join(base_input_data_path, "PP_MCS-_1HZ")
-        if os.path.isdir(potential_path):
-            data_root_path = potential_path
-    elif group_affiliation_lower in ["vg"]:
-        potential_path = os.path.join(base_input_data_path, "PP_VG_1HZ")
-        if os.path.isdir(potential_path):
-            data_root_path = potential_path
-
-    # Fallback path logic if primary path fails
+    
+    # Fallback for special cases or legacy group names
     if not data_root_path:
-        detected_group = next(
-            (grp for grp, s_list in ALL_SUBJECT_GROUPS.items()
-             if subject_identifier in s_list), None,
-        )
-        if detected_group:
-            logger_data_loading.warning(
-                "Original group path for '%s' not found for subject '%s'. "
-                "Subject found in group '%s'. Using its path convention.",
-                group_affiliation, subject_identifier, detected_group
-            )
-            group_affiliation_lower = detected_group.lower()
-            if group_affiliation_lower == "controls":
-                data_root_path = os.path.join(
-                    base_input_data_path, "PP_CONTROLS_0.5")
-            elif group_affiliation_lower in ["del", "nodel"]:
-                data_root_path = os.path.join(
-                    base_input_data_path,
-                    f"PP_PATIENTS_{detected_group.upper()}_0.5"
-                )
-            elif group_affiliation_lower == "coma":
-                data_root_path = os.path.join(
-                    base_input_data_path, "PP_COMA_1HZ")
-            elif group_affiliation_lower == "mcs":
-                data_root_path = os.path.join(
-                    base_input_data_path, "PP_MCS_1HZ")
-            elif group_affiliation_lower in ["mcs-", "mcs_minus"]:
-                data_root_path = os.path.join(
-                    base_input_data_path, "PP_MCS-_1HZ")
-            elif group_affiliation_lower == "vg":
-                data_root_path = os.path.join(
-                    base_input_data_path, "PP_VG_1HZ")
-        else:  # Generic fallback
-            # Try new 1HZ format first
-            potential_paths_1hz = [
-                os.path.join(
-                    base_input_data_path,
-                    f"PP_{group_affiliation.upper()}_1HZ"
-                ),
-                os.path.join(
-                    base_input_data_path,
-                    f"PP_{group_affiliation.upper()}-_1HZ"
-                )
-            ]
-            for potential_path in potential_paths_1hz:
-                if os.path.isdir(potential_path):
-                    data_root_path = potential_path
-                    break
-
-            # Try original 0.5 format if 1HZ not found
-            if not data_root_path:
-                potential_path_generic = os.path.join(
-                    base_input_data_path,
-                    f"PP_{group_affiliation.upper()}_0.5"
-                )
-                if os.path.isdir(potential_path_generic):
-                    data_root_path = potential_path_generic
-                else:
-                    data_root_path = base_input_data_path  # Last resort
+        group_affiliation_lower = group_affiliation.lower()
+        if group_affiliation_lower == "controls_coma":
+            potential_path = os.path.join(base_input_data_path, "PP_CONTROLS_COMA_01HZ")
+            if os.path.isdir(potential_path):
+                data_root_path = potential_path
 
     if not data_root_path or not os.path.isdir(data_root_path):
         logger_data_loading.error(
@@ -258,8 +238,6 @@ def load_epochs_data_for_decoding_delirium(
             base_input_data_path
         )
         return None, {}  # Or raise FileNotFoundError
-
-    epochs_file_path_base = os.path.join(data_root_path, "data_epochs")
 
     # Use new file detection function for multiple protocols/structures
     epochs_fif_filename, file_protocol_type = (
@@ -273,18 +251,17 @@ def load_epochs_data_for_decoding_delirium(
         possible_subject_ids = [
             subject_identifier, subject_identifier.replace("Tp", "")
         ]
-        possible_suffixes = ["noICA_PP", "ICA_PP", ""]
+        # Priority order: ICA_ar > ICA > noICA_ar > noICA
+        possible_suffixes = ["ICA_PP", "noICA_PP"]
         fname_candidates = []
         for s_id_cand in possible_subject_ids:
             for suffix_cand in possible_suffixes:
-                base_name = f"{s_id_cand}_PP_preproc"
-                if suffix_cand:
-                    base_name += f"_{suffix_cand}"
-                fname_candidates.append(
-                    os.path.join(
-                        epochs_file_path_base, f"{base_name}-epo_ar.fif"
-                    )
-                )
+                base_name = f"{s_id_cand}_PP_preproc_{suffix_cand}"
+                # Priority: first _ar then without _ar for each suffix
+                fname_candidates.extend([
+                    os.path.join(data_root_path, f"{base_name}-epo_ar.fif"),
+                    os.path.join(data_root_path, f"{base_name}-epo.fif")
+                ])
         epochs_fif_filename = next(
             (f for f in fname_candidates if os.path.exists(f)), None
         )
@@ -738,29 +715,61 @@ def load_epochs_data_auto_protocol(
     file_protocol_hint = None
 
     # Reconstruct the data path to get file protocol hint
-    group_affiliation_lower = group_affiliation.lower()
-    if group_affiliation_lower == "controls":
+    # First, try to find the subject in ALL_SUBJECT_GROUPS to get the exact group name
+    detected_group = next(
+        (grp for grp, s_list in ALL_SUBJECT_GROUPS.items()
+         if subject_identifier in s_list), None,
+    )
+    
+    # Use detected group or provided group_affiliation
+    group_to_use = detected_group if detected_group else group_affiliation.upper()
+    
+    if group_to_use == "CONTROLS":
         data_root_path = os.path.join(base_input_data_path, "PP_CONTROLS_0.5")
-    elif group_affiliation_lower == "controls_coma":
-        data_root_path = os.path.join(base_input_data_path, "PP_CONTROLS_COMA_01HZ")
-    elif group_affiliation_lower in ["del", "delirium+"]:
+    elif group_to_use == "COMA":
+        # Try both 01HZ and 1HZ variants  
+        for freq_suffix in ["_01HZ", "_1HZ"]:
+            potential_path = os.path.join(base_input_data_path, f"PP_COMA{freq_suffix}")
+            if os.path.isdir(potential_path):
+                data_root_path = potential_path
+                break
+    elif group_to_use == "MCS+":
+        # Try both 01HZ and 1HZ variants
+        for freq_suffix in ["_01HZ", "_1HZ"]:
+            potential_path = os.path.join(base_input_data_path, f"PP_MCS+{freq_suffix}")
+            if os.path.isdir(potential_path):
+                data_root_path = potential_path
+                break
+    elif group_to_use == "MCS-":
+        # Try both 01HZ and 1HZ variants
+        for freq_suffix in ["_01HZ", "_1HZ"]:
+            potential_path = os.path.join(base_input_data_path, f"PP_MCS-{freq_suffix}")
+            if os.path.isdir(potential_path):
+                data_root_path = potential_path
+                break
+    elif group_to_use == "VS":
+       
+        for freq_suffix in ["_01HZ", "_1HZ"]:
+            potential_path = os.path.join(base_input_data_path, f"PP_VS{freq_suffix}")
+            if os.path.isdir(potential_path):
+                data_root_path = potential_path
+                break
+    elif group_to_use == "DELIRIUM+":
         data_root_path = os.path.join(
             base_input_data_path,
             "PP_PATIENTS_DELIRIUM+_0.5"
         )
-    elif group_affiliation_lower in ["nodel", "delirium-"]:
+    elif group_to_use == "DELIRIUM-":
         data_root_path = os.path.join(
             base_input_data_path,
             "PP_PATIENTS_DELIRIUM-_0.5"
         )
-    elif group_affiliation_lower in ["coma"]:
-        data_root_path = os.path.join(base_input_data_path, "PP_COMA_1HZ")
-    elif group_affiliation_lower in ["mcs"]:
-        data_root_path = os.path.join(base_input_data_path, "PP_MCS_1HZ")
-    elif group_affiliation_lower in ["mcs-", "mcs_minus"]:
-        data_root_path = os.path.join(base_input_data_path, "PP_MCS-_1HZ")
-    elif group_affiliation_lower in ["vg"]:
-        data_root_path = os.path.join(base_input_data_path, "PP_VG_1HZ")
+    
+    # Fallback for special cases
+    if not data_root_path or not os.path.isdir(data_root_path):
+        group_affiliation_lower = group_affiliation.lower()
+        if group_affiliation_lower == "controls_coma":
+            data_root_path = os.path.join(base_input_data_path, "PP_CONTROLS_COMA_01HZ")
 
     if data_root_path and os.path.isdir(data_root_path):
         _, file_protocol_hint = find_epochs_file_with_protocol_detection(

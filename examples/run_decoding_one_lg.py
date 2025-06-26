@@ -1,10 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Single Subject LG (Local-Global) Protocol Decoding Analysis.
 
-This script performs Local-Global protocol decoding analysis for a single
-subject using the _4_decoding_core module.
-"""
 
 
 import sys
@@ -33,7 +27,10 @@ from utils.vizualization_utils_LG import create_subject_decoding_dashboard_plots
 from utils.utils import (
     configure_project_paths, setup_analysis_results_directory
 )
-from utils.loading_LG_utils import load_epochs_data_for_lg_decoding
+from utils.loading_LG_utils import (
+    load_epochs_data_for_lg_decoding,
+    load_epochs_data_auto_protocol_lg
+)
 from utils import stats_utils as bEEG_stats
 from config.config import ALL_SUBJECT_GROUPS
 from config.decoding_config import (
@@ -207,9 +204,15 @@ def execute_single_subject_lg_decoding(
         logger.info("Using LG loading conditions: %s",
                     list(actual_loading_conditions.keys()))
 
-        epochs_object, returned_data_dict = load_epochs_data_for_lg_decoding(
+        epochs_object, returned_data_dict, detected_protocol = load_epochs_data_auto_protocol_lg(
             subject_identifier, group_affiliation, base_input_data_path,
             actual_loading_conditions, enable_verbose_logging
+        )
+
+        # Log detected protocol information
+        logger.info(
+            "Detected protocol '%s' for subject %s",
+            detected_protocol, subject_identifier
         )
 
         if epochs_object is None:
@@ -219,6 +222,7 @@ def execute_single_subject_lg_decoding(
             return subject_results
 
         subject_results["epochs_time_points"] = epochs_object.times.copy()
+        subject_results["detected_protocol"] = detected_protocol
 
         # Handle param_grid_config and fixed_params
         current_fixed_params_for_clf_dict = None
@@ -567,9 +571,13 @@ def execute_single_subject_lg_decoding(
                     comp for comp in subfolder_name_components if comp]
                 subfolder_name_for_setup = "_".join(valid_subfolder_components)
 
+                # Create group_protocol path for better organization
+                detected_protocol = subject_results.get("detected_protocol", "unknown")
+                group_protocol_path = f"{group_affiliation}_{detected_protocol}"
+
                 subject_results_dir = setup_analysis_results_directory(
                     base_output_results_path, "intra_subject_lg_results",
-                    group_affiliation, subfolder_name_for_setup)
+                    group_protocol_path, subfolder_name_for_setup)
             except Exception as e_setup_dir:
                 logger.error(
                     "Failed to setup results directory for %s: %s. "

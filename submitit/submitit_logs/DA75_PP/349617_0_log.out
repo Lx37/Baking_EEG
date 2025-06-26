@@ -1,0 +1,6 @@
+submitit INFO (2025-06-25 17:46:16,411) - Starting with JobEnvironment(job_id=349617, hostname=node2, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-25 17:46:16,411) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/submitit_logs/DA75_PP/349617_submitted.pkl
+DEBUG Worker - project_root: /home/tom.balay/Baking_EEG
+DEBUG Worker - sys.path: ['/home/tom.balay/Baking_EEG', '/home/tom.balay/Baking_EEG/submitit', '/usr/lib/python311.zip']...
+DEBUG Worker - Processing subject DA75 from group MCS+
+DEBUG Worker - Using PP protocol

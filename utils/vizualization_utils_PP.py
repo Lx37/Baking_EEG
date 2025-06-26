@@ -816,7 +816,7 @@ def create_subject_decoding_dashboard_plots(
         try:
             fig1 = plt.figure(figsize=(15, 12))  # Taille de la figure
             # Titre principal de la figure, incluant le protocole
-            title_main_task_p1 = f"Class balanced PP vs all AP)"
+            title_main_task_p1 = f"Class balanced PP vs all AP"
             fig1.suptitle(
                 f"Dashboard - Subject: {subject_identifier} ({group_identifier}) - Classifier: {classifier_name_for_title.upper()}\n"
                 f"Page {current_page_num_tracker}/{TOTAL_PAGES_TO_GENERATE_ACTUALLY}: Overview of - {title_main_task_p1}",
