@@ -490,12 +490,13 @@ def run_temporal_decoding_analysis(
         if not np.all(np.isnan(scores_1d_all_folds)):
             _, fdr_mask_1d, fdr_p_1d, fdr_test_info = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
                 scores_1d_all_folds, chance_level, alternative_hypothesis="greater",
-                statistical_test_type="adaptive"
+                statistical_test_type="wilcoxon"  # Force Wilcoxon test
             )
             fdr_1d_data = {"mask": fdr_mask_1d,
-                "p_values": fdr_p_1d, "method": "FDR_CV_Folds_1D", "test_info": fdr_test_info}
+                "p_values": fdr_p_1d, "p_values_raw": fdr_test_info.get("p_values_raw", fdr_p_1d),
+                "method": "FDR_CV_Folds_1D_Wilcoxon", "test_info": fdr_test_info}
 
-            t_obs_clu, clu_1d, p_clu_1d, _ = bEEG_stats.perform_cluster_permutation_test(
+            t_obs_clu, clu_1d, p_clu_1d, clu_info = bEEG_stats.perform_cluster_permutation_test(
             scores_1d_all_folds, 
             chance_level, 
             n_permutations_for_intra_fold_clusters,
@@ -513,7 +514,8 @@ def run_temporal_decoding_analysis(
                         combined_mask_clu1d = np.logical_or(combined_mask_clu1d, cluster_mask)
 
             cluster_1d_data = {"mask": combined_mask_clu1d, "cluster_objects": sig_clu_obj1d,
-                               "p_values_all_clusters": p_clu_1d, "method": "CluPerm_CV_Folds_1D"}
+                               "p_values_all_clusters": p_clu_1d, "cluster_info": clu_info,
+                               "method": "CluPerm_CV_Folds_1D_Wilcoxon"}
 
         if compute_temporal_generalization_matrix and not np.all(np.isnan(tgm_all_folds)) and \
            tgm_all_folds.shape[0] > 1:
@@ -523,14 +525,16 @@ def run_temporal_decoding_analysis(
                 _, fdr_mask_tgm_flat, pvals_tgm_flat, fdr_test_info_tgm = \
                     bEEG_stats.perform_pointwise_fdr_correction_on_scores(
                         flat_tgm_scores, chance_level, alternative_hypothesis="greater",
-                        statistical_test_type="adaptive"
+                        statistical_test_type="wilcoxon"  # Force Wilcoxon test
                     )
                 fdr_tgm_data = {
                     "mask": (fdr_mask_tgm_flat.reshape(n_tr, n_te)
                              if hasattr(fdr_mask_tgm_flat, 'reshape') and fdr_mask_tgm_flat is not None else None),
                     "p_values": (pvals_tgm_flat.reshape(n_tr, n_te)
                                  if hasattr(pvals_tgm_flat, 'reshape') and pvals_tgm_flat is not None else None),
-                    "method": "FDR_CV_Folds_TGM",
+                    "p_values_raw": (fdr_test_info_tgm.get("p_values_raw", pvals_tgm_flat).reshape(n_tr, n_te)
+                                   if hasattr(pvals_tgm_flat, 'reshape') and pvals_tgm_flat is not None else None),
+                    "method": "FDR_CV_Folds_TGM_Wilcoxon",
                     "test_info": fdr_test_info_tgm
                 }
             else:

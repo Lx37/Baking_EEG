@@ -96,6 +96,12 @@ N_PERMUTATIONS_INTRA_SUBJECT = 1024
 # For stats between subjects (group level)
 N_PERMUTATIONS_GROUP_LEVEL = 1024
 
+# === STATISTICAL TEST CONFIGURATION ===
+# Statistical test for FDR pointwise correction: 'wilcoxon' recommended for non-parametric
+# For cluster permutation tests: 'ttest' is MNE default, 'wilcoxon' is experimental
+STAT_TEST_FOR_FDR_POINTWISE = "wilcoxon"  # Options: "wilcoxon", "ttest"
+STAT_TEST_FOR_CLUSTER_PERMUTATION = "wilcoxon"  # Options: "ttest", "wilcoxon"
+
 # Cluster threshold configuration for statistical tests
 GROUP_LEVEL_STAT_THRESHOLD_TYPE = "tfce"  # 'tfce' or 'stat'
 # Only used if GROUP_LEVEL_STAT_THRESHOLD_TYPE is 'stat'
@@ -214,14 +220,14 @@ CONFIG_LOAD_BATTERY_PROTOCOL = {
 CONFIG_LOAD_PPEXT3_PROTOCOL = {
     "XPP_ALL": "PP/",  # All PP events
     "XAP_ALL": "AP/",  # All AP events
-    "PP_MUSIC": "PP/Music/",  # PP Music events
-    "PP_NOISE": "PP/Noise/",  # PP Noise events
-    "PP_CONV": "PP/Conv/",    # PP Conversation events
-    "PP_DIO": "PP/Dio/",      # PP Dialogue events
-    "AP_MUSIC": "AP/Music/",  # AP Music events
-    "AP_NOISE": "AP/Noise/",  # AP Noise events
-    "AP_CONV": "AP/Conv/",    # AP Conversation events
-    "AP_DIO": "AP/Dio/",      # AP Dialogue events
+    "PP_MUSIC": "PP/Music/",  
+    "PP_NOISE": "PP/Noise/",  
+    "PP_CONV": "PP/Conv/",   
+    "PP_DIO": "PP/Dio/",     -
+    "AP_MUSIC": "AP/Music/",
+    "AP_NOISE": "AP/Noise/",
+    "AP_CONV": "AP/Conv/",   -
+    "AP_DIO": "AP/Dio/",     
     # AP families for PPext3 protocol
     "AP_FAMILY_1": ["AP/1/Music/", "AP/1/Noise/", "AP/1/Conv/", "AP/1/Dio/"],
     "AP_FAMILY_2": ["AP/2/Music/", "AP/2/Noise/", "AP/2/Conv/", "AP/2/Dio/"],

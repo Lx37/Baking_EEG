@@ -57,6 +57,8 @@ def find_epochs_file_with_protocol_detection(
             for pattern in battery_patterns:
                 filename = pattern.format(subject_id=subject_id)
                 full_path = os.path.join(battery_path, filename)
+                if verbose_logging:
+                    logger_data_loading.debug("  Trying Battery file: %s", full_path)
                 if os.path.exists(full_path):
                     if verbose_logging:
                         logger_data_loading.info(
@@ -64,7 +66,7 @@ def find_epochs_file_with_protocol_detection(
                             full_path
                         )
                     return full_path, 'battery'
-
+                    
     # Check PPext3 subdirectory
     ppext3_path = os.path.join(data_root_path, "PPext3")
     if os.path.isdir(ppext3_path):
@@ -75,6 +77,8 @@ def find_epochs_file_with_protocol_detection(
             for pattern in battery_patterns:  # Same format as Battery
                 filename = pattern.format(subject_id=subject_id)
                 full_path = os.path.join(ppext3_path, filename)
+                if verbose_logging:
+                    logger_data_loading.debug("  Trying PPext3 file: %s", full_path)
                 if os.path.exists(full_path):
                     if verbose_logging:
                         logger_data_loading.info(
@@ -82,7 +86,6 @@ def find_epochs_file_with_protocol_detection(
                             full_path
                         )
                     return full_path, 'ppext3'
-
     # Check root directory (legacy format)
     if verbose_logging:
         logger_data_loading.debug("Searching in root directory: %s", data_root_path)
@@ -91,6 +94,8 @@ def find_epochs_file_with_protocol_detection(
         for pattern in file_patterns:
             filename = pattern.format(subject_id=subject_id)
             full_path = os.path.join(data_root_path, filename)
+            if verbose_logging:
+                logger_data_loading.debug("  Trying legacy file: %s", full_path)
             if os.path.exists(full_path):
                 if verbose_logging:
                     logger_data_loading.info(
@@ -173,36 +178,55 @@ def load_epochs_data_for_decoding_delirium(
     group_to_use = detected_group if detected_group else group_affiliation.upper()
     
     data_root_path = None
-
-    # --- Path determination logic using exact group names ---
     if group_to_use == "CONTROLS":
         potential_path = os.path.join(base_input_data_path, "PP_CONTROLS_0.5")
         if os.path.isdir(potential_path):
             data_root_path = potential_path
     elif group_to_use == "COMA":
-        # Try both 01HZ and 1HZ variants
-        for freq_suffix in ["_01HZ", "_1HZ"]:
+        # Try both 1HZ and 01HZ variants (prioritize _1HZ based on actual data structure)
+        for freq_suffix in ["_1HZ", "_01HZ"]:
             potential_path = os.path.join(base_input_data_path, f"PP_COMA{freq_suffix}")
+            if verbose_logging:
+                logger_data_loading.debug("Trying COMA path: %s (exists: %s)", 
+                                        potential_path, os.path.isdir(potential_path))
             if os.path.isdir(potential_path):
                 data_root_path = potential_path
                 break
     elif group_to_use == "MCS+":
-        # Try both 01HZ and 1HZ variants
-        for freq_suffix in ["_01HZ", "_1HZ"]:
+        # Try both 1HZ and 01HZ variants (prioritize _1HZ based on actual data structure)
+        for freq_suffix in ["_1HZ", "_01HZ"]:
             potential_path = os.path.join(base_input_data_path, f"PP_MCS+{freq_suffix}")
+            if verbose_logging:
+                logger_data_loading.debug("Trying MCS+ path: %s (exists: %s)", 
+                                        potential_path, os.path.isdir(potential_path))
             if os.path.isdir(potential_path):
                 data_root_path = potential_path
                 break
     elif group_to_use == "MCS-":
-        # Try both 01HZ and 1HZ variants
-        for freq_suffix in ["_01HZ", "_1HZ"]:
+        # Try both 1HZ and 01HZ variants (prioritize _1HZ based on actual data structure)
+        for freq_suffix in ["_1HZ", "_01HZ"]:
             potential_path = os.path.join(base_input_data_path, f"PP_MCS-{freq_suffix}")
+            if verbose_logging:
+                logger_data_loading.debug("Trying MCS- path: %s (exists: %s)", 
+                                        potential_path, os.path.isdir(potential_path))
             if os.path.isdir(potential_path):
                 data_root_path = potential_path
                 break
     elif group_to_use == "VS":
-        # Try both 01HZ and 1HZ variants (VS corresponds to VS in your folder structure)
-        for freq_suffix in ["_01HZ", "_1HZ"]:
+        # Try both 1HZ and 01HZ variants (prioritize _1HZ based on actual data structure)
+        for freq_suffix in ["_1HZ", "_01HZ"]:
+            potential_path = os.path.join(base_input_data_path, f"PP_VS{freq_suffix}")
+            if verbose_logging:
+                logger_data_loading.debug("Trying VS path: %s (exists: %s)", 
+                                        potential_path, os.path.isdir(potential_path))
+            if os.path.isdir(potential_path):
+                data_root_path = potential_path
+                breakh.isdir(potential_path):
+                data_root_path = potential_path
+                break
+    elif group_to_use == "VS":
+        # Try both 1HZ and 01HZ variants (prioritize _1HZ based on actual data structure)
+        for freq_suffix in ["_1HZ", "_01HZ"]:
             potential_path = os.path.join(base_input_data_path, f"PP_VS{freq_suffix}")
             if os.path.isdir(potential_path):
                 data_root_path = potential_path
@@ -562,14 +586,14 @@ def load_epochs_data_for_decoding_ppext3(
             'AP_events': 'AP/',
             # All PP events (PP/Music-Noise/Conv-Dio/D-G/V1-3)
             'PP_events': 'PP/',
-            'AP_Music': 'AP/Music/',     # AP Music events
-            'AP_Noise': 'AP/Noise/',     # AP Noise events
-            'AP_Conv': 'AP/Conv/',       # AP Conversation events
-            'AP_Dio': 'AP/Dio/',         # AP Dialogue events
-            'PP_Music': 'PP/Music/',     # PP Music events
-            'PP_Noise': 'PP/Noise/',     # PP Noise events
-            'PP_Conv': 'PP/Conv/',       # PP Conversation events
-            'PP_Dio': 'PP/Dio/',         # PP Dialogue events
+            'AP_Music': 'AP/Music/',    
+            'AP_Noise': 'AP/Noise/',    
+            'AP_Conv': 'AP/Conv/',     
+            'AP_Dio': 'AP/Dio/',        
+            'PP_Music': 'PP/Music/',   
+            'PP_Noise': 'PP/Noise/',     
+            'PP_Conv': 'PP/Conv/',  
+            'PP_Dio': 'PP/Dio/',     
         }
 
     if verbose_logging:
@@ -626,55 +650,114 @@ def load_epochs_data_for_decoding_ppext3(
 def detect_protocol_type(epochs_object, file_protocol_hint=None):
     """Automatically detect protocol type based on event IDs and file location.
 
+    Protocol-specific patterns:
+    - PPext3: Has both Music-Noise AND Conv-Dio events (278 epochs expected)
+    - Battery: Has Music/Conv events but NO Noise/Dio events (128 epochs expected)  
+    - Delirium: Simple AP/PP structure without Music/Conv/Noise/Dio
+
     Args:
         epochs_object (mne.Epochs): The loaded epochs object.
         file_protocol_hint (str, optional): Protocol hint from file location
-                                             detection.
+                                             detection ('battery', 'ppext3', 'legacy').
 
     Returns:
-        str: Detected protocol type ('delirium', 'battery', 'ppext3',
-             'unknown')
+        str: Detected protocol type ('delirium', 'battery', 'ppext3', 'unknown')
     """
     if epochs_object is None or not hasattr(epochs_object, 'event_id'):
         return 'unknown'
 
     event_keys = list(epochs_object.event_id.keys())
-
-    # Use file protocol hint if available and matches event structure
-    if file_protocol_hint in ['battery', 'ppext3']:
-        # Verify the hint matches the actual event structure
-        has_music_noise = any('Music' in k or 'Noise' in k for k in event_keys)
-        has_conv_dio = any('Conv' in k and 'Dio' in k for k in event_keys)
-
-        if file_protocol_hint == 'ppext3' and has_music_noise and has_conv_dio:
-            return 'ppext3'
-        elif (file_protocol_hint == 'battery' and has_music_noise and
-              not has_conv_dio):
-            return 'battery'
-
-    # Check for PPext3 protocol (Music-Noise and Conv-Dio patterns)
-    has_music_noise = any('Music' in k or 'Noise' in k for k in event_keys)
-    has_conv_dio = any('Conv' in k and 'Dio' in k for k in event_keys)
-
-    if has_music_noise and has_conv_dio:
-        return 'ppext3'
-
-    # Check for Battery protocol (Music/Conv but no Noise/Dio)
-    has_music_conv = any('Music' in k or 'Conv' in k for k in event_keys)
-    has_ap_pp_structure = any(k.startswith(('AP/', 'PP/')) for k in event_keys)
-
-    if has_music_conv and has_ap_pp_structure and not has_conv_dio:
-        return 'battery'
-
-    # Check for standard delirium protocol
-    has_delirium_events = any(
-        k in ['AP', 'PP'] or k.startswith(('AP/', 'PP/'))
-        for k in event_keys
+    
+    # Log all events for debugging
+    logger_data_loading.debug("Event keys for protocol detection: %s", event_keys)
+    
+    # Analyze event patterns with more specificity
+    has_music = any('Music' in k for k in event_keys)
+    has_noise = any('Noise' in k for k in event_keys) 
+    has_conv = any('Conv' in k for k in event_keys)
+    has_dio = any('Dio' in k for k in event_keys)
+    has_ap_slash_structure = any(k.startswith('AP/') for k in event_keys)
+    has_pp_slash_structure = any(k.startswith('PP/') for k in event_keys)
+    has_simple_ap = 'AP' in event_keys
+    has_simple_pp = 'PP' in event_keys
+    
+    # Count total events for additional validation
+    total_events = len(epochs_object.events) if hasattr(epochs_object, 'events') else 0
+    
+    logger_data_loading.debug(
+        "Protocol detection analysis: Music=%s, Noise=%s, Conv=%s, Dio=%s, "
+        "AP/=%s, PP/=%s, simple_AP=%s, simple_PP=%s, total_events=%d",
+        has_music, has_noise, has_conv, has_dio, has_ap_slash_structure, 
+        has_pp_slash_structure, has_simple_ap, has_simple_pp, total_events
     )
-
-    if has_delirium_events and not has_music_conv:
+    
+    # === PPext3 Protocol Detection (Most Specific) ===
+    # PPext3 MUST have BOTH Music-Noise AND Conv-Dio combinations
+    if (has_music and has_noise and has_conv and has_dio and 
+        has_ap_slash_structure and has_pp_slash_structure):
+        
+        # Verify typical PPext3 event structure
+        ppext3_events = [k for k in event_keys if k.startswith(('AP/', 'PP/'))]
+        music_noise_events = [k for k in ppext3_events if 'Music' in k or 'Noise' in k]
+        conv_dio_events = [k for k in ppext3_events if 'Conv' in k or 'Dio' in k]
+        
+        # PPext3 should have both types of events
+        if len(music_noise_events) > 0 and len(conv_dio_events) > 0:
+            logger_data_loading.info(
+                "Detected PPext3 protocol: %d Music/Noise events, %d Conv/Dio events, %d total events",
+                len(music_noise_events), len(conv_dio_events), total_events
+            )
+            return 'ppext3'
+    
+    # === Battery Protocol Detection ===
+    # Battery has Music/Conv but NO Noise/Dio
+    if (has_music and has_conv and not has_noise and not has_dio and
+        has_ap_slash_structure and has_pp_slash_structure):
+        
+        # Verify typical Battery event structure
+        battery_events = [k for k in event_keys if k.startswith(('AP/', 'PP/'))]
+        music_conv_events = [k for k in battery_events if 'Music' in k or 'Conv' in k]
+        
+        if len(music_conv_events) > 0:
+            logger_data_loading.info(
+                "Detected Battery protocol: %d Music/Conv events, %d total events",
+                len(music_conv_events), total_events
+            )
+            return 'battery'
+    
+    # === Legacy/Delirium Protocol Detection ===
+    # Simple AP/PP structure without Music/Conv/Noise/Dio
+    if ((has_simple_ap and has_simple_pp) or 
+        (has_ap_slash_structure and has_pp_slash_structure)) and \
+       not any(x in k for k in event_keys for x in ['Music', 'Conv', 'Noise', 'Dio']):
+        
+        logger_data_loading.info(
+            "Detected Delirium/Legacy protocol: simple AP/PP structure, %d total events",
+            total_events
+        )
         return 'delirium'
-
+    
+    # === Use file protocol hint as fallback if structure is ambiguous ===
+    if file_protocol_hint in ['battery', 'ppext3', 'legacy']:
+        logger_data_loading.warning(
+            "Protocol detection ambiguous, using file hint: %s (events: %s)",
+            file_protocol_hint, event_keys[:5]
+        )
+        if file_protocol_hint == 'legacy':
+            return 'delirium'
+        return file_protocol_hint
+    
+    # === Final fallback: detect any AP/PP structure ===
+    if any(k in ['AP', 'PP'] or k.startswith(('AP/', 'PP/')) for k in event_keys):
+        logger_data_loading.warning(
+            "Defaulting to delirium protocol for unrecognized AP/PP structure: %s",
+            event_keys[:5]
+        )
+        return 'delirium'
+    
+    logger_data_loading.warning(
+        "Could not detect protocol type. Available events: %s", event_keys
+    )
     return 'unknown'
 
 
@@ -727,8 +810,8 @@ def load_epochs_data_auto_protocol(
     if group_to_use == "CONTROLS":
         data_root_path = os.path.join(base_input_data_path, "PP_CONTROLS_0.5")
     elif group_to_use == "COMA":
-        # Try both 01HZ and 1HZ variants  
-        for freq_suffix in ["_01HZ", "_1HZ"]:
+        # Try both 1HZ and 01HZ variants (prioritize _1HZ based on actual data structure)
+        for freq_suffix in ["_1HZ", "_01HZ"]:
             potential_path = os.path.join(base_input_data_path, f"PP_COMA{freq_suffix}")
             if os.path.isdir(potential_path):
                 data_root_path = potential_path
@@ -741,15 +824,15 @@ def load_epochs_data_auto_protocol(
                 data_root_path = potential_path
                 break
     elif group_to_use == "MCS-":
-        # Try both 01HZ and 1HZ variants
-        for freq_suffix in ["_01HZ", "_1HZ"]:
+        # Try both 1HZ and 01HZ variants (prioritize _1HZ based on actual data structure)
+        for freq_suffix in ["_1HZ", "_01HZ"]:
             potential_path = os.path.join(base_input_data_path, f"PP_MCS-{freq_suffix}")
             if os.path.isdir(potential_path):
                 data_root_path = potential_path
                 break
     elif group_to_use == "VS":
-       
-        for freq_suffix in ["_01HZ", "_1HZ"]:
+        # Try both 1HZ and 01HZ variants (prioritize _1HZ based on actual data structure)
+        for freq_suffix in ["_1HZ", "_01HZ"]:
             potential_path = os.path.join(base_input_data_path, f"PP_VS{freq_suffix}")
             if os.path.isdir(potential_path):
                 data_root_path = potential_path

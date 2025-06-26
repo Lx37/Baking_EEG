@@ -15,7 +15,9 @@ from config.decoding_config import (
     N_JOBS_PROCESSING, AP_FAMILIES_FOR_SPECIFIC_COMPARISON,
     # Specific TGM configurations
     COMPUTE_TGM_FOR_MAIN_COMPARISON, COMPUTE_TGM_FOR_SPECIFIC_COMPARISONS,
-    COMPUTE_TGM_FOR_INTER_FAMILY_COMPARISONS
+    COMPUTE_TGM_FOR_INTER_FAMILY_COMPARISONS,
+    # Protocol-specific functions
+    get_protocol_config, get_protocol_ap_families
 )
 from config.config import ALL_SUBJECT_GROUPS
 from utils import stats_utils as bEEG_stats
@@ -74,6 +76,79 @@ logger_run_one = logging.getLogger(__name__)
 logging.getLogger("Baking_EEG.decoding_core").setLevel(logging.INFO)
 logging.getLogger("Baking_EEG.utils.data_loading_utils").setLevel(logging.INFO)
 # ... autres loggers de modules
+
+
+def get_protocol_cv_folds(detected_protocol):
+    """Determine number of CV folds based on protocol type.
+    
+    Args:
+        detected_protocol (str): Protocol type ('delirium', 'battery', 'ppext3', etc.)
+        
+    Returns:
+        int: Number of CV folds to use
+    """
+    if detected_protocol and detected_protocol.lower() == 'delirium':
+        return 10  # 10 folds for Delirium protocol
+    else:
+        return 5   # 5 folds for PPext3, Battery and other protocols
+
+
+def get_protocol_ap_families_for_comparison(detected_protocol):
+    """Get AP families configuration for specific protocol comparisons.
+    
+    Args:
+        detected_protocol (str): Protocol type ('delirium', 'battery', 'ppext3', etc.)
+        
+    Returns:
+        dict: Protocol-specific AP families configuration
+    """
+    return get_protocol_ap_families(detected_protocol if detected_protocol else 'delirium')
+
+
+def extract_frequency_info_from_path(base_input_data_path, group_affiliation):
+    """Extract frequency information (01Hz or 1Hz) from data path.
+    
+    Args:
+        base_input_data_path (str): Base path to data
+        group_affiliation (str): Group name
+        
+    Returns:
+        str: Frequency suffix ("01Hz", "1Hz", or "")
+    """
+    # Check for frequency-specific directories for certain groups
+    freq_sensitive_groups = ["COMA", "MCS+", "MCS-", "VS"]
+    
+    if group_affiliation.upper() in freq_sensitive_groups:
+        # Try to detect frequency from existing directories
+        for freq_suffix in ["_01HZ", "_1HZ"]:
+            potential_path = os.path.join(base_input_data_path, f"PP_{group_affiliation.upper()}{freq_suffix}")
+            if os.path.isdir(potential_path):
+                return freq_suffix.replace("_", "").replace("HZ", "Hz")  # Return "01Hz" or "1Hz"
+    
+    return ""  # No frequency info
+
+
+def get_protocol_specific_pp_comparison_events(detected_protocol):
+    """Get PP events for specific comparisons based on protocol.
+    
+    Args:
+        detected_protocol (str): Protocol type ('delirium', 'battery', 'ppext3', etc.)
+        
+    Returns:
+        list: List of PP event codes for specific comparisons
+    """
+    if detected_protocol and detected_protocol.lower() == 'delirium':
+        # Delirium protocol uses specific PP codes
+        return ["PP/10", "PP/20", "PP/30"]
+    elif detected_protocol and detected_protocol.lower() == 'battery':
+        # Battery protocol uses different PP structure
+        return ["PP/Music/", "PP/Conv/"]
+    elif detected_protocol and detected_protocol.lower() == 'ppext3':
+        # PPext3 protocol uses extended PP structure  
+        return ["PP/Music/", "PP/Noise/", "PP/Conv/", "PP/Dio/"]
+    else:
+        # Default to delirium for unknown protocols
+        return ["PP/10", "PP/20", "PP/30"]
 
 
 def execute_single_subject_decoding(
@@ -188,7 +263,16 @@ def execute_single_subject_decoding(
             use_csp_for_temporal_subject, use_anova_fs_for_temporal_subject, actual_n_jobs
         )
 
-        actual_loading_conditions = loading_conditions_config
+        actual_loading_conditions = loading_conditions_config.copy()
+        
+        # Update PP_FOR_SPECIFIC_COMPARISON based on detected protocol
+        if "PP_FOR_SPECIFIC_COMPARISON" in actual_loading_conditions:
+            actual_loading_conditions["PP_FOR_SPECIFIC_COMPARISON"] = protocol_pp_events
+            logger_run_one.info(
+                "Updated PP_FOR_SPECIFIC_COMPARISON for protocol %s: %s", 
+                detected_protocol, protocol_pp_events
+            )
+        
         logger_run_one.info("Using loading conditions: %s", list(
             actual_loading_conditions.keys()))
 
@@ -235,7 +319,17 @@ def execute_single_subject_decoding(
 
         # Store protocol information and epoch times
         subject_results["detected_protocol"] = detected_protocol
-        subject_results["epochs_time_points"] = epochs_object.times.copy()
+        subject_results["epochs_time_points"] = epochs_object.times
+        
+        # Get protocol-specific configurations
+        protocol_ap_families = get_protocol_ap_families_for_comparison(detected_protocol)
+        protocol_cv_folds = get_protocol_cv_folds(detected_protocol)
+        protocol_pp_events = get_protocol_specific_pp_comparison_events(detected_protocol)
+        
+        logger_run_one.info(
+            "Protocol-specific settings for %s: CV folds=%d, AP families=%d, PP events=%s",
+            detected_protocol, protocol_cv_folds, len(protocol_ap_families), protocol_pp_events
+        )
 
         current_fixed_params_for_clf_dict = None
         current_param_grid_for_clf_dict = None
@@ -282,7 +376,7 @@ def execute_single_subject_decoding(
                     "Subj %s: Only one class for main decoding. Skipping.", subject_identifier)
             else:
                 min_samples_main = np.min(np.bincount(main_labels_encoded))
-                num_cv_splits_main = min(10, min_samples_main)
+                num_cv_splits_main = min(protocol_cv_folds, min_samples_main)
                 
                 main_decoding_output = run_temporal_decoding_analysis(
                         epochs_data=main_protocol_data, 
@@ -337,7 +431,7 @@ def execute_single_subject_decoding(
                 "PP_FOR_SPECIFIC_COMPARISON")
             if pp_specific_data is not None and pp_specific_data.size > 0:
                 subject_results["pp_ap_specific_ap_results"] = []
-                for ap_family_key_enum, _ in AP_FAMILIES_FOR_SPECIFIC_COMPARISON.items():
+                for ap_family_key_enum, _ in protocol_ap_families.items():
                     ap_family_data_enum = returned_data_dict.get(
                         ap_family_key_enum)
                     comparison_name_specific = f"PP_spec vs {ap_family_key_enum.replace('_', ' ').replace('AP FAMILY', 'AP Fam.')}"
@@ -363,7 +457,7 @@ def execute_single_subject_decoding(
                             min_samples_task_spec = np.min(
                                 np.bincount(task_labels_specific_enc))
                             num_cv_task_spec = min(
-                                10, min_samples_task_spec) if min_samples_task_spec >= 2 else 0
+                                protocol_cv_folds, min_samples_task_spec) if min_samples_task_spec >= 2 else 0
                             if num_cv_task_spec < 2:
                                 logger_run_one.warning(
                                     "Subj %s, Task '%s': Not enough samples for CV (%d splits). Skipping.", subject_identifier, comparison_name_specific, num_cv_task_spec)
@@ -428,12 +522,15 @@ def execute_single_subject_decoding(
                         stacked_specific_curves, axis=0, nan_policy='omit')
 
                 _, fdr_mask_stack, fdr_pval_stack, fdr_test_info_stack = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
-                    stacked_specific_curves, CHANCE_LEVEL_AUC, alternative_hypothesis="greater"
+                    stacked_specific_curves, CHANCE_LEVEL_AUC, alternative_hypothesis="greater",
+                    statistical_test_type="wilcoxon"  # Force Wilcoxon test
                 )
                 subject_results["pp_ap_mean_specific_fdr"] = {
-                    "mask": fdr_mask_stack, "p_values": fdr_pval_stack, "method": f"FDR on stack of {len(valid_mean_scores_for_stack)} specific curves"}
+                    "mask": fdr_mask_stack, "p_values": fdr_pval_stack, 
+                    "p_values_raw": fdr_test_info_stack.get("p_values_raw", fdr_pval_stack),
+                    "method": f"FDR on stack of {len(valid_mean_scores_for_stack)} specific curves (Wilcoxon)"}
 
-                _, clu_obj_stack, p_clu_stack, _ = bEEG_stats.perform_cluster_permutation_test(
+                _, clu_obj_stack, p_clu_stack, clu_info_stack = bEEG_stats.perform_cluster_permutation_test(
                     stacked_specific_curves, CHANCE_LEVEL_AUC, n_perms_for_intra_subject_clusters,
                     cluster_threshold_config_intra_fold, "greater", actual_n_jobs
                 )
@@ -447,8 +544,11 @@ def execute_single_subject_decoding(
                                 c_mask_item_stack)  
                             combined_mask_clu_stack = np.logical_or(
                                 combined_mask_clu_stack, c_mask_item_stack)  
-                subject_results["pp_ap_mean_specific_cluster"] = {"mask": combined_mask_clu_stack, "cluster_objects": sig_clu_objects_stack,
-                                                                  "p_values_all_clusters": p_clu_stack, "method": f"CluPerm on stack of {len(valid_mean_scores_for_stack)} specific curves"}
+                subject_results["pp_ap_mean_specific_cluster"] = {
+                    "mask": combined_mask_clu_stack, "cluster_objects": sig_clu_objects_stack,
+                    "p_values_all_clusters": p_clu_stack, 
+                    "cluster_info": clu_info_stack,
+                    "method": f"CluPerm on stack of {len(valid_mean_scores_for_stack)} specific curves (TTest)"}
                 logger_run_one.info(
                     "  --- Stats on stack of Specific Task Mean Curves for %s DONE ---", subject_identifier)
             else:
@@ -458,7 +558,7 @@ def execute_single_subject_decoding(
         logger_run_one.info(
             "  --- 4. Inter-Family Decoding Tasks (e.g. AP_fam_X vs AP_fam_Y) for %s ---", subject_identifier)
         subject_results["pp_ap_ap_vs_ap_results"] = []
-        ap_family_keys_list = list(AP_FAMILIES_FOR_SPECIFIC_COMPARISON.keys())
+        ap_family_keys_list = list(protocol_ap_families.keys())
         if len(ap_family_keys_list) >= 2 and current_time_points_ref is not None:
             for ap_key_1, ap_key_2 in itertools.permutations(ap_family_keys_list, 2):
                 data_ap1_current = returned_data_dict.get(ap_key_1)
@@ -481,7 +581,7 @@ def execute_single_subject_decoding(
                         min_samples_ap_vs_ap = np.min(
                             np.bincount(task_labels_ap_vs_ap_enc))
                         num_cv_ap_vs_ap = min(
-                            10, min_samples_ap_vs_ap) if min_samples_ap_vs_ap >= 2 else 0
+                            protocol_cv_folds, min_samples_ap_vs_ap) if min_samples_ap_vs_ap >= 2 else 0
                         if num_cv_ap_vs_ap < 2:
                             logger_run_one.warning(
                                 "Subj %s, Task '%s': Not enough samples for CV (%d splits). Skipping.", subject_identifier, comparison_name_ap_vs_ap, num_cv_ap_vs_ap)
@@ -582,11 +682,15 @@ def execute_single_subject_decoding(
                                     stacked_curves_for_avg, axis=0, nan_policy='omit')
 
                             _, fdr_mask_centric, fdr_pval_centric, fdr_test_info_centric = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
-                                stacked_curves_for_avg, CHANCE_LEVEL_AUC, alternative_hypothesis="greater")
+                                stacked_curves_for_avg, CHANCE_LEVEL_AUC, alternative_hypothesis="greater",
+                                statistical_test_type="wilcoxon"  # Force Wilcoxon test
+                            )
                             ap_centric_avg_item["fdr_sig_data"] = {
-                                "mask": fdr_mask_centric, "p_values": fdr_pval_centric, "method": f"FDR on stack for {anchor_ap_display_name}"}
+                                "mask": fdr_mask_centric, "p_values": fdr_pval_centric, 
+                                "p_values_raw": fdr_test_info_centric.get("p_values_raw", fdr_pval_centric),
+                                "method": f"FDR on stack for {anchor_ap_display_name} (Wilcoxon)"}
 
-                            _, clu_obj_centric, p_clu_centric, _ = bEEG_stats.perform_cluster_permutation_test(
+                            _, clu_obj_centric, p_clu_centric, clu_info_centric = bEEG_stats.perform_cluster_permutation_test(
                                 stacked_curves_for_avg, CHANCE_LEVEL_AUC, n_perms_for_intra_subject_clusters,
                                 cluster_threshold_config_intra_fold, "greater", actual_n_jobs)
                             combined_mask_clu_centric = np.zeros_like(
@@ -600,8 +704,11 @@ def execute_single_subject_decoding(
                                             c_mask_item_centric)  
                                         combined_mask_clu_centric = np.logical_or(
                                             combined_mask_clu_centric, c_mask_item_centric)  
-                            ap_centric_avg_item["cluster_sig_data"] = {"mask": combined_mask_clu_centric, "cluster_objects": sig_clu_objects_centric,
-                                                                       "p_values_all_clusters": p_clu_centric, "method": f"CluPerm on stack for {anchor_ap_display_name}"}
+                            ap_centric_avg_item["cluster_sig_data"] = {
+                                "mask": combined_mask_clu_centric, "cluster_objects": sig_clu_objects_centric,
+                                "p_values_all_clusters": p_clu_centric, 
+                                "cluster_info": clu_info_centric,
+                                "method": f"CluPerm on stack for {anchor_ap_display_name} (TTest)"}
                             logger_run_one.info("  Anchor-centric avg for %s from %d curves. Found: %s",
                                                 anchor_ap_display_name, stacked_curves_for_avg.shape[0], constituent_names_debug_this_anchor)
                         else:
@@ -641,6 +748,9 @@ def execute_single_subject_decoding(
             # Get the detected protocol for folder organization
             detected_protocol = subject_results.get("detected_protocol", "unknown")
             
+            # Extract frequency information from data path
+            frequency_info = extract_frequency_info_from_path(base_input_data_path, group_affiliation)
+            
             # Create hierarchical folder structure: Group / Protocol / Subject_details
             dec_prot_id_str = str(
                 decoding_protocol_identifier if decoding_protocol_identifier else "UnknownProtocolID")
@@ -650,8 +760,17 @@ def execute_single_subject_decoding(
                 comp for comp in subfolder_name_components if comp]
             subfolder_name_for_setup = "_".join(valid_subfolder_components)
             
-            # Create group_protocol path for better organization
-            group_protocol_path = f"{group_affiliation}_{detected_protocol}"
+            # Create group_protocol path with frequency info for better organization
+            group_protocol_components = [group_affiliation]
+            if frequency_info:
+                group_protocol_components.append(frequency_info)
+            group_protocol_components.append(detected_protocol)
+            group_protocol_path = "_".join(group_protocol_components)
+            
+            logger_run_one.info(
+                "Results will be saved in: %s/%s", 
+                group_protocol_path, subfolder_name_for_setup
+            )
             
             subject_results_dir = setup_analysis_results_directory(
                 base_output_results_path, "intra_subject_results", group_protocol_path, subfolder_name_for_setup
@@ -698,7 +817,8 @@ def execute_single_subject_decoding(
                     "group_identifier": group_affiliation,
                     "output_directory_path": subject_results_dir,
                     "CHANCE_LEVEL_AUC": CHANCE_LEVEL_AUC, 
-                    "protocol_type": "PP_AP",  # Ou un autre identifiant si vous généralisez
+                    "protocol_type": detected_protocol if detected_protocol else "PP_AP",  # Dynamic protocol type
+                    "n_folds": protocol_cv_folds,  # Dynamic CV folds
 
                     "main_original_labels_array": subject_results.get("pp_ap_main_original_labels"),
                     "main_predicted_probabilities_global": subject_results.get("pp_ap_main_pred_probas_global"),

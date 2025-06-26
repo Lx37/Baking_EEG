@@ -11,6 +11,78 @@ from mne.stats import (
 logger_stats_decoding = logging.getLogger(__name__)
 
 
+def wilcoxon_1samp_no_p(X, sigma=1, tail=0):
+    """
+    Custom statistical function for Wilcoxon signed-rank test for cluster permutation tests.
+    
+    This function follows MNE's stat_fun signature for permutation_cluster_1samp_test.
+    
+    Args:
+        X (np.ndarray): Data array with shape (n_observations, n_features...).
+                       First axis is the observation dimension.
+        sigma (float): Standard deviation parameter (not used in Wilcoxon but required for MNE interface).
+        tail (int): Direction of the test. 0 for two-sided, 1 for one-sided positive.
+    
+    Returns:
+        np.ndarray: Wilcoxon statistics array with shape (n_features...).
+    
+    Note:
+        - For permutation tests, we return the Wilcoxon statistic, not p-values
+        - MNE will handle the permutation distribution generation
+        - This is an alternative to ttest_1samp_no_p for non-parametric testing
+    """
+    # Handle empty or invalid input
+    if X.shape[0] == 0:
+        return np.array([])
+    
+    # Wilcoxon signed-rank test for each feature
+    n_obs, *feature_shape = X.shape
+    n_features = np.prod(feature_shape) if feature_shape else 1
+    
+    # Reshape to (n_obs, n_features) for easier processing
+    X_reshaped = X.reshape(n_obs, n_features)
+    
+    # Initialize output array
+    wilcoxon_stats = np.zeros(n_features)
+    
+    for i in range(n_features):
+        data = X_reshaped[:, i]
+        
+        # Remove zeros (ties with hypothesized median of 0)
+        data_nonzero = data[data != 0]
+        
+        if len(data_nonzero) < 3:  # Need at least 3 non-zero values for Wilcoxon
+            # Fall back to a simple mean-based statistic
+            wilcoxon_stats[i] = np.mean(data) * np.sqrt(len(data))
+        else:
+            # Compute Wilcoxon statistic manually
+            # Sort by absolute value
+            abs_data = np.abs(data_nonzero)
+            ranks = scipy.stats.rankdata(abs_data)
+            
+            # Sum ranks for positive values
+            positive_mask = data_nonzero > 0
+            W_plus = np.sum(ranks[positive_mask])
+            
+            # Wilcoxon statistic (can use W+ or transform to z-score)
+            # For permutation test, we use a normalized version
+            n = len(data_nonzero)
+            expected_W = n * (n + 1) / 4
+            var_W = n * (n + 1) * (2 * n + 1) / 24
+            
+            # Z-score transformation for better distribution properties
+            if var_W > 0:
+                wilcoxon_stats[i] = (W_plus - expected_W) / np.sqrt(var_W)
+            else:
+                wilcoxon_stats[i] = 0.0
+    
+    # Reshape back to original feature shape
+    if feature_shape:
+        wilcoxon_stats = wilcoxon_stats.reshape(feature_shape)
+    
+    return wilcoxon_stats
+
+
 def perform_cluster_permutation_test(
     input_data_array,
     chance_level=0.5,
@@ -20,7 +92,8 @@ def perform_cluster_permutation_test(
     n_jobs=1,  # Number of jobs for MNE parallelization
     random_seed=None,  # Seed for reproducibility
     connectivity_matrix=None,  # Connectivity for spatial clustering
-    tfr_like_input=False  # Hint if input is (n_obs, n_freqs, n_times)
+    tfr_like_input=False,  # Hint if input is (n_obs, n_freqs, n_times)
+    stat_fun=None  # Custom statistical function (default: ttest_1samp_no_p)
 ):
     """
     Performs a cluster-based permutation test on observed scores vs. a chance level.
@@ -44,10 +117,15 @@ def perform_cluster_permutation_test(
         connectivity_matrix: Connectivity matrix for spatial clustering (e.g., sensor adjacency).
         tfr_like_input (bool): If True, indicates input is Time-Frequency Representation-like,
                                affecting default connectivity assumptions if not provided.
+        stat_fun (callable, optional): Custom statistical function for cluster permutation test.
+                             If None, uses MNE's default ttest_1samp_no_p.
+                             For Wilcoxon, use wilcoxon_1samp_no_p.
+                             Must follow MNE's stat_fun signature: (X, sigma, tail) -> stats_array.
 
     Returns:
-        tuple: (observed_t_values, cluster_definitions_masks, cluster_p_values, H0_distribution)
-            - observed_t_values (np.ndarray): T-values for the original data.
+        tuple: (observed_stat_values, cluster_definitions_masks, cluster_p_values, H0_distribution)
+            - observed_stat_values (np.ndarray): Statistical values for the original data.
+                                                 T-values if using t-test, Wilcoxon stats if using Wilcoxon.
             - cluster_definitions_masks (list): List of boolean masks defining each cluster.
             - cluster_p_values (np.ndarray): Array of p-values, one for each cluster.
             - H0_distribution (np.ndarray): Array of max cluster statistics from permutations.
@@ -126,8 +204,14 @@ def perform_cluster_permutation_test(
     )
 
     # === PREPARE ARGUMENTS FOR MNE FUNCTION ===
-    # Les tests de permutation MNE utilisent par défaut ttest_1samp_no_p
-    # qui est adapté pour les tests de permutation (pas besoin de Wilcoxon ici)
+    # Determine which statistical function to use
+    if stat_fun is None:
+        stat_method_name = "ttest_1samp_no_p (MNE default)"
+        logger_stats_decoding.info("  Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.")
+    else:
+        stat_method_name = getattr(stat_fun, '__name__', 'custom_stat_fun')
+        logger_stats_decoding.info(f"  Using custom stat_fun ({stat_method_name}) for permutation test.")
+    
     test_args_mne = {
         "n_permutations": n_permutations,
         "threshold": cluster_threshold_config,  # TFCE dict or t-stat float
@@ -137,7 +221,9 @@ def perform_cluster_permutation_test(
         "out_type": "mask",  # Return boolean masks for clusters
     }
     
-    logger_stats_decoding.info("  Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.")
+    # Add custom stat_fun if provided
+    if stat_fun is not None:
+        test_args_mne["stat_fun"] = stat_fun
 
     # === CONNECTIVITY HANDLING ===
     if connectivity_matrix is not None:
@@ -160,16 +246,14 @@ def perform_cluster_permutation_test(
 
     # === EXECUTE PERMUTATION TEST ===
     try:
-        observed_t_values, cluster_definitions_masks, cluster_p_values, H0_distribution = \
+        observed_stat_values, cluster_definitions_masks, cluster_p_values, H0_distribution = \
             permutation_cluster_1samp_test(
                 data_array_vs_chance, **test_args_mne)
 
-#observed_t_values =  t test for my reel data on each temporal point (it means if I have 10 CV fold),
-#it measures that for 10 AUC score at one temporal point ==> (mean_scores - chance_level) / SD 
-
-#cluster_definitions_masks = list of boolean masks for each cluster found
-
-#cluster_p_values = p-values for each cluster, indicating significance if <0.05 (sign). 
+    # observed_stat_values: Statistical values for each feature (t-values for t-test, Wilcoxon stats for Wilcoxon)
+    # cluster_definitions_masks: List of boolean masks for each cluster found
+    # cluster_p_values: p-values for each cluster, indicating significance if <0.05
+    # H0_distribution: Distribution of max cluster statistics under the null hypothesis 
 #p value is calculated  (number of permutations with cluster ≥ cluster_observed) / number_total_permutations
 
 #H0_distribution = distribution of max cluster statistics under the null hypothesis
@@ -181,9 +265,9 @@ def perform_cluster_permutation_test(
         return np.array([]), [], np.array([]), np.array([])
 
   # === POST-PROCESSING RESULTS ===
-    # Squeeze t-values if original input was 1D bcs MNE transform in (n_obs, 1) 
-    if input_data_array.ndim == 1 and observed_t_values.ndim >= 1:
-        observed_t_values = observed_t_values.squeeze()
+    # Squeeze stat values if original input was 1D because MNE transforms to (n_obs, 1) 
+    if input_data_array.ndim == 1 and observed_stat_values.ndim >= 1:
+        observed_stat_values = observed_stat_values.squeeze()
 
     # Convert slice objects in cluster_definitions_masks to boolean arrays
     # This is important because MNE can return slices for 1D contiguous clusters
@@ -266,7 +350,7 @@ def perform_cluster_permutation_test(
         )
 
     # Return the processed masks (boolean arrays)
-    return observed_t_values, cluster_definitions_masks_for_output, cluster_p_values, H0_distribution
+    return observed_stat_values, cluster_definitions_masks_for_output, cluster_p_values, H0_distribution
 
 
 def perform_pointwise_fdr_correction_on_scores(
@@ -275,7 +359,7 @@ def perform_pointwise_fdr_correction_on_scores(
     alpha_significance_level=0.05,
     fdr_correction_method="indep",  # Benjamini-Hochberg
     alternative_hypothesis="greater",
-    statistical_test_type="adaptive",  # 'ttest', 'wilcoxon', or 'adaptive'
+    statistical_test_type="wilcoxon",  # 'wilcoxon' (recommended for EEG), 'ttest', or 'adaptive' 
 ):
     """
     Performs a pointwise statistical test for each feature against a chance 
@@ -849,3 +933,29 @@ def create_p_value_map_from_cluster_results(
     )
 
     return p_value_map_output
+
+
+def get_stat_function_for_cluster_test(stat_test_type="ttest"):
+    """
+    Get the appropriate statistical function for cluster permutation tests.
+    
+    Args:
+        stat_test_type (str): Type of statistical test. Options: "ttest", "wilcoxon".
+    
+    Returns:
+        callable or None: Statistical function for MNE cluster permutation test.
+                         None means use MNE's default (ttest_1samp_no_p).
+    
+    Note:
+        - "ttest": Uses MNE's default ttest_1samp_no_p (recommended, standard)
+        - "wilcoxon": Uses custom wilcoxon_1samp_no_p (experimental, non-parametric)
+    """
+    if stat_test_type.lower() == "wilcoxon":
+        return wilcoxon_1samp_no_p
+    elif stat_test_type.lower() == "ttest":
+        return None  # Use MNE's default
+    else:
+        logger_stats_decoding.warning(
+            f"Unknown stat_test_type '{stat_test_type}'. Using MNE's default (ttest)."
+        )
+        return None

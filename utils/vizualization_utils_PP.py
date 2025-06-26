@@ -767,7 +767,8 @@ def create_subject_decoding_dashboard_plots(
     }
 
     # Logique d'activation des pages spécifiques au protocole
-    if protocol_type == "PP_AP":
+    # Allow all PP protocols (PP_AP, battery, ppext3, delirium) to use the 8-page dashboard
+    if protocol_type in ["PP_AP", "battery", "ppext3", "delirium", None] or protocol_type.startswith("PP"):
         # Page 4: Tâches spécifiques (PP_spec vs AP_fam)
         if specific_ap_decoding_results and isinstance(specific_ap_decoding_results, list) and \
            any(r.get('scores_1d_mean') is not None for r in specific_ap_decoding_results):
@@ -1187,9 +1188,15 @@ def create_subject_decoding_dashboard_plots(
 
                 # Ajuster la taille
                 fig4 = plt.figure(figsize=(7 * n_cols_p4, 5 * n_rows_p4 + 1.5))
-
                 page_title_p4 = f"Specific Tasks ({protocol_type})"
                 if protocol_type == "PP_AP":
+                    page_title_p4 = "PP_spec vs AP_family_X)"
+                elif protocol_type == "delirium":
+                    page_title_p4 = "PP_spec vs AP_family_X (Delirium)"
+                elif protocol_type == "battery":
+                    page_title_p4 = "PP_spec vs AP_family_X (Battery)"
+                elif protocol_type == "ppext3":
+                    page_title_p4 = "PP_spec vs AP_family_X (PPext3)"
                     page_title_p4 = "PP_spec vs AP_family_X)"
 
                 fig4.suptitle(
