@@ -20,8 +20,8 @@ from submitit.core.utils import FailedJobError
 # Assurez-vous que ce chemin est correct.
 PROJECT_ROOT = "/home/tom.balay/Baking_EEG"
 
-# Sujet à traiter
-TARGET_SUBJECT_ID_FOR_JOB = "DA75"
+# Sujet à traiter (exemple de la nouvelle structure)
+TARGET_SUBJECT_ID_FOR_JOB = "TpAB19"
 
 # Le protocole sera automatiquement détecté selon le groupe du sujet
 # Plus besoin de spécifier TARGET_PROTOCOL_TYPE_FOR_JOB manuellement
@@ -66,14 +66,19 @@ def execute_single_subject_decoding_wrapper(**kwargs):
     
     print(f"DEBUG Worker - Processing subject {subject_id} from group {group_affiliation}")
     
-    # Logique de détection de protocole basée sur les groupes
-    if group_affiliation in ["CONTROLS", "COMA", "MCS+", "MCS-", "VS", "DELIRIUM+", "DELIRIUM-"]:
+    # Logique de détection de protocole basée sur les nouveaux groupes
+    if group_affiliation in ["DELIRIUM+", "DELIRIUM-", "CONTROLS_DELIRIUM"]:
         # Protocole PP
         print("DEBUG Worker - Using PP protocol")
         from examples.run_decoding_one_pp import execute_single_subject_decoding
         return execute_single_subject_decoding(**kwargs)
+    elif group_affiliation in ["COMA", "VS", "MCS+", "MCS-", "CONTROLS_COMA"]:
+        # Protocole PP étendu ou Battery
+        print("DEBUG Worker - Using PP protocol (extended/battery)")
+        from examples.run_decoding_one_pp import execute_single_subject_decoding
+        return execute_single_subject_decoding(**kwargs)
     elif group_affiliation in ["DEL", "NODEL"]:
-        # Protocole LG
+        # Protocole LG (legacy)
         print("DEBUG Worker - Using LG protocol")
         from examples.run_decoding_one_lg import execute_single_subject_lg_decoding
         return execute_single_subject_lg_decoding(**kwargs)
