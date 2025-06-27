@@ -76,7 +76,7 @@ CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG = {
 }
 
 # === GLOBAL ANALYSIS CONFIGURATION ===
-USE_GRID_SEARCH_OPTIMIZATION = True
+USE_GRID_SEARCH_OPTIMIZATION = False
 USE_CSP_FOR_TEMPORAL_PIPELINES = False
 USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES = True
 N_JOBS_PROCESSING = "auto"
@@ -96,6 +96,12 @@ N_PERMUTATIONS_INTRA_SUBJECT = 1024
 # For stats between subjects (group level)
 N_PERMUTATIONS_GROUP_LEVEL = 1024
 
+# === STATISTICAL TEST CONFIGURATION ===
+# Statistical test for FDR pointwise correction: 'wilcoxon' recommended for non-parametric
+# For cluster permutation tests: 'ttest' is MNE default, 'wilcoxon' is experimental
+STAT_TEST_FOR_FDR_POINTWISE = "wilcoxon"  # Options: "wilcoxon", "ttest"
+STAT_TEST_FOR_CLUSTER_PERMUTATION = "wilcoxon"  # Options: "ttest", "wilcoxon"
+
 # Cluster threshold configuration for statistical tests
 GROUP_LEVEL_STAT_THRESHOLD_TYPE = "tfce"  # 'tfce' or 'stat'
 # Only used if GROUP_LEVEL_STAT_THRESHOLD_TYPE is 'stat'
@@ -112,14 +118,14 @@ COMPUTE_TEMPORAL_GENERALIZATION_MATRICES = False
 
 # Specific TGM configuration by comparison type
 # TGM ONLY for main comparison PP vs AP all
-COMPUTE_TGM_FOR_MAIN_COMPARISON = True  # PP/all vs AP/all only
+COMPUTE_TGM_FOR_MAIN_COMPARISON = False  # PP/all vs AP/all only
 COMPUTE_TGM_FOR_SPECIFIC_COMPARISONS = False  # PP_spec vs AP_families
 COMPUTE_TGM_FOR_INTER_FAMILY_COMPARISONS = False  # AP_family vs AP_family
 
 
 # =========DECODING CORE =============
-# Note: USE_GRID_SEARCH_OPTIMIZATION is the main flag used in the code
-USE_GRID_SEARCH = USE_GRID_SEARCH_OPTIMIZATION  # Keep consistent
+
+USE_GRID_SEARCH = USE_GRID_SEARCH_OPTIMIZATION  
 USE_CSP_FOR_TEMPORAL_PIPELINES = False
 USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES = True
 
@@ -214,14 +220,14 @@ CONFIG_LOAD_BATTERY_PROTOCOL = {
 CONFIG_LOAD_PPEXT3_PROTOCOL = {
     "XPP_ALL": "PP/",  # All PP events
     "XAP_ALL": "AP/",  # All AP events
-    "PP_MUSIC": "PP/Music/",  # PP Music events
-    "PP_NOISE": "PP/Noise/",  # PP Noise events
-    "PP_CONV": "PP/Conv/",    # PP Conversation events
-    "PP_DIO": "PP/Dio/",      # PP Dialogue events
-    "AP_MUSIC": "AP/Music/",  # AP Music events
-    "AP_NOISE": "AP/Noise/",  # AP Noise events
-    "AP_CONV": "AP/Conv/",    # AP Conversation events
-    "AP_DIO": "AP/Dio/",      # AP Dialogue events
+    "PP_MUSIC": "PP/Music/",  
+    "PP_NOISE": "PP/Noise/",  
+    "PP_CONV": "PP/Conv/",   
+    "PP_DIO": "PP/Dio/",
+    "AP_MUSIC": "AP/Music/",
+    "AP_NOISE": "AP/Noise/",
+    "AP_CONV": "AP/Conv/",
+    "AP_DIO": "AP/Dio/",     
     # AP families for PPext3 protocol
     "AP_FAMILY_1": ["AP/1/Music/", "AP/1/Noise/", "AP/1/Conv/", "AP/1/Dio/"],
     "AP_FAMILY_2": ["AP/2/Music/", "AP/2/Noise/", "AP/2/Conv/", "AP/2/Dio/"],
@@ -231,25 +237,7 @@ CONFIG_LOAD_PPEXT3_PROTOCOL = {
     "AP_FAMILY_6": ["AP/6/Music/", "AP/6/Noise/", "AP/6/Conv/", "AP/6/Dio/"],
 }
 
-# Protocol detection configuration
-PROTOCOL_DETECTION_CONFIG = {
-    "delirium": {
-        "expected_events": ["AP", "PP", "AP/", "PP/"],
-        "expected_epoch_count": 64,  # Approximate
-        "description": "Standard Delirium protocol with AP/PP events"
-    },
-    "battery": {
-        "expected_events": ["AP/Music/", "AP/Conv/", "PP/Music/", "PP/Conv/"],
-        "expected_epoch_count": 128,
-        "description": "Battery protocol with Music/Conversation analysis"
-    },
-    "ppext3": {
-        "expected_events": ["AP/Music/", "AP/Noise/", "AP/Conv/", "AP/Dio/",
-                            "PP/Music/", "PP/Noise/", "PP/Conv/", "PP/Dio/"],
-        "expected_epoch_count": 278,
-        "description": "Extended PPext3 protocol with Music-Noise and Conv-Dio conditions"
-    }
-}
+
 
 # Function to get protocol-specific configuration
 

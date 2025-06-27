@@ -114,11 +114,11 @@ COMPUTE_INTRA_SUBJECT_STATISTICS = True
 COMPUTE_GROUP_LEVEL_STATISTICS = True
 SAVE_ANALYSIS_RESULTS = True
 GENERATE_PLOTS = True
-COMPUTE_TEMPORAL_GENERALIZATION_MATRICES = True
+COMPUTE_TEMPORAL_GENERALIZATION_MATRICES = False
 
 # Specific TGM configuration by comparison type
 # TGM ONLY for main comparison PP vs AP all
-COMPUTE_TGM_FOR_MAIN_COMPARISON = True  # PP/all vs AP/all only
+COMPUTE_TGM_FOR_MAIN_COMPARISON = False  # PP/all vs AP/all only
 COMPUTE_TGM_FOR_SPECIFIC_COMPARISONS = False  # PP_spec vs AP_families
 COMPUTE_TGM_FOR_INTER_FAMILY_COMPARISONS = False  # AP_family vs AP_family
 
@@ -223,10 +223,10 @@ CONFIG_LOAD_PPEXT3_PROTOCOL = {
     "PP_MUSIC": "PP/Music/",  
     "PP_NOISE": "PP/Noise/",  
     "PP_CONV": "PP/Conv/",   
-    "PP_DIO": "PP/Dio/",     -
+    "PP_DIO": "PP/Dio/",
     "AP_MUSIC": "AP/Music/",
     "AP_NOISE": "AP/Noise/",
-    "AP_CONV": "AP/Conv/",   -
+    "AP_CONV": "AP/Conv/",
     "AP_DIO": "AP/Dio/",     
     # AP families for PPext3 protocol
     "AP_FAMILY_1": ["AP/1/Music/", "AP/1/Noise/", "AP/1/Conv/", "AP/1/Dio/"],

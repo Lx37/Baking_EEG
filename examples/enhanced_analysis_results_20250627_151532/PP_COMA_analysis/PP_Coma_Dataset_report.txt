@@ -1,0 +1,86 @@
+RAPPORT D'ANALYSE - Coma Dataset
+==================================================
+
+Protocole: PP
+Date: 2025-06-27 15:16:45
+
+RÉSUMÉ GÉNÉRAL:
+- Nombre total de sujets: 31
+- Nombre de groupes: 4
+- Groupes: MCS-, VS, MCS+, COMA
+
+STATISTIQUES PAR GROUPE:
+------------------------------
+
+MCS-:
+  Nombre de sujets: 6
+  AUC moyenne: 0.518
+  Pic de décodage: 0.572
+  Temps du pic: 0.382s
+  Points FDR moyens par sujet: 61.3 points
+  Range FDR: 0-299 points
+
+VS:
+  Nombre de sujets: 11
+  AUC moyenne: 0.498
+  Pic de décodage: 0.540
+  Temps du pic: -0.098s
+  Points FDR moyens par sujet: 6.8 points
+  Range FDR: 0-68 points
+
+MCS+:
+  Nombre de sujets: 7
+  AUC moyenne: 0.498
+  Pic de décodage: 0.575
+  Temps du pic: 0.014s
+  Points FDR moyens par sujet: 5.0 points
+  Range FDR: 0-35 points
+
+COMA:
+  Nombre de sujets: 7
+  AUC moyenne: 0.524
+  Pic de décodage: 0.596
+  Temps du pic: 0.522s
+  Points FDR moyens par sujet: 34.3 points
+  Range FDR: 0-235 points
+
+COMPARAISONS ENTRE GROUPES:
+------------------------------
+
+MCS- vs VS:
+  AUC: 0.518 vs 0.498
+  Différence: 0.020
+  Test Mann-Whitney: p = 0.2161 (ns)
+
+MCS- vs MCS+:
+  AUC: 0.518 vs 0.498
+  Différence: 0.019
+  Test Mann-Whitney: p = 0.3660 (ns)
+
+MCS- vs COMA:
+  AUC: 0.518 vs 0.524
+  Différence: 0.006
+  Test Mann-Whitney: p = 0.5338 (ns)
+
+VS vs MCS+:
+  AUC: 0.498 vs 0.498
+  Différence: 0.000
+  Test Mann-Whitney: p = 0.9298 (ns)
+
+VS vs COMA:
+  AUC: 0.498 vs 0.524
+  Différence: 0.026
+  Test Mann-Whitney: p = 0.1791 (ns)
+
+MCS+ vs COMA:
+  AUC: 0.498 vs 0.524
+  Différence: 0.026
+  Test Mann-Whitney: p = 0.1649 (ns)
+
+FICHIERS GÉNÉRÉS:
+--------------------
+- Analyses individuelles par groupe
+- Comparaisons temporelles par dataset
+- Matrices de comparaisons par paires
+- Rapports spécifiques par dataset
+- Ce rapport complet
