@@ -179,9 +179,9 @@ def main_submission_logic():
     logger.info(f"Nombre total de groupes à traiter : {len(GROUPS_TO_PROCESS)}")
 
     # Configuration des ressources Slurm - Optimisée pour 7 groupes
-    SLURM_CPUS_PER_GROUP_JOB = 38  # Réduit légèrement pour permettre 7 jobs simultanés
-    SLURM_MEMORY_PER_JOB = "70G"   # Réduit légèrement pour permettre 7 jobs simultanés
-    SLURM_TIMEOUT_MINUTES = 12000 * 60  # Augmenté car certains groupes sont plus gros
+    SLURM_CPUS_PER_GROUP_JOB = 40  # Réduit légèrement pour permettre 7 jobs simultanés
+    SLURM_MEMORY_PER_JOB = "75G"   # Réduit légèrement pour permettre 7 jobs simultanés
+    SLURM_TIMEOUT_MINUTES = 120000 * 60  # Augmenté car certains groupes sont plus gros
     SLURM_PARTITION = "CPU"
     SLURM_ACCOUNT = "tom.balay"
 

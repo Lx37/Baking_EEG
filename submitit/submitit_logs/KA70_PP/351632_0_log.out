@@ -1,0 +1,324 @@
+submitit INFO (2025-06-27 18:03:29,137) - Starting with JobEnvironment(job_id=351632, hostname=node6, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-27 18:03:29,137) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/submitit_logs/KA70_PP/351632_submitted.pkl
+DEBUG Worker - project_root: /home/tom.balay/Baking_EEG
+DEBUG Worker - sys.path: ['/home/tom.balay/Baking_EEG', '/home/tom.balay/Baking_EEG/submitit', '/usr/lib/python311.zip']...
+DEBUG Worker - Processing subject KA70 from group VS
+DEBUG Worker - Using PP protocol (extended/battery)
+2025-06-27 18:03:32,829 - INFO - examples.run_decoding_one_group_pp - [<module>:39] - Tentative d'import de execute_single_subject_decoding...
+2025-06-27 18:03:32,830 - INFO - examples.run_decoding_one_group_pp - [<module>:42] - ✅ Import de execute_single_subject_decoding réussi
+2025-06-27 18:03:32,832 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:258] - Starting decoding for subject: KA70 (Group: VS, Task Set ID: Analysis_PP_Individual, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 40)
+2025-06-27 18:03:33,159 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:438] - CRITICAL: No data loaded for ANY specified conditions for subject KA70.
+2025-06-27 18:03:33,159 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:445] - Empty data array for condition 'temp' (specifier: 'AP') for subject KA70.
+2025-06-27 18:03:33,160 - INFO - utils.loading_PP_utils - [detect_protocol_type:712] - Detected Battery protocol: 42 Music/Conv events, 124 total events
+2025-06-27 18:03:33,160 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:856] - Auto-detected protocol 'battery' for subject 'KA70' (file hint: battery)
+2025-06-27 18:03:33,160 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_battery:503] - Loading Battery protocol data for subject 'KA70' (group: VS)
+2025-06-27 18:03:33,160 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_battery:507] - Battery protocol conditions: ['XPP_ALL', 'XAP_ALL']
+2025-06-27 18:03:33,160 - INFO - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:64] - Found epochs file: /mnt/data/tom.balay/data/Baking_EEG_data/PP_VS_1HZ/Battery/KA70_preproc_noICA_PPAP-epo_ar.fif (protocol: battery)
+2025-06-27 18:03:33,160 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:301] - Loading epoch data for subject 'KA70' from: /mnt/data/tom.balay/data/Baking_EEG_data/PP_VS_1HZ/Battery/KA70_preproc_noICA_PPAP-epo_ar.fif (file protocol: battery)
+2025-06-27 18:03:33,342 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:312] - Event IDs available for KA70:
+2025-06-27 18:03:33,342 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/G/V1': 1140
+2025-06-27 18:03:33,342 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/G/V2': 1150
+2025-06-27 18:03:33,342 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/G/V3': 1160
+2025-06-27 18:03:33,342 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/D/V1': 1170
+2025-06-27 18:03:33,342 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/D/V2': 1180
+2025-06-27 18:03:33,342 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/D/V3': 1190
+2025-06-27 18:03:33,342 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/G/V1': 3141
+2025-06-27 18:03:33,342 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/G/V2': 3151
+2025-06-27 18:03:33,342 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/G/V3': 3161
+2025-06-27 18:03:33,342 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/D/V1': 3171
+2025-06-27 18:03:33,343 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/D/V2': 3181
+2025-06-27 18:03:33,343 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/D/V3': 3191
+2025-06-27 18:03:33,343 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/G/V1': 3142
+2025-06-27 18:03:33,343 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/G/V2': 3152
+2025-06-27 18:03:33,343 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/G/V3': 3162
+2025-06-27 18:03:33,343 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/D/V1': 3172
+2025-06-27 18:03:33,343 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/D/V2': 3182
+2025-06-27 18:03:33,343 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/D/V3': 3192
+2025-06-27 18:03:33,343 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/G/V1': 3143
+2025-06-27 18:03:33,343 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/G/V2': 3153
+2025-06-27 18:03:33,343 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/G/V3': 3163
+2025-06-27 18:03:33,343 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/D/V1': 3173
+2025-06-27 18:03:33,343 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/D/V2': 3183
+2025-06-27 18:03:33,344 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/D/V3': 3193
+2025-06-27 18:03:33,344 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/G/V1': 3144
+2025-06-27 18:03:33,344 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/G/V2': 3154
+2025-06-27 18:03:33,344 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/G/V3': 3164
+2025-06-27 18:03:33,344 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/D/V1': 3174
+2025-06-27 18:03:33,344 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/D/V2': 3184
+2025-06-27 18:03:33,344 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/D/V3': 3194
+2025-06-27 18:03:33,344 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/G/V1': 3145
+2025-06-27 18:03:33,344 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/G/V2': 3155
+2025-06-27 18:03:33,344 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/G/V3': 3165
+2025-06-27 18:03:33,344 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/D/V1': 3175
+2025-06-27 18:03:33,344 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/D/V2': 3185
+2025-06-27 18:03:33,344 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/D/V3': 3195
+2025-06-27 18:03:33,345 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/G/V1': 3146
+2025-06-27 18:03:33,345 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/G/V2': 3156
+2025-06-27 18:03:33,345 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/G/V3': 3166
+2025-06-27 18:03:33,345 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/D/V1': 3176
+2025-06-27 18:03:33,345 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/D/V2': 3186
+2025-06-27 18:03:33,345 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/D/V3': 3196
+2025-06-27 18:03:33,412 - INFO - utils.loading_PP_utils - [inspect_epochs_events:908] - === EVENT INSPECTION FOR KA70 ===
+2025-06-27 18:03:33,412 - INFO - utils.loading_PP_utils - [inspect_epochs_events:911] - File: /mnt/data/tom.balay/data/Baking_EEG_data/PP_VS_1HZ/Battery/KA70_preproc_noICA_PPAP-epo_ar.fif
+2025-06-27 18:03:33,412 - INFO - utils.loading_PP_utils - [inspect_epochs_events:912] - Total events: 124
+2025-06-27 18:03:33,412 - INFO - utils.loading_PP_utils - [inspect_epochs_events:913] - Event types and counts:
+2025-06-27 18:03:33,412 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'PP/Music/Conv/G/V1' (code 1140): 11 epochs
+2025-06-27 18:03:33,412 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'PP/Music/Conv/G/V2' (code 1150): 6 epochs
+2025-06-27 18:03:33,412 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'PP/Music/Conv/G/V3' (code 1160): 12 epochs
+2025-06-27 18:03:33,413 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'PP/Music/Conv/D/V1' (code 1170): 11 epochs
+2025-06-27 18:03:33,413 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'PP/Music/Conv/D/V2' (code 1180): 11 epochs
+2025-06-27 18:03:33,413 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'PP/Music/Conv/D/V3' (code 1190): 12 epochs
+2025-06-27 18:03:33,413 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/1/Music/Conv/G/V1' (code 3141): 1 epochs
+2025-06-27 18:03:33,413 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/1/Music/Conv/G/V2' (code 3151): 0 epochs
+2025-06-27 18:03:33,413 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/1/Music/Conv/G/V3' (code 3161): 1 epochs
+2025-06-27 18:03:33,413 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/1/Music/Conv/D/V1' (code 3171): 2 epochs
+2025-06-27 18:03:33,413 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/1/Music/Conv/D/V2' (code 3181): 3 epochs
+2025-06-27 18:03:33,413 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/1/Music/Conv/D/V3' (code 3191): 0 epochs
+2025-06-27 18:03:33,413 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/2/Music/Conv/G/V1' (code 3142): 3 epochs
+2025-06-27 18:03:33,413 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/2/Music/Conv/G/V2' (code 3152): 2 epochs
+2025-06-27 18:03:33,413 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/2/Music/Conv/G/V3' (code 3162): 1 epochs
+2025-06-27 18:03:33,413 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/2/Music/Conv/D/V1' (code 3172): 0 epochs
+2025-06-27 18:03:33,413 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/2/Music/Conv/D/V2' (code 3182): 2 epochs
+2025-06-27 18:03:33,414 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/2/Music/Conv/D/V3' (code 3192): 4 epochs
+2025-06-27 18:03:33,414 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/3/Music/Conv/G/V1' (code 3143): 3 epochs
+2025-06-27 18:03:33,414 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/3/Music/Conv/G/V2' (code 3153): 2 epochs
+2025-06-27 18:03:33,414 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/3/Music/Conv/G/V3' (code 3163): 6 epochs
+2025-06-27 18:03:33,414 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/3/Music/Conv/D/V1' (code 3173): 1 epochs
+2025-06-27 18:03:33,414 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/3/Music/Conv/D/V2' (code 3183): 1 epochs
+2025-06-27 18:03:33,414 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/3/Music/Conv/D/V3' (code 3193): 2 epochs
+2025-06-27 18:03:33,414 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/4/Music/Conv/G/V1' (code 3144): 2 epochs
+2025-06-27 18:03:33,414 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/4/Music/Conv/G/V2' (code 3154): 1 epochs
+2025-06-27 18:03:33,414 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/4/Music/Conv/G/V3' (code 3164): 1 epochs
+2025-06-27 18:03:33,414 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/4/Music/Conv/D/V1' (code 3174): 1 epochs
+2025-06-27 18:03:33,414 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/4/Music/Conv/D/V2' (code 3184): 2 epochs
+2025-06-27 18:03:33,414 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/4/Music/Conv/D/V3' (code 3194): 1 epochs
+2025-06-27 18:03:33,414 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/5/Music/Conv/G/V1' (code 3145): 2 epochs
+2025-06-27 18:03:33,415 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/5/Music/Conv/G/V2' (code 3155): 1 epochs
+2025-06-27 18:03:33,415 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/5/Music/Conv/G/V3' (code 3165): 2 epochs
+2025-06-27 18:03:33,415 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/5/Music/Conv/D/V1' (code 3175): 1 epochs
+2025-06-27 18:03:33,415 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/5/Music/Conv/D/V2' (code 3185): 2 epochs
+2025-06-27 18:03:33,415 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/5/Music/Conv/D/V3' (code 3195): 4 epochs
+2025-06-27 18:03:33,415 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/6/Music/Conv/G/V1' (code 3146): 1 epochs
+2025-06-27 18:03:33,415 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/6/Music/Conv/G/V2' (code 3156): 0 epochs
+2025-06-27 18:03:33,415 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/6/Music/Conv/G/V3' (code 3166): 1 epochs
+2025-06-27 18:03:33,415 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/6/Music/Conv/D/V1' (code 3176): 3 epochs
+2025-06-27 18:03:33,415 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/6/Music/Conv/D/V2' (code 3186): 2 epochs
+2025-06-27 18:03:33,415 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/6/Music/Conv/D/V3' (code 3196): 0 epochs
+2025-06-27 18:03:33,499 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:342] - Processing conditions: ['XPP_ALL', 'XAP_ALL']
+2025-06-27 18:03:33,616 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:455] -   Data shapes for 'KA70': XPP_ALL=(63, 124, 601), XAP_ALL=(61, 124, 601). Loaded in 0.46s
+2025-06-27 18:03:33,616 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_battery:526] - Battery protocol loaded: 124 total epochs for subject 'KA70'
+2025-06-27 18:03:33,616 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_battery:537] - Battery events detected: 42 events (['PP/Music/Conv/G/V1', 'PP/Music/Conv/G/V2', 'PP/Music/Conv/G/V3', 'PP/Music/Conv/D/V1', 'PP/Music/Conv/D/V2'])
+2025-06-27 18:03:33,617 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:274] - Detected protocol 'battery' for subject KA70
+2025-06-27 18:03:33,883 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:438] - CRITICAL: No data loaded for ANY specified conditions for subject KA70.
+2025-06-27 18:03:33,883 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:445] - Empty data array for condition 'temp' (specifier: 'AP') for subject KA70.
+2025-06-27 18:03:33,883 - INFO - utils.loading_PP_utils - [detect_protocol_type:712] - Detected Battery protocol: 42 Music/Conv events, 124 total events
+2025-06-27 18:03:33,883 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:856] - Auto-detected protocol 'battery' for subject 'KA70' (file hint: battery)
+2025-06-27 18:03:33,884 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_battery:503] - Loading Battery protocol data for subject 'KA70' (group: VS)
+2025-06-27 18:03:33,884 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_battery:507] - Battery protocol conditions: ['XPP_ALL', 'XAP_ALL', 'PP_MUSIC', 'PP_CONV', 'AP_MUSIC', 'AP_CONV', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-27 18:03:33,884 - INFO - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:64] - Found epochs file: /mnt/data/tom.balay/data/Baking_EEG_data/PP_VS_1HZ/Battery/KA70_preproc_noICA_PPAP-epo_ar.fif (protocol: battery)
+2025-06-27 18:03:33,884 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:301] - Loading epoch data for subject 'KA70' from: /mnt/data/tom.balay/data/Baking_EEG_data/PP_VS_1HZ/Battery/KA70_preproc_noICA_PPAP-epo_ar.fif (file protocol: battery)
+2025-06-27 18:03:34,066 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:312] - Event IDs available for KA70:
+2025-06-27 18:03:34,066 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/G/V1': 1140
+2025-06-27 18:03:34,066 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/G/V2': 1150
+2025-06-27 18:03:34,066 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/G/V3': 1160
+2025-06-27 18:03:34,066 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/D/V1': 1170
+2025-06-27 18:03:34,066 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/D/V2': 1180
+2025-06-27 18:03:34,066 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/D/V3': 1190
+2025-06-27 18:03:34,066 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/G/V1': 3141
+2025-06-27 18:03:34,067 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/G/V2': 3151
+2025-06-27 18:03:34,067 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/G/V3': 3161
+2025-06-27 18:03:34,067 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/D/V1': 3171
+2025-06-27 18:03:34,067 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/D/V2': 3181
+2025-06-27 18:03:34,067 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/D/V3': 3191
+2025-06-27 18:03:34,067 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/G/V1': 3142
+2025-06-27 18:03:34,067 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/G/V2': 3152
+2025-06-27 18:03:34,067 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/G/V3': 3162
+2025-06-27 18:03:34,067 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/D/V1': 3172
+2025-06-27 18:03:34,067 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/D/V2': 3182
+2025-06-27 18:03:34,067 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/D/V3': 3192
+2025-06-27 18:03:34,067 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/G/V1': 3143
+2025-06-27 18:03:34,067 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/G/V2': 3153
+2025-06-27 18:03:34,068 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/G/V3': 3163
+2025-06-27 18:03:34,068 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/D/V1': 3173
+2025-06-27 18:03:34,068 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/D/V2': 3183
+2025-06-27 18:03:34,068 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/D/V3': 3193
+2025-06-27 18:03:34,068 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/G/V1': 3144
+2025-06-27 18:03:34,068 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/G/V2': 3154
+2025-06-27 18:03:34,068 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/G/V3': 3164
+2025-06-27 18:03:34,068 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/D/V1': 3174
+2025-06-27 18:03:34,068 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/D/V2': 3184
+2025-06-27 18:03:34,068 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/D/V3': 3194
+2025-06-27 18:03:34,068 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/G/V1': 3145
+2025-06-27 18:03:34,068 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/G/V2': 3155
+2025-06-27 18:03:34,068 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/G/V3': 3165
+2025-06-27 18:03:34,069 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/D/V1': 3175
+2025-06-27 18:03:34,069 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/D/V2': 3185
+2025-06-27 18:03:34,069 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/D/V3': 3195
+2025-06-27 18:03:34,069 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/G/V1': 3146
+2025-06-27 18:03:34,069 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/G/V2': 3156
+2025-06-27 18:03:34,069 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/G/V3': 3166
+2025-06-27 18:03:34,069 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/D/V1': 3176
+2025-06-27 18:03:34,069 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/D/V2': 3186
+2025-06-27 18:03:34,069 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/D/V3': 3196
+2025-06-27 18:03:34,140 - INFO - utils.loading_PP_utils - [inspect_epochs_events:908] - === EVENT INSPECTION FOR KA70 ===
+2025-06-27 18:03:34,140 - INFO - utils.loading_PP_utils - [inspect_epochs_events:911] - File: /mnt/data/tom.balay/data/Baking_EEG_data/PP_VS_1HZ/Battery/KA70_preproc_noICA_PPAP-epo_ar.fif
+2025-06-27 18:03:34,140 - INFO - utils.loading_PP_utils - [inspect_epochs_events:912] - Total events: 124
+2025-06-27 18:03:34,140 - INFO - utils.loading_PP_utils - [inspect_epochs_events:913] - Event types and counts:
+2025-06-27 18:03:34,141 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'PP/Music/Conv/G/V1' (code 1140): 11 epochs
+2025-06-27 18:03:34,141 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'PP/Music/Conv/G/V2' (code 1150): 6 epochs
+2025-06-27 18:03:34,141 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'PP/Music/Conv/G/V3' (code 1160): 12 epochs
+2025-06-27 18:03:34,141 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'PP/Music/Conv/D/V1' (code 1170): 11 epochs
+2025-06-27 18:03:34,141 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'PP/Music/Conv/D/V2' (code 1180): 11 epochs
+2025-06-27 18:03:34,141 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'PP/Music/Conv/D/V3' (code 1190): 12 epochs
+2025-06-27 18:03:34,141 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/1/Music/Conv/G/V1' (code 3141): 1 epochs
+2025-06-27 18:03:34,141 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/1/Music/Conv/G/V2' (code 3151): 0 epochs
+2025-06-27 18:03:34,141 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/1/Music/Conv/G/V3' (code 3161): 1 epochs
+2025-06-27 18:03:34,141 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/1/Music/Conv/D/V1' (code 3171): 2 epochs
+2025-06-27 18:03:34,141 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/1/Music/Conv/D/V2' (code 3181): 3 epochs
+2025-06-27 18:03:34,141 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/1/Music/Conv/D/V3' (code 3191): 0 epochs
+2025-06-27 18:03:34,141 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/2/Music/Conv/G/V1' (code 3142): 3 epochs
+2025-06-27 18:03:34,141 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/2/Music/Conv/G/V2' (code 3152): 2 epochs
+2025-06-27 18:03:34,142 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/2/Music/Conv/G/V3' (code 3162): 1 epochs
+2025-06-27 18:03:34,142 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/2/Music/Conv/D/V1' (code 3172): 0 epochs
+2025-06-27 18:03:34,142 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/2/Music/Conv/D/V2' (code 3182): 2 epochs
+2025-06-27 18:03:34,142 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/2/Music/Conv/D/V3' (code 3192): 4 epochs
+2025-06-27 18:03:34,142 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/3/Music/Conv/G/V1' (code 3143): 3 epochs
+2025-06-27 18:03:34,142 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/3/Music/Conv/G/V2' (code 3153): 2 epochs
+2025-06-27 18:03:34,142 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/3/Music/Conv/G/V3' (code 3163): 6 epochs
+2025-06-27 18:03:34,142 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/3/Music/Conv/D/V1' (code 3173): 1 epochs
+2025-06-27 18:03:34,142 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/3/Music/Conv/D/V2' (code 3183): 1 epochs
+2025-06-27 18:03:34,142 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/3/Music/Conv/D/V3' (code 3193): 2 epochs
+2025-06-27 18:03:34,142 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/4/Music/Conv/G/V1' (code 3144): 2 epochs
+2025-06-27 18:03:34,142 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/4/Music/Conv/G/V2' (code 3154): 1 epochs
+2025-06-27 18:03:34,142 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/4/Music/Conv/G/V3' (code 3164): 1 epochs
+2025-06-27 18:03:34,142 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/4/Music/Conv/D/V1' (code 3174): 1 epochs
+2025-06-27 18:03:34,142 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/4/Music/Conv/D/V2' (code 3184): 2 epochs
+2025-06-27 18:03:34,143 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/4/Music/Conv/D/V3' (code 3194): 1 epochs
+2025-06-27 18:03:34,143 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/5/Music/Conv/G/V1' (code 3145): 2 epochs
+2025-06-27 18:03:34,143 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/5/Music/Conv/G/V2' (code 3155): 1 epochs
+2025-06-27 18:03:34,143 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/5/Music/Conv/G/V3' (code 3165): 2 epochs
+2025-06-27 18:03:34,143 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/5/Music/Conv/D/V1' (code 3175): 1 epochs
+2025-06-27 18:03:34,143 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/5/Music/Conv/D/V2' (code 3185): 2 epochs
+2025-06-27 18:03:34,143 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/5/Music/Conv/D/V3' (code 3195): 4 epochs
+2025-06-27 18:03:34,143 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/6/Music/Conv/G/V1' (code 3146): 1 epochs
+2025-06-27 18:03:34,143 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/6/Music/Conv/G/V2' (code 3156): 0 epochs
+2025-06-27 18:03:34,143 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/6/Music/Conv/G/V3' (code 3166): 1 epochs
+2025-06-27 18:03:34,143 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/6/Music/Conv/D/V1' (code 3176): 3 epochs
+2025-06-27 18:03:34,143 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/6/Music/Conv/D/V2' (code 3186): 2 epochs
+2025-06-27 18:03:34,143 - INFO - utils.loading_PP_utils - [inspect_epochs_events:915] -   - 'AP/6/Music/Conv/D/V3' (code 3196): 0 epochs
+2025-06-27 18:03:34,228 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:342] - Processing conditions: ['XPP_ALL', 'XAP_ALL', 'PP_MUSIC', 'PP_CONV', 'AP_MUSIC', 'AP_CONV', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-27 18:03:34,395 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:389] - Aucune donnée trouvée pour 'PP/Conv/' (condition: PP_CONV) chez sujet KA70. Événements disponibles: ['PP/Music/Conv/G/V1', 'PP/Music/Conv/G/V2', 'PP/Music/Conv/G/V3', 'PP/Music/Conv/D/V1', 'PP/Music/Conv/D/V2', 'PP/Music/Conv/D/V3', 'AP/1/Music/Conv/G/V1', 'AP/1/Music/Conv/G/V2', 'AP/1/Music/Conv/G/V3', 'AP/1/Music/Conv/D/V1', 'AP/1/Music/Conv/D/V2', 'AP/1/Music/Conv/D/V3', 'AP/2/Music/Conv/G/V1', 'AP/2/Music/Conv/G/V2', 'AP/2/Music/Conv/G/V3', 'AP/2/Music/Conv/D/V1', 'AP/2/Music/Conv/D/V2', 'AP/2/Music/Conv/D/V3', 'AP/3/Music/Conv/G/V1', 'AP/3/Music/Conv/G/V2', 'AP/3/Music/Conv/G/V3', 'AP/3/Music/Conv/D/V1', 'AP/3/Music/Conv/D/V2', 'AP/3/Music/Conv/D/V3', 'AP/4/Music/Conv/G/V1', 'AP/4/Music/Conv/G/V2', 'AP/4/Music/Conv/G/V3', 'AP/4/Music/Conv/D/V1', 'AP/4/Music/Conv/D/V2', 'AP/4/Music/Conv/D/V3', 'AP/5/Music/Conv/G/V1', 'AP/5/Music/Conv/G/V2', 'AP/5/Music/Conv/G/V3', 'AP/5/Music/Conv/D/V1', 'AP/5/Music/Conv/D/V2', 'AP/5/Music/Conv/D/V3', 'AP/6/Music/Conv/G/V1', 'AP/6/Music/Conv/G/V2', 'AP/6/Music/Conv/G/V3', 'AP/6/Music/Conv/D/V1', 'AP/6/Music/Conv/D/V2', 'AP/6/Music/Conv/D/V3']. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:34,395 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:389] - Aucune donnée trouvée pour 'AP/Music/' (condition: AP_MUSIC) chez sujet KA70. Événements disponibles: ['PP/Music/Conv/G/V1', 'PP/Music/Conv/G/V2', 'PP/Music/Conv/G/V3', 'PP/Music/Conv/D/V1', 'PP/Music/Conv/D/V2', 'PP/Music/Conv/D/V3', 'AP/1/Music/Conv/G/V1', 'AP/1/Music/Conv/G/V2', 'AP/1/Music/Conv/G/V3', 'AP/1/Music/Conv/D/V1', 'AP/1/Music/Conv/D/V2', 'AP/1/Music/Conv/D/V3', 'AP/2/Music/Conv/G/V1', 'AP/2/Music/Conv/G/V2', 'AP/2/Music/Conv/G/V3', 'AP/2/Music/Conv/D/V1', 'AP/2/Music/Conv/D/V2', 'AP/2/Music/Conv/D/V3', 'AP/3/Music/Conv/G/V1', 'AP/3/Music/Conv/G/V2', 'AP/3/Music/Conv/G/V3', 'AP/3/Music/Conv/D/V1', 'AP/3/Music/Conv/D/V2', 'AP/3/Music/Conv/D/V3', 'AP/4/Music/Conv/G/V1', 'AP/4/Music/Conv/G/V2', 'AP/4/Music/Conv/G/V3', 'AP/4/Music/Conv/D/V1', 'AP/4/Music/Conv/D/V2', 'AP/4/Music/Conv/D/V3', 'AP/5/Music/Conv/G/V1', 'AP/5/Music/Conv/G/V2', 'AP/5/Music/Conv/G/V3', 'AP/5/Music/Conv/D/V1', 'AP/5/Music/Conv/D/V2', 'AP/5/Music/Conv/D/V3', 'AP/6/Music/Conv/G/V1', 'AP/6/Music/Conv/G/V2', 'AP/6/Music/Conv/G/V3', 'AP/6/Music/Conv/D/V1', 'AP/6/Music/Conv/D/V2', 'AP/6/Music/Conv/D/V3']. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:34,396 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:389] - Aucune donnée trouvée pour 'AP/Conv/' (condition: AP_CONV) chez sujet KA70. Événements disponibles: ['PP/Music/Conv/G/V1', 'PP/Music/Conv/G/V2', 'PP/Music/Conv/G/V3', 'PP/Music/Conv/D/V1', 'PP/Music/Conv/D/V2', 'PP/Music/Conv/D/V3', 'AP/1/Music/Conv/G/V1', 'AP/1/Music/Conv/G/V2', 'AP/1/Music/Conv/G/V3', 'AP/1/Music/Conv/D/V1', 'AP/1/Music/Conv/D/V2', 'AP/1/Music/Conv/D/V3', 'AP/2/Music/Conv/G/V1', 'AP/2/Music/Conv/G/V2', 'AP/2/Music/Conv/G/V3', 'AP/2/Music/Conv/D/V1', 'AP/2/Music/Conv/D/V2', 'AP/2/Music/Conv/D/V3', 'AP/3/Music/Conv/G/V1', 'AP/3/Music/Conv/G/V2', 'AP/3/Music/Conv/G/V3', 'AP/3/Music/Conv/D/V1', 'AP/3/Music/Conv/D/V2', 'AP/3/Music/Conv/D/V3', 'AP/4/Music/Conv/G/V1', 'AP/4/Music/Conv/G/V2', 'AP/4/Music/Conv/G/V3', 'AP/4/Music/Conv/D/V1', 'AP/4/Music/Conv/D/V2', 'AP/4/Music/Conv/D/V3', 'AP/5/Music/Conv/G/V1', 'AP/5/Music/Conv/G/V2', 'AP/5/Music/Conv/G/V3', 'AP/5/Music/Conv/D/V1', 'AP/5/Music/Conv/D/V2', 'AP/5/Music/Conv/D/V3', 'AP/6/Music/Conv/G/V1', 'AP/6/Music/Conv/G/V2', 'AP/6/Music/Conv/G/V3', 'AP/6/Music/Conv/D/V1', 'AP/6/Music/Conv/D/V2', 'AP/6/Music/Conv/D/V3']. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:34,396 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:389] - Aucune donnée trouvée pour '['AP/1/Music/', 'AP/1/Conv/']' (condition: AP_FAMILY_1) chez sujet KA70. Événements disponibles: ['PP/Music/Conv/G/V1', 'PP/Music/Conv/G/V2', 'PP/Music/Conv/G/V3', 'PP/Music/Conv/D/V1', 'PP/Music/Conv/D/V2', 'PP/Music/Conv/D/V3', 'AP/1/Music/Conv/G/V1', 'AP/1/Music/Conv/G/V2', 'AP/1/Music/Conv/G/V3', 'AP/1/Music/Conv/D/V1', 'AP/1/Music/Conv/D/V2', 'AP/1/Music/Conv/D/V3', 'AP/2/Music/Conv/G/V1', 'AP/2/Music/Conv/G/V2', 'AP/2/Music/Conv/G/V3', 'AP/2/Music/Conv/D/V1', 'AP/2/Music/Conv/D/V2', 'AP/2/Music/Conv/D/V3', 'AP/3/Music/Conv/G/V1', 'AP/3/Music/Conv/G/V2', 'AP/3/Music/Conv/G/V3', 'AP/3/Music/Conv/D/V1', 'AP/3/Music/Conv/D/V2', 'AP/3/Music/Conv/D/V3', 'AP/4/Music/Conv/G/V1', 'AP/4/Music/Conv/G/V2', 'AP/4/Music/Conv/G/V3', 'AP/4/Music/Conv/D/V1', 'AP/4/Music/Conv/D/V2', 'AP/4/Music/Conv/D/V3', 'AP/5/Music/Conv/G/V1', 'AP/5/Music/Conv/G/V2', 'AP/5/Music/Conv/G/V3', 'AP/5/Music/Conv/D/V1', 'AP/5/Music/Conv/D/V2', 'AP/5/Music/Conv/D/V3', 'AP/6/Music/Conv/G/V1', 'AP/6/Music/Conv/G/V2', 'AP/6/Music/Conv/G/V3', 'AP/6/Music/Conv/D/V1', 'AP/6/Music/Conv/D/V2', 'AP/6/Music/Conv/D/V3']. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:34,396 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:389] - Aucune donnée trouvée pour '['AP/2/Music/', 'AP/2/Conv/']' (condition: AP_FAMILY_2) chez sujet KA70. Événements disponibles: ['PP/Music/Conv/G/V1', 'PP/Music/Conv/G/V2', 'PP/Music/Conv/G/V3', 'PP/Music/Conv/D/V1', 'PP/Music/Conv/D/V2', 'PP/Music/Conv/D/V3', 'AP/1/Music/Conv/G/V1', 'AP/1/Music/Conv/G/V2', 'AP/1/Music/Conv/G/V3', 'AP/1/Music/Conv/D/V1', 'AP/1/Music/Conv/D/V2', 'AP/1/Music/Conv/D/V3', 'AP/2/Music/Conv/G/V1', 'AP/2/Music/Conv/G/V2', 'AP/2/Music/Conv/G/V3', 'AP/2/Music/Conv/D/V1', 'AP/2/Music/Conv/D/V2', 'AP/2/Music/Conv/D/V3', 'AP/3/Music/Conv/G/V1', 'AP/3/Music/Conv/G/V2', 'AP/3/Music/Conv/G/V3', 'AP/3/Music/Conv/D/V1', 'AP/3/Music/Conv/D/V2', 'AP/3/Music/Conv/D/V3', 'AP/4/Music/Conv/G/V1', 'AP/4/Music/Conv/G/V2', 'AP/4/Music/Conv/G/V3', 'AP/4/Music/Conv/D/V1', 'AP/4/Music/Conv/D/V2', 'AP/4/Music/Conv/D/V3', 'AP/5/Music/Conv/G/V1', 'AP/5/Music/Conv/G/V2', 'AP/5/Music/Conv/G/V3', 'AP/5/Music/Conv/D/V1', 'AP/5/Music/Conv/D/V2', 'AP/5/Music/Conv/D/V3', 'AP/6/Music/Conv/G/V1', 'AP/6/Music/Conv/G/V2', 'AP/6/Music/Conv/G/V3', 'AP/6/Music/Conv/D/V1', 'AP/6/Music/Conv/D/V2', 'AP/6/Music/Conv/D/V3']. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:34,396 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:389] - Aucune donnée trouvée pour '['AP/3/Music/', 'AP/3/Conv/']' (condition: AP_FAMILY_3) chez sujet KA70. Événements disponibles: ['PP/Music/Conv/G/V1', 'PP/Music/Conv/G/V2', 'PP/Music/Conv/G/V3', 'PP/Music/Conv/D/V1', 'PP/Music/Conv/D/V2', 'PP/Music/Conv/D/V3', 'AP/1/Music/Conv/G/V1', 'AP/1/Music/Conv/G/V2', 'AP/1/Music/Conv/G/V3', 'AP/1/Music/Conv/D/V1', 'AP/1/Music/Conv/D/V2', 'AP/1/Music/Conv/D/V3', 'AP/2/Music/Conv/G/V1', 'AP/2/Music/Conv/G/V2', 'AP/2/Music/Conv/G/V3', 'AP/2/Music/Conv/D/V1', 'AP/2/Music/Conv/D/V2', 'AP/2/Music/Conv/D/V3', 'AP/3/Music/Conv/G/V1', 'AP/3/Music/Conv/G/V2', 'AP/3/Music/Conv/G/V3', 'AP/3/Music/Conv/D/V1', 'AP/3/Music/Conv/D/V2', 'AP/3/Music/Conv/D/V3', 'AP/4/Music/Conv/G/V1', 'AP/4/Music/Conv/G/V2', 'AP/4/Music/Conv/G/V3', 'AP/4/Music/Conv/D/V1', 'AP/4/Music/Conv/D/V2', 'AP/4/Music/Conv/D/V3', 'AP/5/Music/Conv/G/V1', 'AP/5/Music/Conv/G/V2', 'AP/5/Music/Conv/G/V3', 'AP/5/Music/Conv/D/V1', 'AP/5/Music/Conv/D/V2', 'AP/5/Music/Conv/D/V3', 'AP/6/Music/Conv/G/V1', 'AP/6/Music/Conv/G/V2', 'AP/6/Music/Conv/G/V3', 'AP/6/Music/Conv/D/V1', 'AP/6/Music/Conv/D/V2', 'AP/6/Music/Conv/D/V3']. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:34,396 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:389] - Aucune donnée trouvée pour '['AP/4/Music/', 'AP/4/Conv/']' (condition: AP_FAMILY_4) chez sujet KA70. Événements disponibles: ['PP/Music/Conv/G/V1', 'PP/Music/Conv/G/V2', 'PP/Music/Conv/G/V3', 'PP/Music/Conv/D/V1', 'PP/Music/Conv/D/V2', 'PP/Music/Conv/D/V3', 'AP/1/Music/Conv/G/V1', 'AP/1/Music/Conv/G/V2', 'AP/1/Music/Conv/G/V3', 'AP/1/Music/Conv/D/V1', 'AP/1/Music/Conv/D/V2', 'AP/1/Music/Conv/D/V3', 'AP/2/Music/Conv/G/V1', 'AP/2/Music/Conv/G/V2', 'AP/2/Music/Conv/G/V3', 'AP/2/Music/Conv/D/V1', 'AP/2/Music/Conv/D/V2', 'AP/2/Music/Conv/D/V3', 'AP/3/Music/Conv/G/V1', 'AP/3/Music/Conv/G/V2', 'AP/3/Music/Conv/G/V3', 'AP/3/Music/Conv/D/V1', 'AP/3/Music/Conv/D/V2', 'AP/3/Music/Conv/D/V3', 'AP/4/Music/Conv/G/V1', 'AP/4/Music/Conv/G/V2', 'AP/4/Music/Conv/G/V3', 'AP/4/Music/Conv/D/V1', 'AP/4/Music/Conv/D/V2', 'AP/4/Music/Conv/D/V3', 'AP/5/Music/Conv/G/V1', 'AP/5/Music/Conv/G/V2', 'AP/5/Music/Conv/G/V3', 'AP/5/Music/Conv/D/V1', 'AP/5/Music/Conv/D/V2', 'AP/5/Music/Conv/D/V3', 'AP/6/Music/Conv/G/V1', 'AP/6/Music/Conv/G/V2', 'AP/6/Music/Conv/G/V3', 'AP/6/Music/Conv/D/V1', 'AP/6/Music/Conv/D/V2', 'AP/6/Music/Conv/D/V3']. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:34,396 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:389] - Aucune donnée trouvée pour '['AP/5/Music/', 'AP/5/Conv/']' (condition: AP_FAMILY_5) chez sujet KA70. Événements disponibles: ['PP/Music/Conv/G/V1', 'PP/Music/Conv/G/V2', 'PP/Music/Conv/G/V3', 'PP/Music/Conv/D/V1', 'PP/Music/Conv/D/V2', 'PP/Music/Conv/D/V3', 'AP/1/Music/Conv/G/V1', 'AP/1/Music/Conv/G/V2', 'AP/1/Music/Conv/G/V3', 'AP/1/Music/Conv/D/V1', 'AP/1/Music/Conv/D/V2', 'AP/1/Music/Conv/D/V3', 'AP/2/Music/Conv/G/V1', 'AP/2/Music/Conv/G/V2', 'AP/2/Music/Conv/G/V3', 'AP/2/Music/Conv/D/V1', 'AP/2/Music/Conv/D/V2', 'AP/2/Music/Conv/D/V3', 'AP/3/Music/Conv/G/V1', 'AP/3/Music/Conv/G/V2', 'AP/3/Music/Conv/G/V3', 'AP/3/Music/Conv/D/V1', 'AP/3/Music/Conv/D/V2', 'AP/3/Music/Conv/D/V3', 'AP/4/Music/Conv/G/V1', 'AP/4/Music/Conv/G/V2', 'AP/4/Music/Conv/G/V3', 'AP/4/Music/Conv/D/V1', 'AP/4/Music/Conv/D/V2', 'AP/4/Music/Conv/D/V3', 'AP/5/Music/Conv/G/V1', 'AP/5/Music/Conv/G/V2', 'AP/5/Music/Conv/G/V3', 'AP/5/Music/Conv/D/V1', 'AP/5/Music/Conv/D/V2', 'AP/5/Music/Conv/D/V3', 'AP/6/Music/Conv/G/V1', 'AP/6/Music/Conv/G/V2', 'AP/6/Music/Conv/G/V3', 'AP/6/Music/Conv/D/V1', 'AP/6/Music/Conv/D/V2', 'AP/6/Music/Conv/D/V3']. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:34,396 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:389] - Aucune donnée trouvée pour '['AP/6/Music/', 'AP/6/Conv/']' (condition: AP_FAMILY_6) chez sujet KA70. Événements disponibles: ['PP/Music/Conv/G/V1', 'PP/Music/Conv/G/V2', 'PP/Music/Conv/G/V3', 'PP/Music/Conv/D/V1', 'PP/Music/Conv/D/V2', 'PP/Music/Conv/D/V3', 'AP/1/Music/Conv/G/V1', 'AP/1/Music/Conv/G/V2', 'AP/1/Music/Conv/G/V3', 'AP/1/Music/Conv/D/V1', 'AP/1/Music/Conv/D/V2', 'AP/1/Music/Conv/D/V3', 'AP/2/Music/Conv/G/V1', 'AP/2/Music/Conv/G/V2', 'AP/2/Music/Conv/G/V3', 'AP/2/Music/Conv/D/V1', 'AP/2/Music/Conv/D/V2', 'AP/2/Music/Conv/D/V3', 'AP/3/Music/Conv/G/V1', 'AP/3/Music/Conv/G/V2', 'AP/3/Music/Conv/G/V3', 'AP/3/Music/Conv/D/V1', 'AP/3/Music/Conv/D/V2', 'AP/3/Music/Conv/D/V3', 'AP/4/Music/Conv/G/V1', 'AP/4/Music/Conv/G/V2', 'AP/4/Music/Conv/G/V3', 'AP/4/Music/Conv/D/V1', 'AP/4/Music/Conv/D/V2', 'AP/4/Music/Conv/D/V3', 'AP/5/Music/Conv/G/V1', 'AP/5/Music/Conv/G/V2', 'AP/5/Music/Conv/G/V3', 'AP/5/Music/Conv/D/V1', 'AP/5/Music/Conv/D/V2', 'AP/5/Music/Conv/D/V3', 'AP/6/Music/Conv/G/V1', 'AP/6/Music/Conv/G/V2', 'AP/6/Music/Conv/G/V3', 'AP/6/Music/Conv/D/V1', 'AP/6/Music/Conv/D/V2', 'AP/6/Music/Conv/D/V3']. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:34,397 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:445] - Empty data array for condition 'PP_CONV' (specifier: 'PP/Conv/') for subject KA70.
+2025-06-27 18:03:34,397 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:445] - Empty data array for condition 'AP_MUSIC' (specifier: 'AP/Music/') for subject KA70.
+2025-06-27 18:03:34,397 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:445] - Empty data array for condition 'AP_CONV' (specifier: 'AP/Conv/') for subject KA70.
+2025-06-27 18:03:34,397 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:445] - Empty data array for condition 'AP_FAMILY_1' (specifier: '['AP/1/Music/', 'AP/1/Conv/']') for subject KA70.
+2025-06-27 18:03:34,397 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:445] - Empty data array for condition 'AP_FAMILY_2' (specifier: '['AP/2/Music/', 'AP/2/Conv/']') for subject KA70.
+2025-06-27 18:03:34,397 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:445] - Empty data array for condition 'AP_FAMILY_3' (specifier: '['AP/3/Music/', 'AP/3/Conv/']') for subject KA70.
+2025-06-27 18:03:34,397 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:445] - Empty data array for condition 'AP_FAMILY_4' (specifier: '['AP/4/Music/', 'AP/4/Conv/']') for subject KA70.
+2025-06-27 18:03:34,397 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:445] - Empty data array for condition 'AP_FAMILY_5' (specifier: '['AP/5/Music/', 'AP/5/Conv/']') for subject KA70.
+2025-06-27 18:03:34,397 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:445] - Empty data array for condition 'AP_FAMILY_6' (specifier: '['AP/6/Music/', 'AP/6/Conv/']') for subject KA70.
+2025-06-27 18:03:34,397 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:455] -   Data shapes for 'KA70': XPP_ALL=(63, 124, 601), XAP_ALL=(61, 124, 601), PP_MUSIC=(63, 124, 601), PP_CONV=(0, 124, 601), AP_MUSIC=(0, 124, 601), AP_CONV=(0, 124, 601), AP_FAMILY_1=(0, 124, 601), AP_FAMILY_2=(0, 124, 601), AP_FAMILY_3=(0, 124, 601), AP_FAMILY_4=(0, 124, 601), AP_FAMILY_5=(0, 124, 601), AP_FAMILY_6=(0, 124, 601). Loaded in 0.51s
+2025-06-27 18:03:34,397 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_battery:526] - Battery protocol loaded: 187 total epochs for subject 'KA70'
+2025-06-27 18:03:34,398 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_battery:537] - Battery events detected: 42 events (['PP/Music/Conv/G/V1', 'PP/Music/Conv/G/V2', 'PP/Music/Conv/G/V3', 'PP/Music/Conv/D/V1', 'PP/Music/Conv/D/V2'])
+2025-06-27 18:03:34,399 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:291] - Using protocol-specific loading configuration for battery: ['XPP_ALL', 'XAP_ALL', 'PP_MUSIC', 'PP_CONV', 'AP_MUSIC', 'AP_CONV', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-27 18:03:34,399 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:296] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_MUSIC', 'PP_CONV', 'AP_MUSIC', 'AP_CONV', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-27 18:03:34,399 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:324] - Successfully loaded 187 total epochs across all conditions for KA70
+2025-06-27 18:03:34,399 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:338] - Protocol-specific settings for battery: CV folds=5, AP families=6, PP events=['PP/Music/', 'PP/Conv/']
+2025-06-27 18:03:34,399 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:363] - --- Starting Main Protocol Decoding for KA70 ---
+2025-06-27 18:03:34,399 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:366] -   --- 1. Main Decoding (e.g., PP/all vs AP/all) for KA70 ---
+2025-06-27 18:03:34,432 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-27 18:03:34,432 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-27 18:03:34,437 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-27 18:03:34,438 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-27 18:03:34,438 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-27 18:03:34,438 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-27 18:03:34,438 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-27 18:03:34,438 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-27 18:03:34,438 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-27 18:03:34,438 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 5 splits.
+2025-06-27 18:03:34,438 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-27 18:03:34,445 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-27 18:03:34,445 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-27 18:03:45,130 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.684
+2025-06-27 18:03:45,130 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-27 18:03:45,130 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-06-27 18:03:51,743 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.692 +/- 0.081
+2025-06-27 18:03:51,760 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.666', 'accuracy': '0.645', 'precision': '0.642', 'recall': '0.683', 'f1_score': '0.662', 'balanced_accuracy': '0.645'}
+2025-06-27 18:03:51,760 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (5, 601)
+2025-06-27 18:03:51,760 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-27 18:03:52,369 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-06-27 18:03:52,369 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (5, 601)
+2025-06-27 18:03:52,369 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-27 18:03:52,369 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-27 18:03:52,369 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-13.069365 max=7.905001
+Running initial clustering …
+Using 79 thresholds from 0.10 to 7.90 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-27 18:03:54,065 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-27 18:03:54,066 - INFO - utils.stats_utils - [perform_cluster_permutation_test:344] - No clusters found to be statistically significant (p < 0.05).
+2025-06-27 18:03:54,068 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:426] - Main Decoding for KA70 DONE. Mean Global AUC: 0.692
+2025-06-27 18:03:54,068 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:432] -   --- 2. Specific Task Comparisons (e.g. PP_spec vs AP_family_X) for KA70 ---
+2025-06-27 18:03:54,068 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:510] - Subj KA70: PP_FOR_SPECIFIC_COMPARISON data manquante. Ceci est normal si le sujet n'a pas ce type de données spécifiques selon le protocole. Passage aux comparaisons inter-familles.
+2025-06-27 18:03:54,068 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:514] -   --- Specific Task Comparisons for KA70 DONE ---
+2025-06-27 18:03:54,068 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:567] -   --- 4. Inter-Family Decoding Tasks (e.g. AP_fam_X vs AP_fam_Y) for KA70 ---
+2025-06-27 18:03:54,068 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_1 ou AP_FAMILY_2 dans la tâche 'AP FAMILY 1 vs AP FAMILY 2'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,068 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_1 ou AP_FAMILY_3 dans la tâche 'AP FAMILY 1 vs AP FAMILY 3'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,068 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_1 ou AP_FAMILY_4 dans la tâche 'AP FAMILY 1 vs AP FAMILY 4'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,068 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_1 ou AP_FAMILY_5 dans la tâche 'AP FAMILY 1 vs AP FAMILY 5'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,068 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_1 ou AP_FAMILY_6 dans la tâche 'AP FAMILY 1 vs AP FAMILY 6'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,069 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_2 ou AP_FAMILY_1 dans la tâche 'AP FAMILY 2 vs AP FAMILY 1'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,069 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_2 ou AP_FAMILY_3 dans la tâche 'AP FAMILY 2 vs AP FAMILY 3'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,069 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_2 ou AP_FAMILY_4 dans la tâche 'AP FAMILY 2 vs AP FAMILY 4'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,069 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_2 ou AP_FAMILY_5 dans la tâche 'AP FAMILY 2 vs AP FAMILY 5'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,069 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_2 ou AP_FAMILY_6 dans la tâche 'AP FAMILY 2 vs AP FAMILY 6'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,069 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_3 ou AP_FAMILY_1 dans la tâche 'AP FAMILY 3 vs AP FAMILY 1'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,069 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_3 ou AP_FAMILY_2 dans la tâche 'AP FAMILY 3 vs AP FAMILY 2'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,069 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_3 ou AP_FAMILY_4 dans la tâche 'AP FAMILY 3 vs AP FAMILY 4'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,069 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_3 ou AP_FAMILY_5 dans la tâche 'AP FAMILY 3 vs AP FAMILY 5'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,070 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_3 ou AP_FAMILY_6 dans la tâche 'AP FAMILY 3 vs AP FAMILY 6'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,070 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_4 ou AP_FAMILY_1 dans la tâche 'AP FAMILY 4 vs AP FAMILY 1'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,070 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_4 ou AP_FAMILY_2 dans la tâche 'AP FAMILY 4 vs AP FAMILY 2'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,070 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_4 ou AP_FAMILY_3 dans la tâche 'AP FAMILY 4 vs AP FAMILY 3'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,070 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_4 ou AP_FAMILY_5 dans la tâche 'AP FAMILY 4 vs AP FAMILY 5'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,070 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_4 ou AP_FAMILY_6 dans la tâche 'AP FAMILY 4 vs AP FAMILY 6'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,070 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_5 ou AP_FAMILY_1 dans la tâche 'AP FAMILY 5 vs AP FAMILY 1'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,070 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_5 ou AP_FAMILY_2 dans la tâche 'AP FAMILY 5 vs AP FAMILY 2'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,070 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_5 ou AP_FAMILY_3 dans la tâche 'AP FAMILY 5 vs AP FAMILY 3'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,070 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_5 ou AP_FAMILY_4 dans la tâche 'AP FAMILY 5 vs AP FAMILY 4'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,070 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_5 ou AP_FAMILY_6 dans la tâche 'AP FAMILY 5 vs AP FAMILY 6'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,071 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_6 ou AP_FAMILY_1 dans la tâche 'AP FAMILY 6 vs AP FAMILY 1'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,071 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_6 ou AP_FAMILY_2 dans la tâche 'AP FAMILY 6 vs AP FAMILY 2'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,071 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_6 ou AP_FAMILY_3 dans la tâche 'AP FAMILY 6 vs AP FAMILY 3'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,071 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_6 ou AP_FAMILY_4 dans la tâche 'AP FAMILY 6 vs AP FAMILY 4'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,071 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:627] - Subj KA70: Données manquantes pour AP_FAMILY_6 ou AP_FAMILY_5 dans la tâche 'AP FAMILY 6 vs AP FAMILY 5'. Ceci peut être normal selon le protocole du sujet.
+2025-06-27 18:03:54,071 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:634] -   --- Inter-Family Tasks for KA70 DONE ---
+2025-06-27 18:03:54,071 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:638] -   --- 5. Computing Anchor-Centric Averages for KA70 ---
+2025-06-27 18:03:54,071 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:727] - Subj KA70, Anchor AP Fam. 1: Pas assez de courbes constituantes (0) pour moyenne. Ceci est normal si les données spécifiques manquent. Debug: []
+2025-06-27 18:03:54,071 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:727] - Subj KA70, Anchor AP Fam. 2: Pas assez de courbes constituantes (0) pour moyenne. Ceci est normal si les données spécifiques manquent. Debug: []
+2025-06-27 18:03:54,071 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:727] - Subj KA70, Anchor AP Fam. 3: Pas assez de courbes constituantes (0) pour moyenne. Ceci est normal si les données spécifiques manquent. Debug: []
+2025-06-27 18:03:54,072 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:727] - Subj KA70, Anchor AP Fam. 4: Pas assez de courbes constituantes (0) pour moyenne. Ceci est normal si les données spécifiques manquent. Debug: []
+2025-06-27 18:03:54,072 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:727] - Subj KA70, Anchor AP Fam. 5: Pas assez de courbes constituantes (0) pour moyenne. Ceci est normal si les données spécifiques manquent. Debug: []
+2025-06-27 18:03:54,072 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:727] - Subj KA70, Anchor AP Fam. 6: Pas assez de courbes constituantes (0) pour moyenne. Ceci est normal si les données spécifiques manquent. Debug: []
+2025-06-27 18:03:54,072 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:734] -   --- Anchor-Centric Averages for KA70 DONE ---
+2025-06-27 18:03:54,072 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:779] - Results will be saved in: VS_01Hz_battery/KA70_Analysis_PP_Individual_svc
+2025-06-27 18:03:54,075 - INFO - utils.utils - [setup_analysis_results_directory:330] - Created analysis results directory: /home/tom.balay/results/Baking_EEG_results_V11/intra_subject_results/VS_01Hz_battery/KA70_Analysis_PP_Individual_svc/20250627_180354
+2025-06-27 18:03:54,075 - INFO - utils.utils - [setup_analysis_results_directory:338] - Organized by Group: VS, Protocol: 01Hz_battery
+2025-06-27 18:03:54,226 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:813] - Results saved for subject KA70 in /home/tom.balay/results/Baking_EEG_results_V11/intra_subject_results/VS_01Hz_battery/KA70_Analysis_PP_Individual_svc/20250627_180354
+2025-06-27 18:03:54,226 - INFO - utils.vizualization_utils_PP - [create_subject_decoding_dashboard_plots:704] - Generating dashboard for Subject: KA70 (Group: VS, Classifier: svc, Protocol: battery)
+2025-06-27 18:03:54,233 - INFO - utils.vizualization_utils_PP - [create_subject_decoding_dashboard_plots:808] - Dashboard for subject KA70 (Protocol 'battery') will generate 3 pages.
+2025-06-27 18:03:56,886 - INFO - utils.vizualization_utils_PP - [create_subject_decoding_dashboard_plots:1840] - Finished dashboard plots for Subject: KA70 (Protocol: battery). Generated 3 pages.
+2025-06-27 18:03:56,887 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:853] - Dashboard plots generated for subject KA70 in /home/tom.balay/results/Baking_EEG_results_V11/intra_subject_results/VS_01Hz_battery/KA70_Analysis_PP_Individual_svc/20250627_180354
+2025-06-27 18:03:56,887 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:866] - Finished processing subject KA70 (Task Set ID: Analysis_PP_Individual). Total time: 24.06s
+submitit INFO (2025-06-27 18:03:56,890) - Job completed successfully
+2025-06-27 18:03:56,890 - INFO - submitit - [process_job:56] - Job completed successfully
+submitit INFO (2025-06-27 18:03:56,940) - Exiting after successful completion
+2025-06-27 18:03:56,940 - INFO - submitit - [process_job:61] - Exiting after successful completion

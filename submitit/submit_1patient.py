@@ -21,7 +21,7 @@ from submitit.core.utils import FailedJobError
 PROJECT_ROOT = "/home/tom.balay/Baking_EEG"
 
 # Sujet à traiter (exemple de la nouvelle structure)
-TARGET_SUBJECT_ID_FOR_JOB = "TpAB19"
+TARGET_SUBJECT_ID_FOR_JOB = "AO05"
 
 # Le protocole sera automatiquement détecté selon le groupe du sujet
 # Plus besoin de spécifier TARGET_PROTOCOL_TYPE_FOR_JOB manuellement
@@ -125,9 +125,11 @@ def main_submission_logic():
     if not target_subject_group:
         logger.critical(f"ERREUR: Sujet '{TARGET_SUBJECT_ID_FOR_JOB}' non trouvé dans ALL_SUBJECT_GROUPS. Arrêt.")
         sys.exit(1)
-    # Déterminer le protocole selon le groupe
-    if target_subject_group in ["CONTROLS", "COMA", "MCS+", "MCS-", "VS", "DELIRIUM+", "DELIRIUM-"]:
+    # Déterminer le protocole selon le groupe (nouveaux groupes)
+    if target_subject_group in ["DELIRIUM+", "DELIRIUM-", "CONTROLS_DELIRIUM"]:
         protocol_type = "PP"
+    elif target_subject_group in ["COMA", "VS", "MCS+", "MCS-", "CONTROLS_COMA"]:
+        protocol_type = "PP"  # PP étendu ou Battery
     elif target_subject_group in ["DEL", "NODEL"]:
         protocol_type = "LG"
     else:
