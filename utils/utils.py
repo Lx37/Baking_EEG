@@ -2,7 +2,6 @@ import os
 import logging
 import numpy as np
 import mne
-from typing import Tuple, Dict, Optional
 from pathlib import Path
 import sys
 from getpass import getuser
@@ -50,7 +49,7 @@ def configure_project_paths(current_user_login):
         current_user_login, base_input_data_path
     )
 
-    output_version_folder_name = "V11"  # Versioning for results
+    output_version_folder_name = "V12"  # Versioning for results
     user_output_results_paths = {
         "tom.balay": (f"/home/tom.balay/results/"
                       f"Baking_EEG_results_{output_version_folder_name}"),

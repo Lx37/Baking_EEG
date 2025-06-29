@@ -281,7 +281,7 @@ def execute_single_subject_lg_decoding(
             else:
                 min_samples_main = np.min(np.bincount(main_labels_encoded))
                 num_cv_splits_main = (
-                    min(5, min_samples_main)
+                    min(10, min_samples_main)
                     if min_samples_main >= 2 else 0)
 
                 if num_cv_splits_main < 2:
@@ -410,7 +410,7 @@ def execute_single_subject_lg_decoding(
                         min_samples_task_spec = np.min(
                             np.bincount(task_labels_specific_enc))
                         num_cv_task_spec = (
-                            min(5, min_samples_task_spec)
+                            min(10, min_samples_task_spec)
                             if min_samples_task_spec >= 2 else 0)
 
                         if num_cv_task_spec < 2:

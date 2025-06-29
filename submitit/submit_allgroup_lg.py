@@ -1,9 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-Script de soumission Submitit ROBUSTE avec WRAPPER pour TOUS LES SUJETS des 3 groupes - Protocole LG.
-Cette version force la configuration du sys.path dans le worker pour une fiabilité maximale.
-"""
+
 
 import os
 import sys
@@ -11,9 +6,7 @@ import logging
 from datetime import datetime
 import getpass
 import submitit
-import time # Pour une pause éventuelle entre les soumissions
-
-# --- ÉTAPE 1: DÉFINIR LA RACINE DU PROJET ---
+import time 
 try:
     PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 except NameError:
@@ -22,7 +15,7 @@ except NameError:
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-# --- ÉTAPE 2: IMPORTER LES CONFIGURATIONS ---
+
 from config.config import ALL_SUBJECT_GROUPS
 from utils.utils import configure_project_paths
 from config.decoding_config import (
@@ -35,16 +28,13 @@ from config.decoding_config import (
     USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES
 )
 
-# --- ÉTAPE 3: DÉFINIR LA FONCTION WRAPPER ---
+
 def decoding_task_wrapper(**kwargs):
-    """
-    Wrapper ROBUSTE qui s'exécute sur le nœud de calcul Slurm.
-    Il force la configuration du sys.path AVANT toute importation.
-    """
+ 
     import sys
     import os
 
-    project_root = "/home/tom.balay/Baking_EEG" # Adapter si nécessaire
+    project_root = "/home/tom.balay/Baking_EEG" 
     
     if project_root not in sys.path:
         sys.path.insert(0, project_root)
@@ -53,19 +43,18 @@ def decoding_task_wrapper(**kwargs):
     
     return execute_single_subject_lg_decoding(**kwargs)
 
-# --- ÉTAPE 4: CONFIGURATION DU LOGGING ET FONCTION PRINCIPALE ---
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - [%(name)s:%(lineno)d] - %(message)s')
 logger = logging.getLogger(__name__)
 
 def main():
-    """Fonction principale de soumission pour tous les sujets de tous les groupes."""
+    
     logger.info("--- Démarrage de la soumission pour TOUS LES SUJETS (Protocole LG) ---")
 
     user = getpass.getuser()
     base_input_path, base_output_path = configure_project_paths(user)
 
-    # --- Paramètres communs à tous les jobs ---
-    # Ces paramètres seront utilisés pour chaque job soumis
+    
     common_job_kwargs = {
         "base_input_data_path": base_input_path,
         "base_output_results_path": base_output_path,
@@ -86,7 +75,7 @@ def main():
         "use_anova_fs_for_temporal_subject": USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES
     }
 
-    # --- Boucle sur tous les groupes et tous les sujets ---
+
     submitted_jobs = []
     failed_submissions = []
 
@@ -95,11 +84,10 @@ def main():
         for subject_id in subject_list:
             logger.info(f"  Configuration de la soumission pour le sujet: {subject_id} du groupe {group_name}")
 
-            # Créer un dossier de log spécifique pour ce job
+          
             log_folder_subject = f"logs_submitit_jobs_LG/{datetime.now().strftime('%Y%m%d_%H%M%S')}_{subject_id}_LG"
             
-            # Utiliser un nouvel AutoExecutor pour chaque job ou un seul pour tous ?
-            # Pour des logs séparés et une meilleure gestion, un par job est préférable.
+          
             executor = submitit.AutoExecutor(folder=log_folder_subject)
             executor.update_parameters(
                 timeout_min=12 * 60,  # Temps maximum pour un sujet
@@ -110,23 +98,20 @@ def main():
                 slurm_additional_parameters={"account": "tom.balay"} # Compte Slurm
             )
 
-            # Mettre à jour les kwargs spécifiques au sujet
+
             subject_specific_kwargs = {
                 "subject_identifier": subject_id,
                 "group_affiliation": group_name,
                 **common_job_kwargs # Fusionner avec les paramètres communs
             }
-            
-            # Afficher les paramètres finaux pour ce sujet (optionnel, pour débogage)
-            # logger.debug(f"Paramètres pour {subject_id}: {subject_specific_kwargs}")
 
             try:
                 logger.info(f"    Soumission du WRAPPER pour {subject_id} (Groupe: {group_name})...")
                 job = executor.submit(decoding_task_wrapper, **subject_specific_kwargs)
                 logger.info(f"    Job pour {subject_id} soumis avec l'ID: {job.job_id}. Logs dans: {os.path.abspath(log_folder_subject)}")
                 submitted_jobs.append(job)
-                # Petite pause pour ne pas surcharger le gestionnaire Slurm (optionnel)
-                # time.sleep(1) 
+              
+            
             except Exception as e_submit:
                 logger.error(f"    Échec de la soumission pour {subject_id}: {e_submit}", exc_info=True)
                 failed_submissions.append({"subject_id": subject_id, "error": str(e_submit)})
@@ -137,28 +122,6 @@ def main():
         logger.warning(f"Nombre de soumissions échouées: {len(failed_submissions)}")
         for failed in failed_submissions:
             logger.warning(f"  - Sujet: {failed['subject_id']}, Erreur: {failed['error']}")
-
-    # Optionnel: Attendre les résultats (peut être long)
-    # Si vous voulez attendre que tous les jobs se terminent et récupérer les résultats :
-    # logger.info("\n--- Attente des résultats des jobs ---")
-    # results = []
-    # for i, job in enumerate(submitted_jobs):
-    #     subject_id_for_log = job.kwargs.get('subject_identifier', f'job_{i}') # Récupérer l'ID du sujet si possible
-    #     try:
-    #         logger.info(f"Attente du résultat pour le job {job.job_id} (Sujet: {subject_id_for_log})...")
-    #         result = job.result()
-    #         logger.info(f"Job {job.job_id} (Sujet: {subject_id_for_log}) terminé avec succès. Résultat (type): {type(result)}")
-    #         results.append({"job_id": job.job_id, "subject_id": subject_id_for_log, "status": "succès", "result_type": type(result)})
-    #     except Exception as e:
-    #         logger.error(f"Le job {job.job_id} (Sujet: {subject_id_for_log}) a échoué: {e}", exc_info=False)
-    #         logger.error(f"  Traceback complet dans les logs du worker (dossier du job).")
-    #         results.append({"job_id": job.job_id, "subject_id": subject_id_for_log, "status": "échec", "error": str(e)})
-
-    # logger.info("\n--- Résumé de l'exécution des jobs ---")
-    # for res_summary in results:
-    #     logger.info(f"  Job ID: {res_summary['job_id']}, Sujet: {res_summary['subject_id']}, Statut: {res_summary['status']}")
-    #     if res_summary['status'] == 'échec':
-    #         logger.info(f"    Erreur: {res_summary['error']}")
 
 if __name__ == "__main__":
     main()

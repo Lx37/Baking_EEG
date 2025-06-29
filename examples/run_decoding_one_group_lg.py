@@ -299,11 +299,12 @@ def execute_group_intra_subject_lg_decoding_analysis(
                 if save_results_flag and group_summary_dir:
                     np.savez_compressed(os.path.join(group_summary_dir, "stats_lg_temp_1D_CLUSTER_Main.npz"),
                                         t_obs=t_obs_clu_lg, clusters=clu_lg, p_vals=p_clu_lg, p_map=clu_map_lg, times=ref_times_1d)
-                if generate_plots_flag and group_summary_dir:
-                    sem_1d_lg = (scipy.stats.sem(
-                        stacked_1d_lg, axis=0, nan_policy="omit") if stacked_1d_lg.shape[0] > 1 else None)
-                    plot_group_temporal_decoding_statistics_lg(ref_times_1d, np.mean(
-                        stacked_1d_lg, axis=0), f"{group_identifier} (Main LG 1D Temporal)", group_summary_dir, sem_1d_lg, clu_map_lg, fdr_mask_lg, CHANCE_LEVEL_AUC)
+                # Plots de groupe désactivés -
+                # if generate_plots_flag and group_summary_dir:
+                #     sem_1d_lg = (scipy.stats.sem(
+                #         stacked_1d_lg, axis=0, nan_policy="omit") if stacked_1d_lg.shape[0] > 1 else None)
+                #     plot_group_temporal_decoding_statistics_lg(ref_times_1d, np.mean(
+                #         stacked_1d_lg, axis=0), f"{group_identifier} (Main LG 1D Temporal)", group_summary_dir, sem_1d_lg, clu_map_lg, fdr_mask_lg, CHANCE_LEVEL_AUC)
 
             # Analyze LG specific comparisons at group level
             valid_1d_scores_lg_specific = [s for i, s in enumerate(group_results_collection["subject_lg_mean_of_specific_scores_list"]) if i < len(group_results_collection["subject_epochs_time_points_list"]) and (
@@ -465,6 +466,7 @@ if __name__ == "__main__":
         classifier_type_for_group_runs=classifier_type_to_use,
         compute_group_level_stats_flag=not command_line_args.skip_group_stats,
         compute_tgm_for_group_subjects_flag=not command_line_args.skip_tgm,
+        generate_plots_flag=False,  # Disable all group-level plots
     )
 
     logger_run_group_lg.info("\n%s EEG GROUP LG DECODING SCRIPT FINISHED (%s) %s",

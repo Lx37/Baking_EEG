@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-Script de soumission Submitit pour lancer une analyse individuelle
-pour CHAQUE sujet défini dans ALL_SUBJECT_GROUPS.
-"""
 
 # --- Imports ---
 import os
@@ -15,7 +9,7 @@ import time
 import submitit
 from submitit.core.utils import FailedJobError
 
-# --- DÉFINITION DES GROUPES DE SUJETS (directement dans le script pour clarté) ---
+
 ALL_SUBJECT_GROUPS = {
     "CONTROLS": [
         "AO05", "BT13", "FP102", "GA_FRA", "HM10", "JM14", "LAB1", "LAG6", "LAT3", "LBM4",
@@ -61,20 +55,20 @@ ALL_SUBJECT_GROUPS = {
     ],
 }
 
-# --- Configuration Initiale des Chemins et Variables Globales ---
+
 try:
     CURRENT_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 except NameError:
     CURRENT_SCRIPT_DIR = os.getcwd()
     print(f"AVERTISSEMENT: __file__ non défini. CURRENT_SCRIPT_DIR initialisé à : {CURRENT_SCRIPT_DIR}", file=sys.stderr)
 
-# --- Détermination de PROJECT_ROOT_FOR_PYTHONPATH ---
+
 project_root_tentative = os.path.dirname(CURRENT_SCRIPT_DIR)
-# (Le reste de la logique de détection du chemin racine reste inchangé)
+
 if os.path.isdir(os.path.join(project_root_tentative, "examples")):
     PROJECT_ROOT_FOR_PYTHONPATH = project_root_tentative
 else:
-    # (Logique de fallback inchangée)
+
     hardcoded_project_root = "/home/tom.balay/Baking_EEG" 
     if os.path.isdir(os.path.join(hardcoded_project_root, "examples")):
         PROJECT_ROOT_FOR_PYTHONPATH = hardcoded_project_root
@@ -85,11 +79,10 @@ else:
 if PROJECT_ROOT_FOR_PYTHONPATH not in sys.path:
     sys.path.insert(0, PROJECT_ROOT_FOR_PYTHONPATH)
     
-# --- Configuration du Logger Principal ---
 LOG_DIR_SUBMITIT_MASTER = os.path.join(CURRENT_SCRIPT_DIR, 'logs_submitit_master')
 os.makedirs(LOG_DIR_SUBMITIT_MASTER, exist_ok=True)
 
-TARGET_PROTOCOL_TYPE_FOR_JOB = "PP_AP" # Protocole fixe pour tous les jobs
+TARGET_PROTOCOL_TYPE_FOR_JOB = "PP_AP" 
 
 MASTER_LOG_FILE_NAME = datetime.now().strftime(
     f'master_submitit_ALL_SUBJECTS_{TARGET_PROTOCOL_TYPE_FOR_JOB}_%Y-%m-%d_%H-%M-%S.log'
@@ -149,7 +142,7 @@ echo "INFO: PYTHONPATH for job set to: [$PYTHONPATH]"
 # ... (le reste des commandes de setup est inchangé) ...
 """
 
-# --- Wrapper pour l'exécution sur le worker (inchangé) ---
+
 def execute_single_subject_decoding_wrapper(**kwargs):
     """
     Wrapper function that performs the import inside the worker node.
@@ -162,7 +155,7 @@ def execute_single_subject_decoding_wrapper(**kwargs):
     from examples.run_decoding_one_pp import execute_single_subject_decoding
     return execute_single_subject_decoding(**kwargs)
 
-# --- LOGIQUE DE SOUMISSION PRINCIPALE (MODIFIÉE) ---
+
 def main_submission_logic():
     logger.info("--- Début de la logique de soumission principale (main_submission_logic) ---")
 
@@ -215,7 +208,7 @@ def main_submission_logic():
     total_subjects = sum(len(sub_list) for sub_list in ALL_SUBJECT_GROUPS.values())
     processed_count = 0
 
-    # --- Boucle sur tous les groupes et tous les sujets ---
+
     for group_name, subjects_in_group in ALL_SUBJECT_GROUPS.items():
         if not subjects_in_group:
             logger.info(f"Groupe '{group_name}' est vide, ignoré.")
@@ -256,7 +249,7 @@ def main_submission_logic():
             except Exception as e_submit:
                 logger.error(f"Erreur lors de la soumission du job pour {subject_id}: {e_submit}", exc_info=True)
 
-    # --- Attente et collecte des résultats ---
+
     logger.info(f"\n--- {len(submitted_jobs)}/{total_subjects} jobs ont été soumis. Attente des résultats... ---")
 
     successful_jobs = []
@@ -278,7 +271,7 @@ def main_submission_logic():
             logger.error(f"Erreur lors de la récupération du résultat du job {job.job_id} (Sujet: {subject_info}): {e_result}", exc_info=True)
             failed_jobs.append(job)
             
-    # --- Résumé Final ---
+
     logger.info("\n" + "="*80)
     logger.info("--- RÉSUMÉ DE L'EXÉCUTION ---")
     logger.info(f"Total de sujets à traiter: {total_subjects}")

@@ -9,19 +9,19 @@ import traceback
 import platform
 import socket
 
-# === CONFIGURATION LOGGING GLOBALE ===
+
 
 
 def setup_enhanced_logging():
-    """Configure un système de logging avancé avec plusieurs handlers."""
+
    
     detailed_format = '%(asctime)s | %(levelname)8s | %(name)s:%(funcName)s:%(lineno)d | %(message)s'
 
-    # Logger principal
+   
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 
-    # Console handler
+
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(logging.INFO)
     console_handler.setFormatter(logging.Formatter(detailed_format))
@@ -37,28 +37,28 @@ def setup_enhanced_logging():
 
 
 def log_info(message, logger=None):
-    """Log d'information avec contexte."""
+
     if logger is None:
         logger = logging.getLogger(__name__)
     logger.info(f"[INFO] {message}")
 
 
 def log_error(message, logger=None):
-    """Log d'erreur avec contexte."""
+
     if logger is None:
         logger = logging.getLogger(__name__)
     logger.error(f"[ERROR] {message}")
 
 
 def log_debug(message, logger=None):
-    """Log de debug avec contexte."""
+
     if logger is None:
         logger = logging.getLogger(__name__)
     logger.debug(f"[DEBUG] {message}")
 
 
 def log_warning(message, logger=None):
-    """Log d'avertissement avec contexte."""
+
     if logger is None:
         logger = logging.getLogger(__name__)
     logger.warning(f"[WARNING] {message}")
@@ -93,7 +93,7 @@ log_debug(f"sys.path (premiers éléments): {sys.path[:3]}", logger)
 
 
 def validate_project_structure(project_root):
-    """Valide que la structure du projet est correcte."""
+
     log_info("Validation de la structure du projet...", logger)
 
     required_dirs = ['examples', 'config', 'utils', 'bash']
@@ -196,10 +196,8 @@ configs = import_configurations()
 
 
 def enhanced_decoding_task_wrapper(**kwargs):
-    """
-    Wrapper super-robuste pour l'exécution sur le nœud de calcul Slurm.
-    Inclut tous les diagnostics possibles.
-    """
+
+    
     import sys
     import os
     import logging
@@ -208,7 +206,7 @@ def enhanced_decoding_task_wrapper(**kwargs):
     import platform
     import psutil
 
-    # === CONFIGURATION LOGGING DANS LE WORKER ===
+
     worker_log_format = '%(asctime)s | %(levelname)8s | [WORKER:%(funcName)s:%(lineno)d] | %(message)s'
     logging.basicConfig(level=logging.DEBUG,
                         format=worker_log_format, force=True)
@@ -218,7 +216,7 @@ def enhanced_decoding_task_wrapper(**kwargs):
     worker_logger.info("=== DÉBUT DU WORKER SUBMITIT - VERSION ENHANCED ===")
     worker_logger.info("=" * 80)
 
-    # === DIAGNOSTICS SYSTÈME ===
+
     worker_logger.info("=== DIAGNOSTICS SYSTÈME ===")
     worker_logger.info(f"Hostname: {socket.gethostname()}")
     worker_logger.info(f"Platform: {platform.platform()}")
@@ -227,7 +225,7 @@ def enhanced_decoding_task_wrapper(**kwargs):
     worker_logger.info(f"User: {os.getenv('USER', 'unknown')}")
     worker_logger.info(f"Home: {os.getenv('HOME', 'unknown')}")
 
-    # Informations système
+
     try:
         worker_logger.info(f"CPU count: {psutil.cpu_count()}")
         worker_logger.info(
@@ -235,7 +233,7 @@ def enhanced_decoding_task_wrapper(**kwargs):
     except Exception as e:
         worker_logger.warning(f"Impossible d'obtenir les infos système: {e}")
 
-    # === DIAGNOSTICS ARGUMENTS ===
+
     worker_logger.info("=== ARGUMENTS REÇUS ===")
     for key, value in kwargs.items():
         if isinstance(value, str) and len(value) > 100:
@@ -243,10 +241,10 @@ def enhanced_decoding_task_wrapper(**kwargs):
         else:
             worker_logger.info(f"{key}: {value}")
 
-    # === CONFIGURATION DU CHEMIN PROJET ===
+
     worker_logger.info("=== CONFIGURATION PATH ===")
 
-    # Tentative de détection automatique du chemin
+
     possible_project_paths = [
         "/home/tom.balay/Baking_EEG",
         "/home/tom.balay/Stage_CAP/BakingEEG/Baking_EEG",
@@ -281,7 +279,7 @@ def enhanced_decoding_task_wrapper(**kwargs):
             worker_logger.error(f"Impossible de lister le répertoire: {e}")
         raise FileNotFoundError("Aucun chemin projet valide trouvé")
 
-    # === CONFIGURATION SYS.PATH ===
+
     worker_logger.info(f"sys.path initial: {sys.path[:3]}...")
 
     if project_root not in sys.path:
@@ -293,7 +291,7 @@ def enhanced_decoding_task_wrapper(**kwargs):
 
     worker_logger.info(f"sys.path après modification: {sys.path[:5]}...")
 
-    # === VALIDATION STRUCTURE PROJET ===
+
     worker_logger.info("=== VALIDATION STRUCTURE ===")
     critical_paths = {
         'examples': os.path.join(project_root, "examples"),
@@ -310,7 +308,7 @@ def enhanced_decoding_task_wrapper(**kwargs):
             raise FileNotFoundError(
                 f"Élément critique manquant: {name} - {path}")
 
-    # === TEST D'IMPORT ===
+
     worker_logger.info("=== TEST D'IMPORT ===")
     try:
         worker_logger.info("Import de run_decoding_one_lg...")
@@ -318,7 +316,7 @@ def enhanced_decoding_task_wrapper(**kwargs):
         worker_logger.info(
             "✓ execute_single_subject_lg_decoding importé avec succès")
 
-        # Validation des paramètres
+
         subject_id = kwargs.get('subject_identifier', 'UNKNOWN')
         group = kwargs.get('group_affiliation', 'UNKNOWN')
         worker_logger.info(
@@ -329,7 +327,7 @@ def enhanced_decoding_task_wrapper(**kwargs):
             raise ValueError(
                 "subject_identifier ou group_affiliation manquant")
 
-        # === EXÉCUTION ===
+  
         worker_logger.info("=== DÉBUT EXÉCUTION ===")
         start_time = datetime.now()
         worker_logger.info(f"Heure de début: {start_time}")
@@ -364,11 +362,11 @@ def enhanced_decoding_task_wrapper(**kwargs):
         worker_logger.info("=== FIN DU WORKER SUBMITIT ===")
         worker_logger.info("=" * 80)
 
-# --- ÉTAPE 6: FONCTION PRINCIPALE ---
+
 
 
 def main():
-    """Fonction principale avec diagnostics complets."""
+
     TARGET_SUBJECT_ID = "TpSM49"
 
     log_info("=" * 80, logger)
@@ -376,7 +374,7 @@ def main():
         f"DÉMARRAGE SOUMISSION - SUJET {TARGET_SUBJECT_ID} (Protocole LG)", logger)
     log_info("=" * 80, logger)
 
-    # === DIAGNOSTICS ENVIRONNEMENT ===
+
     log_info("=== DIAGNOSTICS ENVIRONNEMENT ===", logger)
     log_info(f"Hostname: {socket.gethostname()}", logger)
     log_info(f"Python version: {sys.version}", logger)
@@ -385,7 +383,7 @@ def main():
     log_info(f"Utilisateur: {getpass.getuser()}", logger)
     log_info(f"Platform: {platform.platform()}", logger)
 
-    # === CONFIGURATION CHEMINS ===
+
     log_info("=== CONFIGURATION CHEMINS ===", logger)
     try:
         user = getpass.getuser()
@@ -394,7 +392,7 @@ def main():
         log_info(f"✓ Chemin d'entrée: {base_input_path}", logger)
         log_info(f"✓ Chemin de sortie: {base_output_path}", logger)
 
-        # Validation des chemins
+
         for path_name, path in [("entrée", base_input_path), ("sortie", base_output_path)]:
             if os.path.exists(path):
                 log_info(f"✓ Chemin {path_name} existe", logger)
@@ -406,7 +404,7 @@ def main():
         log_error(f"Traceback: {traceback.format_exc()}", logger)
         raise
 
-    # === RÉSOLUTION GROUPE SUJET ===
+
     log_info("=== RÉSOLUTION GROUPE SUJET ===", logger)
     all_groups = configs['ALL_SUBJECT_GROUPS']
     log_debug(f"Groupes disponibles: {list(all_groups.keys())}", logger)
@@ -429,7 +427,7 @@ def main():
     log_info(
         f"✓ Sujet {TARGET_SUBJECT_ID} trouvé dans le groupe: {subject_group}", logger)
 
-    # === CONFIGURATION SUBMITIT ===
+
     log_info("=== CONFIGURATION SUBMITIT ===", logger)
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     log_folder = f"logs_submitit_enhanced/{timestamp}_{TARGET_SUBJECT_ID}_LG"
@@ -441,7 +439,7 @@ def main():
 
 
     slurm_params = {
-        "timeout_min": 24 * 60,  # 24h timeout
+        "timeout_min": 24 * 60, 
         "slurm_partition": "CPU",
         "slurm_mem": "60G",
         "slurm_cpus_per_task": 40,
@@ -456,7 +454,7 @@ def main():
     log_info(f"Paramètres Slurm: {slurm_params}", logger)
     executor.update_parameters(**slurm_params)
 
-    # === PRÉPARATION ARGUMENTS ===
+
     log_info("=== PRÉPARATION ARGUMENTS ===", logger)
 
     dc = configs['decoding_config']
@@ -482,7 +480,7 @@ def main():
         "use_anova_fs_for_temporal_subject": dc['USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES']
     }
 
-    # Log des paramètres critiques
+
     log_info("Paramètres clés:", logger)
     critical_params = [
         'classifier_type', 'use_grid_search_for_subject', 'use_csp_for_temporal_subject',
@@ -494,7 +492,7 @@ def main():
         if param in kwargs:
             log_info(f"  {param}: {kwargs[param]}", logger)
 
-    # === SOUMISSION JOB ===
+
     log_info("=== SOUMISSION JOB ===", logger)
     try:
         job = executor.submit(enhanced_decoding_task_wrapper, **kwargs)
@@ -504,7 +502,7 @@ def main():
         log_info(
             f"Logs disponibles dans: {os.path.abspath(log_folder)}", logger)
 
-        # Attente et récupération
+
         log_info("Attente de la completion du job...", logger)
         log_info("(Ceci peut prendre plusieurs heures)", logger)
 

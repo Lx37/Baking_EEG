@@ -1,11 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-Script de soumission Submitit pour un sujet unique.
-Version simplifiée avec des logs prévisibles et moins de verbosité.
-"""
 
-# --- Imports ---
 import os
 import sys
 import logging
@@ -14,26 +7,14 @@ import shutil
 import submitit
 from submitit.core.utils import FailedJobError
 
-# --- Configuration Principale (à modifier si besoin) ---
-
-# MODIFIÉ : Le chemin vers la racine du projet est maintenant codé en dur pour la simplicité.
-# Assurez-vous que ce chemin est correct.
 PROJECT_ROOT = "/home/tom.balay/Baking_EEG"
 
-# Sujet à traiter (exemple de la nouvelle structure)
+
 TARGET_SUBJECT_ID_FOR_JOB = "AO05"
 
-# Le protocole sera automatiquement détecté selon le groupe du sujet
-# Plus besoin de spécifier TARGET_PROTOCOL_TYPE_FOR_JOB manuellement
 
-# Chemin vers l'environnement virtuel sur le cluster
 PATH_TO_VENV_ACTIVATE_ON_CLUSTER = "/home/tom.balay/.venvs/py3.11_cluster/bin/activate"
 
-# --- Fin de la Configuration ---
-
-
-# SIMPLIFIÉ : Configuration du logger pour être concis et n'afficher que sur la console.
-# Submitit se chargera de sauvegarder cette sortie dans un fichier.
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -43,22 +24,18 @@ logger = logging.getLogger(__name__)
 
 
 def execute_single_subject_decoding_wrapper(**kwargs):
-    """
-    Wrapper universel qui importe la fonction d'exécution appropriée selon le protocole détecté.
-    Cela évite les problèmes de 'pickling' et de PYTHONPATH.
-    """
+   
     import sys
     import os
     
-    # Assurer que la racine du projet est dans le chemin Python du worker
     if PROJECT_ROOT not in sys.path:
         sys.path.insert(0, PROJECT_ROOT)
     
-    # Debug: afficher les chemins pour vérification
+ 
     print(f"DEBUG Worker - project_root: {PROJECT_ROOT}")
     print(f"DEBUG Worker - sys.path: {sys.path[:3]}...")
     
-    # Déterminer le protocole du sujet en fonction de son groupe
+
     from config.config import ALL_SUBJECT_GROUPS
     
     subject_id = kwargs.get("subject_identifier")
@@ -66,19 +43,19 @@ def execute_single_subject_decoding_wrapper(**kwargs):
     
     print(f"DEBUG Worker - Processing subject {subject_id} from group {group_affiliation}")
     
-    # Logique de détection de protocole basée sur les nouveaux groupes
+    
     if group_affiliation in ["DELIRIUM+", "DELIRIUM-", "CONTROLS_DELIRIUM"]:
         # Protocole PP
         print("DEBUG Worker - Using PP protocol")
         from examples.run_decoding_one_pp import execute_single_subject_decoding
         return execute_single_subject_decoding(**kwargs)
     elif group_affiliation in ["COMA", "VS", "MCS+", "MCS-", "CONTROLS_COMA"]:
-        # Protocole PP étendu ou Battery
+        
         print("DEBUG Worker - Using PP protocol (extended/battery)")
         from examples.run_decoding_one_pp import execute_single_subject_decoding
         return execute_single_subject_decoding(**kwargs)
     elif group_affiliation in ["DEL", "NODEL"]:
-        # Protocole LG (legacy)
+      
         print("DEBUG Worker - Using LG protocol")
         from examples.run_decoding_one_lg import execute_single_subject_lg_decoding
         return execute_single_subject_lg_decoding(**kwargs)
@@ -90,17 +67,16 @@ def execute_single_subject_decoding_wrapper(**kwargs):
 
 
 def main_submission_logic():
-    """
-    Logique principale pour configurer et soumettre le job Slurm.
-    """
+
+    
     logger.info(f"--- Démarrage de la soumission pour le sujet: {TARGET_SUBJECT_ID_FOR_JOB} | Protocole: Auto-détection ---")
 
-    # Vérification initiale de la configuration
+
     if not os.path.isdir(PROJECT_ROOT):
         logger.critical(f"ERREUR : Le chemin racine du projet '{PROJECT_ROOT}' est invalide. Arrêt.")
         sys.exit(1)
         
-    # Ajout de la racine du projet au PYTHONPATH du script de soumission
+   
     if PROJECT_ROOT not in sys.path:
         sys.path.insert(0, PROJECT_ROOT)
         
@@ -120,12 +96,12 @@ def main_submission_logic():
         logger.critical(f"Vérifiez que le chemin '{PROJECT_ROOT}' est correct et contient vos modules.")
         sys.exit(1)
 
-    # Déterminer le groupe du sujet
+
     target_subject_group = next((group for group, subjects in ALL_SUBJECT_GROUPS.items() if TARGET_SUBJECT_ID_FOR_JOB in subjects), None)
     if not target_subject_group:
         logger.critical(f"ERREUR: Sujet '{TARGET_SUBJECT_ID_FOR_JOB}' non trouvé dans ALL_SUBJECT_GROUPS. Arrêt.")
         sys.exit(1)
-    # Déterminer le protocole selon le groupe (nouveaux groupes)
+    
     if target_subject_group in ["DELIRIUM+", "DELIRIUM-", "CONTROLS_DELIRIUM"]:
         protocol_type = "PP"
     elif target_subject_group in ["COMA", "VS", "MCS+", "MCS-", "CONTROLS_COMA"]:
@@ -137,19 +113,19 @@ def main_submission_logic():
     
     logger.info(f"Protocole détecté pour le groupe '{target_subject_group}': {protocol_type}")
     
-    # Configuration des chemins d'entrée/sortie
+    
     user_for_paths = getpass.getuser()
     base_input_path, base_output_path = configure_project_paths(user_for_paths)
     logger.info(f"Chemin des données d'entrée : {base_input_path}")
     logger.info(f"Chemin des résultats de sortie : {base_output_path}")
 
-    # MODIFIÉ : Commandes de setup pour Slurm, beaucoup plus simples.
+   
     setup_commands = [
         f"source {PATH_TO_VENV_ACTIVATE_ON_CLUSTER}",
         f"export PYTHONPATH={PROJECT_ROOT}:${{PYTHONPATH}}",
     ]
 
-    # MODIFIÉ : Création d'un dossier de log prévisible et propre.
+
     current_script_dir = os.path.dirname(os.path.abspath(__file__))
     submitit_log_folder = os.path.join(
         current_script_dir,
@@ -157,7 +133,7 @@ def main_submission_logic():
         f"{TARGET_SUBJECT_ID_FOR_JOB}_{protocol_type}"
     )
     
-    # Nettoyer l'ancien dossier de log s'il existe pour une exécution propre
+
     if os.path.exists(submitit_log_folder):
         logger.warning(f"Nettoyage du dossier de log existant : {submitit_log_folder}")
         shutil.rmtree(submitit_log_folder)
@@ -175,9 +151,9 @@ def main_submission_logic():
         local_setup=setup_commands,
     )
 
-    # Arguments pour la fonction de décodage (adaptés selon le protocole)
+
     if protocol_type == "LG":
-        # Configuration spécifique au protocole LG
+       
         try:
             from config.decoding_config import CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG
             loading_conditions_config = CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG
@@ -185,7 +161,7 @@ def main_submission_logic():
             logger.warning("CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG non trouvé, utilisation de la config par défaut")
             loading_conditions_config = CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT
     else:
-        # Configuration par défaut pour PP
+    
         loading_conditions_config = CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT
     
     kwargs_for_function_call = {
@@ -212,7 +188,7 @@ def main_submission_logic():
         "cluster_threshold_config_intra_fold": INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
     }
 
-    # Debug: vérifier que les chemins sont corrects
+   
     logger.info(f"Configuration des chemins pour le job:")
     logger.info(f"  base_input_data_path: {base_input_path}")
     logger.info(f"  base_output_results_path: {base_output_path}")
@@ -230,15 +206,15 @@ def main_submission_logic():
         results = job.result()
         
         logger.info(f"🎉 Job {job.job_id} terminé avec succès !")
-        logger.info(f"Résultats reçus : {str(results)[:500]}...") # Affiche un aperçu des résultats
+        logger.info(f"Résultats reçus : {str(results)[:500]}...") 
 
     except FailedJobError as e:
         logger.error(f"❌ Le job {e.job_id} a échoué.")
         logger.error("--- Début des logs d'erreur du job ---")
-        # Affiche la fin du log d'erreur pour un diagnostic rapide
+
         stderr_log = e.stderr()
         if stderr_log:
-            logger.error(stderr_log.strip().split('\n')[-20:]) # Affiche les 20 dernières lignes
+            logger.error(stderr_log.strip().split('\n')[-20:])
         logger.error("--- Fin des logs d'erreur du job ---")
         logger.error(f"Consultez les fichiers complets dans : {submitit_log_folder}")
     except Exception as e:

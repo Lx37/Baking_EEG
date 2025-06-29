@@ -1,16 +1,4 @@
-#!/usr/bin/env python3
-"""
-Enhanced Group-Level NPZ Analysis Script
 
-This script performs comprehensive group-level analysis of EEG decoding results stored in NPZ files.
-Organized by protocol (PP, PPext3, Battery) and subject groups.
-
-Features:
-- Advanced statistical testing (FDR correction, cluster-based permutation)
-- Individual and group visualizations with enhanced styling
-- Protocol/group-specific organization
-- Comprehensive reporting with statistical summaries
-"""
 
 import os
 import sys

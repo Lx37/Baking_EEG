@@ -27,7 +27,7 @@ log_dir_submitit_master = './logs_submitit_master/'
 os.makedirs(log_dir_submitit_master, exist_ok=True)
 master_log_file = os.path.join(
     log_dir_submitit_master,
-    # Nom de log plus spécifique
+    
     datetime.now().strftime(f'master_submitit_CONTROLS_ONLY_INTRA_%Y-%m-%d_%H-%M-%S.log')
 )
 
@@ -51,7 +51,7 @@ try:
     from examples.run_decoding_one_group_pp import (
         execute_group_intra_subject_decoding_analysis,
         configure_project_paths,
-        # --- Paramètres de pipeline et de modèle ---
+
         CLASSIFIER_MODEL_TYPE,
         USE_GRID_SEARCH_OPTIMIZATION,
         USE_CSP_FOR_TEMPORAL_PIPELINES,
@@ -60,18 +60,18 @@ try:
         CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
         FIXED_CLASSIFIER_PARAMS_CONFIG,
         COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
-        # --- Paramètres de statistiques ---
+
         N_PERMUTATIONS_INTRA_SUBJECT,
         COMPUTE_INTRA_SUBJECT_STATISTICS,
         N_PERMUTATIONS_GROUP_LEVEL,
         GROUP_LEVEL_STAT_THRESHOLD_TYPE,
         T_THRESHOLD_FOR_GROUP_STAT_CLUSTERING,
         INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
-        # --- Paramètres de chargement et d'exécution ---
+
         CONFIG_LOAD_SINGLE_PROTOCOL,
         SAVE_ANALYSIS_RESULTS,
         GENERATE_PLOTS,
-        # N_JOBS_PROCESSING, # Si vous voulez l'utiliser pour configurer slurm_cpus_per_task
+
     )
     from config.config import ALL_SUBJECT_GROUPS
     logger.info(
@@ -142,13 +142,13 @@ def main():
     logger.info(f"Chemin de base des données d'entrée: {base_input_path}")
     logger.info(f"Chemin de base des résultats: {base_output_path}")
 
-    # --- MODIFICATION: Traiter uniquement le groupe 'controls' ---
+
     GROUPS_TO_PROCESS = ['controls']
     logger.info(f"Groupes ciblés (modifié pour test): {GROUPS_TO_PROCESS}")
-    # --- FIN MODIFICATION ---
 
-    # Configuration du nombre de CPUs pour Slurm
-    SLURM_CPUS_PER_GROUP_JOB = 40  # Maintenir la configuration originale
+
+
+    SLURM_CPUS_PER_GROUP_JOB = 40  
     logger.info(
         f"SLURM_CPUS_PER_GROUP_JOB (cpus_per_task pour Slurm) sera: {SLURM_CPUS_PER_GROUP_JOB}")
 
@@ -165,7 +165,7 @@ def main():
 
     current_time_str = datetime.now().strftime('%Y%m%d_%H%M%S')
     log_folder_submitit_jobs = os.path.abspath(
-        # Log folder name changed
+
         os.path.join(log_dir_submitit_master,
                      f"slurm_jobs_CONTROLS_ONLY_INTRA_{current_time_str}")
     )
@@ -179,7 +179,7 @@ def main():
 
     try:
         with executor.batch():
-            for group_name_to_analyze in GROUPS_TO_PROCESS:  # Cette boucle ne tournera qu'une fois pour 'controls'
+            for group_name_to_analyze in GROUPS_TO_PROCESS:  
                 if group_name_to_analyze not in ALL_SUBJECT_GROUPS:
                     logger.warning(
                         f"Groupe '{group_name_to_analyze}' non trouvé dans ALL_SUBJECT_GROUPS. Ignoré.")
@@ -193,7 +193,7 @@ def main():
                 logger.info(
                     f"Configuration du job pour groupe: {group_name_to_analyze} ({len(subjects_for_this_group_job)} sujets)")
 
-                # Utiliser SLURM_CPUS_PER_GROUP_JOB pour les opérations internes au job
+        
                 n_jobs_for_ops_in_job = group_job_slurm_params["slurm_cpus_per_task"]
                 logger.info(
                     f"    Utilisation de n_jobs={n_jobs_for_ops_in_job} pour les opérations parallèles dans ce job de groupe.")

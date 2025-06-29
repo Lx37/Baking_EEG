@@ -1,9 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-Script de soumission Submitit pour lancer une analyse individuelle
-pour CHAQUE sujet défini dans ALL_SUBJECT_GROUPS.
-"""
+
 
 # --- Imports ---
 import os
@@ -15,7 +10,6 @@ import time
 import submitit
 from submitit.core.utils import FailedJobError
 
-# --- DÉFINITION DES GROUPES DE SUJETS (directement dans le script pour clarté) ---
 ALL_SUBJECT_GROUPS = {
     "CONTROLS_DELIRIUM": [
         "TPC2",

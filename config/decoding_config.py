@@ -26,12 +26,17 @@ CONFIG_LOAD_MAIN_DECODING = {
 }
 
 # Complete configuration for single subject analysis
-CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT = {
+CONFIG_LOAD_DELIRIUM_PROTOCOL = {
     **CONFIG_LOAD_MAIN_DECODING,
     "PP_FOR_SPECIFIC_COMPARISON": PP_CODES_FOR_SPECIFIC_COMPARISON,
     **AP_FAMILIES_FOR_SPECIFIC_COMPARISON,
 }
-# Local Global protocol event mapping
+
+# Alias for compatibility with existing scripts
+CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT = CONFIG_LOAD_DELIRIUM_PROTOCOL
+
+# Alias for compatibility with existing scripts (for bash)
+CONFIG_LOAD_SINGLE_PROTOCOL = CONFIG_LOAD_DELIRIUM_PROTOCOL
 # Event mapping for different LG condition comparisons:
 # LSGD versus LDGD (Local Standard Global Deviant vs Local Deviant
 # Global Deviant)
@@ -49,9 +54,9 @@ EVENT_ID_LG = {
 }
 
 # Alias for compatibility with existing scripts (for bash)
-CONFIG_LOAD_SINGLE_PROTOCOL = CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT
+CONFIG_LOAD_SINGLE_PROTOCOL = CONFIG_LOAD_DELIRIUM_PROTOCOL
 
-# === LOCAL-GLOBAL (LG) PROTOCOL CONFIGURATION ===
+# Local Global protocol event mapping
 # Data loading configuration for Local-Global protocol
 CONFIG_LOAD_MAIN_LG_DECODING = {
     "LS_ALL": "LS/",  # Load all Local Standard events
@@ -202,10 +207,7 @@ DEFAULT_CSP_CONFIG = {
 CONFIG_LOAD_BATTERY_PROTOCOL = {
     "XPP_ALL": "PP/",  # All PP events
     "XAP_ALL": "AP/",  # All AP events
-    "PP_MUSIC": "PP/Music/",  # PP Music events
-    "PP_CONV": "PP/Conv/",   # PP Conversation events
-    "AP_MUSIC": "AP/Music/",  # AP Music events
-    "AP_CONV": "AP/Conv/",   # AP Conversation events
+    "PP_FOR_SPECIFIC_COMPARISON": "PP/",  # Use all PP events for specific comparisons vs AP families
     # AP families for Battery protocol
     "AP_FAMILY_1": ["AP/1/Music/", "AP/1/Conv/"],
     "AP_FAMILY_2": ["AP/2/Music/", "AP/2/Conv/"],
@@ -220,14 +222,7 @@ CONFIG_LOAD_BATTERY_PROTOCOL = {
 CONFIG_LOAD_PPEXT3_PROTOCOL = {
     "XPP_ALL": "PP/",  # All PP events
     "XAP_ALL": "AP/",  # All AP events
-    "PP_MUSIC": "PP/Music/",  
-    "PP_NOISE": "PP/Noise/",  
-    "PP_CONV": "PP/Conv/",   
-    "PP_DIO": "PP/Dio/",
-    "AP_MUSIC": "AP/Music/",
-    "AP_NOISE": "AP/Noise/",
-    "AP_CONV": "AP/Conv/",
-    "AP_DIO": "AP/Dio/",     
+    "PP_FOR_SPECIFIC_COMPARISON": "PP/",  # Use all PP events for specific comparisons vs AP families
     # AP families for PPext3 protocol
     "AP_FAMILY_1": ["AP/1/Music/", "AP/1/Noise/", "AP/1/Conv/", "AP/1/Dio/"],
     "AP_FAMILY_2": ["AP/2/Music/", "AP/2/Noise/", "AP/2/Conv/", "AP/2/Dio/"],
@@ -252,11 +247,11 @@ def get_protocol_config(protocol_type):
         dict: Protocol-specific loading configuration
     """
     config_map = {
-        'delirium': CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT,
+        'delirium': CONFIG_LOAD_DELIRIUM_PROTOCOL,
         'battery': CONFIG_LOAD_BATTERY_PROTOCOL,
         'ppext3': CONFIG_LOAD_PPEXT3_PROTOCOL
     }
-    return config_map.get(protocol_type, CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT)
+    return config_map.get(protocol_type, CONFIG_LOAD_DELIRIUM_PROTOCOL)
 
 # Protocol-specific AP families configuration
 

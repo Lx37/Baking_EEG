@@ -380,9 +380,26 @@ def load_epochs_data_for_decoding_delirium(
             elif specifier in epochs_object.event_id:
                 event_keys_to_select = [specifier]
         elif isinstance(specifier, list):
-            event_keys_to_select = [
-                k for k in specifier if k in epochs_object.event_id
-            ]
+            # Treat each item in the list as a prefix to search for
+            event_keys_to_select = []
+            for spec_item in specifier:
+                if isinstance(spec_item, str):
+                    if spec_item.endswith(("/", "*")):
+                        prefix = spec_item.rstrip("/*")
+                        matching_events = [
+                            k for k in epochs_object.event_id if k.startswith(prefix)
+                        ]
+                        event_keys_to_select.extend(matching_events)
+                    elif spec_item in epochs_object.event_id:
+                        event_keys_to_select.append(spec_item)
+                    else:
+                        # Try as prefix even without trailing slash
+                        matching_events = [
+                            k for k in epochs_object.event_id if k.startswith(spec_item)
+                        ]
+                        event_keys_to_select.extend(matching_events)
+            # Remove duplicates while preserving order
+            event_keys_to_select = list(dict.fromkeys(event_keys_to_select))
 
         if not event_keys_to_select and specifier:
             if verbose_logging:

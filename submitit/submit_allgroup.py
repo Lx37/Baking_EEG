@@ -1,11 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-Script de soumission Submitit pour des analyses de groupe (intra-sujet) - Version simplifiée.
-Ce script configure et soumet plusieurs jobs Slurm, un pour chaque groupe de sujets.
-"""
 
-# --- Imports ---
 import os
 import sys
 import logging
@@ -17,14 +10,13 @@ import pandas as pd
 import submitit
 from submitit.core.utils import FailedJobError
 
-# --- Configuration Initiale des Chemins et Variables Globales ---
 try:
     CURRENT_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 except NameError:
     CURRENT_SCRIPT_DIR = os.getcwd()
     print(f"AVERTISSEMENT: __file__ non défini. CURRENT_SCRIPT_DIR initialisé à : {CURRENT_SCRIPT_DIR}", file=sys.stderr)
 
-# --- Détermination de PROJECT_ROOT_FOR_PYTHONPATH ---fa
+
 project_root_tentative = os.path.abspath(os.path.join(CURRENT_SCRIPT_DIR, ".."))
 
 if os.path.isdir(project_root_tentative):
@@ -35,7 +27,7 @@ else:
     potential_paths = [
         os.path.abspath(os.path.join(CURRENT_SCRIPT_DIR, "..")),
         os.path.abspath(os.path.join(CURRENT_SCRIPT_DIR, "../..")),
-        "/home/tom.balay/Baking_EEG",  # Chemin codé en dur en dernier recours
+        "/home/tom.balay/Baking_EEG", 
     ]
     found_path = False
     for path_candidate in potential_paths:
@@ -50,12 +42,12 @@ else:
         print(f"                 Chemins testés : {[project_root_tentative] + potential_paths}")
         sys.exit(1)
 
-# Ajout de PROJECT_ROOT_FOR_PYTHONPATH à sys.path
+
 if PROJECT_ROOT_FOR_PYTHONPATH not in sys.path:
     sys.path.insert(0, PROJECT_ROOT_FOR_PYTHONPATH)
     print(f"INFO: '{PROJECT_ROOT_FOR_PYTHONPATH}' a été ajouté à sys.path.")
 
-# --- Configuration du Logger Principal ---
+
 LOG_DIR_SUBMITIT_MASTER = os.path.join(CURRENT_SCRIPT_DIR, 'logs_submitit_master')
 os.makedirs(LOG_DIR_SUBMITIT_MASTER, exist_ok=True)
 
@@ -83,7 +75,7 @@ logger.info(f"Log principal de ce script de soumission : {MASTER_LOG_FILE_PATH}"
 logger.info(f"CURRENT_SCRIPT_DIR (où ce script est exécuté) : {CURRENT_SCRIPT_DIR}")
 logger.info(f"PROJECT_ROOT_FOR_PYTHONPATH (ajouté à sys.path) : {PROJECT_ROOT_FOR_PYTHONPATH}")
 
-# --- Imports des modules du projet (après configuration du path) ---
+
 try:
     from utils.utils import configure_project_paths
     from config.config import ALL_SUBJECT_GROUPS
@@ -100,7 +92,7 @@ except (ModuleNotFoundError, ImportError) as e:
     logger.critical(f"Vérifiez PROJECT_ROOT_FOR_PYTHONPATH ('{PROJECT_ROOT_FOR_PYTHONPATH}') et sys.path.")
     sys.exit(1)
 
-# --- Configuration de l'environnement pour les jobs Slurm ---
+
 PATH_TO_VENV_ACTIVATE_ON_CLUSTER = "/home/tom.balay/.venvs/py3.11_cluster/bin/activate"
 PROJECT_ROOT_ON_CLUSTER_FOR_JOB = PROJECT_ROOT_FOR_PYTHONPATH
 
@@ -129,34 +121,31 @@ python -c "import numpy; print(f'NumPy version: {{numpy.__version__}} (depuis {{
 echo "--- Fin de la configuration, lancement de la tâche Python ---"
 """
 
-# --- Wrapper pour la fonction d'exécution ---
+
 def execute_group_decoding_wrapper(**kwargs):
-    """
-    Wrapper qui importe la fonction d'analyse de groupe à l'intérieur du worker.
-    """
+   
     import sys
     import os
 
-    # Assurer que la racine du projet est bien dans le path du worker
+   
     project_root = PROJECT_ROOT_ON_CLUSTER_FOR_JOB
     if project_root not in sys.path:
         sys.path.insert(0, project_root)
 
-    # Ajouter aussi le répertoire parent pour les imports absolus avec préfixe Baking_EEG
+    
     parent_dir = os.path.dirname(project_root)
     if parent_dir not in sys.path:
         sys.path.insert(0, parent_dir)
 
-    # Debug: afficher les chemins pour vérification
+
     print(f"DEBUG Worker - project_root: {project_root}")
     print(f"DEBUG Worker - parent_dir: {parent_dir}")
     print(f"DEBUG Worker - sys.path: {sys.path[:3]}...")
 
-    # Importer et exécuter la fonction cible
     from examples.run_decoding_one_group_pp import execute_group_intra_subject_decoding_analysis
     return execute_group_intra_subject_decoding_analysis(**kwargs)
 
-# --- Logique Principale de Soumission ---
+
 def main_submission_logic():
     logger.info("--- Début de la logique de soumission principale (main_submission_logic) ---")
     
@@ -173,7 +162,7 @@ def main_submission_logic():
     logger.info(f"Chemin de base des données d'entrée : {base_input_path}")
     logger.info(f"Chemin de base des résultats de sortie : {base_output_path}")
 
-    # Traiter TOUS les groupes disponibles dans la configuration
+
     GROUPS_TO_PROCESS = list(ALL_SUBJECT_GROUPS.keys())
     logger.info(f"Groupes ciblés pour l'analyse : {GROUPS_TO_PROCESS}")
     logger.info(f"Nombre total de groupes à traiter : {len(GROUPS_TO_PROCESS)}")
@@ -227,7 +216,7 @@ def main_submission_logic():
 
                 logger.info(f"Préparation du job pour le groupe '{group_name_to_analyze}' ({len(subjects_for_this_group)} sujets)")
 
-                # Le nombre de coeurs alloués au job Slurm est utilisé pour le parallélisme interne
+               
                 n_jobs_for_ops_in_job = SLURM_CPUS_PER_GROUP_JOB
 
                 func_kwargs_group_analysis = {
@@ -239,7 +228,7 @@ def main_submission_logic():
                     "enable_verbose_logging": True,
                     "n_jobs_for_each_subject": n_jobs_for_ops_in_job,
 
-                    # Paramètres de pipeline/modèle
+                   
                     "classifier_type_for_group_runs": CLASSIFIER_MODEL_TYPE,
                     "use_grid_search_for_group": USE_GRID_SEARCH_OPTIMIZATION,
                     "use_csp_for_temporal_group": USE_CSP_FOR_TEMPORAL_PIPELINES,
@@ -249,18 +238,18 @@ def main_submission_logic():
                     "fixed_params_for_group": FIXED_CLASSIFIER_PARAMS_CONFIG,
                     "compute_tgm_for_group_subjects_flag": COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
 
-                    # Paramètres de statistiques
+              
                     "compute_intra_subject_stats_for_group_runs_flag": True,
                     "n_perms_intra_subject_folds_for_group_runs": N_PERMUTATIONS_INTRA_SUBJECT,
                     "cluster_threshold_config_intra_fold_group": INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
 
-                    # Paramètres d'exécution
+          
                     "save_results_flag": SAVE_ANALYSIS_RESULTS,
                     "generate_plots_flag": GENERATE_PLOTS,
                     "loading_conditions_config": CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT,
                 }
 
-                # Soumission via le wrapper
+           
                 job = executor.submit(execute_group_decoding_wrapper, **func_kwargs_group_analysis)
                 group_jobs_info.append({"job_object": job, "group_name": group_name_to_analyze})
                 logger.info(f"    -> Job pour le groupe '{group_name_to_analyze}' soumis au batch.")
@@ -284,7 +273,7 @@ def main_submission_logic():
         logger.info(f"Attente du résultat pour le groupe : {group_name} (Job ID: {job_id_str})...")
 
         try:
-            # Récupération du résultat du job
+   
             output_subject_auc_dict = job_obj.result()
             job_final_state = job_obj.state
             logger.info(f"Job {job_id_str} (Groupe: {group_name}) terminé. État final : {job_final_state}")
@@ -335,7 +324,7 @@ def main_submission_logic():
     logger.info("="*81)
 
 
-# --- Point d'Entrée du Script ---
+
 if __name__ == "__main__":
     logger.info(f"--- Démarrage du script de soumission principal ({os.path.basename(__file__)}) ---")
     try:
