@@ -44,7 +44,8 @@ different levels, including individual and group analyses.
         * [`requirements.txt`](https://github.com/Lx37/Baking_EEG/blob/main/requirements.txt)
         4. open terminal or **CMD**
         5. `uv venv backingEEG --python 3.12`
-        6. For Mac/Linux `source env_formation/bin/activate` (you should have `(env_formation)`             in your terminal) or for Powershell `env_formation\Scripts\activate`
+        6. For Mac/Linux `source env_formation/bin/activate` (you should have `(backingEEG)` 
+        in your terminal) or for Powershell `backingEEG\Scripts\activate`
         7. `uv pip install -r Documents/requirements.txt`
 
 ## Usage
