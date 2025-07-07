@@ -1,1 +1,0 @@
-/home/tom.balay/Baking_EEG/submitit/submitit_logs/AO05_PP/351633_submission.sh

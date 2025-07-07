@@ -1,0 +1,145 @@
+submitit INFO (2025-06-30 08:56:17,221) - Starting with JobEnvironment(job_id=352137_0, hostname=node2, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-30 08:56:17,222) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/logs_submitit_master/slurm_jobs_ALL_8_GROUPS_INTRA_20250630_085610/352137_0_submitted.pkl
+DEBUG Worker - project_root: /home/tom.balay/Baking_EEG
+DEBUG Worker - parent_dir: /home/tom.balay
+DEBUG Worker - sys.path: ['/home/tom.balay', '/home/tom.balay/Baking_EEG', '/home/tom.balay/Baking_EEG/submitit']...
+2025-06-30 08:56:26,036 - INFO - examples.run_decoding_one_group_pp - [<module>:39] - Tentative d'import de execute_single_subject_decoding...
+2025-06-30 08:56:26,037 - INFO - examples.run_decoding_one_group_pp - [<module>:42] - ✅ Import de execute_single_subject_decoding réussi
+2025-06-30 08:56:26,042 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:120] - Starting intra-subject decoding loop for GROUP: CONTROLS_DELIRIUM. GS: False, CSP: False, ANOVA FS: True. n_jobs_subj: 40.
+2025-06-30 08:56:26,042 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'CONTROLS_DELIRIUM': Processing Subject 1/13: TPC2 ---
+2025-06-30 08:56:26,042 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:258] - Starting decoding for subject: TPC2 (Group: CONTROLS_DELIRIUM, Task Set ID: Group_Intra_CONTROLS_DELIRIUM_Subj_TPC2, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 40)
+2025-06-30 08:56:32,045 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:455] - CRITICAL: No data loaded for ANY specified conditions for subject TPC2.
+2025-06-30 08:56:32,047 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:462] - Empty data array for condition 'temp' (specifier: 'AP') for subject TPC2.
+2025-06-30 08:56:32,049 - INFO - utils.loading_PP_utils - [detect_protocol_type:741] - Detected Delirium/Legacy protocol: simple AP/PP structure, 499 total events
+2025-06-30 08:56:32,049 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:873] - Auto-detected protocol 'delirium' for subject 'TPC2' (file hint: legacy)
+2025-06-30 08:56:32,050 - INFO - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:101] - Found epochs file: /mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5/TPC2_PP_preproc_ICA_PP-epo_ar.fif (protocol: legacy)
+2025-06-30 08:56:32,050 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:301] - Loading epoch data for subject 'TPC2' from: /mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5/TPC2_PP_preproc_ICA_PP-epo_ar.fif (file protocol: legacy)
+2025-06-30 08:56:33,523 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:312] - Event IDs available for TPC2:
+2025-06-30 08:56:33,523 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/10': 110
+2025-06-30 08:56:33,523 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/20': 120
+2025-06-30 08:56:33,524 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/30': 130
+2025-06-30 08:56:33,524 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/11': 111
+2025-06-30 08:56:33,524 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/12': 112
+2025-06-30 08:56:33,524 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/13': 113
+2025-06-30 08:56:33,524 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/14': 114
+2025-06-30 08:56:33,525 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/15': 115
+2025-06-30 08:56:33,525 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/16': 116
+2025-06-30 08:56:33,525 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/21': 121
+2025-06-30 08:56:33,525 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/22': 122
+2025-06-30 08:56:33,526 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/23': 123
+2025-06-30 08:56:33,526 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/24': 124
+2025-06-30 08:56:33,526 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/25': 125
+2025-06-30 08:56:33,526 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/26': 126
+2025-06-30 08:56:33,526 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/31': 131
+2025-06-30 08:56:33,526 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/32': 132
+2025-06-30 08:56:33,527 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/33': 133
+2025-06-30 08:56:33,527 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/34': 134
+2025-06-30 08:56:33,527 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/35': 135
+2025-06-30 08:56:33,527 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/36': 136
+2025-06-30 08:56:33,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:925] - === EVENT INSPECTION FOR TPC2 ===
+2025-06-30 08:56:33,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:928] - File: /mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5/TPC2_PP_preproc_ICA_PP-epo_ar.fif
+2025-06-30 08:56:33,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:929] - Total events: 499
+2025-06-30 08:56:33,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:930] - Event types and counts:
+2025-06-30 08:56:33,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/10' (code 110): 24 epochs
+2025-06-30 08:56:33,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/20' (code 120): 24 epochs
+2025-06-30 08:56:33,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/30' (code 130): 24 epochs
+2025-06-30 08:56:33,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/11' (code 111): 24 epochs
+2025-06-30 08:56:33,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/12' (code 112): 23 epochs
+2025-06-30 08:56:33,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/13' (code 113): 24 epochs
+2025-06-30 08:56:33,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/14' (code 114): 24 epochs
+2025-06-30 08:56:33,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/15' (code 115): 24 epochs
+2025-06-30 08:56:33,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/16' (code 116): 23 epochs
+2025-06-30 08:56:33,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/21' (code 121): 24 epochs
+2025-06-30 08:56:33,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/22' (code 122): 24 epochs
+2025-06-30 08:56:33,707 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/23' (code 123): 22 epochs
+2025-06-30 08:56:33,707 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/24' (code 124): 24 epochs
+2025-06-30 08:56:33,707 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/25' (code 125): 24 epochs
+2025-06-30 08:56:33,707 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/26' (code 126): 23 epochs
+2025-06-30 08:56:33,707 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/31' (code 131): 24 epochs
+2025-06-30 08:56:33,707 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/32' (code 132): 24 epochs
+2025-06-30 08:56:33,708 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/33' (code 133): 24 epochs
+2025-06-30 08:56:33,708 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/34' (code 134): 24 epochs
+2025-06-30 08:56:33,708 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/35' (code 135): 24 epochs
+2025-06-30 08:56:33,708 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/36' (code 136): 24 epochs
+2025-06-30 08:56:34,467 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:342] - Processing conditions: ['XPP_ALL', 'XAP_ALL']
+2025-06-30 08:56:35,219 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:472] -   Data shapes for 'TPC2': XPP_ALL=(72, 124, 701), XAP_ALL=(427, 124, 701). Loaded in 3.17s
+2025-06-30 08:56:35,222 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:274] - Detected protocol 'delirium' for subject TPC2
+2025-06-30 08:56:37,406 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:455] - CRITICAL: No data loaded for ANY specified conditions for subject TPC2.
+2025-06-30 08:56:37,407 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:462] - Empty data array for condition 'temp' (specifier: 'AP') for subject TPC2.
+2025-06-30 08:56:37,408 - INFO - utils.loading_PP_utils - [detect_protocol_type:741] - Detected Delirium/Legacy protocol: simple AP/PP structure, 499 total events
+2025-06-30 08:56:37,408 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:873] - Auto-detected protocol 'delirium' for subject 'TPC2' (file hint: legacy)
+2025-06-30 08:56:37,408 - INFO - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:101] - Found epochs file: /mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5/TPC2_PP_preproc_ICA_PP-epo_ar.fif (protocol: legacy)
+2025-06-30 08:56:37,408 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:301] - Loading epoch data for subject 'TPC2' from: /mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5/TPC2_PP_preproc_ICA_PP-epo_ar.fif (file protocol: legacy)
+2025-06-30 08:56:38,831 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:312] - Event IDs available for TPC2:
+2025-06-30 08:56:38,831 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/10': 110
+2025-06-30 08:56:38,832 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/20': 120
+2025-06-30 08:56:38,832 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/30': 130
+2025-06-30 08:56:38,832 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/11': 111
+2025-06-30 08:56:38,832 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/12': 112
+2025-06-30 08:56:38,832 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/13': 113
+2025-06-30 08:56:38,833 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/14': 114
+2025-06-30 08:56:38,833 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/15': 115
+2025-06-30 08:56:38,833 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/16': 116
+2025-06-30 08:56:38,833 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/21': 121
+2025-06-30 08:56:38,833 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/22': 122
+2025-06-30 08:56:38,834 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/23': 123
+2025-06-30 08:56:38,834 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/24': 124
+2025-06-30 08:56:38,834 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/25': 125
+2025-06-30 08:56:38,834 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/26': 126
+2025-06-30 08:56:38,834 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/31': 131
+2025-06-30 08:56:38,834 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/32': 132
+2025-06-30 08:56:38,835 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/33': 133
+2025-06-30 08:56:38,835 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/34': 134
+2025-06-30 08:56:38,835 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/35': 135
+2025-06-30 08:56:38,835 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/36': 136
+2025-06-30 08:56:39,011 - INFO - utils.loading_PP_utils - [inspect_epochs_events:925] - === EVENT INSPECTION FOR TPC2 ===
+2025-06-30 08:56:39,011 - INFO - utils.loading_PP_utils - [inspect_epochs_events:928] - File: /mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5/TPC2_PP_preproc_ICA_PP-epo_ar.fif
+2025-06-30 08:56:39,011 - INFO - utils.loading_PP_utils - [inspect_epochs_events:929] - Total events: 499
+2025-06-30 08:56:39,012 - INFO - utils.loading_PP_utils - [inspect_epochs_events:930] - Event types and counts:
+2025-06-30 08:56:39,012 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/10' (code 110): 24 epochs
+2025-06-30 08:56:39,012 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/20' (code 120): 24 epochs
+2025-06-30 08:56:39,012 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/30' (code 130): 24 epochs
+2025-06-30 08:56:39,012 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/11' (code 111): 24 epochs
+2025-06-30 08:56:39,012 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/12' (code 112): 23 epochs
+2025-06-30 08:56:39,013 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/13' (code 113): 24 epochs
+2025-06-30 08:56:39,013 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/14' (code 114): 24 epochs
+2025-06-30 08:56:39,013 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/15' (code 115): 24 epochs
+2025-06-30 08:56:39,013 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/16' (code 116): 23 epochs
+2025-06-30 08:56:39,013 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/21' (code 121): 24 epochs
+2025-06-30 08:56:39,014 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/22' (code 122): 24 epochs
+2025-06-30 08:56:39,014 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/23' (code 123): 22 epochs
+2025-06-30 08:56:39,014 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/24' (code 124): 24 epochs
+2025-06-30 08:56:39,014 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/25' (code 125): 24 epochs
+2025-06-30 08:56:39,014 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/26' (code 126): 23 epochs
+2025-06-30 08:56:39,015 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/31' (code 131): 24 epochs
+2025-06-30 08:56:39,015 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/32' (code 132): 24 epochs
+2025-06-30 08:56:39,015 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/33' (code 133): 24 epochs
+2025-06-30 08:56:39,015 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/34' (code 134): 24 epochs
+2025-06-30 08:56:39,015 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/35' (code 135): 24 epochs
+2025-06-30 08:56:39,015 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/36' (code 136): 24 epochs
+2025-06-30 08:56:39,771 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:342] - Processing conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-30 08:56:41,602 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:472] -   Data shapes for 'TPC2': XPP_ALL=(72, 124, 701), XAP_ALL=(427, 124, 701), PP_FOR_SPECIFIC_COMPARISON=(72, 124, 701), AP_FAMILY_1=(72, 124, 701), AP_FAMILY_2=(71, 124, 701), AP_FAMILY_3=(70, 124, 701), AP_FAMILY_4=(72, 124, 701), AP_FAMILY_5=(72, 124, 701), AP_FAMILY_6=(70, 124, 701). Loaded in 4.19s
+2025-06-30 08:56:41,607 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:291] - Using protocol-specific loading configuration for delirium: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-30 08:56:41,607 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:296] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-30 08:56:41,608 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:324] - Successfully loaded 998 total epochs across all conditions for TPC2
+2025-06-30 08:56:41,608 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:338] - Protocol-specific settings for delirium: CV folds=10, AP families=6, PP events=['PP/10', 'PP/20', 'PP/30']
+2025-06-30 08:56:41,608 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:363] - --- Starting Main Protocol Decoding for TPC2 ---
+2025-06-30 08:56:41,608 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:366] -   --- 1. Main Decoding (e.g., PP/all vs AP/all) for TPC2 ---
+2025-06-30 08:56:41,987 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:56:41,988 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:56:41,999 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:56:42,000 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:56:42,000 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:56:42,000 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:56:42,001 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:56:42,001 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:56:42,001 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:56:42,001 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-06-30 08:56:42,002 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:56:42,042 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:56:42,042 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+submitit WARNING (2025-06-30 08:58:02,346) - Bypassing signal SIGCONT
+submitit WARNING (2025-06-30 08:58:02,354) - Bypassing signal SIGTERM
+2025-06-30 08:58:02,354 - WARNING - submitit - [bypass:196] - Bypassing signal SIGTERM
+2025-06-30 08:58:02,346 - WARNING - submitit - [bypass:196] - Bypassing signal SIGCONT

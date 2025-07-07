@@ -1,0 +1,1 @@
+/home/tom.balay/Baking_EEG/submitit/logs_submitit_jobs_LG/20250630_102700_CB34_LG/352597_submission.sh

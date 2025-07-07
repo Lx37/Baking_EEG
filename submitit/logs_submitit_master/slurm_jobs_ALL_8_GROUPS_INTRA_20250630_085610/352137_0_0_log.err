@@ -1,0 +1,76 @@
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:308: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5/TPC2_PP_preproc_ICA_PP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:308: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5/TPC2_PP_preproc_ICA_PP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:911: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5/TPC2_PP_preproc_ICA_PP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:308: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5/TPC2_PP_preproc_ICA_PP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:308: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5/TPC2_PP_preproc_ICA_PP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:911: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_0.5/TPC2_PP_preproc_ICA_PP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs = mne.read_epochs(epochs_file_path, proj=False, verbose=False, preload=False)
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 40 concurrent workers.
+[Parallel(n_jobs=-1)]: Done   3 out of  10 | elapsed:  1.2min remaining:  2.7min
+slurmstepd: error: *** JOB 352138 ON node2 CANCELLED AT 2025-06-30T08:58:02 ***
+submitit WARNING (2025-06-30 08:58:02,346) - Bypassing signal SIGCONT
+slurmstepd: error: *** STEP 352138.0 ON node2 CANCELLED AT 2025-06-30T08:58:02 ***
+submitit WARNING (2025-06-30 08:58:02,354) - Bypassing signal SIGTERM
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.11/logging/__init__.py", line 1114, in emit
+    self.flush()
+  File "/usr/lib/python3.11/logging/__init__.py", line 1094, in flush
+    self.stream.flush()
+RuntimeError: reentrant call inside <_io.BufferedWriter name='/home/tom.balay/Baking_EEG/submitit/logs_run_group_analysis/log_run_group_analysis_2025-06-30_085626.log'>
+Call stack:
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/submitit/core/_submit.py", line 11, in <module>
+    submitit_main()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/submitit/core/submission.py", line 76, in submitit_main
+    process_job(args.folder)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/submitit/core/submission.py", line 55, in process_job
+    result = delayed.result()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/submitit/core/utils.py", line 137, in result
+    self._result = self.function(*self.args, **self.kwargs)
+  File "/home/tom.balay/Baking_EEG/submitit/submit_allgroup.py", line 146, in execute_group_decoding_wrapper
+    return execute_group_intra_subject_decoding_analysis(**kwargs)
+  File "/home/tom.balay/Baking_EEG/examples/run_decoding_one_group_pp.py", line 133, in execute_group_intra_subject_decoding_analysis
+    subject_output_dict = execute_single_subject_decoding(
+  File "/home/tom.balay/Baking_EEG/examples/run_decoding_one_pp.py", line 390, in execute_single_subject_decoding
+    main_decoding_output = run_temporal_decoding_analysis(
+  File "/home/tom.balay/Baking_EEG/examples/../Baking_EEG/_4_decoding_core.py", line 318, in run_temporal_decoding_analysis
+    scores_1d_cv_raw = cross_val_multiscore(
+  File "<decorator-gen-279>", line 12, in cross_val_multiscore
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/base.py", line 389, in cross_val_multiscore
+    scores = parallel(
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1952, in __call__
+    return output if self.return_generator else list(output)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1595, in _get_outputs
+    yield from self._retrieve()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1707, in _retrieve
+    time.sleep(0.01)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/submitit/core/job_environment.py", line 196, in bypass
+    self._logger.warning(f"Bypassing signal {signal.Signals(signum).name}")
+  File "/usr/lib/python3.11/logging/__init__.py", line 1501, in warning
+    self._log(WARNING, msg, args, **kwargs)
+  File "/usr/lib/python3.11/logging/__init__.py", line 1634, in _log
+    self.handle(record)
+  File "/usr/lib/python3.11/logging/__init__.py", line 1644, in handle
+    self.callHandlers(record)
+  File "/usr/lib/python3.11/logging/__init__.py", line 1706, in callHandlers
+    hdlr.handle(record)
+  File "/usr/lib/python3.11/logging/__init__.py", line 978, in handle
+    self.emit(record)
+  File "/usr/lib/python3.11/logging/__init__.py", line 1230, in emit
+    StreamHandler.emit(self, record)
+  File "/usr/lib/python3.11/logging/__init__.py", line 1114, in emit
+    self.flush()
+  File "/usr/lib/python3.11/logging/__init__.py", line 1094, in flush
+    self.stream.flush()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/submitit/core/job_environment.py", line 196, in bypass
+    self._logger.warning(f"Bypassing signal {signal.Signals(signum).name}")
+Message: 'Bypassing signal SIGTERM'
+Arguments: ()
+[Parallel(n_jobs=-1)]: Done   6 out of  10 | elapsed:  1.6min remaining:  1.1min

@@ -1,0 +1,440 @@
+submitit INFO (2025-06-30 23:05:30,843) - Starting with JobEnvironment(job_id=352656, hostname=node17, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-30 23:05:30,843) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/logs_submitit_jobs_LG/20250630_102701_TpKS6_LG/352656_submitted.pkl
+2025-06-30 23:05:33,966 - INFO - examples.run_decoding_one_group_pp - [<module>:39] - Tentative d'import de execute_single_subject_decoding...
+2025-06-30 23:05:33,966 - INFO - examples.run_decoding_one_group_pp - [<module>:42] - ✅ Import de execute_single_subject_decoding réussi
+2025-06-30 23:05:33,968 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:193] - Starting LG decoding for subject: TpKS6 (Group: DELIRIUM-, Task Set ID: Single_LG_Protocol_Analysis, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-06-30 23:05:33,968 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:204] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-06-30 23:05:36,539 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:213] - Detected protocol 'LG_PATIENTS_DELIRIUM-' for subject TpKS6
+2025-06-30 23:05:36,539 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:254] - --- Starting Main LG Protocol Decoding for TpKS6 ---
+2025-06-30 23:05:36,539 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:257] -   --- 1. Main LG Decoding (LS vs LD) for TpKS6 ---
+2025-06-30 23:05:36,663 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 23:05:36,663 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 23:05:36,666 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 23:05:36,666 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 23:05:36,666 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 23:05:36,666 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 23:05:36,666 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 23:05:36,666 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 23:05:36,666 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 23:05:36,666 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-06-30 23:05:36,666 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 23:05:36,676 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 23:05:36,676 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 23:07:13,272 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.640
+2025-06-30 23:07:13,273 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 23:07:13,273 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-06-30 23:14:06,389 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.793 +/- 0.041
+2025-06-30 23:14:06,408 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.790', 'accuracy': '0.716', 'precision': '0.722', 'recall': '0.704', 'f1_score': '0.713', 'balanced_accuracy': '0.716'}
+2025-06-30 23:14:06,408 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 801)
+2025-06-30 23:14:06,408 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 23:14:07,037 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 110 point(s) found significant (p_fdr < 0.05).
+2025-06-30 23:14:07,037 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 801)
+2025-06-30 23:14:07,037 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-30 23:14:07,037 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 23:14:07,037 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-5.185019 max=13.203912
+Running initial clustering …
+Using 132 thresholds from 0.10 to 13.20 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 801 clusters
+2025-06-30 23:14:09,870 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 801 initial clusters found (after processing slices).
+2025-06-30 23:14:09,871 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #475: p-value = 0.0244. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,871 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #476: p-value = 0.0244. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,871 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #477: p-value = 0.0186. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,871 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #478: p-value = 0.0117. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,871 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #479: p-value = 0.0098. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,871 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #480: p-value = 0.0049. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,871 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #481: p-value = 0.0049. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,871 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #482: p-value = 0.0049. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,871 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #483: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,871 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #484: p-value = 0.0020. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,871 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #485: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,871 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #486: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,871 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #487: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,872 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #488: p-value = 0.0049. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,872 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #489: p-value = 0.0059. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,872 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #490: p-value = 0.0078. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,872 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #491: p-value = 0.0068. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,872 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #492: p-value = 0.0107. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,872 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #493: p-value = 0.0381. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,872 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #498: p-value = 0.0420. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,872 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #499: p-value = 0.0381. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,872 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #500: p-value = 0.0166. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,872 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #501: p-value = 0.0107. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,872 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #502: p-value = 0.0059. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,872 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #503: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,872 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #504: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,872 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #505: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,872 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #506: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,872 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #507: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,873 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #508: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,873 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #509: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,873 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #510: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,873 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #511: p-value = 0.0059. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,873 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #512: p-value = 0.0059. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,873 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #513: p-value = 0.0078. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,873 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #514: p-value = 0.0342. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,873 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #515: p-value = 0.0312. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,873 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #516: p-value = 0.0107. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,873 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #517: p-value = 0.0186. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,873 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #519: p-value = 0.0244. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,873 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #520: p-value = 0.0342. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,873 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #521: p-value = 0.0244. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,873 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #522: p-value = 0.0146. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,873 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #523: p-value = 0.0068. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,873 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #524: p-value = 0.0117. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,873 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #525: p-value = 0.0098. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,874 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #526: p-value = 0.0146. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,874 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #527: p-value = 0.0059. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,874 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #528: p-value = 0.0312. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,874 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #529: p-value = 0.0449. Mask shape: (801,), Num True points: 1
+2025-06-30 23:14:09,876 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:344] - Main LG Decoding for TpKS6 DONE. Mean Global AUC: 0.793
+2025-06-30 23:14:09,876 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:353] -   --- 2. Specific LG Comparisons (e.g. LS/GS vs LS/GD, LD/GS vs LD/GD) for TpKS6 ---
+2025-06-30 23:14:09,951 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 23:14:09,951 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 23:14:09,956 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 23:14:09,956 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 23:14:09,956 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 23:14:09,956 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 23:14:09,956 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 23:14:09,956 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 23:14:09,956 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 23:14:09,956 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-06-30 23:14:09,956 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 23:14:09,966 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 23:14:09,966 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 23:14:42,817 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.629
+2025-06-30 23:14:42,819 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:346] - Starting TGM computation (GeneralizingEstimator)...
+2025-07-01 00:03:03,698 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:373] - TGM computation done. Peak mean TGM AUC: 0.653
+2025-07-01 00:03:03,699 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-07-01 00:04:52,203 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.616 +/- 0.059
+2025-07-01 00:04:52,221 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.613', 'accuracy': '0.750', 'precision': '0.360', 'recall': '0.305', 'f1_score': '0.330', 'balanced_accuracy': '0.584'}
+2025-07-01 00:04:52,221 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 801)
+2025-07-01 00:04:52,221 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-07-01 00:04:52,843 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 36 point(s) found significant (p_fdr < 0.05).
+2025-07-01 00:04:52,844 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 801)
+2025-07-01 00:04:52,844 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-07-01 00:04:52,844 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-07-01 00:04:52,844 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-4.857212 max=5.381485
+Running initial clustering …
+Using 53 thresholds from 0.10 to 5.30 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 801 clusters
+2025-07-01 00:04:54,956 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 801 initial clusters found (after processing slices).
+2025-07-01 00:04:54,956 - INFO - utils.stats_utils - [perform_cluster_permutation_test:344] - No clusters found to be statistically significant (p < 0.05).
+2025-07-01 00:04:54,966 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 641601)
+2025-07-01 00:04:54,966 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-07-01 00:09:26,324 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-07-01 00:09:26,327 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:544] - Intra-fold Cluster Permutation for TGM is SKIPPED.
+2025-07-01 00:09:26,329 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:465] -   Specific LG task 'Local Standard: Global Standard vs Global Deviant' for TpKS6: Peak AUC = 0.629
+2025-07-01 00:09:26,397 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-01 00:09:26,397 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-07-01 00:09:26,398 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-07-01 00:09:26,398 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-01 00:09:26,398 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-07-01 00:09:26,398 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-07-01 00:09:26,398 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-01 00:09:26,398 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-01 00:09:26,398 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-01 00:09:26,398 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-07-01 00:09:26,398 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-01 00:09:26,407 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-01 00:09:26,407 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-01 00:10:00,688 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.647
+2025-07-01 00:10:00,689 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:346] - Starting TGM computation (GeneralizingEstimator)...
+2025-07-01 00:58:28,327 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:373] - TGM computation done. Peak mean TGM AUC: 0.654
+2025-07-01 00:58:28,328 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-07-01 01:00:03,190 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.617 +/- 0.068
+2025-07-01 01:00:03,208 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.601', 'accuracy': '0.752', 'precision': '0.338', 'recall': '0.260', 'f1_score': '0.293', 'balanced_accuracy': '0.567'}
+2025-07-01 01:00:03,209 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 801)
+2025-07-01 01:00:03,209 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-07-01 01:00:03,828 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-07-01 01:00:03,829 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 801)
+2025-07-01 01:00:03,829 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-07-01 01:00:03,829 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-07-01 01:00:03,829 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-5.924182 max=8.227952
+Running initial clustering …
+Using 82 thresholds from 0.10 to 8.20 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 801 clusters
+2025-07-01 01:00:05,984 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 801 initial clusters found (after processing slices).
+2025-07-01 01:00:05,984 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #151: p-value = 0.0156. Mask shape: (801,), Num True points: 1
+2025-07-01 01:00:05,985 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #152: p-value = 0.0312. Mask shape: (801,), Num True points: 1
+2025-07-01 01:00:05,985 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #154: p-value = 0.0049. Mask shape: (801,), Num True points: 1
+2025-07-01 01:00:05,995 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 641601)
+2025-07-01 01:00:05,995 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-07-01 01:04:28,880 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-07-01 01:04:28,884 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:544] - Intra-fold Cluster Permutation for TGM is SKIPPED.
+2025-07-01 01:04:28,886 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:465] -   Specific LG task 'Local Deviant: Global Standard vs Global Deviant' for TpKS6: Peak AUC = 0.647
+2025-07-01 01:04:28,988 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-01 01:04:28,988 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-07-01 01:04:28,989 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-07-01 01:04:28,989 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-01 01:04:28,990 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-07-01 01:04:28,990 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-07-01 01:04:28,990 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-01 01:04:28,990 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-01 01:04:28,990 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-01 01:04:28,990 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-07-01 01:04:28,990 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-01 01:04:28,998 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-01 01:04:28,998 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-01 01:05:35,194 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.659
+2025-07-01 01:05:35,195 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:346] - Starting TGM computation (GeneralizingEstimator)...
+2025-07-01 01:38:37,763 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:373] - TGM computation done. Peak mean TGM AUC: 0.664
+2025-07-01 01:38:37,765 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-07-01 01:43:07,562 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.769 +/- 0.033
+2025-07-01 01:43:07,580 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.766', 'accuracy': '0.702', 'precision': '0.705', 'recall': '0.700', 'f1_score': '0.703', 'balanced_accuracy': '0.702'}
+2025-07-01 01:43:07,580 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 801)
+2025-07-01 01:43:07,580 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-07-01 01:43:08,199 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 260 point(s) found significant (p_fdr < 0.05).
+2025-07-01 01:43:08,200 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 801)
+2025-07-01 01:43:08,200 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-07-01 01:43:08,200 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-07-01 01:43:08,200 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-4.453331 max=12.750163
+Running initial clustering …
+Using 127 thresholds from 0.10 to 12.70 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 801 clusters
+2025-07-01 01:43:10,342 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 801 initial clusters found (after processing slices).
+2025-07-01 01:43:10,342 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #88: p-value = 0.0400. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,342 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #89: p-value = 0.0264. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,342 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #90: p-value = 0.0303. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,342 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #391: p-value = 0.0479. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,343 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #434: p-value = 0.0449. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,343 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #435: p-value = 0.0156. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,343 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #436: p-value = 0.0059. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,343 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #437: p-value = 0.0098. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,343 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #438: p-value = 0.0303. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,343 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #439: p-value = 0.0303. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,343 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #440: p-value = 0.0332. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,343 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #441: p-value = 0.0430. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,343 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #442: p-value = 0.0264. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,343 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #445: p-value = 0.0332. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,343 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #447: p-value = 0.0479. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,343 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #477: p-value = 0.0283. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,344 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #478: p-value = 0.0098. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,344 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #479: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,344 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #480: p-value = 0.0039. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,344 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #481: p-value = 0.0039. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,344 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #482: p-value = 0.0059. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,344 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #483: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,344 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #484: p-value = 0.0039. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,344 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #485: p-value = 0.0059. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,344 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #486: p-value = 0.0137. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,344 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #487: p-value = 0.0205. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,344 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #488: p-value = 0.0234. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,344 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #489: p-value = 0.0371. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,345 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #490: p-value = 0.0215. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,345 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #491: p-value = 0.0264. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,345 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #492: p-value = 0.0234. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,345 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #493: p-value = 0.0137. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,345 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #494: p-value = 0.0137. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,345 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #495: p-value = 0.0078. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,345 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #496: p-value = 0.0059. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,345 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #497: p-value = 0.0059. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,345 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #498: p-value = 0.0039. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,345 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #499: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,345 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #500: p-value = 0.0020. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,345 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #501: p-value = 0.0020. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,346 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #502: p-value = 0.0020. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,346 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #503: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,346 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #504: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,346 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #505: p-value = 0.0020. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,346 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #506: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,346 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #507: p-value = 0.0078. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,346 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #508: p-value = 0.0215. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,346 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #509: p-value = 0.0430. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,346 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #510: p-value = 0.0283. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,346 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #511: p-value = 0.0430. Mask shape: (801,), Num True points: 1
+2025-07-01 01:43:10,358 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 641601)
+2025-07-01 01:43:10,358 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-07-01 01:47:31,406 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-07-01 01:47:31,409 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:544] - Intra-fold Cluster Permutation for TGM is SKIPPED.
+2025-07-01 01:47:31,411 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:465] -   Specific LG task 'Global Standard: Local Standard vs Local Deviant' for TpKS6: Peak AUC = 0.659
+2025-07-01 01:47:31,443 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-01 01:47:31,443 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-07-01 01:47:31,444 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-07-01 01:47:31,444 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-01 01:47:31,444 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-07-01 01:47:31,445 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-07-01 01:47:31,445 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-01 01:47:31,445 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-01 01:47:31,445 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-01 01:47:31,445 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-07-01 01:47:31,445 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-01 01:47:31,453 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-01 01:47:31,453 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-01 01:47:46,772 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.656
+2025-07-01 01:47:46,772 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:346] - Starting TGM computation (GeneralizingEstimator)...
+2025-07-01 02:33:08,973 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:373] - TGM computation done. Peak mean TGM AUC: 0.685
+2025-07-01 02:33:08,974 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-07-01 02:33:31,168 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.682 +/- 0.091
+2025-07-01 02:33:31,184 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.662', 'accuracy': '0.617', 'precision': '0.615', 'recall': '0.615', 'f1_score': '0.615', 'balanced_accuracy': '0.617'}
+2025-07-01 02:33:31,184 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 801)
+2025-07-01 02:33:31,184 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-07-01 02:33:31,820 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 36 point(s) found significant (p_fdr < 0.05).
+2025-07-01 02:33:31,820 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 801)
+2025-07-01 02:33:31,821 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-07-01 02:33:31,821 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-07-01 02:33:31,821 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-5.021554 max=10.884366
+Running initial clustering …
+Using 108 thresholds from 0.10 to 10.80 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 801 clusters
+2025-07-01 02:33:34,155 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 801 initial clusters found (after processing slices).
+2025-07-01 02:33:34,155 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #265: p-value = 0.0264. Mask shape: (801,), Num True points: 1
+2025-07-01 02:33:34,155 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #444: p-value = 0.0020. Mask shape: (801,), Num True points: 1
+2025-07-01 02:33:34,155 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #445: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-07-01 02:33:34,155 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #448: p-value = 0.0068. Mask shape: (801,), Num True points: 1
+2025-07-01 02:33:34,155 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #449: p-value = 0.0264. Mask shape: (801,), Num True points: 1
+2025-07-01 02:33:34,156 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #496: p-value = 0.0234. Mask shape: (801,), Num True points: 1
+2025-07-01 02:33:34,165 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 641601)
+2025-07-01 02:33:34,165 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-07-01 02:38:06,354 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-07-01 02:38:06,357 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:544] - Intra-fold Cluster Permutation for TGM is SKIPPED.
+2025-07-01 02:38:06,359 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:465] -   Specific LG task 'Global Deviant: Local Standard vs Local Deviant' for TpKS6: Peak AUC = 0.656
+2025-07-01 02:38:06,359 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:480] -   --- Specific LG Comparisons for TpKS6 DONE ---
+2025-07-01 02:38:06,359 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:487] -   --- 3. Stats on stack of Specific LG Curves for TpKS6 ---
+2025-07-01 02:38:06,360 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (4, 801)
+2025-07-01 02:38:06,360 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-07-01 02:38:06,664 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-07-01 02:38:06,664 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (4, 801)
+2025-07-01 02:38:06,664 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=40
+2025-07-01 02:38:06,664 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-07-01 02:38:06,664 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-2.605843 max=9.164491
+Running initial clustering …
+Using 91 thresholds from 0.10 to 9.10 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 801 clusters
+2025-07-01 02:38:07,131 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 801 initial clusters found (after processing slices).
+2025-07-01 02:38:07,132 - INFO - utils.stats_utils - [perform_cluster_permutation_test:344] - No clusters found to be statistically significant (p < 0.05).
+2025-07-01 02:38:07,132 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:551] -   --- Stats on stack of Specific LG Curves for TpKS6 DONE ---
+2025-07-01 02:38:07,136 - INFO - utils.utils - [setup_analysis_results_directory:329] - Created analysis results directory: /home/tom.balay/results/Baking_EEG_results_V12/intra_subject_lg_results/DELIRIUM-_LG_PATIENTS_DELIRIUM-/TpKS6_Single_LG_Protocol_Analysis_svc/20250701_023807
+2025-07-01 02:38:07,137 - INFO - utils.utils - [setup_analysis_results_directory:337] - Organized by Group: DELIRIUM-, Protocol: LG_PATIENTS_DELIRIUM-
+2025-07-01 02:38:07,559 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:619] - LG Results saved for subject TpKS6 in /home/tom.balay/results/Baking_EEG_results_V12/intra_subject_lg_results/DELIRIUM-_LG_PATIENTS_DELIRIUM-/TpKS6_Single_LG_Protocol_Analysis_svc/20250701_023807
+2025-07-01 02:38:07,560 - INFO - utils.vizualization_utils_LG - [create_subject_decoding_dashboard_plots_lg:75] - Creating LG dashboard plots for subject TpKS6
+2025-07-01 02:38:07,562 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 801)
+2025-07-01 02:38:07,563 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-07-01 02:38:08,039 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 36 point(s) found significant (p_fdr < 0.05).
+2025-07-01 02:38:08,039 - INFO - utils.stats_utils - [perform_cluster_permutation_test:188] - Adjusting MNE parallelism from requested n_jobs=1 to effective_n_jobs=4 for resource management.
+2025-07-01 02:38:08,039 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 801)
+2025-07-01 02:38:08,039 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=4
+2025-07-01 02:38:08,039 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-07-01 02:38:08,039 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-4.857212 max=5.381485
+Running initial clustering …
+Using 53 thresholds from 0.10 to 5.30 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 801 clusters
+2025-07-01 02:38:13,335 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 801 initial clusters found (after processing slices).
+2025-07-01 02:38:13,335 - INFO - utils.stats_utils - [perform_cluster_permutation_test:344] - No clusters found to be statistically significant (p < 0.05).
+2025-07-01 02:38:13,336 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 801)
+2025-07-01 02:38:13,336 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-07-01 02:38:13,959 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-07-01 02:38:13,960 - INFO - utils.stats_utils - [perform_cluster_permutation_test:188] - Adjusting MNE parallelism from requested n_jobs=1 to effective_n_jobs=4 for resource management.
+2025-07-01 02:38:13,960 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 801)
+2025-07-01 02:38:13,960 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=4
+2025-07-01 02:38:13,960 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-07-01 02:38:13,960 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-5.924182 max=8.227952
+Running initial clustering …
+Using 82 thresholds from 0.10 to 8.20 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 801 clusters
+2025-07-01 02:38:17,142 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 801 initial clusters found (after processing slices).
+2025-07-01 02:38:17,142 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #151: p-value = 0.0156. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:17,142 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #152: p-value = 0.0312. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:17,142 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #154: p-value = 0.0049. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:17,143 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 801)
+2025-07-01 02:38:17,143 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-07-01 02:38:17,773 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 260 point(s) found significant (p_fdr < 0.05).
+2025-07-01 02:38:17,773 - INFO - utils.stats_utils - [perform_cluster_permutation_test:188] - Adjusting MNE parallelism from requested n_jobs=1 to effective_n_jobs=4 for resource management.
+2025-07-01 02:38:17,773 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 801)
+2025-07-01 02:38:17,773 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=4
+2025-07-01 02:38:17,773 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-07-01 02:38:17,773 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-4.453331 max=12.750163
+Running initial clustering …
+Using 127 thresholds from 0.10 to 12.70 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 801 clusters
+2025-07-01 02:38:20,596 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 801 initial clusters found (after processing slices).
+2025-07-01 02:38:20,596 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #88: p-value = 0.0400. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,597 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #89: p-value = 0.0264. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,597 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #90: p-value = 0.0303. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,597 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #391: p-value = 0.0479. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,597 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #434: p-value = 0.0449. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,597 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #435: p-value = 0.0156. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,597 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #436: p-value = 0.0059. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,597 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #437: p-value = 0.0098. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,597 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #438: p-value = 0.0303. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,597 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #439: p-value = 0.0303. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,597 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #440: p-value = 0.0332. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,598 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #441: p-value = 0.0430. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,598 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #442: p-value = 0.0264. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,598 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #445: p-value = 0.0332. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,598 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #447: p-value = 0.0479. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,598 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #477: p-value = 0.0283. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,598 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #478: p-value = 0.0098. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,598 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #479: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,598 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #480: p-value = 0.0039. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,598 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #481: p-value = 0.0039. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,598 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #482: p-value = 0.0059. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,598 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #483: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,599 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #484: p-value = 0.0039. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,599 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #485: p-value = 0.0059. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,599 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #486: p-value = 0.0137. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,599 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #487: p-value = 0.0205. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,599 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #488: p-value = 0.0234. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,599 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #489: p-value = 0.0371. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,599 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #490: p-value = 0.0215. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,599 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #491: p-value = 0.0264. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,599 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #492: p-value = 0.0234. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,599 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #493: p-value = 0.0137. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,599 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #494: p-value = 0.0137. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,600 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #495: p-value = 0.0078. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,600 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #496: p-value = 0.0059. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,600 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #497: p-value = 0.0059. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,600 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #498: p-value = 0.0039. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,600 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #499: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,600 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #500: p-value = 0.0020. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,600 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #501: p-value = 0.0020. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,600 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #502: p-value = 0.0020. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,600 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #503: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,600 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #504: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,600 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #505: p-value = 0.0020. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,601 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #506: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,601 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #507: p-value = 0.0078. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,601 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #508: p-value = 0.0215. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,601 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #509: p-value = 0.0430. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,601 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #510: p-value = 0.0283. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,601 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #511: p-value = 0.0430. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:20,602 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 801)
+2025-07-01 02:38:20,602 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-07-01 02:38:21,240 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 36 point(s) found significant (p_fdr < 0.05).
+2025-07-01 02:38:21,241 - INFO - utils.stats_utils - [perform_cluster_permutation_test:188] - Adjusting MNE parallelism from requested n_jobs=1 to effective_n_jobs=4 for resource management.
+2025-07-01 02:38:21,241 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 801)
+2025-07-01 02:38:21,241 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=4
+2025-07-01 02:38:21,241 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-07-01 02:38:21,241 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-5.021554 max=10.884366
+Running initial clustering …
+Using 108 thresholds from 0.10 to 10.80 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 801 clusters
+2025-07-01 02:38:24,192 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 801 initial clusters found (after processing slices).
+2025-07-01 02:38:24,192 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #265: p-value = 0.0264. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:24,192 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #444: p-value = 0.0020. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:24,192 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #445: p-value = 0.0029. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:24,192 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #448: p-value = 0.0068. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:24,193 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #449: p-value = 0.0264. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:24,193 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #496: p-value = 0.0234. Mask shape: (801,), Num True points: 1
+2025-07-01 02:38:25,782 - INFO - utils.vizualization_utils_LG - [_create_lg_comparison_page:247] - LG comparison plot saved to: /home/tom.balay/results/Baking_EEG_results_V12/intra_subject_lg_results/DELIRIUM-_LG_PATIENTS_DELIRIUM-/TpKS6_Single_LG_Protocol_Analysis_svc/20250701_023807/lg_LD_ALL_vs_LS_ALL_TpKS6_DELIRIUM-_svc.png
+2025-07-01 02:38:26,791 - INFO - utils.vizualization_utils_LG - [_create_lg_comparison_page:247] - LG comparison plot saved to: /home/tom.balay/results/Baking_EEG_results_V12/intra_subject_lg_results/DELIRIUM-_LG_PATIENTS_DELIRIUM-/TpKS6_Single_LG_Protocol_Analysis_svc/20250701_023807/lg_GD_ALL_vs_GS_ALL_TpKS6_DELIRIUM-_svc.png
+2025-07-01 02:38:27,493 - INFO - utils.vizualization_utils_LG - [_create_lg_comparison_page:247] - LG comparison plot saved to: /home/tom.balay/results/Baking_EEG_results_V12/intra_subject_lg_results/DELIRIUM-_LG_PATIENTS_DELIRIUM-/TpKS6_Single_LG_Protocol_Analysis_svc/20250701_023807/lg_LSGS_vs_LSGD_TpKS6_DELIRIUM-_svc.png
+2025-07-01 02:38:28,442 - INFO - utils.vizualization_utils_LG - [_create_lg_comparison_page:247] - LG comparison plot saved to: /home/tom.balay/results/Baking_EEG_results_V12/intra_subject_lg_results/DELIRIUM-_LG_PATIENTS_DELIRIUM-/TpKS6_Single_LG_Protocol_Analysis_svc/20250701_023807/lg_LDGS_vs_LDGD_TpKS6_DELIRIUM-_svc.png
+2025-07-01 02:38:29,173 - INFO - utils.vizualization_utils_LG - [_create_lg_comparison_page:247] - LG comparison plot saved to: /home/tom.balay/results/Baking_EEG_results_V12/intra_subject_lg_results/DELIRIUM-_LG_PATIENTS_DELIRIUM-/TpKS6_Single_LG_Protocol_Analysis_svc/20250701_023807/lg_LSGS_vs_LDGS_TpKS6_DELIRIUM-_svc.png
+2025-07-01 02:38:29,910 - INFO - utils.vizualization_utils_LG - [_create_lg_comparison_page:247] - LG comparison plot saved to: /home/tom.balay/results/Baking_EEG_results_V12/intra_subject_lg_results/DELIRIUM-_LG_PATIENTS_DELIRIUM-/TpKS6_Single_LG_Protocol_Analysis_svc/20250701_023807/lg_LSGD_vs_LDGD_TpKS6_DELIRIUM-_svc.png
+2025-07-01 02:38:29,910 - INFO - utils.vizualization_utils_LG - [create_subject_decoding_dashboard_plots_lg:167] - LG dashboard plots creation completed for subject TpKS6
+2025-07-01 02:38:29,910 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:684] - LG Dashboard plots generated for subject TpKS6 in /home/tom.balay/results/Baking_EEG_results_V12/intra_subject_lg_results/DELIRIUM-_LG_PATIENTS_DELIRIUM-/TpKS6_Single_LG_Protocol_Analysis_svc/20250701_023807
+2025-07-01 02:38:29,910 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:723] - Finished processing LG for subject TpKS6 (Task Set ID: Single_LG_Protocol_Analysis). Total time: 12775.94s
+submitit INFO (2025-07-01 02:38:29,926) - Job completed successfully
+2025-07-01 02:38:29,926 - INFO - submitit - [process_job:56] - Job completed successfully
+submitit INFO (2025-07-01 02:38:30,073) - Exiting after successful completion
+2025-07-01 02:38:30,073 - INFO - submitit - [process_job:61] - Exiting after successful completion

@@ -1,0 +1,26 @@
+submitit INFO (2025-06-30 09:51:59,502) - Starting with JobEnvironment(job_id=352360, hostname=node13, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-30 09:51:59,502) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/logs_submitit_enhanced/20250630_095157_TJR7_LG/352360_submitted.pkl
+2025-06-30 09:52:05,348 - INFO - examples.run_decoding_one_group_pp - [<module>:39] - Tentative d'import de execute_single_subject_decoding...
+2025-06-30 09:52:05,349 - INFO - examples.run_decoding_one_group_pp - [<module>:42] - ✅ Import de execute_single_subject_decoding réussi
+2025-06-30 09:52:05,352 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:316] - ✓ execute_single_subject_lg_decoding importé avec succès
+2025-06-30 09:52:05,352 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:322] - Paramètres principaux - Sujet: TJR7, Groupe: CONTROLS_DELIRIUM
+2025-06-30 09:52:05,352 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:331] - === DÉBUT EXÉCUTION ===
+2025-06-30 09:52:05,352 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:333] - Heure de début: 2025-06-30 09:52:05.352567
+2025-06-30 09:52:05,352 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:193] - Starting LG decoding for subject: TJR7 (Group: CONTROLS_DELIRIUM, Task Set ID: Single_LG_Protocol_Analysis, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-06-30 09:52:05,352 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:204] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-06-30 09:52:05,353 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'CONTROLS_DELIRIUM' not found for subject 'TJR7'. Subject found in group 'CONTROLS_DELIRIUM'. Using its path convention.
+2025-06-30 09:52:05,353 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TJR7' (group: 'CONTROLS_DELIRIUM') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-30 09:52:05,353 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:213] - Detected protocol 'unknown' for subject TJR7
+2025-06-30 09:52:05,353 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:219] - Epochs object loading failed for TJR7. Aborting subject.
+2025-06-30 09:52:05,354 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:339] - Heure de fin: 2025-06-30 09:52:05.354067
+2025-06-30 09:52:05,354 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:340] - Durée d'exécution: 0:00:00.001500
+2025-06-30 09:52:05,354 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:341] - Type de résultat: <class 'dict'>
+2025-06-30 09:52:05,354 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:344] - Clés du résultat: ['subject_id', 'group', 'decoding_protocol_identifier', 'classifier_type_used', 'epochs_time_points', 'lg_main_original_labels', 'lg_main_pred_probas_global', 'lg_main_pred_labels_global', 'lg_main_cv_global_scores', 'lg_main_scores_1d_all_folds', 'lg_main_scores_1d_mean', 'lg_main_temporal_1d_fdr', 'lg_main_temporal_1d_cluster', 'lg_main_tgm_all_folds', 'lg_main_tgm_mean', 'lg_main_tgm_fdr', 'lg_main_mean_auc_global', 'lg_main_global_metrics', 'lg_specific_comparison_results', 'lg_mean_of_specific_scores_1d', 'lg_sem_of_specific_scores_1d', 'lg_mean_specific_fdr', 'lg_mean_specific_cluster', 'lg_global_effect_results', 'lg_local_effect_centric_avg_results']
+2025-06-30 09:52:05,354 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:346] - ✓ EXÉCUTION TERMINÉE AVEC SUCCÈS
+2025-06-30 09:52:05,354 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:361] - ================================================================================
+2025-06-30 09:52:05,354 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:362] - === FIN DU WORKER SUBMITIT ===
+2025-06-30 09:52:05,354 - INFO - slurm_worker - [enhanced_decoding_task_wrapper:363] - ================================================================================
+submitit INFO (2025-06-30 09:52:05,354) - Job completed successfully
+2025-06-30 09:52:05,354 - INFO - submitit - [process_job:56] - Job completed successfully
+submitit INFO (2025-06-30 09:52:05,355) - Exiting after successful completion
+2025-06-30 09:52:05,355 - INFO - submitit - [process_job:61] - Exiting after successful completion

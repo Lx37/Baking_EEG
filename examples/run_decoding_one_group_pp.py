@@ -10,7 +10,7 @@ from getpass import getuser
 import numpy as np
 import pandas as pd
 
-# Ajouter le chemin parent au Python path
+
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
@@ -27,15 +27,15 @@ from config.decoding_config import (
 )
 from config.config import ALL_SUBJECT_GROUPS
 from utils.utils import configure_project_paths
-# Configuration précoce du logging pour capturer les erreurs d'import
+
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 logger_import = logging.getLogger(__name__)
 
-# --- GESTION ROBUSTE DES IMPORTS CRITIQUES ---
+
 execute_single_subject_decoding = None
 
 try:
-    # Import avec gestion d'erreur explicite
+
     logger_import.info(
         "Tentative d'import de execute_single_subject_decoding...")
     from examples.run_decoding_one_pp import execute_single_subject_decoding
@@ -51,11 +51,8 @@ except Exception as e_other:
     logger_import.error(f"ERREUR INATTENDUE lors de l'import: {e_other}")
     sys.exit(1)
 
-# --- IMPORTS DES MODULES DU PROJET (standardisés) ---
 
-# Tous les autres imports partent de la racine (utils, config...)
 
-# --- Configuration du Logging ---
 LOG_DIR_RUN_GROUP = './logs_run_group_analysis'
 os.makedirs(LOG_DIR_RUN_GROUP, exist_ok=True)
 LOG_FILENAME_RUN_GROUP = os.path.join(
@@ -78,7 +75,7 @@ logging.basicConfig(
 logger_run_group = logging.getLogger(__name__)
 logging.getLogger("examples.run_decoding_one_pp").setLevel(logging.INFO)
 
-# La suite du fichier est identique à la version précédente et devrait être correcte
+
 
 
 def execute_group_intra_subject_decoding_analysis(

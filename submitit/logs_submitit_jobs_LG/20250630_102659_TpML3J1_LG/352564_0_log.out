@@ -1,0 +1,14 @@
+submitit INFO (2025-06-30 14:56:15,797) - Starting with JobEnvironment(job_id=352564, hostname=node20, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-30 14:56:15,798) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/logs_submitit_jobs_LG/20250630_102659_TpML3J1_LG/352564_submitted.pkl
+2025-06-30 14:56:18,735 - INFO - examples.run_decoding_one_group_pp - [<module>:39] - Tentative d'import de execute_single_subject_decoding...
+2025-06-30 14:56:18,736 - INFO - examples.run_decoding_one_group_pp - [<module>:42] - ✅ Import de execute_single_subject_decoding réussi
+2025-06-30 14:56:18,738 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:193] - Starting LG decoding for subject: TpML3J1 (Group: COMA, Task Set ID: Single_LG_Protocol_Analysis, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-06-30 14:56:18,738 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:204] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-06-30 14:56:18,738 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpML3J1'. Subject found in group 'COMA'. Using its path convention.
+2025-06-30 14:56:18,738 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpML3J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-30 14:56:18,738 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:213] - Detected protocol 'unknown' for subject TpML3J1
+2025-06-30 14:56:18,738 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:219] - Epochs object loading failed for TpML3J1. Aborting subject.
+submitit INFO (2025-06-30 14:56:18,739) - Job completed successfully
+2025-06-30 14:56:18,739 - INFO - submitit - [process_job:56] - Job completed successfully
+submitit INFO (2025-06-30 14:56:18,740) - Exiting after successful completion
+2025-06-30 14:56:18,740 - INFO - submitit - [process_job:61] - Exiting after successful completion

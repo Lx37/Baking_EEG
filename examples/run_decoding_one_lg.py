@@ -15,13 +15,13 @@ from sklearn.model_selection import StratifiedKFold
 import itertools
 import scipy.stats
 
-# Add project root to path
+
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-# Import project modules
+
 from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
 from utils.vizualization_utils_LG import create_subject_decoding_dashboard_plots_lg
 from utils.utils import (
@@ -29,7 +29,7 @@ from utils.utils import (
 )
 from utils.loading_LG_utils import (
     load_epochs_data_for_lg_decoding,
-    load_epochs_data_auto_protocol_lg
+   
 )
 from utils import stats_utils as bEEG_stats
 from config.config import ALL_SUBJECT_GROUPS
@@ -43,7 +43,7 @@ from config.decoding_config import (
     CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG, SAVE_ANALYSIS_RESULTS,
     GENERATE_PLOTS, N_JOBS_PROCESSING
 )
-# Logging configuration
+
 LOG_DIR = './logs_run_single_subject_lg'
 os.makedirs(LOG_DIR, exist_ok=True)
 LOG_FILENAME = os.path.join(
@@ -51,7 +51,7 @@ LOG_FILENAME = os.path.join(
     datetime.now().strftime('log_run_single_subject_lg_%Y-%m-%d_%H%M%S.log')
 )
 
-# Clear existing handlers
+
 for handler in logging.getLogger().handlers[:]:
     logging.getLogger().removeHandler(handler)
 
@@ -66,7 +66,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Configure module loggers
+
 logging.getLogger("Baking_EEG.decoding_core").setLevel(logging.INFO)
 logging.getLogger("Baking_EEG.utils.data_loading_utils").setLevel(logging.INFO)
 
@@ -204,7 +204,7 @@ def execute_single_subject_lg_decoding(
         logger.info("Using LG loading conditions: %s",
                     list(actual_loading_conditions.keys()))
 
-        epochs_object, returned_data_dict, detected_protocol = load_epochs_data_auto_protocol_lg(
+        epochs_object, returned_data_dict, detected_protocol =  load_epochs_data_for_lg_decoding(
             subject_identifier, group_affiliation, base_input_data_path,
             actual_loading_conditions, enable_verbose_logging
         )

@@ -10,12 +10,11 @@ import numpy as np
 import pandas as pd
 import scipy.stats
 
-# --- Configuration du chemin pour les imports ---
+
 SCRIPT_DIR_EXAMPLE = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT_EXAMPLE = os.path.abspath(os.path.join(SCRIPT_DIR_EXAMPLE, ".."))
 if PROJECT_ROOT_EXAMPLE not in sys.path:
     sys.path.insert(0, PROJECT_ROOT_EXAMPLE)
-# --- Fin Configuration du chemin --
 
 
 
@@ -40,7 +39,7 @@ from Baking_EEG.utils import stats_utils as bEEG_stats
 from Baking_EEG.utils.utils import (
     configure_project_paths, setup_analysis_results_directory
 )
-# La fonction execute_single_subject_lg_decoding est dans run_decoding_one_lg.py
+
 try:
     from Baking_EEG.examples.run_decoding_one_lg import (
         execute_single_subject_lg_decoding
@@ -49,7 +48,7 @@ except ImportError as e_import:
     print(f"Erreur d'import execute_single_subject_lg_decoding: {e_import}")
     sys.exit(1)
 
-# --- Configuration du Logging ---
+
 LOG_DIR_RUN_GROUP_LG = './logs_run_group_lg_analysis'
 os.makedirs(LOG_DIR_RUN_GROUP_LG, exist_ok=True)
 LOG_FILENAME_RUN_GROUP_LG = os.path.join(

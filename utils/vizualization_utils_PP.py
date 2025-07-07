@@ -14,7 +14,7 @@ from config.decoding_config import CHANCE_LEVEL_AUC
 
 logger_viz_utils = logging.getLogger(__name__)
 
-# --- GROUP BAR PLOT ---
+
 
 
 def plot_group_mean_scores_barplot(
@@ -24,6 +24,7 @@ def plot_group_mean_scores_barplot(
     n_folds=None,
     score_metric_name="ROC AUC",
     chance_level_value=CHANCE_LEVEL_AUC,
+    epoch_info_str=None,  
 ):
     """Plot a bar chart of scores for each subject in a group."""
     if not isinstance(subject_to_score_mapping, dict):
@@ -57,10 +58,12 @@ def plot_group_mean_scores_barplot(
 
     ax_bar.set_ylabel(f"Score ({score_metric_name})")
     ax_bar.set_xlabel("Subject ID")
-    # Title with optional CV folds info
+    # Title with optional CV folds info and epoch information
     title_str = f"Individual subject performance: {group_identifier_for_plot_title}"
     if n_folds:
         title_str += f" ({n_folds}-fold CV)"
+    if epoch_info_str:
+        title_str += f"\n{epoch_info_str}"
     ax_bar.set_title(title_str, fontweight="bold")
     ax_bar.set_xticks(range(n_subjects))
     ax_bar.set_xticklabels(subject_ids, rotation=60, ha="right", fontsize=10)
@@ -93,9 +96,9 @@ def plot_group_mean_scores_barplot(
                 "Failed to save barplot '%s': %s", save_path, e_save)
     plt.close(fig_bar)
 
-# --- Plotting functions for group stats ---
 
 
+#Not use
 def plot_group_temporal_decoding_statistics(
     time_points_array,
     mean_group_temporal_scores,
@@ -104,8 +107,9 @@ def plot_group_temporal_decoding_statistics(
     std_error_group_temporal_scores=None,
     cluster_p_value_map_1d=None,
     fdr_significance_mask_1d=None,
-    fdr_test_info=None,  # New parameter for FDR test information
+    fdr_test_info=None,  
     chance_level=CHANCE_LEVEL_AUC,
+    epoch_info_str=None,  
 ):
     """Plots group-level temporal decoding stats with significance overlays."""
     # Parameter Validation
@@ -149,7 +153,7 @@ def plot_group_temporal_decoding_statistics(
         ax.axvline(0, color="firebrick", linestyle=":",
                    linewidth=1.2, label="Stimulus Onset")
 
-    # Significance bar plotting
+
     finite_scores = mean_group_temporal_scores[np.isfinite(
         mean_group_temporal_scores)]
     min_score_sig = np.min(
@@ -162,7 +166,7 @@ def plot_group_temporal_decoding_statistics(
     if fdr_significance_mask_1d is not None and \
        fdr_significance_mask_1d.shape == time_points_array.shape and \
        np.any(fdr_significance_mask_1d):
-        # Create FDR label with test information
+
         fdr_label = "FDR p<0.05"
         if fdr_test_info is not None:
             test_type = fdr_test_info.get("test_type", "unknown")
@@ -193,10 +197,13 @@ def plot_group_temporal_decoding_statistics(
 
     ax.set_xlabel("Time (s)")
     ax.set_ylabel("Decoding Score (ROC AUC)")
-    ax.set_title(
-        f"Group Temporal Decoding: {group_identifier_for_plot}",
-        fontsize=15, fontweight="bold",
-    )
+
+    base_title = f"Group Temporal Decoding: {group_identifier_for_plot}"
+    if epoch_info_str:
+        plot_title = f"{base_title}\n{epoch_info_str}"
+    else:
+        plot_title = base_title
+    ax.set_title(plot_title, fontsize=15, fontweight="bold")
     ymin_plot = np.min(
         finite_scores) if finite_scores.size > 0 else chance_level - 0.1
     ymax_plot = np.max(
@@ -238,6 +245,7 @@ def plot_group_tgm_statistics(
     chance_level=0.5,
     plot_vmin=None,
     plot_vmax=None,
+    epoch_info_str=None,  # New parameter for epoch information
 ):
     """Plots group-level TGM statistics with FDR significance overlay."""
     # Parameter Validation
@@ -296,6 +304,8 @@ def plot_group_tgm_statistics(
     ax.set_xlabel("Testing Time (s)")
     ax.set_ylabel("Training Time (s)")
     plot_title = f"Group TGM: {group_identifier_for_plot}"
+    if epoch_info_str:
+        plot_title += f"\n{epoch_info_str}"
     sig_info_parts = []
     if fdr_significance_mask_tgm is not None and np.any(fdr_significance_mask_tgm):
         # Add FDR test information to the title
@@ -682,10 +692,10 @@ def create_subject_decoding_dashboard_plots(
     subject_identifier,
     group_identifier,
     output_directory_path=None,
-    protocol_type="PP_AP",  # Pour la logique conditionnelle et les titres
-    n_folds=None,  # Number of CV folds, computed dynamically if None
+    protocol_type="PP_AP",  
+    n_folds=None,  
 
-    # Arguments spécifiques au protocole PP_AP (seront None si protocol_type != "PP_AP")
+    
     # Utilisé pour Page 4 (PP_AP: PP_spec vs AP_fam)
     specific_ap_decoding_results=None,
     # Utilisé pour Page 5 (PP_AP: Moyenne des PP_spec vs AP_fam)
@@ -767,13 +777,11 @@ def create_subject_decoding_dashboard_plots(
     }
 
     # Logique d'activation des pages spécifiques au protocole
+    # Activer la page 4 pour tous les protocoles (pas seulement PP_AP)
+    page_generation_active["page4_specific_tasks"] = True  # Toujours activer la page 4
+    
     # Allow all PP protocols (PP_AP, battery, ppext3, delirium) to use the 8-page dashboard
     if protocol_type in ["PP_AP", "battery", "ppext3", "delirium", None] or protocol_type.startswith("PP"):
-        # Page 4: Tâches spécifiques (PP_spec vs AP_fam)
-        if specific_ap_decoding_results and isinstance(specific_ap_decoding_results, list) and \
-           any(r.get('scores_1d_mean') is not None for r in specific_ap_decoding_results):
-            page_generation_active["page4_specific_tasks"] = True
-
         # Page 5: Moyenne des tâches spécifiques (PP_spec vs AP_fam)
         if mean_of_specific_scores_1d is not None and \
            main_epochs_time_points.size == mean_of_specific_scores_1d.size and \
@@ -837,14 +845,42 @@ def create_subject_decoding_dashboard_plots(
                 if main_temporal_scores_1d_all_folds is not None and \
                    main_temporal_scores_1d_all_folds.ndim == 2 and \
                    main_temporal_scores_1d_all_folds.shape[1] == main_epochs_time_points.size:
+                    
+                    # Calcul du nombre moyen d'époques par fold avec détail par classe
+                    fold_epoch_info = ""
+                    if main_original_labels_array is not None:
+                        avg_epochs_per_fold = len(main_original_labels_array) / main_temporal_scores_1d_all_folds.shape[0]
+                        
+                        # Calculate class distribution for detailed info
+                        unique_labels, counts = np.unique(main_original_labels_array, return_counts=True)
+                        if len(unique_labels) == 2:
+                            avg_class0_per_fold = counts[0] / main_temporal_scores_1d_all_folds.shape[0]
+                            avg_class1_per_fold = counts[1] / main_temporal_scores_1d_all_folds.shape[0]
+                            fold_epoch_info = f", ~{avg_epochs_per_fold:.0f} epochs/fold (~{avg_class0_per_fold:.0f}+{avg_class1_per_fold:.0f})"
+                        else:
+                            fold_epoch_info = f", ~{avg_epochs_per_fold:.0f} epochs/fold"
+                    
                     for i_fold, fold_scores in enumerate(main_temporal_scores_1d_all_folds):
                         if not np.all(np.isnan(fold_scores)):
+                            fold_label = f'{n_folds}-CV Folds{fold_epoch_info}' if i_fold == 0 else None
                             ax1_temp.plot(main_epochs_time_points, fold_scores, color='gray',
-                                          alpha=0.3, lw=0.7, label=f'{n_folds}-CV Folds' if i_fold == 0 else None)
+                                          alpha=0.4, lw=1, label=fold_label)
 
-                # Plot de la moyenne
+                # Plot de la moyenne avec informations détaillées d'époques par classe
+                mean_label = 'Mean AUC'
+                if main_original_labels_array is not None:
+                    unique_labels, counts = np.unique(main_original_labels_array, return_counts=True)
+                    total_epochs = len(main_original_labels_array)
+                    
+                    if len(unique_labels) == 2:
+                        # Binary classification - show detailed breakdown
+                        mean_label = f'Mean AUC ({total_epochs} epochs: {counts[0]}+{counts[1]})'
+                    else:
+                        epoch_info = _get_epochs_info_for_labels(main_original_labels_array, main_label_enc_obj)
+                        mean_label = f'Mean AUC ({epoch_info})'
+                        
                 ax1_temp.plot(main_epochs_time_points, main_mean_temporal_decoding_scores_1d,
-                              color='blue', lw=2.0, label='Mean AUC')
+                              color='blue', lw=2.0, label=mean_label)
 
                 # Plot du SEM si disponible (calculé à partir de _all_folds)
                 if main_temporal_scores_1d_all_folds is not None and main_temporal_scores_1d_all_folds.shape[0] > 1:
@@ -928,7 +964,13 @@ def create_subject_decoding_dashboard_plots(
 
             ax1_temp.set_xlabel('Time (s)')
             ax1_temp.set_ylabel('ROC AUC')
-            ax1_temp.set_title(f'Temporal decoding - {title_main_task_p1}')
+            # Ajouter les informations d'epochs au titre
+            title_with_epochs = _add_epochs_info_to_title(
+                f'Temporal decoding - {title_main_task_p1}', 
+                main_original_labels_array, 
+                main_label_enc_obj
+            )
+            ax1_temp.set_title(title_with_epochs)
             ax1_temp.legend(loc='best')
             ax1_temp.grid(True, alpha=0.6)
 
@@ -948,7 +990,13 @@ def create_subject_decoding_dashboard_plots(
                 ax1_cv.set_ylabel('ROC AUC')
                 ax1_cv.set_xticks(range(1, num_folds_p1 + 1))
                 ax1_cv.set_ylim(0.0, 1.05)
-                ax1_cv.set_title(f'Global CV Scores ({num_folds_p1} folds)')
+                # Ajouter les informations d'epochs au titre
+                cv_title_with_epochs = _add_epochs_info_to_title(
+                    f'Global CV Scores ({num_folds_p1} folds)', 
+                    main_original_labels_array, 
+                    main_label_enc_obj
+                )
+                ax1_cv.set_title(cv_title_with_epochs)
                 ax1_cv.legend(loc='best')
             else:
                 ax1_cv.text(0.5, 0.5, f'Global CV Scores N/A',
@@ -975,7 +1023,13 @@ def create_subject_decoding_dashboard_plots(
                 ax1_roc.set_ylim([0.0, 1.05])
                 ax1_roc.set_xlabel('False Positive Rate')
                 ax1_roc.set_ylabel('True Positive Rate')
-                ax1_roc.set_title(f'Global ROC (aggregated folds)')
+                # Ajouter les informations d'epochs au titre
+                roc_title_with_epochs = _add_epochs_info_to_title(
+                    f'Global ROC (aggregated folds)', 
+                    main_original_labels_array, 
+                    main_label_enc_obj
+                )
+                ax1_roc.set_title(roc_title_with_epochs)
                 ax1_roc.legend(loc="lower right")
             else:
                 ax1_roc.text(0.5, 0.5, f'Agg. Global ROC N/A',
@@ -1017,7 +1071,13 @@ def create_subject_decoding_dashboard_plots(
                             xticklabels=unique_main_labels_for_cm, yticklabels=unique_main_labels_for_cm, cbar=False)
                 ax2_cm.set_xlabel('Predicted Label')
                 ax2_cm.set_ylabel('True Label')
-                ax2_cm.set_title(f'Normalized Confusion Matrix')
+                # Ajouter les informations d'epochs au titre
+                cm_title_with_epochs = _add_epochs_info_to_title(
+                    f'Normalized Confusion Matrix', 
+                    main_original_labels_array, 
+                    main_label_enc_obj
+                )
+                ax2_cm.set_title(cm_title_with_epochs)
             else:
                 ax2_cm.text(0.5, 0.5, 'Confusion Matrix N/A',
                             ha='center', va='center', transform=ax2_cm.transAxes)
@@ -1048,7 +1108,13 @@ def create_subject_decoding_dashboard_plots(
                 ax2_proba.set_ylabel('Density')
                 ax2_proba.legend(loc='best')
                 ax2_proba.grid(True, alpha=0.6)
-                ax2_proba.set_title(f'Predicted probability distributions')
+                # Ajouter les informations d'epochs au titre
+                proba_title_with_epochs = _add_epochs_info_to_title(
+                    f'Predicted probability distributions', 
+                    main_original_labels_array, 
+                    main_label_enc_obj
+                )
+                ax2_proba.set_title(proba_title_with_epochs)
             else:
                 ax2_proba.text(0.5, 0.5, 'Probability Distributions N/A',
                                ha='center', va='center', transform=ax2_proba.transAxes)
@@ -1082,7 +1148,13 @@ def create_subject_decoding_dashboard_plots(
                                          f'{bar_item.get_height():.3f}', ha='center', va='bottom')
                     plt.setp(ax2_metrics.get_xticklabels(),
                              rotation=15, ha="right")
-                    ax2_metrics.set_title(f'Global performance metrics')
+                    # Ajouter les informations d'epochs au titre
+                    metrics_title_with_epochs = _add_epochs_info_to_title(
+                        f'Global performance metrics', 
+                        main_original_labels_array, 
+                        main_label_enc_obj
+                    )
+                    ax2_metrics.set_title(metrics_title_with_epochs)
                 else:
                     ax2_metrics.text(0.5, 0.5, 'Global Metrics N/A or invalid',
                                      ha='center', va='center', transform=ax2_metrics.transAxes)
@@ -1117,7 +1189,13 @@ def create_subject_decoding_dashboard_plots(
                 fontsize=16, fontweight="bold"
             )
             ax3_tgm = fig3.add_subplot(111)
-            plot_title_tgm_p3 = f"TGM (Mean AUC over {n_folds}-CV folds)"
+            # Ajouter les informations d'epochs au titre de base
+            base_tgm_title = f"TGM (Mean AUC over {n_folds}-CV folds)"
+            plot_title_tgm_p3 = _add_epochs_info_to_title(
+                base_tgm_title, 
+                main_original_labels_array, 
+                main_label_enc_obj
+            )
 
             # Vérification que toutes les données pour pretty_gat sont valides
             if main_mean_temporal_generalization_matrix_scores is not None and \
@@ -1225,13 +1303,42 @@ def create_subject_decoding_dashboard_plots(
 
                         if all_folds_scores_p4 is not None and all_folds_scores_p4.ndim == 2 and \
                            all_folds_scores_p4.shape[1] == main_epochs_time_points.size:
+                            
+                            # Calcul du nombre moyen d'époques par fold avec détail par classe pour page 4
+                            fold_epoch_info_p4 = ""
+                            if main_original_labels_array is not None:
+                                avg_epochs_per_fold = len(main_original_labels_array) / all_folds_scores_p4.shape[0]
+                                
+                                # Calculate class distribution for detailed info
+                                unique_labels, counts = np.unique(main_original_labels_array, return_counts=True)
+                                if len(unique_labels) == 2:
+                                    avg_class0_per_fold = counts[0] / all_folds_scores_p4.shape[0]
+                                    avg_class1_per_fold = counts[1] / all_folds_scores_p4.shape[0]
+                                    fold_epoch_info_p4 = f", ~{avg_epochs_per_fold:.0f} epochs/fold (~{avg_class0_per_fold:.0f}+{avg_class1_per_fold:.0f})"
+                                else:
+                                    fold_epoch_info_p4 = f", ~{avg_epochs_per_fold:.0f} epochs/fold"
+                            
                             for i_f, f_s in enumerate(all_folds_scores_p4):
                                 if not np.all(np.isnan(f_s)):
+                                    fold_label_p4 = f'{n_folds}-CV Folds{fold_epoch_info_p4}' if i_f == 0 else None
                                     ax_p4.plot(main_epochs_time_points, f_s, color='gray', alpha=0.25, lw=0.5,
-                                               label=f'{n_folds}-CV Folds' if i_f == 0 else None)
+                                               label=fold_label_p4)
 
+                        # Plot de la moyenne avec informations détaillées d'époques par classe pour page 4
+                        mean_label_p4 = 'Mean AUC'
+                        if main_original_labels_array is not None:
+                            unique_labels, counts = np.unique(main_original_labels_array, return_counts=True)
+                            total_epochs = len(main_original_labels_array)
+                            
+                            if len(unique_labels) == 2:
+                                # Binary classification - show detailed breakdown
+                                mean_label_p4 = f'Mean AUC ({total_epochs} epochs: {counts[0]}+{counts[1]})'
+                            else:
+                                epoch_info = _get_epochs_info_for_labels(main_original_labels_array, main_label_enc_obj)
+                                mean_label_p4 = f'Mean AUC ({epoch_info})'
+                        
                         ax_p4.plot(main_epochs_time_points, mean_scores_p4,
-                                   color='blue', lw=1.5, label='Mean AUC')
+                                   color='blue', lw=1.5, label=mean_label_p4)
 
                         if all_folds_scores_p4 is not None and all_folds_scores_p4.shape[0] > 1:
                             sem_p4 = scipy.stats.sem(
@@ -1302,7 +1409,13 @@ def create_subject_decoding_dashboard_plots(
                         ax_p4.text(0.5, 0.5, 'Scores N/A', ha='center',
                                    va='center', transform=ax_p4.transAxes)
 
-                    ax_p4.set_title(comparison_name_p4, fontsize=10)
+                    # Ajouter les informations d'epochs au titre du sous-plot de la page 4
+                    title_with_epochs_p4 = comparison_name_p4
+                    if main_original_labels_array is not None:
+                        epoch_info_p4 = _get_epochs_info_for_labels(main_original_labels_array, main_label_enc_obj)
+                        title_with_epochs_p4 = f"{comparison_name_p4}\n{epoch_info_p4}"
+                    
+                    ax_p4.set_title(title_with_epochs_p4, fontsize=10)
                     ax_p4.set_xlabel('Time (s)', fontsize=9)
                     ax_p4.set_ylabel('ROC AUC', fontsize=9)
                     ax_p4.legend(loc='best', fontsize=8)
@@ -1313,9 +1426,47 @@ def create_subject_decoding_dashboard_plots(
                 fig4.savefig(os.path.join(output_directory_path,
                              f"dashboard_{subject_identifier}_{group_identifier}_{protocol_type}_page4_specific_tasks.png"), dpi=150)
             else:  # plot_results_p4_list is empty
-                logger_viz_utils.info("No valid specific task results to plot for Page 4 (Subject: %s, Protocol: %s).",
+                # Générer une page avec un message informatif même s'il n'y a pas de données spécifiques
+                fig4 = plt.figure(figsize=(12, 8))
+                page_title_p4 = f"Specific Tasks ({protocol_type})"
+                if protocol_type == "PP_AP":
+                    page_title_p4 = "PP_spec vs AP_family_X"
+                elif protocol_type == "delirium":
+                    page_title_p4 = "PP_spec vs AP_family_X (Delirium)"
+                elif protocol_type == "battery":
+                    page_title_p4 = "PP_spec vs AP_family_X (Battery)"
+                elif protocol_type == "ppext3":
+                    page_title_p4 = "PP_spec vs AP_family_X (PPext3)"
+                
+                fig4.suptitle(
+                    f"Dashboard - Subject: {subject_identifier} ({group_identifier}) - Classifier: {classifier_name_for_title.upper()}\n"
+                    f"Page {current_page_num_tracker}/{TOTAL_PAGES_TO_GENERATE_ACTUALLY}: {page_title_p4}",
+                    fontsize=16, fontweight="bold"
+                )
+                
+                # Créer un axe central avec un message informatif
+                ax_info = fig4.add_subplot(111)
+                ax_info.text(0.5, 0.5, 
+                           f"No specific task data available for protocol: {protocol_type}\n\n"
+                           f"This page would typically show:\n"
+                           f"- Individual task comparisons\n"
+                           f"- Temporal decoding curves\n"
+                           f"- Statistical significance tests\n\n"
+                           f"Data may be available in other dashboard pages.",
+                           ha='center', va='center', fontsize=14,
+                           bbox=dict(boxstyle="round,pad=0.5", facecolor="lightgray", alpha=0.7))
+                ax_info.set_xlim(0, 1)
+                ax_info.set_ylim(0, 1)
+                ax_info.set_xticks([])
+                ax_info.set_yticks([])
+                ax_info.set_title(f"Protocol: {protocol_type} - Specific Tasks Analysis", fontsize=12)
+                
+                plt.tight_layout(rect=[0, 0.03, 1, 0.93])
+                fig4.savefig(os.path.join(output_directory_path,
+                             f"dashboard_{subject_identifier}_{group_identifier}_{protocol_type}_page4_specific_tasks.png"), dpi=150)
+                
+                logger_viz_utils.info("Generated Page 4 with informational message for Subject: %s, Protocol: %s (no specific task data available).",
                                       subject_identifier, protocol_type)
-                # On ne génère pas la page si elle est vide, TOTAL_PAGES_TO_GENERATE_ACTUALLY en tient compte
 
         except Exception as e_p4:
             logger_viz_utils.error("Error generating Page 4 for dashboard (Subject: %s, Protocol: %s): %s",
@@ -1480,19 +1631,52 @@ def create_subject_decoding_dashboard_plots(
                     # ... (logique de plotting similaire à la Page 4 pour chaque subplot)
                     if mean_scores_p6 is not None and main_epochs_time_points.size == mean_scores_p6.size and \
                        not np.all(np.isnan(mean_scores_p6)):
-                        if all_folds_p6 is not None:
-                            # Plot all folds transparently
-                            ax_p6.plot(main_epochs_time_points, all_folds_p6.T,
-                                       color='lightcoral', alpha=0.2, lw=0.5)
+
+                        if all_folds_p6 is not None and all_folds_p6.ndim == 2 and \
+                           all_folds_p6.shape[1] == main_epochs_time_points.size:
+                            
+                            # Calcul du nombre moyen d'époques par fold avec détail par classe pour page 6
+                            fold_epoch_info_p6 = ""
+                            if main_original_labels_array is not None:
+                                avg_epochs_per_fold = len(main_original_labels_array) / all_folds_p6.shape[0]
+                                
+                                # Calculate class distribution for detailed info
+                                unique_labels, counts = np.unique(main_original_labels_array, return_counts=True)
+                                if len(unique_labels) == 2:
+                                    avg_class0_per_fold = counts[0] / all_folds_p6.shape[0]
+                                    avg_class1_per_fold = counts[1] / all_folds_p6.shape[0]
+                                    fold_epoch_info_p6 = f", ~{avg_epochs_per_fold:.0f} epochs/fold (~{avg_class0_per_fold:.0f}+{avg_class1_per_fold:.0f})"
+                                else:
+                                    fold_epoch_info_p6 = f", ~{avg_epochs_per_fold:.0f} epochs/fold"
+                            
+                            for i_f, f_s in enumerate(all_folds_p6):
+                                if not np.all(np.isnan(f_s)):
+                                    fold_label_p6 = f'{n_folds}-CV Folds{fold_epoch_info_p6}' if i_f == 0 else None
+                                    ax_p6.plot(main_epochs_time_points, f_s, color='gray', alpha=0.25, lw=0.5,
+                                               label=fold_label_p6)
+
+                        # Plot de la moyenne avec informations détaillées d'époques par classe pour page 6
+                        mean_label_p6 = 'Mean AUC'
+                        if main_original_labels_array is not None:
+                            unique_labels, counts = np.unique(main_original_labels_array, return_counts=True)
+                            total_epochs = len(main_original_labels_array)
+                            
+                            if len(unique_labels) == 2:
+                                # Binary classification - show detailed breakdown
+                                mean_label_p6 = f'Mean AUC ({total_epochs} epochs: {counts[0]}+{counts[1]})'
+                            else:
+                                epoch_info = _get_epochs_info_for_labels(main_original_labels_array, main_label_enc_obj)
+                                mean_label_p6 = f'Mean AUC ({epoch_info})'
+                        
                         ax_p6.plot(main_epochs_time_points, mean_scores_p6,
-                                   color='darkcyan', lw=1.5, label='Mean AUC')
+                                   color='darkcyan', lw=1.5, label=mean_label_p6)
                         if all_folds_p6 is not None and all_folds_p6.shape[0] > 1:
-                            sem_p6 = scipy.stats.sem(
+                            sem_ap6 = scipy.stats.sem(
                                 all_folds_p6, axis=0, nan_policy='omit')
 
-                            if sem_p6 is not None and not np.all(np.isnan(sem_p6)):
-                                ax_p6.fill_between(main_epochs_time_points, mean_scores_p6 - sem_p6,
-                                                   mean_scores_p6 + sem_p6, color='c', alpha=0.2, label='SEM')
+                            if sem_ap6 is not None and not np.all(np.isnan(sem_ap6)):
+                                ax_p6.fill_between(main_epochs_time_points, mean_scores_p6 - sem_ap6,
+                                                   mean_scores_p6 + sem_ap6, color='c', alpha=0.2, label='SEM')
 
                         scores_v_p6 = mean_scores_p6[~np.isnan(mean_scores_p6)]
                         y_b_ap6 = min(np.min(scores_v_p6) if scores_v_p6.size >
@@ -1571,7 +1755,7 @@ def create_subject_decoding_dashboard_plots(
                 plt.close(fig6)
 
     # --- Page 7: AP Family vs AP Family Comparisons (Part 2 - PP_AP ONLY) ---
-    # Conditionné à PP_AP et assez de données pour une 2e page
+   
     if page_generation_active["page7_ap_vs_ap_part2"]:
         current_page_num_tracker += 1
         fig7 = None
@@ -1613,8 +1797,22 @@ def create_subject_decoding_dashboard_plots(
                         if all_folds_p7 is not None:
                             ax_p7.plot(main_epochs_time_points, all_folds_p7.T,
                                        color='lightcoral', alpha=0.2, lw=0.5)
+                        
+                        # Plot de la moyenne avec informations détaillées d'époques par classe pour page 7
+                        mean_label_p7 = 'Mean AUC'
+                        if main_original_labels_array is not None:
+                            unique_labels, counts = np.unique(main_original_labels_array, return_counts=True)
+                            total_epochs = len(main_original_labels_array)
+                            
+                            if len(unique_labels) == 2:
+                                # Binary classification - show detailed breakdown
+                                mean_label_p7 = f'Mean AUC ({total_epochs} epochs: {counts[0]}+{counts[1]})'
+                            else:
+                                epoch_info = _get_epochs_info_for_labels(main_original_labels_array, main_label_enc_obj)
+                                mean_label_p7 = f'Mean AUC ({epoch_info})'
+                        
                         ax_p7.plot(main_epochs_time_points, mean_scores_p7,
-                                   color='darkcyan', lw=1.5, label='Mean AUC')
+                                   color='darkcyan', lw=1.5, label=mean_label_p7)
                         if all_folds_p7 is not None and all_folds_p7.shape[0] > 1:
                             sem_ap7 = scipy.stats.sem(
                                 all_folds_p7, axis=0, nan_policy='omit')
@@ -1745,12 +1943,20 @@ def create_subject_decoding_dashboard_plots(
                         'anchor_ap_family_key_name', f'Anchor {i_plot_p8 + 1}')
                     num_curves_p8_val = result_item_p8.get(
                         'num_constituent_curves', 'N/A')
-                    # Les détails des courbes constitutives sont dans result_item_p8.get('constituent_comparison_names_detail')
-                    # Vous pouvez les afficher si ce n'est pas trop chargé, ou simplement vous assurer qu'ils sont dans le .npz
-                    # Pour le titre du subplot, nous indiquons juste l'ancre. Le titre de la page explique la nature de la moyenne.
+                    
+                    # Extraire les informations d'époques si disponibles
+                    original_labels_p8 = result_item_p8.get('original_labels_array')
+                    label_encoder_p8 = result_item_p8.get('label_encoder')
+                    
+                    # Construire le label avec les informations d'époques
+                    if original_labels_p8 is not None:
+                        epochs_info_p8 = _get_epochs_info_for_labels(original_labels_p8, label_encoder_p8)
+                        curve_label_p8 = f'Average ({num_curves_p8_val} curves) - {epochs_info_p8}'
+                    else:
+                        curve_label_p8 = f'Average ({num_curves_p8_val} curves)'
 
                     ax_p8.plot(main_epochs_time_points, avg_scores_p8, color='purple', lw=2,
-                               label=f'Average ({num_curves_p8_val} curves)')
+                               label=curve_label_p8)
                     if sem_scores_p8 is not None and not np.all(np.isnan(sem_scores_p8)):
                         ax_p8.fill_between(main_epochs_time_points, avg_scores_p8 - sem_scores_p8,
                                            avg_scores_p8 + sem_scores_p8, color='purple', alpha=0.2, label='SEM')
@@ -1816,9 +2022,13 @@ def create_subject_decoding_dashboard_plots(
                                            (np.nanmax(scores_valid_ac_p8) + 0.05 if scores_valid_ac_p8.size > 0 else CHANCE_LEVEL_AUC + 0.15))
                     ax_p8.set_ylim(min_plot_y_ac_p8, max_plot_y_ac_p8)
 
-                    # Titre du subplot simplifié pour indiquer l'ancre
-                    ax_p8.set_title(
-                        f" AP of: {anchor_name_p8}, VS other AP and PPspec", fontsize=11)
+                    # Titre du subplot avec informations d'époques si disponibles
+                    base_title_p8 = f"AP of: {anchor_name_p8}, VS other AP and PPspec"
+                    if original_labels_p8 is not None:
+                        subplot_title_p8 = _add_epochs_info_to_title(base_title_p8, original_labels_p8, label_encoder_p8)
+                    else:
+                        subplot_title_p8 = base_title_p8
+                    ax_p8.set_title(subplot_title_p8, fontsize=11)
                     ax_p8.set_xlabel('Time (s)')
                     ax_p8.set_ylabel('Average ROC AUC')
                     ax_p8.legend(loc='best', fontsize=8)
@@ -1842,3 +2052,90 @@ def create_subject_decoding_dashboard_plots(
         subject_identifier, protocol_type, current_page_num_tracker
     )
     return output_directory_path
+
+# === UTILITY FUNCTIONS FOR EPOCH INFORMATION ===
+
+def _get_epochs_info_for_labels(original_labels_array, label_encoder=None):
+    """Get epoch count information for each class.
+    
+    Args:
+        original_labels_array: Array of original labels
+        label_encoder: Optional LabelEncoder object to get class names
+        
+    Returns:
+        str: Formatted string with epoch counts per class
+    """
+    if original_labels_array is None or len(original_labels_array) == 0:
+        return "N epochs: N/A"
+    
+    try:
+        # Count unique labels
+        unique_labels, counts = np.unique(original_labels_array, return_counts=True)
+        
+        # Format the information with detailed class breakdown
+        epoch_info_parts = []
+        total_epochs = len(original_labels_array)
+        
+        for label, count in zip(unique_labels, counts):
+            if label_encoder is not None and hasattr(label_encoder, 'classes_'):
+                try:
+                    # Try to find the label name from encoder
+                    label_name = f"Class_{int(label)}"
+                except:
+                    label_name = f"Class_{label}"
+            else:
+                label_name = f"Class_{label}"
+            
+            percentage = (count / total_epochs) * 100
+            epoch_info_parts.append(f"{label_name}: {count} ({percentage:.1f}%)")
+        
+        # Create compact format for binary case, detailed for others
+        if len(unique_labels) == 2:
+            epoch_info = f"{total_epochs} total ({counts[0]}+{counts[1]})"
+        else:
+            epoch_info = f"{total_epochs} total [{', '.join(epoch_info_parts)}]"
+        
+        return epoch_info
+        
+    except Exception as e:
+        logger_viz_utils.warning(f"Error calculating epoch info: {e}")
+        return f"{len(original_labels_array)} total"
+
+
+def _add_epochs_info_to_title(base_title, original_labels_array, label_encoder=None):
+    """Add epoch information to a plot title.
+    
+    Args:
+        base_title: Base title string
+        original_labels_array: Array of original labels
+        label_encoder: Optional LabelEncoder object
+        
+    Returns:
+        str: Title with epoch information appended
+    """
+    epoch_info = _get_epochs_info_for_labels(original_labels_array, label_encoder)
+    return f"{base_title}\n{epoch_info}"
+
+
+def _add_epochs_info_to_legend_label(base_label, original_labels_array, label_encoder=None):
+    """Add epoch information to a legend label.
+    
+    Args:
+        base_label: Base label string  
+        original_labels_array: Array of original labels
+        label_encoder: Optional LabelEncoder object
+        
+    Returns:
+        str: Label with epoch information appended
+    """
+    if original_labels_array is None or len(original_labels_array) == 0:
+        return f"{base_label} (N epochs: N/A)"
+        
+    unique_labels, counts = np.unique(original_labels_array, return_counts=True)
+    total_epochs = len(original_labels_array)
+    
+    # Short format for legend
+    if len(unique_labels) == 2:
+        return f"{base_label} (N={total_epochs}: {counts[0]}+{counts[1]})"
+    else:
+        return f"{base_label} (N={total_epochs})"

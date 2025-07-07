@@ -1,42 +1,11 @@
 # === BASE CONSTANTS ===
 CHANCE_LEVEL_AUC = 0.5
+P_THRESHOLD = 0.05
+N_PERMUTATIONS = 1000
 DEFAULT_CLASSIFIER_TYPE_MODULE_INTERNAL = "svc"
 # For MNE's internal parallelism within Sliding/Generalizing Estimators
 INTERNAL_N_JOBS_FOR_MNE_DECODING = -1
 
-# === EVENT CONFIGURATION ===
-# Event codes for specific comparisons
-PP_CODES_FOR_SPECIFIC_COMPARISON = ["PP/10", "PP/20", "PP/30"]
-
-# AP families for specific comparisons
-AP_FAMILIES_FOR_SPECIFIC_COMPARISON = {
-    f"AP_FAMILY_{unit_digit}": [
-        f"AP/{decade}{unit_digit}" for decade in [1, 2, 3]
-    ]
-    for unit_digit in range(1, 7)
-}
-# Example event_id mapping from original data :
-# {'PP/10': 110, 'PP/20': 120, 'PP/30': 130, ...
-#  'AP/11': 111, 'AP/12': 112, ..., 'AP/36': 136}
-
-# Data loading configuration
-CONFIG_LOAD_MAIN_DECODING = {
-    "XPP_ALL": "PP/",  # Load all events starting with "PP/"
-    "XAP_ALL": "AP/",  # Load all events starting with "AP/"
-}
-
-# Complete configuration for single subject analysis
-CONFIG_LOAD_DELIRIUM_PROTOCOL = {
-    **CONFIG_LOAD_MAIN_DECODING,
-    "PP_FOR_SPECIFIC_COMPARISON": PP_CODES_FOR_SPECIFIC_COMPARISON,
-    **AP_FAMILIES_FOR_SPECIFIC_COMPARISON,
-}
-
-# Alias for compatibility with existing scripts
-CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT = CONFIG_LOAD_DELIRIUM_PROTOCOL
-
-# Alias for compatibility with existing scripts (for bash)
-CONFIG_LOAD_SINGLE_PROTOCOL = CONFIG_LOAD_DELIRIUM_PROTOCOL
 # Event mapping for different LG condition comparisons:
 # LSGD versus LDGD (Local Standard Global Deviant vs Local Deviant
 # Global Deviant)
@@ -53,8 +22,7 @@ EVENT_ID_LG = {
     'LD/GD': 22   # Local Deviant, Global Deviant
 }
 
-# Alias for compatibility with existing scripts (for bash)
-CONFIG_LOAD_SINGLE_PROTOCOL = CONFIG_LOAD_DELIRIUM_PROTOCOL
+
 
 # Local Global protocol event mapping
 # Data loading configuration for Local-Global protocol
@@ -156,7 +124,7 @@ PARAM_GRID_CONFIG_EXTENDED = {
         'csp_feature_extraction__n_components': [4, 8, 12, 16]
     }
 }
-CV_FOLDS_FOR_GRIDSEARCH_INTERNAL = 3
+CV_FOLDS_FOR_GRIDSEARCH_INTERNAL = 5
 
 # === Fixed hyperparameters (if USE_GRID_SEARCH_OPTIMIZATION = False) ===
 # This configuration replaces the previous one
@@ -233,7 +201,62 @@ CONFIG_LOAD_PPEXT3_PROTOCOL = {
 }
 
 
+# === EVENT CONFIGURATION ===
+# Event codes for specific comparisons for delirium
+PP_CODES_FOR_SPECIFIC_COMPARISON = ["PP/10", "PP/20", "PP/30"]
 
+# AP families for specific comparisons
+AP_FAMILIES_FOR_SPECIFIC_COMPARISON = {
+    f"AP_FAMILY_{unit_digit}": [
+        f"AP/{decade}{unit_digit}" for decade in [1, 2, 3]
+    ]
+    for unit_digit in range(1, 7)
+}
+# Example event_id mapping from original data :
+# {'PP/10': 110, 'PP/20': 120, 'PP/30': 130, ...
+#  'AP/11': 111, 'AP/12': 112, ..., 'AP/36': 136}
+
+# Data loading configuration
+CONFIG_LOAD_MAIN_DECODING = {
+    "XPP_ALL": "PP/",  # Load all events starting with "PP/"
+    "XAP_ALL": "AP/",  # Load all events starting with "AP/"
+}
+
+# Complete configuration for single subject analysis
+CONFIG_LOAD_DELIRIUM_PROTOCOL = {
+    **CONFIG_LOAD_MAIN_DECODING,
+    "PP_FOR_SPECIFIC_COMPARISON": PP_CODES_FOR_SPECIFIC_COMPARISON,
+    **AP_FAMILIES_FOR_SPECIFIC_COMPARISON,
+}
+
+# Alias for compatibility with existing scripts
+CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT = CONFIG_LOAD_DELIRIUM_PROTOCOL
+
+
+
+# === DATASET CONFIGURATION ===
+DATASET_CONFIGS = {
+    'delirium': {
+        'name': 'Delirium protocol',
+        'groups': ['DELIRIUM+', 'DELIRIUM-', 'CONTROLS_DELIRIUM'],
+        'colors': {
+            'DELIRIUM+': '#d62728',
+            'DELIRIUM-': '#ff7f0e',
+            'CONTROLS_DELIRIUM': '#2ca02c'
+        }
+    },
+    'COMA': {
+        'name': 'Coma et pas que',
+        'groups': ['COMA', 'VS', 'MCS+', 'MCS-', 'CONTROLS_COMA'],
+        'colors': {
+            'COMA': '#8b0000',
+            'VS': '#ff6347',
+            'MCS+': '#4682b4',
+            'MCS-': '#87ceeb',
+            'CONTROLS_COMA': '#228b22'
+        }
+    }
+}
 # Function to get protocol-specific configuration
 
 
@@ -278,3 +301,26 @@ def get_protocol_ap_families(protocol_type):
         }
     else:  # delirium
         return AP_FAMILIES_FOR_SPECIFIC_COMPARISON
+
+
+def get_protocol_pp_comparison_events(protocol_type):
+    """Get PP events for specific comparisons based on protocol type.
+
+    Args:
+        protocol_type (str): Protocol type ('delirium', 'battery', 'ppext3')
+
+    Returns:
+        list: List of PP event codes for specific comparisons
+    """
+    if protocol_type == 'delirium':
+        # Delirium protocol uses specific PP codes
+        return PP_CODES_FOR_SPECIFIC_COMPARISON  # ["PP/10", "PP/20", "PP/30"]
+    elif protocol_type == 'battery':
+        # Battery protocol uses different PP structure
+        return ["PP/Music/", "PP/Conv/"]
+    elif protocol_type == 'ppext3':
+        # PPext3 protocol uses extended PP structure  
+        return ["PP/Music/", "PP/Noise/", "PP/Conv/", "PP/Dio/"]
+    else:
+        # Default to delirium for unknown protocols
+        return PP_CODES_FOR_SPECIFIC_COMPARISON

@@ -322,7 +322,7 @@ ALL_SUBJECT_GROUPS = {
         "TPC2",
         "TPLV4",
         "TTDV5",
-        "TYS6",
+        "TYS6", #Att 401 points temporels pour protocole LG
         "LAB1",
         "LAG6",
         "LAT3",
@@ -499,7 +499,7 @@ ALL_SUBJECT_GROUPS = {
         "TpJA20",
         "TpJB25",
         "TpJB26",
-        "TpJC5",
+       # "TpJC5", 301 temporal points 
         "TpJCD29",
         "TpJLR17",
         "TpJPS55",

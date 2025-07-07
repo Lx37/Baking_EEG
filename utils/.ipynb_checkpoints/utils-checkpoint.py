@@ -2,7 +2,6 @@ import os
 import logging
 import numpy as np
 import mne
-from typing import Tuple, Dict, Optional
 from pathlib import Path
 import sys
 from getpass import getuser
@@ -27,7 +26,7 @@ def configure_project_paths(current_user_login):
 
     # User-specific input data paths
     user_input_data_paths = {
-        "tom.balay": "/mnt/data/tom.balay/data/Baking_EEG_data/",
+        "tom.balay": "/mnt/data/tom.balay/data1/Baking_EEG_data/Baking_EEG_data",
         "tkz": ("/home/tkz/Projets/0_FPerrin_FFerre_2024_Baking_EEG_CAP/"
                 "Baking_EEG_data"),
         "adminlocal": ("C:\\Users\\adminlocal\\Desktop\\ConnectDoc\\"
@@ -50,7 +49,7 @@ def configure_project_paths(current_user_login):
         current_user_login, base_input_data_path
     )
 
-    output_version_folder_name = "V11"  # Versioning for results
+    output_version_folder_name = "V14"  # Versioning for results
     user_output_results_paths = {
         "tom.balay": (f"/home/tom.balay/results/"
                       f"Baking_EEG_results_{output_version_folder_name}"),

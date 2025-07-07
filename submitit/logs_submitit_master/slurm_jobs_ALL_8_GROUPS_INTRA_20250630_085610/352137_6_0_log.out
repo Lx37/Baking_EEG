@@ -1,0 +1,346 @@
+submitit INFO (2025-06-30 08:56:13,009) - Starting with JobEnvironment(job_id=352137_6, hostname=node9, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-30 08:56:13,009) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/logs_submitit_master/slurm_jobs_ALL_8_GROUPS_INTRA_20250630_085610/352137_6_submitted.pkl
+DEBUG Worker - project_root: /home/tom.balay/Baking_EEG
+DEBUG Worker - parent_dir: /home/tom.balay
+DEBUG Worker - sys.path: ['/home/tom.balay', '/home/tom.balay/Baking_EEG', '/home/tom.balay/Baking_EEG/submitit']...
+2025-06-30 08:56:16,272 - INFO - examples.run_decoding_one_group_pp - [<module>:39] - Tentative d'import de execute_single_subject_decoding...
+2025-06-30 08:56:16,272 - INFO - examples.run_decoding_one_group_pp - [<module>:42] - ✅ Import de execute_single_subject_decoding réussi
+2025-06-30 08:56:16,274 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:120] - Starting intra-subject decoding loop for GROUP: DELIRIUM+. GS: False, CSP: False, ANOVA FS: True. n_jobs_subj: 40.
+2025-06-30 08:56:16,274 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'DELIRIUM+': Processing Subject 1/25: TpAB19 ---
+2025-06-30 08:56:16,274 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:258] - Starting decoding for subject: TpAB19 (Group: DELIRIUM+, Task Set ID: Group_Intra_DELIRIUM+_Subj_TpAB19, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 40)
+2025-06-30 08:56:18,036 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:455] - CRITICAL: No data loaded for ANY specified conditions for subject TpAB19.
+2025-06-30 08:56:18,036 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:462] - Empty data array for condition 'temp' (specifier: 'AP') for subject TpAB19.
+2025-06-30 08:56:18,036 - INFO - utils.loading_PP_utils - [detect_protocol_type:741] - Detected Delirium/Legacy protocol: simple AP/PP structure, 320 total events
+2025-06-30 08:56:18,036 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:873] - Auto-detected protocol 'delirium' for subject 'TpAB19' (file hint: legacy)
+2025-06-30 08:56:18,039 - INFO - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:101] - Found epochs file: /mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/TpAB19_PP_preproc_noICA_PP-epo_ar.fif (protocol: legacy)
+2025-06-30 08:56:18,039 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:301] - Loading epoch data for subject 'TpAB19' from: /mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/TpAB19_PP_preproc_noICA_PP-epo_ar.fif (file protocol: legacy)
+2025-06-30 08:56:18,385 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:312] - Event IDs available for TpAB19:
+2025-06-30 08:56:18,385 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/10': 110
+2025-06-30 08:56:18,385 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/20': 120
+2025-06-30 08:56:18,385 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/30': 130
+2025-06-30 08:56:18,385 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/11': 111
+2025-06-30 08:56:18,385 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/12': 112
+2025-06-30 08:56:18,385 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/13': 113
+2025-06-30 08:56:18,385 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/14': 114
+2025-06-30 08:56:18,385 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/15': 115
+2025-06-30 08:56:18,385 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/16': 116
+2025-06-30 08:56:18,385 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/21': 121
+2025-06-30 08:56:18,385 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/22': 122
+2025-06-30 08:56:18,385 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/23': 123
+2025-06-30 08:56:18,386 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/24': 124
+2025-06-30 08:56:18,386 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/25': 125
+2025-06-30 08:56:18,386 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/26': 126
+2025-06-30 08:56:18,386 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/31': 131
+2025-06-30 08:56:18,386 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/32': 132
+2025-06-30 08:56:18,386 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/33': 133
+2025-06-30 08:56:18,386 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/34': 134
+2025-06-30 08:56:18,386 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/35': 135
+2025-06-30 08:56:18,386 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/36': 136
+2025-06-30 08:56:18,446 - INFO - utils.loading_PP_utils - [inspect_epochs_events:925] - === EVENT INSPECTION FOR TpAB19 ===
+2025-06-30 08:56:18,446 - INFO - utils.loading_PP_utils - [inspect_epochs_events:928] - File: /mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/TpAB19_PP_preproc_noICA_PP-epo_ar.fif
+2025-06-30 08:56:18,446 - INFO - utils.loading_PP_utils - [inspect_epochs_events:929] - Total events: 320
+2025-06-30 08:56:18,446 - INFO - utils.loading_PP_utils - [inspect_epochs_events:930] - Event types and counts:
+2025-06-30 08:56:18,446 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/10' (code 110): 13 epochs
+2025-06-30 08:56:18,446 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/20' (code 120): 17 epochs
+2025-06-30 08:56:18,446 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/30' (code 130): 14 epochs
+2025-06-30 08:56:18,446 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/11' (code 111): 16 epochs
+2025-06-30 08:56:18,446 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/12' (code 112): 14 epochs
+2025-06-30 08:56:18,446 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/13' (code 113): 16 epochs
+2025-06-30 08:56:18,446 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/14' (code 114): 16 epochs
+2025-06-30 08:56:18,446 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/15' (code 115): 16 epochs
+2025-06-30 08:56:18,446 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/16' (code 116): 16 epochs
+2025-06-30 08:56:18,446 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/21' (code 121): 14 epochs
+2025-06-30 08:56:18,447 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/22' (code 122): 15 epochs
+2025-06-30 08:56:18,447 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/23' (code 123): 15 epochs
+2025-06-30 08:56:18,447 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/24' (code 124): 12 epochs
+2025-06-30 08:56:18,447 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/25' (code 125): 14 epochs
+2025-06-30 08:56:18,447 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/26' (code 126): 13 epochs
+2025-06-30 08:56:18,447 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/31' (code 131): 10 epochs
+2025-06-30 08:56:18,447 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/32' (code 132): 17 epochs
+2025-06-30 08:56:18,447 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/33' (code 133): 15 epochs
+2025-06-30 08:56:18,447 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/34' (code 134): 20 epochs
+2025-06-30 08:56:18,447 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/35' (code 135): 17 epochs
+2025-06-30 08:56:18,447 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/36' (code 136): 20 epochs
+2025-06-30 08:56:18,624 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:342] - Processing conditions: ['XPP_ALL', 'XAP_ALL']
+2025-06-30 08:56:18,815 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:472] -   Data shapes for 'TpAB19': XPP_ALL=(44, 124, 601), XAP_ALL=(276, 124, 601). Loaded in 0.78s
+2025-06-30 08:56:18,816 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:274] - Detected protocol 'delirium' for subject TpAB19
+2025-06-30 08:56:19,336 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:455] - CRITICAL: No data loaded for ANY specified conditions for subject TpAB19.
+2025-06-30 08:56:19,336 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:462] - Empty data array for condition 'temp' (specifier: 'AP') for subject TpAB19.
+2025-06-30 08:56:19,336 - INFO - utils.loading_PP_utils - [detect_protocol_type:741] - Detected Delirium/Legacy protocol: simple AP/PP structure, 320 total events
+2025-06-30 08:56:19,336 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:873] - Auto-detected protocol 'delirium' for subject 'TpAB19' (file hint: legacy)
+2025-06-30 08:56:19,336 - INFO - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:101] - Found epochs file: /mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/TpAB19_PP_preproc_noICA_PP-epo_ar.fif (protocol: legacy)
+2025-06-30 08:56:19,336 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:301] - Loading epoch data for subject 'TpAB19' from: /mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/TpAB19_PP_preproc_noICA_PP-epo_ar.fif (file protocol: legacy)
+2025-06-30 08:56:19,675 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:312] - Event IDs available for TpAB19:
+2025-06-30 08:56:19,675 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/10': 110
+2025-06-30 08:56:19,675 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/20': 120
+2025-06-30 08:56:19,675 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/30': 130
+2025-06-30 08:56:19,675 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/11': 111
+2025-06-30 08:56:19,675 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/12': 112
+2025-06-30 08:56:19,675 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/13': 113
+2025-06-30 08:56:19,675 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/14': 114
+2025-06-30 08:56:19,676 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/15': 115
+2025-06-30 08:56:19,676 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/16': 116
+2025-06-30 08:56:19,676 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/21': 121
+2025-06-30 08:56:19,676 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/22': 122
+2025-06-30 08:56:19,676 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/23': 123
+2025-06-30 08:56:19,676 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/24': 124
+2025-06-30 08:56:19,676 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/25': 125
+2025-06-30 08:56:19,676 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/26': 126
+2025-06-30 08:56:19,676 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/31': 131
+2025-06-30 08:56:19,676 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/32': 132
+2025-06-30 08:56:19,676 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/33': 133
+2025-06-30 08:56:19,676 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/34': 134
+2025-06-30 08:56:19,676 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/35': 135
+2025-06-30 08:56:19,676 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/36': 136
+2025-06-30 08:56:19,736 - INFO - utils.loading_PP_utils - [inspect_epochs_events:925] - === EVENT INSPECTION FOR TpAB19 ===
+2025-06-30 08:56:19,736 - INFO - utils.loading_PP_utils - [inspect_epochs_events:928] - File: /mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/TpAB19_PP_preproc_noICA_PP-epo_ar.fif
+2025-06-30 08:56:19,736 - INFO - utils.loading_PP_utils - [inspect_epochs_events:929] - Total events: 320
+2025-06-30 08:56:19,736 - INFO - utils.loading_PP_utils - [inspect_epochs_events:930] - Event types and counts:
+2025-06-30 08:56:19,736 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/10' (code 110): 13 epochs
+2025-06-30 08:56:19,736 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/20' (code 120): 17 epochs
+2025-06-30 08:56:19,736 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/30' (code 130): 14 epochs
+2025-06-30 08:56:19,736 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/11' (code 111): 16 epochs
+2025-06-30 08:56:19,736 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/12' (code 112): 14 epochs
+2025-06-30 08:56:19,737 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/13' (code 113): 16 epochs
+2025-06-30 08:56:19,737 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/14' (code 114): 16 epochs
+2025-06-30 08:56:19,737 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/15' (code 115): 16 epochs
+2025-06-30 08:56:19,737 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/16' (code 116): 16 epochs
+2025-06-30 08:56:19,737 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/21' (code 121): 14 epochs
+2025-06-30 08:56:19,737 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/22' (code 122): 15 epochs
+2025-06-30 08:56:19,737 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/23' (code 123): 15 epochs
+2025-06-30 08:56:19,737 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/24' (code 124): 12 epochs
+2025-06-30 08:56:19,737 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/25' (code 125): 14 epochs
+2025-06-30 08:56:19,737 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/26' (code 126): 13 epochs
+2025-06-30 08:56:19,737 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/31' (code 131): 10 epochs
+2025-06-30 08:56:19,737 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/32' (code 132): 17 epochs
+2025-06-30 08:56:19,737 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/33' (code 133): 15 epochs
+2025-06-30 08:56:19,737 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/34' (code 134): 20 epochs
+2025-06-30 08:56:19,737 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/35' (code 135): 17 epochs
+2025-06-30 08:56:19,737 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/36' (code 136): 20 epochs
+2025-06-30 08:56:19,913 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:342] - Processing conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-30 08:56:20,403 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:472] -   Data shapes for 'TpAB19': XPP_ALL=(44, 124, 601), XAP_ALL=(276, 124, 601), PP_FOR_SPECIFIC_COMPARISON=(44, 124, 601), AP_FAMILY_1=(40, 124, 601), AP_FAMILY_2=(46, 124, 601), AP_FAMILY_3=(46, 124, 601), AP_FAMILY_4=(48, 124, 601), AP_FAMILY_5=(47, 124, 601), AP_FAMILY_6=(49, 124, 601). Loaded in 1.07s
+2025-06-30 08:56:20,405 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:291] - Using protocol-specific loading configuration for delirium: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-30 08:56:20,405 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:296] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-30 08:56:20,405 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:324] - Successfully loaded 640 total epochs across all conditions for TpAB19
+2025-06-30 08:56:20,405 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:338] - Protocol-specific settings for delirium: CV folds=10, AP families=6, PP events=['PP/10', 'PP/20', 'PP/30']
+2025-06-30 08:56:20,405 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:363] - --- Starting Main Protocol Decoding for TpAB19 ---
+2025-06-30 08:56:20,405 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:366] -   --- 1. Main Decoding (e.g., PP/all vs AP/all) for TpAB19 ---
+2025-06-30 08:56:20,489 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:56:20,489 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:56:20,490 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:56:20,490 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:56:20,490 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:56:20,490 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:56:20,490 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:56:20,490 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:56:20,490 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:56:20,490 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-06-30 08:56:20,491 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:56:20,501 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:56:20,501 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 08:56:42,791 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.735
+2025-06-30 08:56:42,792 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 08:56:42,792 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-06-30 08:57:15,417 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.679 +/- 0.135
+2025-06-30 08:57:15,434 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.684', 'accuracy': '0.841', 'precision': '0.370', 'recall': '0.227', 'f1_score': '0.282', 'balanced_accuracy': '0.583'}
+2025-06-30 08:57:15,435 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 601)
+2025-06-30 08:57:15,435 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 08:57:16,080 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-06-30 08:57:16,080 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 601)
+2025-06-30 08:57:16,080 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-30 08:57:16,080 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 08:57:16,080 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-4.330906 max=9.399969
+Running initial clustering …
+Using 93 thresholds from 0.10 to 9.30 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-30 08:57:18,039 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-30 08:57:18,039 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #187: p-value = 0.0186. Mask shape: (601,), Num True points: 1
+2025-06-30 08:57:18,039 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #188: p-value = 0.0039. Mask shape: (601,), Num True points: 1
+2025-06-30 08:57:18,040 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #189: p-value = 0.0029. Mask shape: (601,), Num True points: 1
+2025-06-30 08:57:18,040 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #190: p-value = 0.0264. Mask shape: (601,), Num True points: 1
+2025-06-30 08:57:18,041 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:426] - Main Decoding for TpAB19 DONE. Mean Global AUC: 0.679
+2025-06-30 08:57:18,041 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:432] -   --- 2. Specific Task Comparisons (e.g. PP_spec vs AP_family_X) for TpAB19 ---
+2025-06-30 08:57:18,068 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:57:18,068 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:57:18,070 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:57:18,070 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:57:18,070 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:57:18,070 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:57:18,070 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:57:18,070 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:57:18,070 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:57:18,071 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-06-30 08:57:18,071 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:57:18,083 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:57:18,083 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 08:57:26,658 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.742
+2025-06-30 08:57:26,659 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 08:57:26,659 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-06-30 08:57:31,040 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.562 +/- 0.170
+2025-06-30 08:57:31,055 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.551', 'accuracy': '0.393', 'precision': '0.366', 'recall': '0.375', 'f1_score': '0.370', 'balanced_accuracy': '0.392'}
+2025-06-30 08:57:31,056 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 601)
+2025-06-30 08:57:31,056 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 08:57:31,750 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-06-30 08:57:31,750 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 601)
+2025-06-30 08:57:31,750 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-30 08:57:31,750 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 08:57:31,751 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-6.144294 max=5.440440
+Running initial clustering …
+Using 54 thresholds from 0.10 to 5.40 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-30 08:57:32,877 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-30 08:57:32,878 - INFO - utils.stats_utils - [perform_cluster_permutation_test:344] - No clusters found to be statistically significant (p < 0.05).
+2025-06-30 08:57:32,879 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:502] -   Specific task 'PP_spec vs AP Fam. 1' for TpAB19: Peak AUC = 0.742
+2025-06-30 08:57:32,908 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:57:32,908 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:57:32,910 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:57:32,910 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:57:32,910 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:57:32,910 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:57:32,910 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:57:32,911 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:57:32,911 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:57:32,911 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-06-30 08:57:32,911 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:57:32,922 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:57:32,922 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 08:57:42,116 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.770
+2025-06-30 08:57:42,116 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 08:57:42,117 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-06-30 08:57:46,975 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.490 +/- 0.185
+2025-06-30 08:57:46,989 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.538', 'accuracy': '0.600', 'precision': '0.600', 'recall': '0.652', 'f1_score': '0.625', 'balanced_accuracy': '0.599'}
+2025-06-30 08:57:46,990 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 601)
+2025-06-30 08:57:46,990 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 08:57:47,669 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-06-30 08:57:47,669 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 601)
+2025-06-30 08:57:47,669 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-30 08:57:47,669 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 08:57:47,669 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-6.391304 max=6.465791
+Running initial clustering …
+Using 64 thresholds from 0.10 to 6.40 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-30 08:57:48,766 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-30 08:57:48,766 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #6: p-value = 0.0430. Mask shape: (601,), Num True points: 1
+2025-06-30 08:57:48,768 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:502] -   Specific task 'PP_spec vs AP Fam. 2' for TpAB19: Peak AUC = 0.770
+2025-06-30 08:57:48,796 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:57:48,796 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:57:48,799 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:57:48,799 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:57:48,799 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:57:48,799 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:57:48,799 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:57:48,799 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:57:48,800 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:57:48,800 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-06-30 08:57:48,800 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:57:48,804 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:57:48,804 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 08:57:57,924 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.735
+2025-06-30 08:57:57,924 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 08:57:57,924 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-06-30 08:58:02,536 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.720 +/- 0.162
+2025-06-30 08:58:02,550 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.692', 'accuracy': '0.689', 'precision': '0.667', 'recall': '0.783', 'f1_score': '0.720', 'balanced_accuracy': '0.687'}
+2025-06-30 08:58:02,551 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 601)
+2025-06-30 08:58:02,551 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 08:58:03,225 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-06-30 08:58:03,225 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 601)
+2025-06-30 08:58:03,225 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-30 08:58:03,225 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 08:58:03,225 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-3.857143 max=4.646108
+Running initial clustering …
+Using 46 thresholds from 0.10 to 4.60 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-30 08:58:04,313 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-30 08:58:04,313 - INFO - utils.stats_utils - [perform_cluster_permutation_test:344] - No clusters found to be statistically significant (p < 0.05).
+2025-06-30 08:58:04,314 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:502] -   Specific task 'PP_spec vs AP Fam. 3' for TpAB19: Peak AUC = 0.735
+2025-06-30 08:58:04,344 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:58:04,344 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:58:04,347 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:58:04,347 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:58:04,347 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:58:04,347 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:58:04,347 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:58:04,347 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:58:04,348 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:58:04,348 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-06-30 08:58:04,348 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:58:04,352 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:58:04,352 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 08:58:13,367 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.741
+2025-06-30 08:58:13,367 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 08:58:13,367 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+submitit WARNING (2025-06-30 08:58:16,186) - Bypassing signal SIGCONT
+2025-06-30 08:58:16,186 - WARNING - submitit - [bypass:196] - Bypassing signal SIGCONT
+submitit WARNING (2025-06-30 08:58:16,188) - Bypassing signal SIGTERM
+2025-06-30 08:58:16,188 - WARNING - submitit - [bypass:196] - Bypassing signal SIGTERM
+2025-06-30 08:58:18,154 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.484 +/- 0.257
+2025-06-30 08:58:18,169 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.520', 'accuracy': '0.598', 'precision': '0.612', 'recall': '0.625', 'f1_score': '0.619', 'balanced_accuracy': '0.597'}
+2025-06-30 08:58:18,169 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 601)
+2025-06-30 08:58:18,169 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 08:58:18,840 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-06-30 08:58:18,841 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 601)
+2025-06-30 08:58:18,841 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-30 08:58:18,841 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 08:58:18,841 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-7.040904 max=4.967158
+Running initial clustering …
+Using 49 thresholds from 0.10 to 4.90 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-30 08:58:19,864 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-30 08:58:19,865 - INFO - utils.stats_utils - [perform_cluster_permutation_test:344] - No clusters found to be statistically significant (p < 0.05).
+2025-06-30 08:58:19,866 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:502] -   Specific task 'PP_spec vs AP Fam. 4' for TpAB19: Peak AUC = 0.741
+2025-06-30 08:58:19,895 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:58:19,895 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:58:19,898 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:58:19,898 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:58:19,898 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:58:19,898 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:58:19,898 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:58:19,898 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:58:19,898 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:58:19,898 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-06-30 08:58:19,898 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:58:19,903 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:58:19,903 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 08:58:29,211 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.737
+2025-06-30 08:58:29,211 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 08:58:29,212 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-06-30 08:58:34,174 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.668 +/- 0.209
+2025-06-30 08:58:34,188 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.615', 'accuracy': '0.571', 'precision': '0.577', 'recall': '0.638', 'f1_score': '0.606', 'balanced_accuracy': '0.569'}
+2025-06-30 08:58:34,189 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 601)
+2025-06-30 08:58:34,189 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 08:58:34,861 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-06-30 08:58:34,861 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 601)
+2025-06-30 08:58:34,862 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-30 08:58:34,862 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 08:58:34,862 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-6.651129 max=7.329114
+Running initial clustering …
+Using 73 thresholds from 0.10 to 7.30 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-30 08:58:35,925 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-30 08:58:35,926 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #34: p-value = 0.0215. Mask shape: (601,), Num True points: 1
+2025-06-30 08:58:35,926 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #35: p-value = 0.0283. Mask shape: (601,), Num True points: 1
+2025-06-30 08:58:35,926 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #37: p-value = 0.0371. Mask shape: (601,), Num True points: 1
+2025-06-30 08:58:35,927 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:502] -   Specific task 'PP_spec vs AP Fam. 5' for TpAB19: Peak AUC = 0.737
+2025-06-30 08:58:35,957 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:58:35,957 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:58:35,960 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:58:35,960 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:58:35,960 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:58:35,960 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:58:35,960 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:58:35,960 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:58:35,960 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:58:35,961 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-06-30 08:58:35,961 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:58:35,965 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:58:35,965 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 08:58:45,319 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.792
+2025-06-30 08:58:45,319 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 08:58:45,319 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...

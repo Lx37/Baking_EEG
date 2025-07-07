@@ -96,7 +96,7 @@ def validate_project_structure(project_root):
 
     log_info("Validation de la structure du projet...", logger)
 
-    required_dirs = ['examples', 'config', 'utils', 'bash']
+    required_dirs = ['examples', 'config', 'utils', 'submitit']
     required_files = [
         'examples/run_decoding_one_lg.py',
         'config/config.py',
@@ -367,7 +367,7 @@ def enhanced_decoding_task_wrapper(**kwargs):
 
 def main():
 
-    TARGET_SUBJECT_ID = "TpSM49"
+    TARGET_SUBJECT_ID = "TJR7"
 
     log_info("=" * 80, logger)
     log_info(

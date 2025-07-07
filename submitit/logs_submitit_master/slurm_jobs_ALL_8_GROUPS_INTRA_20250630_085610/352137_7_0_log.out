@@ -1,0 +1,247 @@
+submitit INFO (2025-06-30 08:56:13,006) - Starting with JobEnvironment(job_id=352137_7, hostname=node10, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-30 08:56:13,006) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/logs_submitit_master/slurm_jobs_ALL_8_GROUPS_INTRA_20250630_085610/352137_7_submitted.pkl
+DEBUG Worker - project_root: /home/tom.balay/Baking_EEG
+DEBUG Worker - parent_dir: /home/tom.balay
+DEBUG Worker - sys.path: ['/home/tom.balay', '/home/tom.balay/Baking_EEG', '/home/tom.balay/Baking_EEG/submitit']...
+2025-06-30 08:56:16,287 - INFO - examples.run_decoding_one_group_pp - [<module>:39] - Tentative d'import de execute_single_subject_decoding...
+2025-06-30 08:56:16,287 - INFO - examples.run_decoding_one_group_pp - [<module>:42] - ✅ Import de execute_single_subject_decoding réussi
+2025-06-30 08:56:16,289 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:120] - Starting intra-subject decoding loop for GROUP: DELIRIUM-. GS: False, CSP: False, ANOVA FS: True. n_jobs_subj: 40.
+2025-06-30 08:56:16,290 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'DELIRIUM-': Processing Subject 1/24: TpAC23 ---
+2025-06-30 08:56:16,290 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:258] - Starting decoding for subject: TpAC23 (Group: DELIRIUM-, Task Set ID: Group_Intra_DELIRIUM-_Subj_TpAC23, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 40)
+2025-06-30 08:56:18,757 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:455] - CRITICAL: No data loaded for ANY specified conditions for subject TpAC23.
+2025-06-30 08:56:18,757 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:462] - Empty data array for condition 'temp' (specifier: 'AP') for subject TpAC23.
+2025-06-30 08:56:18,757 - INFO - utils.loading_PP_utils - [detect_protocol_type:741] - Detected Delirium/Legacy protocol: simple AP/PP structure, 461 total events
+2025-06-30 08:56:18,758 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:873] - Auto-detected protocol 'delirium' for subject 'TpAC23' (file hint: legacy)
+2025-06-30 08:56:18,758 - INFO - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:101] - Found epochs file: /mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM-_0.5/TpAC23_PP_preproc_noICA_PP-epo_ar.fif (protocol: legacy)
+2025-06-30 08:56:18,758 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:301] - Loading epoch data for subject 'TpAC23' from: /mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM-_0.5/TpAC23_PP_preproc_noICA_PP-epo_ar.fif (file protocol: legacy)
+2025-06-30 08:56:19,240 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:312] - Event IDs available for TpAC23:
+2025-06-30 08:56:19,240 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/10': 110
+2025-06-30 08:56:19,240 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/20': 120
+2025-06-30 08:56:19,240 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/30': 130
+2025-06-30 08:56:19,240 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/11': 111
+2025-06-30 08:56:19,240 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/12': 112
+2025-06-30 08:56:19,240 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/13': 113
+2025-06-30 08:56:19,240 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/14': 114
+2025-06-30 08:56:19,240 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/15': 115
+2025-06-30 08:56:19,240 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/16': 116
+2025-06-30 08:56:19,240 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/21': 121
+2025-06-30 08:56:19,240 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/22': 122
+2025-06-30 08:56:19,241 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/23': 123
+2025-06-30 08:56:19,241 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/24': 124
+2025-06-30 08:56:19,241 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/25': 125
+2025-06-30 08:56:19,241 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/26': 126
+2025-06-30 08:56:19,241 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/31': 131
+2025-06-30 08:56:19,241 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/32': 132
+2025-06-30 08:56:19,241 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/33': 133
+2025-06-30 08:56:19,241 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/34': 134
+2025-06-30 08:56:19,241 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/35': 135
+2025-06-30 08:56:19,241 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/36': 136
+2025-06-30 08:56:19,303 - INFO - utils.loading_PP_utils - [inspect_epochs_events:925] - === EVENT INSPECTION FOR TpAC23 ===
+2025-06-30 08:56:19,303 - INFO - utils.loading_PP_utils - [inspect_epochs_events:928] - File: /mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM-_0.5/TpAC23_PP_preproc_noICA_PP-epo_ar.fif
+2025-06-30 08:56:19,303 - INFO - utils.loading_PP_utils - [inspect_epochs_events:929] - Total events: 461
+2025-06-30 08:56:19,303 - INFO - utils.loading_PP_utils - [inspect_epochs_events:930] - Event types and counts:
+2025-06-30 08:56:19,303 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/10' (code 110): 23 epochs
+2025-06-30 08:56:19,303 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/20' (code 120): 18 epochs
+2025-06-30 08:56:19,303 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/30' (code 130): 21 epochs
+2025-06-30 08:56:19,303 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/11' (code 111): 23 epochs
+2025-06-30 08:56:19,303 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/12' (code 112): 24 epochs
+2025-06-30 08:56:19,303 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/13' (code 113): 24 epochs
+2025-06-30 08:56:19,303 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/14' (code 114): 23 epochs
+2025-06-30 08:56:19,303 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/15' (code 115): 24 epochs
+2025-06-30 08:56:19,304 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/16' (code 116): 24 epochs
+2025-06-30 08:56:19,304 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/21' (code 121): 20 epochs
+2025-06-30 08:56:19,304 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/22' (code 122): 21 epochs
+2025-06-30 08:56:19,304 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/23' (code 123): 20 epochs
+2025-06-30 08:56:19,304 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/24' (code 124): 21 epochs
+2025-06-30 08:56:19,304 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/25' (code 125): 22 epochs
+2025-06-30 08:56:19,304 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/26' (code 126): 21 epochs
+2025-06-30 08:56:19,304 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/31' (code 131): 23 epochs
+2025-06-30 08:56:19,304 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/32' (code 132): 21 epochs
+2025-06-30 08:56:19,304 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/33' (code 133): 21 epochs
+2025-06-30 08:56:19,304 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/34' (code 134): 23 epochs
+2025-06-30 08:56:19,304 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/35' (code 135): 20 epochs
+2025-06-30 08:56:19,304 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/36' (code 136): 24 epochs
+2025-06-30 08:56:19,546 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:342] - Processing conditions: ['XPP_ALL', 'XAP_ALL']
+2025-06-30 08:56:19,798 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:472] -   Data shapes for 'TpAC23': XPP_ALL=(62, 124, 601), XAP_ALL=(399, 124, 601). Loaded in 1.04s
+2025-06-30 08:56:19,800 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:274] - Detected protocol 'delirium' for subject TpAC23
+2025-06-30 08:56:20,515 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:455] - CRITICAL: No data loaded for ANY specified conditions for subject TpAC23.
+2025-06-30 08:56:20,515 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:462] - Empty data array for condition 'temp' (specifier: 'AP') for subject TpAC23.
+2025-06-30 08:56:20,515 - INFO - utils.loading_PP_utils - [detect_protocol_type:741] - Detected Delirium/Legacy protocol: simple AP/PP structure, 461 total events
+2025-06-30 08:56:20,515 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:873] - Auto-detected protocol 'delirium' for subject 'TpAC23' (file hint: legacy)
+2025-06-30 08:56:20,515 - INFO - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:101] - Found epochs file: /mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM-_0.5/TpAC23_PP_preproc_noICA_PP-epo_ar.fif (protocol: legacy)
+2025-06-30 08:56:20,516 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:301] - Loading epoch data for subject 'TpAC23' from: /mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM-_0.5/TpAC23_PP_preproc_noICA_PP-epo_ar.fif (file protocol: legacy)
+2025-06-30 08:56:20,980 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:312] - Event IDs available for TpAC23:
+2025-06-30 08:56:20,980 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/10': 110
+2025-06-30 08:56:20,980 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/20': 120
+2025-06-30 08:56:20,980 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/30': 130
+2025-06-30 08:56:20,980 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/11': 111
+2025-06-30 08:56:20,980 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/12': 112
+2025-06-30 08:56:20,980 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/13': 113
+2025-06-30 08:56:20,981 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/14': 114
+2025-06-30 08:56:20,981 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/15': 115
+2025-06-30 08:56:20,981 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/16': 116
+2025-06-30 08:56:20,981 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/21': 121
+2025-06-30 08:56:20,981 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/22': 122
+2025-06-30 08:56:20,981 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/23': 123
+2025-06-30 08:56:20,981 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/24': 124
+2025-06-30 08:56:20,981 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/25': 125
+2025-06-30 08:56:20,981 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/26': 126
+2025-06-30 08:56:20,981 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/31': 131
+2025-06-30 08:56:20,981 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/32': 132
+2025-06-30 08:56:20,981 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/33': 133
+2025-06-30 08:56:20,981 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/34': 134
+2025-06-30 08:56:20,981 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/35': 135
+2025-06-30 08:56:20,981 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/36': 136
+2025-06-30 08:56:21,041 - INFO - utils.loading_PP_utils - [inspect_epochs_events:925] - === EVENT INSPECTION FOR TpAC23 ===
+2025-06-30 08:56:21,042 - INFO - utils.loading_PP_utils - [inspect_epochs_events:928] - File: /mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM-_0.5/TpAC23_PP_preproc_noICA_PP-epo_ar.fif
+2025-06-30 08:56:21,042 - INFO - utils.loading_PP_utils - [inspect_epochs_events:929] - Total events: 461
+2025-06-30 08:56:21,042 - INFO - utils.loading_PP_utils - [inspect_epochs_events:930] - Event types and counts:
+2025-06-30 08:56:21,042 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/10' (code 110): 23 epochs
+2025-06-30 08:56:21,042 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/20' (code 120): 18 epochs
+2025-06-30 08:56:21,042 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/30' (code 130): 21 epochs
+2025-06-30 08:56:21,042 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/11' (code 111): 23 epochs
+2025-06-30 08:56:21,042 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/12' (code 112): 24 epochs
+2025-06-30 08:56:21,042 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/13' (code 113): 24 epochs
+2025-06-30 08:56:21,042 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/14' (code 114): 23 epochs
+2025-06-30 08:56:21,042 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/15' (code 115): 24 epochs
+2025-06-30 08:56:21,042 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/16' (code 116): 24 epochs
+2025-06-30 08:56:21,042 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/21' (code 121): 20 epochs
+2025-06-30 08:56:21,042 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/22' (code 122): 21 epochs
+2025-06-30 08:56:21,042 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/23' (code 123): 20 epochs
+2025-06-30 08:56:21,042 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/24' (code 124): 21 epochs
+2025-06-30 08:56:21,043 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/25' (code 125): 22 epochs
+2025-06-30 08:56:21,043 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/26' (code 126): 21 epochs
+2025-06-30 08:56:21,043 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/31' (code 131): 23 epochs
+2025-06-30 08:56:21,043 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/32' (code 132): 21 epochs
+2025-06-30 08:56:21,043 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/33' (code 133): 21 epochs
+2025-06-30 08:56:21,043 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/34' (code 134): 23 epochs
+2025-06-30 08:56:21,043 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/35' (code 135): 20 epochs
+2025-06-30 08:56:21,043 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/36' (code 136): 24 epochs
+2025-06-30 08:56:21,286 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:342] - Processing conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-30 08:56:21,913 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:472] -   Data shapes for 'TpAC23': XPP_ALL=(62, 124, 601), XAP_ALL=(399, 124, 601), PP_FOR_SPECIFIC_COMPARISON=(62, 124, 601), AP_FAMILY_1=(66, 124, 601), AP_FAMILY_2=(66, 124, 601), AP_FAMILY_3=(65, 124, 601), AP_FAMILY_4=(67, 124, 601), AP_FAMILY_5=(66, 124, 601), AP_FAMILY_6=(69, 124, 601). Loaded in 1.40s
+2025-06-30 08:56:21,915 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:291] - Using protocol-specific loading configuration for delirium: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-30 08:56:21,915 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:296] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-30 08:56:21,915 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:324] - Successfully loaded 922 total epochs across all conditions for TpAC23
+2025-06-30 08:56:21,915 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:338] - Protocol-specific settings for delirium: CV folds=10, AP families=6, PP events=['PP/10', 'PP/20', 'PP/30']
+2025-06-30 08:56:21,916 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:363] - --- Starting Main Protocol Decoding for TpAC23 ---
+2025-06-30 08:56:21,916 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:366] -   --- 1. Main Decoding (e.g., PP/all vs AP/all) for TpAC23 ---
+2025-06-30 08:56:22,035 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:56:22,035 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:56:22,040 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:56:22,040 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:56:22,040 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:56:22,040 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:56:22,040 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:56:22,041 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:56:22,041 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:56:22,041 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-06-30 08:56:22,041 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:56:22,053 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:56:22,054 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 08:56:57,138 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.681
+2025-06-30 08:56:57,139 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 08:56:57,140 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-06-30 08:57:59,068 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.772 +/- 0.080
+2025-06-30 08:57:59,087 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.767', 'accuracy': '0.848', 'precision': '0.375', 'recall': '0.194', 'f1_score': '0.255', 'balanced_accuracy': '0.572'}
+2025-06-30 08:57:59,087 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 601)
+2025-06-30 08:57:59,087 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 08:57:59,745 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 92 point(s) found significant (p_fdr < 0.05).
+2025-06-30 08:57:59,746 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 601)
+2025-06-30 08:57:59,746 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-30 08:57:59,746 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 08:57:59,746 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-4.163178 max=5.963825
+Running initial clustering …
+Using 59 thresholds from 0.10 to 5.90 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-30 08:58:01,677 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-30 08:58:01,677 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #230: p-value = 0.0430. Mask shape: (601,), Num True points: 1
+2025-06-30 08:58:01,677 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #231: p-value = 0.0430. Mask shape: (601,), Num True points: 1
+2025-06-30 08:58:01,680 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:426] - Main Decoding for TpAC23 DONE. Mean Global AUC: 0.772
+2025-06-30 08:58:01,680 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:432] -   --- 2. Specific Task Comparisons (e.g. PP_spec vs AP_family_X) for TpAC23 ---
+2025-06-30 08:58:01,717 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:58:01,717 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:58:01,723 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:58:01,723 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:58:01,723 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:58:01,723 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:58:01,723 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:58:01,723 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:58:01,723 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:58:01,724 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-06-30 08:58:01,724 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:58:01,736 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:58:01,736 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 08:58:12,472 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.744
+2025-06-30 08:58:12,473 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 08:58:12,473 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-06-30 08:58:20,577 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.637 +/- 0.143
+2025-06-30 08:58:20,597 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.622', 'accuracy': '0.578', 'precision': '0.594', 'recall': '0.576', 'f1_score': '0.585', 'balanced_accuracy': '0.578'}
+2025-06-30 08:58:20,597 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 601)
+2025-06-30 08:58:20,597 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 08:58:21,282 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 38 point(s) found significant (p_fdr < 0.05).
+2025-06-30 08:58:21,283 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 601)
+2025-06-30 08:58:21,283 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-30 08:58:21,283 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 08:58:21,283 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-4.087278 max=7.798720
+Running initial clustering …
+Using 77 thresholds from 0.10 to 7.70 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-30 08:58:22,460 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-30 08:58:22,461 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #352: p-value = 0.0479. Mask shape: (601,), Num True points: 1
+2025-06-30 08:58:22,461 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #358: p-value = 0.0107. Mask shape: (601,), Num True points: 1
+2025-06-30 08:58:22,462 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:502] -   Specific task 'PP_spec vs AP Fam. 1' for TpAC23: Peak AUC = 0.744
+2025-06-30 08:58:22,530 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:58:22,530 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:58:22,539 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:58:22,540 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:58:22,540 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:58:22,540 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:58:22,540 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:58:22,541 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:58:22,541 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:58:22,541 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-06-30 08:58:22,541 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:58:22,552 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:58:22,553 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+submitit WARNING (2025-06-30 08:58:23,919) - Bypassing signal SIGCONT
+2025-06-30 08:58:23,919 - WARNING - submitit - [bypass:196] - Bypassing signal SIGCONT
+submitit WARNING (2025-06-30 08:58:23,921) - Bypassing signal SIGTERM
+2025-06-30 08:58:23,921 - WARNING - submitit - [bypass:196] - Bypassing signal SIGTERM
+2025-06-30 08:58:33,768 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.715
+2025-06-30 08:58:33,768 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 08:58:33,768 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-06-30 08:58:41,623 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.652 +/- 0.109
+2025-06-30 08:58:41,639 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.640', 'accuracy': '0.648', 'precision': '0.657', 'recall': '0.667', 'f1_score': '0.662', 'balanced_accuracy': '0.648'}
+2025-06-30 08:58:41,639 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 601)
+2025-06-30 08:58:41,639 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 08:58:42,310 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-06-30 08:58:42,311 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 601)
+2025-06-30 08:58:42,311 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-30 08:58:42,311 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 08:58:42,311 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-4.346383 max=7.261452
+Running initial clustering …
+Using 72 thresholds from 0.10 to 7.20 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-30 08:58:43,409 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-30 08:58:43,410 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #351: p-value = 0.0391. Mask shape: (601,), Num True points: 1
+2025-06-30 08:58:43,410 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #353: p-value = 0.0361. Mask shape: (601,), Num True points: 1
+2025-06-30 08:58:43,410 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #374: p-value = 0.0215. Mask shape: (601,), Num True points: 1
+2025-06-30 08:58:43,410 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #375: p-value = 0.0430. Mask shape: (601,), Num True points: 1
+2025-06-30 08:58:43,412 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:502] -   Specific task 'PP_spec vs AP Fam. 2' for TpAC23: Peak AUC = 0.715
+2025-06-30 08:58:43,466 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:58:43,466 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:58:43,468 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:58:43,468 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:58:43,468 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:58:43,468 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:58:43,468 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:58:43,469 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:58:43,469 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:58:43,469 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-06-30 08:58:43,469 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:58:43,480 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:58:43,481 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...

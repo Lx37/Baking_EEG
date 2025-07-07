@@ -1,5 +1,3 @@
-# Visualization utilities for LG (Local-Global) protocol - NOUVELLE VERSION
-
 import sys
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -220,9 +218,10 @@ def _create_lg_comparison_page(times, lg_results, comparison_name, subject_id, g
         cluster_data = comparison_data.get('cluster_significance_data')
 
         if mean_scores is not None and times is not None:
+            original_labels = comparison_data.get('original_labels')
             _plot_lg_temporal_auc(ax1, times, mean_scores, all_folds_scores,
                                   fdr_data, cluster_data, comparison_name,
-                                  chance_level, subject_id)
+                                  chance_level, subject_id, original_labels)
 
         # =================== Plot 2: TGM (if included) ===================
         if include_tgm and ax2 is not None:
@@ -253,19 +252,58 @@ def _create_lg_comparison_page(times, lg_results, comparison_name, subject_id, g
 
 
 def _plot_lg_temporal_auc(ax, times, mean_scores, all_folds_scores, fdr_data,
-                          cluster_data, comparison_name, chance_level, subject_id):
+                          cluster_data, comparison_name, chance_level, subject_id,
+                          original_labels_array=None, label_encoder=None):
     """Plot temporal AUC curve with statistical significance and individual folds."""
 
-    # Plot individual folds (with transparency)
+    # Plot individual folds (with transparency in gray)
     if all_folds_scores is not None and all_folds_scores.ndim == 2:
+        n_folds = all_folds_scores.shape[0]
+        
+        # Calculate detailed epoch information per fold
+        fold_epoch_info = ""
+        if original_labels_array is not None:
+            avg_epochs_per_fold = len(original_labels_array) / n_folds
+            
+            # Calculate class distribution
+            unique_labels, counts = np.unique(original_labels_array, return_counts=True)
+            if len(unique_labels) == 2:
+                # Binary classification - show class breakdown
+                avg_class0_per_fold = counts[0] / n_folds
+                avg_class1_per_fold = counts[1] / n_folds
+                fold_epoch_info = f", ~{avg_epochs_per_fold:.0f} epochs/fold (~{avg_class0_per_fold:.0f}+{avg_class1_per_fold:.0f})"
+            else:
+                fold_epoch_info = f", ~{avg_epochs_per_fold:.0f} epochs/fold"
+        
         for i, fold_scores in enumerate(all_folds_scores):
             if not np.all(np.isnan(fold_scores)):
-                ax.plot(times, fold_scores, color='lightgray', alpha=0.5,
-                        linewidth=0.8, label='Individual folds' if i == 0 else "")
+                fold_label = f'Individual folds (n={n_folds}{fold_epoch_info})' if i == 0 else ""
+                ax.plot(times, fold_scores, color='gray', alpha=0.4,
+                        linewidth=1, label=fold_label)
 
     # Plot mean curve
     if mean_scores is not None:
-        ax.plot(times, mean_scores, 'b-', linewidth=3, label='Mean AUC')
+        # Create label with fold and detailed epoch information
+        fold_info = ""
+        epoch_info = ""
+        
+        if all_folds_scores is not None and all_folds_scores.ndim == 2:
+            n_folds = all_folds_scores.shape[0]
+            fold_info = f" ({n_folds} folds)"
+        
+        # Add detailed epoch information if available
+        if original_labels_array is not None:
+            unique_labels, counts = np.unique(original_labels_array, return_counts=True)
+            total_epochs = len(original_labels_array)
+            
+            if len(unique_labels) == 2:
+                # Binary classification - show detailed breakdown
+                epoch_info = f" - {total_epochs} epochs ({counts[0]}+{counts[1]})"
+            else:
+                epoch_info = f" - {total_epochs} epochs"
+        
+        ax.plot(times, mean_scores, 'b-', linewidth=3, 
+               label=f'Mean AUC{fold_info}{epoch_info}')
 
         # Calculate and plot confidence interval/SEM
         if all_folds_scores is not None and all_folds_scores.ndim == 2:
@@ -348,8 +386,13 @@ def _plot_lg_temporal_auc(ax, times, mean_scores, all_folds_scores, fdr_data,
     # Formatting
     ax.set_xlabel('Time (s)', fontsize=FONT_SIZE_LABEL)
     ax.set_ylabel('AUC Score', fontsize=FONT_SIZE_LABEL)
-    ax.set_title(f'{comparison_name.replace("_", " ")} - Subject {subject_id}',
-                 fontsize=FONT_SIZE_TITLE)
+    # Créer le titre avec les informations d'epochs si disponibles
+    base_title = f'{comparison_name.replace("_", " ")} - Subject {subject_id}'
+    if original_labels_array is not None:
+        title_with_epochs = _add_epochs_info_to_title_lg(base_title, original_labels_array, label_encoder)
+        ax.set_title(title_with_epochs, fontsize=FONT_SIZE_TITLE)
+    else:
+        ax.set_title(base_title, fontsize=FONT_SIZE_TITLE)
     ax.legend(fontsize=FONT_SIZE_LEGEND)
     ax.grid(True, alpha=0.3)
 
@@ -519,7 +562,7 @@ def _create_detailed_lg_comparison_plots(lg_specific_results, times, subject_id,
             "Error creating detailed LG comparison plots: %s", e, exc_info=True)
 
 
-def plot_group_mean_scores_barplot_lg(subject_scores_dict, title, output_dir, score_label="AUC Score", chance_level=0.5):
+def plot_group_mean_scores_barplot_lg(subject_scores_dict, title, output_dir, score_label="AUC Score", chance_level=0.5, epoch_info_str=None):
     """Create bar plot of group mean scores for LG protocol."""
     try:
         valid_scores = {k: v for k,
@@ -542,7 +585,15 @@ def plot_group_mean_scores_barplot_lg(subject_scores_dict, title, output_dir, sc
         ax.set_xticklabels(subjects, rotation=45,
                            ha='right', fontsize=FONT_SIZE_TICK)
         ax.set_ylabel(score_label, fontsize=FONT_SIZE_LABEL)
-        ax.set_title(title, fontsize=FONT_SIZE_TITLE)
+        # Ajouter les informations d'epochs au titre si disponibles
+        plot_title = title
+        if epoch_info_str:
+            # Parse epoch info to extract class breakdown if available
+            if "Class_0:" in epoch_info_str and "Class_1:" in epoch_info_str:
+                plot_title = f"{title}\n{epoch_info_str}"
+            else:
+                plot_title = f"{title}\n{epoch_info_str}"
+        ax.set_title(plot_title, fontsize=FONT_SIZE_TITLE)
         ax.legend(fontsize=FONT_SIZE_LEGEND)
         ax.grid(True, alpha=0.3, axis='y')
 
@@ -576,7 +627,7 @@ def plot_group_mean_scores_barplot_lg(subject_scores_dict, title, output_dir, sc
 def plot_group_temporal_decoding_statistics_lg(times, mean_scores, title, output_dir,
                                                sem_scores=None, cluster_pval_map=None,
                                                fdr_mask=None, chance_level=0.5,
-                                               plot_suffix=""):
+                                               plot_suffix="", epoch_info_str=None):
     """Plot group-level temporal decoding statistics for LG protocol."""
     try:
         fig, ax = plt.subplots(figsize=(14, 8))
@@ -614,14 +665,21 @@ def plot_group_temporal_decoding_statistics_lg(times, mean_scores, title, output
 
         ax.set_xlabel('Time (s)', fontsize=FONT_SIZE_LABEL)
         ax.set_ylabel('AUC Score', fontsize=FONT_SIZE_LABEL)
-        ax.set_title(title, fontsize=FONT_SIZE_TITLE)
+        
+        # Create title with epoch information if available
+        plot_title = title
+        if epoch_info_str:
+            plot_title = f"{title}\n{epoch_info_str}"
+        ax.set_title(plot_title, fontsize=FONT_SIZE_TITLE)
+        
         ax.legend(fontsize=FONT_SIZE_LEGEND)
         ax.grid(True, alpha=0.3)
 
-        # Add statistics text
-        stats_text = f'N subjects: {mean_scores.shape[0] if hasattr(mean_scores, "shape") else "N/A"}\n'
-        stats_text += f'Peak AUC: {np.max(mean_scores):.3f}\n'
+        # Add statistics text with epoch breakdown
+        stats_text = f'Peak AUC: {np.max(mean_scores):.3f}\n'
         stats_text += f'Mean AUC: {np.mean(mean_scores):.3f}'
+        if epoch_info_str:
+            stats_text += f'\n{epoch_info_str}'
 
         ax.text(0.02, 0.98, stats_text, transform=ax.transAxes, va='top', ha='left',
                 bbox=dict(boxstyle='round', facecolor='white', alpha=0.8),
@@ -703,3 +761,92 @@ def plot_group_tgm_statistics_lg(times, mean_tgm, title, output_dir, fdr_mask=No
     except Exception as e:
         logger_viz_lg.error(
             "Error creating LG group TGM statistics plot: %s", e, exc_info=True)
+
+
+# === UTILITY FUNCTIONS FOR EPOCH INFORMATION ===
+
+def _get_epochs_info_for_labels_lg(original_labels_array, label_encoder=None):
+    """Get epoch count information for each class in LG protocol.
+    
+    Args:
+        original_labels_array: Array of original labels
+        label_encoder: Optional LabelEncoder object to get class names
+        
+    Returns:
+        str: Formatted string with epoch counts per class
+    """
+    if original_labels_array is None or len(original_labels_array) == 0:
+        return "N epochs: N/A"
+    
+    try:
+        # Count unique labels
+        unique_labels, counts = np.unique(original_labels_array, return_counts=True)
+        
+        # Format the information with class breakdown
+        epoch_info_parts = []
+        total_epochs = len(original_labels_array)
+        
+        for label, count in zip(unique_labels, counts):
+            # Map label to meaningful name for LG protocol
+            if label == 0:
+                label_name = "Class_0"
+            elif label == 1:
+                label_name = "Class_1"
+            else:
+                label_name = f"Class_{label}"
+            
+            percentage = (count / total_epochs) * 100
+            epoch_info_parts.append(f"{label_name}: {count} ({percentage:.1f}%)")
+        
+        epoch_info = f"N epochs: {total_epochs} total [{', '.join(epoch_info_parts)}]"
+        return epoch_info
+        
+    except Exception as e:
+        logger_viz_lg.warning(f"Error calculating epoch info: {e}")
+        return f"N epochs: {len(original_labels_array)} total"
+
+
+def _add_epochs_info_to_title_lg(base_title, original_labels_array, label_encoder=None):
+    """Add epoch information to a plot title in LG protocol.
+    
+    Args:
+        base_title: Base title string
+        original_labels_array: Array of original labels
+        label_encoder: Optional LabelEncoder object
+        
+    Returns:
+        str: Title with epoch information appended
+    """
+    epoch_info = _get_epochs_info_for_labels_lg(original_labels_array, label_encoder)
+    return f"{base_title}\n{epoch_info}"
+
+
+def _add_epochs_info_to_legend_label_lg(base_label, original_labels_array, label_encoder=None):
+    """Add epoch information to a legend label in LG protocol.
+    
+    Args:
+        base_label: Base label string  
+        original_labels_array: Array of original labels
+        label_encoder: Optional LabelEncoder object
+        
+    Returns:
+        str: Label with epoch information appended
+    """
+    if original_labels_array is None or len(original_labels_array) == 0:
+        return f"{base_label} (N epochs: N/A)"
+        
+    unique_labels, counts = np.unique(original_labels_array, return_counts=True)
+    total_epochs = len(original_labels_array)
+    
+    # Detailed format for legend showing class breakdown
+    if len(unique_labels) == 2:
+        # Binary classification - show class breakdown with meaningful names
+        class0_count = counts[0] if unique_labels[0] == 0 else counts[1]
+        class1_count = counts[1] if unique_labels[0] == 0 else counts[0]
+        return f"{base_label} (N={total_epochs}: C0={class0_count}, C1={class1_count})"
+    else:
+        # Multi-class or single class
+        class_info = ", ".join([f"C{label}={count}" for label, count in zip(unique_labels, counts)])
+        return f"{base_label} (N={total_epochs}: {class_info})"
+
+# === EXISTING FUNCTIONS ===

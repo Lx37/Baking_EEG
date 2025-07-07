@@ -1,0 +1,40 @@
+submitit INFO (2025-07-07 09:56:14,716) - Starting with JobEnvironment(job_id=360773, hostname=node8, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-07-07 09:56:14,717) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/submitit_logs/FP102_PP/360773_submitted.pkl
+DEBUG Worker - project_root: /home/tom.balay/Baking_EEG
+DEBUG Worker - sys.path: ['/home/tom.balay/Baking_EEG', '/home/tom.balay/Baking_EEG/submitit', '/usr/lib/python311.zip']...
+DEBUG Worker - Processing subject FP102 from group CONTROLS_COMA
+DEBUG Worker - Using PP protocol (extended/battery)
+2025-07-07 09:56:23,635 - INFO - examples.run_decoding_one_group_pp - [<module>:39] - Tentative d'import de execute_single_subject_decoding...
+2025-07-07 09:56:23,635 - INFO - examples.run_decoding_one_group_pp - [<module>:42] - ✅ Import de execute_single_subject_decoding réussi
+2025-07-07 09:56:23,639 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:254] - Starting decoding for subject: FP102 (Group: CONTROLS_COMA, Task Set ID: Analysis_PP_Individual, Classifier: svc, GS: False, CSP : False, ANOVA FS : True, n_jobs: 40)
+2025-07-07 09:56:23,684 - ERROR - examples.run_decoding_one_pp - [execute_single_subject_decoding:750] - Unexpected error during main processing logic for subject FP102: 'NoneType' object has no attribute 'kind'
+Traceback (most recent call last):
+  File "/home/tom.balay/Baking_EEG/examples/run_decoding_one_pp.py", line 264, in execute_single_subject_decoding
+    epochs_object, returned_data_dict_basic, detected_protocol = load_epochs_data_auto_protocol(
+                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py", line 794, in load_epochs_data_auto_protocol
+    epochs_temp, _ = load_epochs_data_for_decoding_delirium(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py", line 308, in load_epochs_data_for_decoding_delirium
+    epochs_object = mne.read_epochs(
+                    ^^^^^^^^^^^^^^^^
+  File "<decorator-gen-206>", line 10, in read_epochs
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/epochs.py", line 3870, in read_epochs
+    return EpochsFIF(fname, proj, preload, verbose)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<decorator-gen-207>", line 10, in __init__
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/epochs.py", line 3931, in __init__
+    fid, tree, _ = fiff_open(fname, preload=preload)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<decorator-gen-7>", line 12, in fiff_open
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/_fiff/open.py", line 128, in fiff_open
+    return _fiff_open(fname, fid, preload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/_fiff/open.py", line 146, in _fiff_open
+    if tag.kind != FIFF.FIFF_FILE_ID:
+       ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'kind'
+submitit INFO (2025-07-07 09:56:23,696) - Job completed successfully
+2025-07-07 09:56:23,696 - INFO - submitit - [process_job:56] - Job completed successfully
+submitit INFO (2025-07-07 09:56:23,698) - Exiting after successful completion
+2025-07-07 09:56:23,698 - INFO - submitit - [process_job:61] - Exiting after successful completion

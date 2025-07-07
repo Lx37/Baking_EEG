@@ -1,0 +1,4 @@
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:308: RuntimeWarning: This filename (/mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_COMA_01HZ/Battery/FP102_preproc_noICA_PPAP-epo_ar.fif) does not conform to MNE naming conventions. All epochs files should end with -epo.fif, -epo.fif.gz, _epo.fif or _epo.fif.gz
+  epochs_object = mne.read_epochs(
+/home/tom.balay/Baking_EEG/examples/../utils/loading_PP_utils.py:308: RuntimeWarning: Invalid tag with only 0/16 bytes at position 0
+  epochs_object = mne.read_epochs(

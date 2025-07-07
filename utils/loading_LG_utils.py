@@ -1,4 +1,4 @@
-# --- Data loading function for LG (Local-Global) protocol
+
 import os
 import time
 import logging
@@ -31,63 +31,57 @@ def load_epochs_data_for_lg_decoding(
         verbose_logging (bool): If True, enables detailed logging.
 
     Returns:
-        tuple: (mne.Epochs or None, dict)
+        tuple: (mne.Epochs or None, dict, str)
             - mne.Epochs object if loading successful, else None.
             - Dictionary: keys are `condition_name` from `conditions_to_load`,
               values are NumPy arrays of epoch data
               (n_epochs, n_channels, n_times).
               Empty array if a condition has no data.
+            - String: detected protocol identifier (e.g., "LG")
     """
     # Parameter validation
     if not isinstance(subject_identifier, str) or not subject_identifier:
         logger_data_loading.error(
             "Subject identifier must be a non-empty string.")
-        return None, {}
+        return None, {}, "unknown"
     if not isinstance(group_affiliation, str) or not group_affiliation:
         logger_data_loading.error(
             "Group affiliation must be a non-empty string.")
-        return None, {}
+        return None, {}, "unknown"
     if (not isinstance(base_input_data_path, str) or
             not os.path.isdir(base_input_data_path)):
         logger_data_loading.error(
             "Base input data path '%s' is not a valid directory.",
             base_input_data_path
         )
-        return None, {}
+        return None, {}, "unknown", "unknown"
     if (conditions_to_load is not None and
             not isinstance(conditions_to_load, dict)):
         logger_data_loading.error(
             "'conditions_to_load' must be a dict or None. "
             "Received type: %s.", type(conditions_to_load)
         )
-        return None, {}
+        return None, {}, "unknown"
 
     start_time = time.time()
     group_affiliation_lower = group_affiliation.lower()
     data_root_path = None
 
     # --- Path determination logic for LG protocol ---
+    # Only 3 real LG directories exist: LG_CONTROLS_0.5, LG_PATIENTS_DELIRIUM+_0.5, LG_PATIENTS_DELIRIUM-_0.5
     if group_affiliation_lower == "controls":
         potential_path = os.path.join(base_input_data_path, "LG_CONTROLS_0.5")
         if os.path.isdir(potential_path):
             data_root_path = potential_path
-    elif group_affiliation_lower in ["del", "nodel"]:
+    elif group_affiliation_lower in ["delirium+", "delirium +", "patients_delirium+"]:
         potential_path = os.path.join(
-            base_input_data_path,
-            f"LG_PATIENTS_{group_affiliation.upper()}_0.5"
+            base_input_data_path, "LG_PATIENTS_DELIRIUM+_0.5"
         )
         if os.path.isdir(potential_path):
             data_root_path = potential_path
-    # Handle DELIRIUM + and DELIRIUM - groups
-    elif group_affiliation_lower in ["delirium +", "delirium+"]:
+    elif group_affiliation_lower in ["delirium-", "delirium -", "patients_delirium-"]:
         potential_path = os.path.join(
-            base_input_data_path, "LG_PATIENTS_DEL_0.5"
-        )
-        if os.path.isdir(potential_path):
-            data_root_path = potential_path
-    elif group_affiliation_lower in ["delirium -", "delirium-"]:
-        potential_path = os.path.join(
-            base_input_data_path, "LG_PATIENTS_NODEL_0.5"
+            base_input_data_path, "LG_PATIENTS_DELIRIUM-_0.5"
         )
         if os.path.isdir(potential_path):
             data_root_path = potential_path
@@ -104,47 +98,38 @@ def load_epochs_data_for_lg_decoding(
                 "Subject found in group '%s'. Using its path convention.",
                 group_affiliation, subject_identifier, detected_group
             )
-            group_affiliation_lower = detected_group.lower()
-            if group_affiliation_lower == "controls":
+            detected_group_lower = detected_group.lower()
+            # Map to one of the 3 real LG directories only
+            if detected_group_lower == "controls_delirium" or detected_group_lower == "controls_coma":
                 data_root_path = os.path.join(
                     base_input_data_path, "LG_CONTROLS_0.5")
-            elif group_affiliation_lower in ["del", "nodel"]:
+            elif detected_group_lower == "delirium+":
                 data_root_path = os.path.join(
-                    base_input_data_path,
-                    f"LG_PATIENTS_{detected_group.upper()}_0.5"
+                    base_input_data_path, "LG_PATIENTS_DELIRIUM+_0.5"
                 )
-            elif group_affiliation_lower in ["delirium +", "delirium+"]:
+            elif detected_group_lower == "delirium-":
                 data_root_path = os.path.join(
-                    base_input_data_path, "LG_PATIENTS_DEL_0.5"
+                    base_input_data_path, "LG_PATIENTS_DELIRIUM-_0.5"
                 )
-            elif group_affiliation_lower in ["delirium -", "delirium-"]:
-                data_root_path = os.path.join(
-                    base_input_data_path, "LG_PATIENTS_NODEL_0.5"
+        else:  # Generic fallback - try to map to one of the 3 real directories
+            if "control" in group_affiliation.lower():
+                potential_path_generic = os.path.join(
+                    base_input_data_path, "LG_CONTROLS_0.5"
                 )
-        else:  # Generic fallback
-            potential_path_generic = os.path.join(
-                base_input_data_path, f"LG_{group_affiliation.upper()}_0.5"
-            )
-            if os.path.isdir(potential_path_generic):
-                data_root_path = potential_path_generic
-            else:
-                # Try alternative mappings for DELIRIUM groups
-                if "delirium" in group_affiliation.lower():
-                    if "+" in group_affiliation:
-                        alt_path = os.path.join(
-                            base_input_data_path, "LG_PATIENTS_DEL_0.5")
-                    elif "-" in group_affiliation:
-                        alt_path = os.path.join(
-                            base_input_data_path, "LG_PATIENTS_NODEL_0.5")
-                    else:
-                        alt_path = None
-
-                    if alt_path and os.path.isdir(alt_path):
-                        data_root_path = alt_path
-                    else:
-                        data_root_path = base_input_data_path  # Last resort
+                if os.path.isdir(potential_path_generic):
+                    data_root_path = potential_path_generic
+            elif "delirium" in group_affiliation.lower():
+                if "+" in group_affiliation or "delirium+" in group_affiliation.lower():
+                    alt_path = os.path.join(
+                        base_input_data_path, "LG_PATIENTS_DELIRIUM+_0.5")
+                elif "-" in group_affiliation or "delirium-" in group_affiliation.lower():
+                    alt_path = os.path.join(
+                        base_input_data_path, "LG_PATIENTS_DELIRIUM-_0.5")
                 else:
-                    data_root_path = base_input_data_path  # Last resort
+                    alt_path = None
+
+                if alt_path and os.path.isdir(alt_path):
+                    data_root_path = alt_path
 
     if not data_root_path or not os.path.isdir(data_root_path):
         logger_data_loading.error(
@@ -153,9 +138,9 @@ def load_epochs_data_for_lg_decoding(
             subject_identifier, group_affiliation, data_root_path,
             base_input_data_path
         )
-        return None, {}
+        return None, {}, "unknown"
 
-    # Les fichiers sont directement dans le dossier racine, pas dans data_epochs/
+   
     possible_subject_ids = [subject_identifier,
                             subject_identifier.replace("Tp", "")]
     # Priority order: ICA_ar > ICA > noICA_ar > noICA
@@ -181,7 +166,7 @@ def load_epochs_data_for_lg_decoding(
             subject_identifier, data_root_path,
             len(fname_candidates), fname_candidates[:5]
         )
-        return None, {}
+        return None, {}, "unknown"
 
     if verbose_logging:
         logger_data_loading.info(
@@ -208,7 +193,7 @@ def load_epochs_data_for_lg_decoding(
             "Failed to read LG epochs file '%s' for subject '%s': %s",
             epochs_fif_filename, subject_identifier, e, exc_info=True,
         )
-        return None, {}
+        return None, {}, "unknown"
 
     num_eeg_channels = len(epochs_object.copy().pick(picks="eeg").ch_names)
     num_time_points = len(epochs_object.times)
@@ -320,4 +305,15 @@ def load_epochs_data_for_lg_decoding(
             "  LG Data shapes for '%s': %s. Loaded in %.2fs",
             subject_identifier, shapes_log, time.time() - start_time
         )
-    return epochs_object, extracted_data
+    
+    # Determine detected protocol based on the data path
+    detected_protocol = "LG"  # Default for Local-Global protocol
+    if data_root_path:
+        if "CONTROLS" in data_root_path:
+            detected_protocol = "LG_CONTROLS"
+        elif "PATIENTS_DELIRIUM+" in data_root_path:
+            detected_protocol = "LG_PATIENTS_DELIRIUMM+"
+        elif "PATIENTS_DELIRIUM-" in data_root_path:
+            detected_protocol = "LG_PATIENTS_DELIRIUM-"
+    
+    return epochs_object, extracted_data, detected_protocol

@@ -1,0 +1,129 @@
+=== RÉSUMÉ DE L'ANALYSE COMPLÈTE PAR PROTOCOLE ===
+
+Date d'analyse: 2025-07-03 09:27:13
+
+=== AMÉLIORATIONS APPORTÉES ===
+- Intensité de couleur basée sur les scores (éloignement du niveau de chance)
+- Étiquettes de région explicitées (PP/AP main, Early Response, Late Response)
+- Standardisation à 601 points temporels avec gestion des longueurs variables
+- Extraction améliorée des IDs de sujet
+- Plots combinés FDR/Cluster sur la même page
+- Légendes améliorées avec indication d'intensité
+
+PROTOCOLE: protocol_Delirium
+--------------------------------------------------
+Nombre total de sujets: 51
+Groupes analysés: 3
+
+  - Delirium +: 19 sujets
+    Score moyen global: 0.500
+    Sujets avec FDR significatif: 5
+    Sujets avec cluster significatif: 8
+
+  - Controls (Delirium): 12 sujets
+    Score moyen global: 0.530
+    Sujets avec FDR significatif: 8
+    Sujets avec cluster significatif: 10
+
+  - Delirium -: 20 sujets
+    Score moyen global: 0.534
+    Sujets avec FDR significatif: 13
+    Sujets avec cluster significatif: 16
+
+Visualisations créées: 2
+  - protocol_Delirium_group_means_with_fdr.png
+  - protocol_Delirium_combined_subjects_fdr_cluster_pvalues.png
+
+============================================================
+
+PROTOCOLE: protocol_Battery
+--------------------------------------------------
+Nombre total de sujets: 25
+Groupes analysés: 4
+
+  - Controls (Coma): 1 sujets
+    Score moyen global: 0.479
+    Sujets avec FDR significatif: 0
+    Sujets avec cluster significatif: 0
+
+  - MCS+: 11 sujets
+    Score moyen global: 0.516
+    Sujets avec FDR significatif: 0
+    Sujets avec cluster significatif: 0
+
+  - Coma: 8 sujets
+    Score moyen global: 0.494
+    Sujets avec FDR significatif: 0
+    Sujets avec cluster significatif: 0
+
+  - VS/UWS: 5 sujets
+    Score moyen global: 0.508
+    Sujets avec FDR significatif: 0
+    Sujets avec cluster significatif: 0
+
+Visualisations créées: 2
+  - protocol_Battery_group_means_with_fdr.png
+  - protocol_Battery_combined_subjects_fdr_cluster_pvalues.png
+
+============================================================
+
+PROTOCOLE: protocol_PPext3
+--------------------------------------------------
+Nombre total de sujets: 61
+Groupes analysés: 5
+
+  - Controls (Coma): 21 sujets
+    Score moyen global: 0.544
+    Sujets avec FDR significatif: 0
+    Sujets avec cluster significatif: 0
+
+  - group_MCS-: 6 sujets
+    Score moyen global: 0.503
+    Sujets avec FDR significatif: 0
+    Sujets avec cluster significatif: 0
+
+  - MCS+: 1 sujets
+    Score moyen global: 0.540
+    Sujets avec FDR significatif: 0
+    Sujets avec cluster significatif: 0
+
+  - Coma: 25 sujets
+    Score moyen global: 0.498
+    Sujets avec FDR significatif: 0
+    Sujets avec cluster significatif: 0
+
+  - VS/UWS: 8 sujets
+    Score moyen global: 0.509
+    Sujets avec FDR significatif: 0
+    Sujets avec cluster significatif: 0
+
+Visualisations créées: 2
+  - protocol_PPext3_group_means_with_fdr.png
+  - protocol_PPext3_combined_subjects_fdr_cluster_pvalues.png
+
+============================================================
+
+PROTOCOLE: protocol_LG
+--------------------------------------------------
+Nombre total de sujets: 46
+Groupes analysés: 3
+
+  - Delirium +: 18 sujets
+    Score moyen global: 0.515
+    Sujets avec FDR significatif: 11
+    Sujets avec cluster significatif: 10
+
+  - Controls (Delirium): 11 sujets
+    Score moyen global: 0.527
+    Sujets avec FDR significatif: 10
+    Sujets avec cluster significatif: 10
+
+  - Delirium -: 17 sujets
+    Score moyen global: 0.526
+    Sujets avec FDR significatif: 15
+    Sujets avec cluster significatif: 14
+
+Visualisations créées: 0
+
+============================================================
+

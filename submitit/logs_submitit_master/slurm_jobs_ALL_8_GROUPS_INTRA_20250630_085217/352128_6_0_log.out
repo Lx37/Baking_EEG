@@ -1,0 +1,9 @@
+submitit INFO (2025-06-30 08:52:18,985) - Starting with JobEnvironment(job_id=352128_6, hostname=node9, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-30 08:52:18,985) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/logs_submitit_master/slurm_jobs_ALL_8_GROUPS_INTRA_20250630_085217/352128_6_submitted.pkl
+DEBUG Worker - project_root: /home/tom.balay/Baking_EEG
+DEBUG Worker - parent_dir: /home/tom.balay
+DEBUG Worker - sys.path: ['/home/tom.balay', '/home/tom.balay/Baking_EEG', '/home/tom.balay/Baking_EEG/submitit']...
+2025-06-30 08:52:22,309 - INFO - examples.run_decoding_one_pp - [<module>:943] - 
+========== EEG SINGLE SUBJECT DECODING SCRIPT FINISHED (2025-06-30 08:52) ==========
+submitit ERROR (2025-06-30 08:52:22,326) - Submitted job triggered an exception
+2025-06-30 08:52:22,326 - ERROR - submitit - [process_job:68] - Submitted job triggered an exception

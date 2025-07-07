@@ -1,0 +1,847 @@
+submitit INFO (2025-06-30 08:56:12,720) - Starting with JobEnvironment(job_id=352137_1, hostname=node4, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-30 08:56:12,720) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/logs_submitit_master/slurm_jobs_ALL_8_GROUPS_INTRA_20250630_085610/352137_1_submitted.pkl
+DEBUG Worker - project_root: /home/tom.balay/Baking_EEG
+DEBUG Worker - parent_dir: /home/tom.balay
+DEBUG Worker - sys.path: ['/home/tom.balay', '/home/tom.balay/Baking_EEG', '/home/tom.balay/Baking_EEG/submitit']...
+2025-06-30 08:56:14,963 - INFO - examples.run_decoding_one_group_pp - [<module>:39] - Tentative d'import de execute_single_subject_decoding...
+2025-06-30 08:56:14,963 - INFO - examples.run_decoding_one_group_pp - [<module>:42] - ✅ Import de execute_single_subject_decoding réussi
+2025-06-30 08:56:14,965 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:120] - Starting intra-subject decoding loop for GROUP: CONTROLS_COMA. GS: False, CSP: False, ANOVA FS: True. n_jobs_subj: 40.
+2025-06-30 08:56:14,965 - INFO - examples.run_decoding_one_group_pp - [execute_group_intra_subject_decoding_analysis:130] - 
+--- Group 'CONTROLS_COMA': Processing Subject 1/25: AO05 ---
+2025-06-30 08:56:14,965 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:258] - Starting decoding for subject: AO05 (Group: CONTROLS_COMA, Task Set ID: Group_Intra_CONTROLS_COMA_Subj_AO05, Classifier: svc, GS: False, CSP (temp): False, ANOVA FS (temp): True, n_jobs: 40)
+2025-06-30 08:56:15,410 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:455] - CRITICAL: No data loaded for ANY specified conditions for subject AO05.
+2025-06-30 08:56:15,411 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:462] - Empty data array for condition 'temp' (specifier: 'AP') for subject AO05.
+2025-06-30 08:56:15,411 - INFO - utils.loading_PP_utils - [detect_protocol_type:713] - Detected PPext3 protocol: 126 Music/Noise events, 126 Conv/Dio events, 273 total events
+2025-06-30 08:56:15,411 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:873] - Auto-detected protocol 'ppext3' for subject 'AO05' (file hint: ppext3)
+2025-06-30 08:56:15,411 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_ppext3:604] - Loading PPext3 protocol data for subject 'AO05' (group: CONTROLS_COMA)
+2025-06-30 08:56:15,411 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_ppext3:608] - PPext3 protocol conditions: ['XPP_ALL', 'XAP_ALL']
+2025-06-30 08:56:15,411 - INFO - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:84] - Found epochs file: /mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_COMA_01HZ/PPext3/AO05_preproc_ICA_PPAP-epo_ar.fif (protocol: ppext3)
+2025-06-30 08:56:15,412 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:301] - Loading epoch data for subject 'AO05' from: /mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_COMA_01HZ/PPext3/AO05_preproc_ICA_PPAP-epo_ar.fif (file protocol: ppext3)
+2025-06-30 08:56:15,668 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:312] - Event IDs available for AO05:
+2025-06-30 08:56:15,668 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Noise/Dio/V1': 110
+2025-06-30 08:56:15,668 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Noise/Dio/V2': 120
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Noise/Dio/V3': 130
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Noise/Conv/G/V1': 140
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Noise/Conv/G/V2': 150
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Noise/Conv/G/V3': 160
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Noise/Conv/D/V1': 170
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Noise/Conv/D/V2': 180
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Noise/Conv/D/V3': 190
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Dio/V1': 1110
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Dio/V2': 1120
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Dio/V3': 1130
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/G/V1': 1140
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/G/V2': 1150
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/G/V3': 1160
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/D/V1': 1170
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/D/V2': 1180
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/D/V3': 1190
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Noise/Dio/V1': 2111
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Noise/Dio/V2': 2121
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Noise/Dio/V3': 2131
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Noise/Conv/G/V1': 2141
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Noise/Conv/G/V2': 2151
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Noise/Conv/G/V3': 2161
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Noise/Conv/D/V1': 2171
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Noise/Conv/D/V2': 2181
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Noise/Conv/D/V3': 2191
+2025-06-30 08:56:15,669 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Dio/V1': 3111
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Dio/V2': 3121
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Dio/V3': 3131
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/G/V1': 3141
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/G/V2': 3151
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/G/V3': 3161
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/D/V1': 3171
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/D/V2': 3181
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/D/V3': 3191
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Noise/Dio/V1': 2112
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Noise/Dio/V2': 2122
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Noise/Dio/V3': 2132
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Noise/Conv/G/V1': 2142
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Noise/Conv/G/V2': 2152
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Noise/Conv/G/V3': 2162
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Noise/Conv/D/V1': 2172
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Noise/Conv/D/V2': 2182
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Noise/Conv/D/V3': 2192
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Dio/V1': 3112
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Dio/V2': 3122
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Dio/V3': 3132
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/G/V1': 3142
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/G/V2': 3152
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/G/V3': 3162
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/D/V1': 3172
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/D/V2': 3182
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/D/V3': 3192
+2025-06-30 08:56:15,670 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Noise/Dio/V1': 2113
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Noise/Dio/V2': 2123
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Noise/Dio/V3': 2133
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Noise/Conv/G/V1': 2143
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Noise/Conv/G/V2': 2153
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Noise/Conv/G/V3': 2163
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Noise/Conv/D/V1': 2173
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Noise/Conv/D/V2': 2183
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Noise/Conv/D/V3': 2193
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Dio/V1': 3113
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Dio/V2': 3123
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Dio/V3': 3133
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/G/V1': 3143
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/G/V2': 3153
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/G/V3': 3163
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/D/V1': 3173
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/D/V2': 3183
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/D/V3': 3193
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Noise/Dio/V1': 2114
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Noise/Dio/V2': 2124
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Noise/Dio/V3': 2134
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Noise/Conv/G/V1': 2144
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Noise/Conv/G/V2': 2154
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Noise/Conv/G/V3': 2164
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Noise/Conv/D/V1': 2174
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Noise/Conv/D/V2': 2184
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Noise/Conv/D/V3': 2194
+2025-06-30 08:56:15,671 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Dio/V1': 3114
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Dio/V2': 3124
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Dio/V3': 3134
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/G/V1': 3144
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/G/V2': 3154
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/G/V3': 3164
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/D/V1': 3174
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/D/V2': 3184
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/D/V3': 3194
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Noise/Dio/V1': 2115
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Noise/Dio/V2': 2125
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Noise/Dio/V3': 2135
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Noise/Conv/G/V1': 2145
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Noise/Conv/G/V2': 2155
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Noise/Conv/G/V3': 2165
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Noise/Conv/D/V1': 2175
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Noise/Conv/D/V2': 2185
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Noise/Conv/D/V3': 2195
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Dio/V1': 3115
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Dio/V2': 3125
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Dio/V3': 3135
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/G/V1': 3145
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/G/V2': 3155
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/G/V3': 3165
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/D/V1': 3175
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/D/V2': 3185
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/D/V3': 3195
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Noise/Dio/V1': 2116
+2025-06-30 08:56:15,672 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Noise/Dio/V2': 2126
+2025-06-30 08:56:15,673 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Noise/Dio/V3': 2136
+2025-06-30 08:56:15,673 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Noise/Conv/G/V1': 2146
+2025-06-30 08:56:15,673 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Noise/Conv/G/V2': 2156
+2025-06-30 08:56:15,673 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Noise/Conv/G/V3': 2166
+2025-06-30 08:56:15,673 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Noise/Conv/D/V1': 2176
+2025-06-30 08:56:15,673 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Noise/Conv/D/V2': 2186
+2025-06-30 08:56:15,673 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Noise/Conv/D/V3': 2196
+2025-06-30 08:56:15,673 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Dio/V1': 3116
+2025-06-30 08:56:15,673 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Dio/V2': 3126
+2025-06-30 08:56:15,673 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Dio/V3': 3136
+2025-06-30 08:56:15,673 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/G/V1': 3146
+2025-06-30 08:56:15,673 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/G/V2': 3156
+2025-06-30 08:56:15,673 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/G/V3': 3166
+2025-06-30 08:56:15,673 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/D/V1': 3176
+2025-06-30 08:56:15,673 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/D/V2': 3186
+2025-06-30 08:56:15,673 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/D/V3': 3196
+2025-06-30 08:56:15,702 - INFO - utils.loading_PP_utils - [inspect_epochs_events:925] - === EVENT INSPECTION FOR AO05 ===
+2025-06-30 08:56:15,702 - INFO - utils.loading_PP_utils - [inspect_epochs_events:928] - File: /mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_COMA_01HZ/PPext3/AO05_preproc_ICA_PPAP-epo_ar.fif
+2025-06-30 08:56:15,702 - INFO - utils.loading_PP_utils - [inspect_epochs_events:929] - Total events: 273
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:930] - Event types and counts:
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Noise/Dio/V1' (code 110): 12 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Noise/Dio/V2' (code 120): 12 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Noise/Dio/V3' (code 130): 11 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Noise/Conv/G/V1' (code 140): 0 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Noise/Conv/G/V2' (code 150): 12 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Noise/Conv/G/V3' (code 160): 6 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Noise/Conv/D/V1' (code 170): 12 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Noise/Conv/D/V2' (code 180): 0 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Noise/Conv/D/V3' (code 190): 6 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Music/Dio/V1' (code 1110): 12 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Music/Dio/V2' (code 1120): 12 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Music/Dio/V3' (code 1130): 11 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Music/Conv/G/V1' (code 1140): 0 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Music/Conv/G/V2' (code 1150): 11 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Music/Conv/G/V3' (code 1160): 5 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Music/Conv/D/V1' (code 1170): 9 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Music/Conv/D/V2' (code 1180): 0 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Music/Conv/D/V3' (code 1190): 6 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Noise/Dio/V1' (code 2111): 1 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Noise/Dio/V2' (code 2121): 2 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Noise/Dio/V3' (code 2131): 2 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Noise/Conv/G/V1' (code 2141): 0 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Noise/Conv/G/V2' (code 2151): 3 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Noise/Conv/G/V3' (code 2161): 1 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Noise/Conv/D/V1' (code 2171): 1 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Noise/Conv/D/V2' (code 2181): 0 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Noise/Conv/D/V3' (code 2191): 1 epochs
+2025-06-30 08:56:15,703 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Music/Dio/V1' (code 3111): 3 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Music/Dio/V2' (code 3121): 2 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Music/Dio/V3' (code 3131): 1 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Music/Conv/G/V1' (code 3141): 0 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Music/Conv/G/V2' (code 3151): 2 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Music/Conv/G/V3' (code 3161): 0 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Music/Conv/D/V1' (code 3171): 4 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Music/Conv/D/V2' (code 3181): 0 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Music/Conv/D/V3' (code 3191): 0 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Noise/Dio/V1' (code 2112): 4 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Noise/Dio/V2' (code 2122): 1 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Noise/Dio/V3' (code 2132): 1 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Noise/Conv/G/V1' (code 2142): 0 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Noise/Conv/G/V2' (code 2152): 2 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Noise/Conv/G/V3' (code 2162): 1 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Noise/Conv/D/V1' (code 2172): 2 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Noise/Conv/D/V2' (code 2182): 0 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Noise/Conv/D/V3' (code 2192): 2 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Music/Dio/V1' (code 3112): 3 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Music/Dio/V2' (code 3122): 5 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Music/Dio/V3' (code 3132): 1 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Music/Conv/G/V1' (code 3142): 0 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Music/Conv/G/V2' (code 3152): 1 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Music/Conv/G/V3' (code 3162): 1 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Music/Conv/D/V1' (code 3172): 1 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Music/Conv/D/V2' (code 3182): 0 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Music/Conv/D/V3' (code 3192): 1 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Noise/Dio/V1' (code 2113): 5 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Noise/Dio/V2' (code 2123): 3 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Noise/Dio/V3' (code 2133): 2 epochs
+2025-06-30 08:56:15,704 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Noise/Conv/G/V1' (code 2143): 0 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Noise/Conv/G/V2' (code 2153): 2 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Noise/Conv/G/V3' (code 2163): 0 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Noise/Conv/D/V1' (code 2173): 3 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Noise/Conv/D/V2' (code 2183): 0 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Noise/Conv/D/V3' (code 2193): 0 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Music/Dio/V1' (code 3113): 2 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Music/Dio/V2' (code 3123): 0 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Music/Dio/V3' (code 3133): 1 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Music/Conv/G/V1' (code 3143): 0 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Music/Conv/G/V2' (code 3153): 2 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Music/Conv/G/V3' (code 3163): 1 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Music/Conv/D/V1' (code 3173): 1 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Music/Conv/D/V2' (code 3183): 0 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Music/Conv/D/V3' (code 3193): 2 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Noise/Dio/V1' (code 2114): 1 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Noise/Dio/V2' (code 2124): 3 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Noise/Dio/V3' (code 2134): 2 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Noise/Conv/G/V1' (code 2144): 0 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Noise/Conv/G/V2' (code 2154): 1 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Noise/Conv/G/V3' (code 2164): 1 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Noise/Conv/D/V1' (code 2174): 3 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Noise/Conv/D/V2' (code 2184): 0 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Noise/Conv/D/V3' (code 2194): 1 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Music/Dio/V1' (code 3114): 2 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Music/Dio/V2' (code 3124): 1 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Music/Dio/V3' (code 3134): 2 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Music/Conv/G/V1' (code 3144): 0 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Music/Conv/G/V2' (code 3154): 3 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Music/Conv/G/V3' (code 3164): 1 epochs
+2025-06-30 08:56:15,705 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Music/Conv/D/V1' (code 3174): 2 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Music/Conv/D/V2' (code 3184): 0 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Music/Conv/D/V3' (code 3194): 1 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Noise/Dio/V1' (code 2115): 1 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Noise/Dio/V2' (code 2125): 1 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Noise/Dio/V3' (code 2135): 2 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Noise/Conv/G/V1' (code 2145): 0 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Noise/Conv/G/V2' (code 2155): 2 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Noise/Conv/G/V3' (code 2165): 2 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Noise/Conv/D/V1' (code 2175): 2 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Noise/Conv/D/V2' (code 2185): 0 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Noise/Conv/D/V3' (code 2195): 1 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Music/Dio/V1' (code 3115): 0 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Music/Dio/V2' (code 3125): 2 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Music/Dio/V3' (code 3135): 4 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Music/Conv/G/V1' (code 3145): 0 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Music/Conv/G/V2' (code 3155): 2 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Music/Conv/G/V3' (code 3165): 1 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Music/Conv/D/V1' (code 3175): 2 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Music/Conv/D/V2' (code 3185): 0 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Music/Conv/D/V3' (code 3195): 1 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Noise/Dio/V1' (code 2116): 0 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Noise/Dio/V2' (code 2126): 1 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Noise/Dio/V3' (code 2136): 3 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Noise/Conv/G/V1' (code 2146): 0 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Noise/Conv/G/V2' (code 2156): 1 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Noise/Conv/G/V3' (code 2166): 0 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Noise/Conv/D/V1' (code 2176): 1 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Noise/Conv/D/V2' (code 2186): 0 epochs
+2025-06-30 08:56:15,706 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Noise/Conv/D/V3' (code 2196): 1 epochs
+2025-06-30 08:56:15,707 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Music/Dio/V1' (code 3116): 1 epochs
+2025-06-30 08:56:15,707 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Music/Dio/V2' (code 3126): 2 epochs
+2025-06-30 08:56:15,707 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Music/Dio/V3' (code 3136): 3 epochs
+2025-06-30 08:56:15,707 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Music/Conv/G/V1' (code 3146): 0 epochs
+2025-06-30 08:56:15,707 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Music/Conv/G/V2' (code 3156): 1 epochs
+2025-06-30 08:56:15,707 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Music/Conv/G/V3' (code 3166): 0 epochs
+2025-06-30 08:56:15,707 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Music/Conv/D/V1' (code 3176): 2 epochs
+2025-06-30 08:56:15,707 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Music/Conv/D/V2' (code 3186): 0 epochs
+2025-06-30 08:56:15,707 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Music/Conv/D/V3' (code 3196): 0 epochs
+2025-06-30 08:56:15,845 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:342] - Processing conditions: ['XPP_ALL', 'XAP_ALL']
+2025-06-30 08:56:16,008 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:472] -   Data shapes for 'AO05': XPP_ALL=(137, 124, 601), XAP_ALL=(136, 124, 601). Loaded in 0.60s
+2025-06-30 08:56:16,008 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_ppext3:627] - PPext3 protocol loaded: 273 total epochs for subject 'AO05'
+2025-06-30 08:56:16,008 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_ppext3:647] - PPext3 events detected: 126 total, 126 Music/Noise, 126 Conv/Dio
+2025-06-30 08:56:16,009 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:274] - Detected protocol 'ppext3' for subject AO05
+2025-06-30 08:56:16,406 - ERROR - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:455] - CRITICAL: No data loaded for ANY specified conditions for subject AO05.
+2025-06-30 08:56:16,406 - WARNING - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:462] - Empty data array for condition 'temp' (specifier: 'AP') for subject AO05.
+2025-06-30 08:56:16,406 - INFO - utils.loading_PP_utils - [detect_protocol_type:713] - Detected PPext3 protocol: 126 Music/Noise events, 126 Conv/Dio events, 273 total events
+2025-06-30 08:56:16,406 - INFO - utils.loading_PP_utils - [load_epochs_data_auto_protocol:873] - Auto-detected protocol 'ppext3' for subject 'AO05' (file hint: ppext3)
+2025-06-30 08:56:16,406 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_ppext3:604] - Loading PPext3 protocol data for subject 'AO05' (group: CONTROLS_COMA)
+2025-06-30 08:56:16,406 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_ppext3:608] - PPext3 protocol conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-30 08:56:16,407 - INFO - utils.loading_PP_utils - [find_epochs_file_with_protocol_detection:84] - Found epochs file: /mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_COMA_01HZ/PPext3/AO05_preproc_ICA_PPAP-epo_ar.fif (protocol: ppext3)
+2025-06-30 08:56:16,407 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:301] - Loading epoch data for subject 'AO05' from: /mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_COMA_01HZ/PPext3/AO05_preproc_ICA_PPAP-epo_ar.fif (file protocol: ppext3)
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:312] - Event IDs available for AO05:
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Noise/Dio/V1': 110
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Noise/Dio/V2': 120
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Noise/Dio/V3': 130
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Noise/Conv/G/V1': 140
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Noise/Conv/G/V2': 150
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Noise/Conv/G/V3': 160
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Noise/Conv/D/V1': 170
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Noise/Conv/D/V2': 180
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Noise/Conv/D/V3': 190
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Dio/V1': 1110
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Dio/V2': 1120
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Dio/V3': 1130
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/G/V1': 1140
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/G/V2': 1150
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/G/V3': 1160
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/D/V1': 1170
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/D/V2': 1180
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'PP/Music/Conv/D/V3': 1190
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Noise/Dio/V1': 2111
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Noise/Dio/V2': 2121
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Noise/Dio/V3': 2131
+2025-06-30 08:56:16,658 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Noise/Conv/G/V1': 2141
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Noise/Conv/G/V2': 2151
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Noise/Conv/G/V3': 2161
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Noise/Conv/D/V1': 2171
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Noise/Conv/D/V2': 2181
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Noise/Conv/D/V3': 2191
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Dio/V1': 3111
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Dio/V2': 3121
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Dio/V3': 3131
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/G/V1': 3141
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/G/V2': 3151
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/G/V3': 3161
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/D/V1': 3171
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/D/V2': 3181
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/1/Music/Conv/D/V3': 3191
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Noise/Dio/V1': 2112
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Noise/Dio/V2': 2122
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Noise/Dio/V3': 2132
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Noise/Conv/G/V1': 2142
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Noise/Conv/G/V2': 2152
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Noise/Conv/G/V3': 2162
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Noise/Conv/D/V1': 2172
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Noise/Conv/D/V2': 2182
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Noise/Conv/D/V3': 2192
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Dio/V1': 3112
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Dio/V2': 3122
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Dio/V3': 3132
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/G/V1': 3142
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/G/V2': 3152
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/G/V3': 3162
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/D/V1': 3172
+2025-06-30 08:56:16,659 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/D/V2': 3182
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/2/Music/Conv/D/V3': 3192
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Noise/Dio/V1': 2113
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Noise/Dio/V2': 2123
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Noise/Dio/V3': 2133
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Noise/Conv/G/V1': 2143
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Noise/Conv/G/V2': 2153
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Noise/Conv/G/V3': 2163
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Noise/Conv/D/V1': 2173
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Noise/Conv/D/V2': 2183
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Noise/Conv/D/V3': 2193
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Dio/V1': 3113
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Dio/V2': 3123
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Dio/V3': 3133
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/G/V1': 3143
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/G/V2': 3153
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/G/V3': 3163
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/D/V1': 3173
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/D/V2': 3183
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/3/Music/Conv/D/V3': 3193
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Noise/Dio/V1': 2114
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Noise/Dio/V2': 2124
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Noise/Dio/V3': 2134
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Noise/Conv/G/V1': 2144
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Noise/Conv/G/V2': 2154
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Noise/Conv/G/V3': 2164
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Noise/Conv/D/V1': 2174
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Noise/Conv/D/V2': 2184
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Noise/Conv/D/V3': 2194
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Dio/V1': 3114
+2025-06-30 08:56:16,660 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Dio/V2': 3124
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Dio/V3': 3134
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/G/V1': 3144
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/G/V2': 3154
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/G/V3': 3164
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/D/V1': 3174
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/D/V2': 3184
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/4/Music/Conv/D/V3': 3194
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Noise/Dio/V1': 2115
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Noise/Dio/V2': 2125
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Noise/Dio/V3': 2135
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Noise/Conv/G/V1': 2145
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Noise/Conv/G/V2': 2155
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Noise/Conv/G/V3': 2165
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Noise/Conv/D/V1': 2175
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Noise/Conv/D/V2': 2185
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Noise/Conv/D/V3': 2195
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Dio/V1': 3115
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Dio/V2': 3125
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Dio/V3': 3135
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/G/V1': 3145
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/G/V2': 3155
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/G/V3': 3165
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/D/V1': 3175
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/D/V2': 3185
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/5/Music/Conv/D/V3': 3195
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Noise/Dio/V1': 2116
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Noise/Dio/V2': 2126
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Noise/Dio/V3': 2136
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Noise/Conv/G/V1': 2146
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Noise/Conv/G/V2': 2156
+2025-06-30 08:56:16,661 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Noise/Conv/G/V3': 2166
+2025-06-30 08:56:16,662 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Noise/Conv/D/V1': 2176
+2025-06-30 08:56:16,662 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Noise/Conv/D/V2': 2186
+2025-06-30 08:56:16,662 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Noise/Conv/D/V3': 2196
+2025-06-30 08:56:16,662 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Dio/V1': 3116
+2025-06-30 08:56:16,662 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Dio/V2': 3126
+2025-06-30 08:56:16,662 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Dio/V3': 3136
+2025-06-30 08:56:16,662 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/G/V1': 3146
+2025-06-30 08:56:16,662 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/G/V2': 3156
+2025-06-30 08:56:16,662 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/G/V3': 3166
+2025-06-30 08:56:16,662 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/D/V1': 3176
+2025-06-30 08:56:16,662 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/D/V2': 3186
+2025-06-30 08:56:16,662 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:316] -   - 'AP/6/Music/Conv/D/V3': 3196
+2025-06-30 08:56:16,690 - INFO - utils.loading_PP_utils - [inspect_epochs_events:925] - === EVENT INSPECTION FOR AO05 ===
+2025-06-30 08:56:16,690 - INFO - utils.loading_PP_utils - [inspect_epochs_events:928] - File: /mnt/data/tom.balay/data/Baking_EEG_data/PP_CONTROLS_COMA_01HZ/PPext3/AO05_preproc_ICA_PPAP-epo_ar.fif
+2025-06-30 08:56:16,690 - INFO - utils.loading_PP_utils - [inspect_epochs_events:929] - Total events: 273
+2025-06-30 08:56:16,690 - INFO - utils.loading_PP_utils - [inspect_epochs_events:930] - Event types and counts:
+2025-06-30 08:56:16,690 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Noise/Dio/V1' (code 110): 12 epochs
+2025-06-30 08:56:16,690 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Noise/Dio/V2' (code 120): 12 epochs
+2025-06-30 08:56:16,690 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Noise/Dio/V3' (code 130): 11 epochs
+2025-06-30 08:56:16,690 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Noise/Conv/G/V1' (code 140): 0 epochs
+2025-06-30 08:56:16,690 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Noise/Conv/G/V2' (code 150): 12 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Noise/Conv/G/V3' (code 160): 6 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Noise/Conv/D/V1' (code 170): 12 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Noise/Conv/D/V2' (code 180): 0 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Noise/Conv/D/V3' (code 190): 6 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Music/Dio/V1' (code 1110): 12 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Music/Dio/V2' (code 1120): 12 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Music/Dio/V3' (code 1130): 11 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Music/Conv/G/V1' (code 1140): 0 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Music/Conv/G/V2' (code 1150): 11 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Music/Conv/G/V3' (code 1160): 5 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Music/Conv/D/V1' (code 1170): 9 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Music/Conv/D/V2' (code 1180): 0 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'PP/Music/Conv/D/V3' (code 1190): 6 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Noise/Dio/V1' (code 2111): 1 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Noise/Dio/V2' (code 2121): 2 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Noise/Dio/V3' (code 2131): 2 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Noise/Conv/G/V1' (code 2141): 0 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Noise/Conv/G/V2' (code 2151): 3 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Noise/Conv/G/V3' (code 2161): 1 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Noise/Conv/D/V1' (code 2171): 1 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Noise/Conv/D/V2' (code 2181): 0 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Noise/Conv/D/V3' (code 2191): 1 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Music/Dio/V1' (code 3111): 3 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Music/Dio/V2' (code 3121): 2 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Music/Dio/V3' (code 3131): 1 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Music/Conv/G/V1' (code 3141): 0 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Music/Conv/G/V2' (code 3151): 2 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Music/Conv/G/V3' (code 3161): 0 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Music/Conv/D/V1' (code 3171): 4 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Music/Conv/D/V2' (code 3181): 0 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/1/Music/Conv/D/V3' (code 3191): 0 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Noise/Dio/V1' (code 2112): 4 epochs
+2025-06-30 08:56:16,691 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Noise/Dio/V2' (code 2122): 1 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Noise/Dio/V3' (code 2132): 1 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Noise/Conv/G/V1' (code 2142): 0 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Noise/Conv/G/V2' (code 2152): 2 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Noise/Conv/G/V3' (code 2162): 1 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Noise/Conv/D/V1' (code 2172): 2 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Noise/Conv/D/V2' (code 2182): 0 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Noise/Conv/D/V3' (code 2192): 2 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Music/Dio/V1' (code 3112): 3 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Music/Dio/V2' (code 3122): 5 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Music/Dio/V3' (code 3132): 1 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Music/Conv/G/V1' (code 3142): 0 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Music/Conv/G/V2' (code 3152): 1 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Music/Conv/G/V3' (code 3162): 1 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Music/Conv/D/V1' (code 3172): 1 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Music/Conv/D/V2' (code 3182): 0 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/2/Music/Conv/D/V3' (code 3192): 1 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Noise/Dio/V1' (code 2113): 5 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Noise/Dio/V2' (code 2123): 3 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Noise/Dio/V3' (code 2133): 2 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Noise/Conv/G/V1' (code 2143): 0 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Noise/Conv/G/V2' (code 2153): 2 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Noise/Conv/G/V3' (code 2163): 0 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Noise/Conv/D/V1' (code 2173): 3 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Noise/Conv/D/V2' (code 2183): 0 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Noise/Conv/D/V3' (code 2193): 0 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Music/Dio/V1' (code 3113): 2 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Music/Dio/V2' (code 3123): 0 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Music/Dio/V3' (code 3133): 1 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Music/Conv/G/V1' (code 3143): 0 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Music/Conv/G/V2' (code 3153): 2 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Music/Conv/G/V3' (code 3163): 1 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Music/Conv/D/V1' (code 3173): 1 epochs
+2025-06-30 08:56:16,692 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Music/Conv/D/V2' (code 3183): 0 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/3/Music/Conv/D/V3' (code 3193): 2 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Noise/Dio/V1' (code 2114): 1 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Noise/Dio/V2' (code 2124): 3 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Noise/Dio/V3' (code 2134): 2 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Noise/Conv/G/V1' (code 2144): 0 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Noise/Conv/G/V2' (code 2154): 1 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Noise/Conv/G/V3' (code 2164): 1 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Noise/Conv/D/V1' (code 2174): 3 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Noise/Conv/D/V2' (code 2184): 0 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Noise/Conv/D/V3' (code 2194): 1 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Music/Dio/V1' (code 3114): 2 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Music/Dio/V2' (code 3124): 1 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Music/Dio/V3' (code 3134): 2 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Music/Conv/G/V1' (code 3144): 0 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Music/Conv/G/V2' (code 3154): 3 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Music/Conv/G/V3' (code 3164): 1 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Music/Conv/D/V1' (code 3174): 2 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Music/Conv/D/V2' (code 3184): 0 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/4/Music/Conv/D/V3' (code 3194): 1 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Noise/Dio/V1' (code 2115): 1 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Noise/Dio/V2' (code 2125): 1 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Noise/Dio/V3' (code 2135): 2 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Noise/Conv/G/V1' (code 2145): 0 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Noise/Conv/G/V2' (code 2155): 2 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Noise/Conv/G/V3' (code 2165): 2 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Noise/Conv/D/V1' (code 2175): 2 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Noise/Conv/D/V2' (code 2185): 0 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Noise/Conv/D/V3' (code 2195): 1 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Music/Dio/V1' (code 3115): 0 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Music/Dio/V2' (code 3125): 2 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Music/Dio/V3' (code 3135): 4 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Music/Conv/G/V1' (code 3145): 0 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Music/Conv/G/V2' (code 3155): 2 epochs
+2025-06-30 08:56:16,693 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Music/Conv/G/V3' (code 3165): 1 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Music/Conv/D/V1' (code 3175): 2 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Music/Conv/D/V2' (code 3185): 0 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/5/Music/Conv/D/V3' (code 3195): 1 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Noise/Dio/V1' (code 2116): 0 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Noise/Dio/V2' (code 2126): 1 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Noise/Dio/V3' (code 2136): 3 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Noise/Conv/G/V1' (code 2146): 0 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Noise/Conv/G/V2' (code 2156): 1 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Noise/Conv/G/V3' (code 2166): 0 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Noise/Conv/D/V1' (code 2176): 1 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Noise/Conv/D/V2' (code 2186): 0 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Noise/Conv/D/V3' (code 2196): 1 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Music/Dio/V1' (code 3116): 1 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Music/Dio/V2' (code 3126): 2 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Music/Dio/V3' (code 3136): 3 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Music/Conv/G/V1' (code 3146): 0 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Music/Conv/G/V2' (code 3156): 1 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Music/Conv/G/V3' (code 3166): 0 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Music/Conv/D/V1' (code 3176): 2 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Music/Conv/D/V2' (code 3186): 0 epochs
+2025-06-30 08:56:16,694 - INFO - utils.loading_PP_utils - [inspect_epochs_events:932] -   - 'AP/6/Music/Conv/D/V3' (code 3196): 0 epochs
+2025-06-30 08:56:16,832 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:342] - Processing conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-30 08:56:17,177 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_delirium:472] -   Data shapes for 'AO05': XPP_ALL=(137, 124, 601), XAP_ALL=(136, 124, 601), PP_FOR_SPECIFIC_COMPARISON=(137, 124, 601), AP_FAMILY_1=(23, 124, 601), AP_FAMILY_2=(26, 124, 601), AP_FAMILY_3=(24, 124, 601), AP_FAMILY_4=(24, 124, 601), AP_FAMILY_5=(23, 124, 601), AP_FAMILY_6=(16, 124, 601). Loaded in 0.77s
+2025-06-30 08:56:17,177 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_ppext3:627] - PPext3 protocol loaded: 546 total epochs for subject 'AO05'
+2025-06-30 08:56:17,177 - INFO - utils.loading_PP_utils - [load_epochs_data_for_decoding_ppext3:647] - PPext3 events detected: 126 total, 126 Music/Noise, 126 Conv/Dio
+2025-06-30 08:56:17,179 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:291] - Using protocol-specific loading configuration for ppext3: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-30 08:56:17,179 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:296] - Using loading conditions: ['XPP_ALL', 'XAP_ALL', 'PP_FOR_SPECIFIC_COMPARISON', 'AP_FAMILY_1', 'AP_FAMILY_2', 'AP_FAMILY_3', 'AP_FAMILY_4', 'AP_FAMILY_5', 'AP_FAMILY_6']
+2025-06-30 08:56:17,179 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:324] - Successfully loaded 546 total epochs across all conditions for AO05
+2025-06-30 08:56:17,179 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:338] - Protocol-specific settings for ppext3: CV folds=5, AP families=6, PP events=['PP/Music/', 'PP/Noise/', 'PP/Conv/', 'PP/Dio/']
+2025-06-30 08:56:17,179 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:363] - --- Starting Main Protocol Decoding for AO05 ---
+2025-06-30 08:56:17,179 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:366] -   --- 1. Main Decoding (e.g., PP/all vs AP/all) for AO05 ---
+2025-06-30 08:56:17,247 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:56:17,248 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:56:17,248 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:56:17,249 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:56:17,249 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:56:17,249 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:56:17,249 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:56:17,249 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:56:17,249 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:56:17,249 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 5 splits.
+2025-06-30 08:56:17,249 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:56:17,254 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:56:17,254 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 08:56:28,676 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.660
+2025-06-30 08:56:28,677 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 08:56:28,677 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-06-30 08:56:49,017 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.612 +/- 0.031
+2025-06-30 08:56:49,028 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.599', 'accuracy': '0.560', 'precision': '0.559', 'recall': '0.584', 'f1_score': '0.571', 'balanced_accuracy': '0.560'}
+2025-06-30 08:56:49,028 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (5, 601)
+2025-06-30 08:56:49,028 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 08:56:49,331 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-06-30 08:56:49,331 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (5, 601)
+2025-06-30 08:56:49,332 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-30 08:56:49,332 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 08:56:49,332 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-6.242188 max=15.246334
+Running initial clustering …
+Using 152 thresholds from 0.10 to 15.20 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-30 08:56:50,964 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-30 08:56:50,964 - INFO - utils.stats_utils - [perform_cluster_permutation_test:344] - No clusters found to be statistically significant (p < 0.05).
+2025-06-30 08:56:50,965 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:426] - Main Decoding for AO05 DONE. Mean Global AUC: 0.612
+2025-06-30 08:56:50,965 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:432] -   --- 2. Specific Task Comparisons (e.g. PP_spec vs AP_family_X) for AO05 ---
+2025-06-30 08:56:51,007 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:56:51,007 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:56:51,010 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:56:51,010 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:56:51,010 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:56:51,010 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:56:51,011 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:56:51,011 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:56:51,011 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:56:51,011 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 5 splits.
+2025-06-30 08:56:51,011 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:56:51,017 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:56:51,017 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 08:56:58,943 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.727
+2025-06-30 08:56:58,943 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 08:56:58,943 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-06-30 08:57:06,204 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.428 +/- 0.170
+2025-06-30 08:57:06,212 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.455', 'accuracy': '0.819', 'precision': '0.200', 'recall': '0.087', 'f1_score': '0.121', 'balanced_accuracy': '0.514'}
+2025-06-30 08:57:06,212 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (5, 601)
+2025-06-30 08:57:06,212 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 08:57:06,512 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-06-30 08:57:06,512 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (5, 601)
+2025-06-30 08:57:06,512 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-30 08:57:06,512 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 08:57:06,512 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-6.072907 max=7.749540
+Running initial clustering …
+Using 77 thresholds from 0.10 to 7.70 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-30 08:57:07,005 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-30 08:57:07,005 - INFO - utils.stats_utils - [perform_cluster_permutation_test:344] - No clusters found to be statistically significant (p < 0.05).
+2025-06-30 08:57:07,005 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:502] -   Specific task 'PP_spec vs AP Fam. 1' for AO05: Peak AUC = 0.727
+2025-06-30 08:57:07,048 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:57:07,048 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:57:07,049 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:57:07,049 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:57:07,049 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:57:07,050 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:57:07,050 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:57:07,050 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:57:07,050 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:57:07,050 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 5 splits.
+2025-06-30 08:57:07,050 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:57:07,057 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:57:07,057 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 08:57:15,279 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.796
+2025-06-30 08:57:15,280 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 08:57:15,280 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-06-30 08:57:22,503 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.417 +/- 0.054
+2025-06-30 08:57:22,512 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.394', 'accuracy': '0.785', 'precision': '0.154', 'recall': '0.077', 'f1_score': '0.103', 'balanced_accuracy': '0.498'}
+2025-06-30 08:57:22,512 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (5, 601)
+2025-06-30 08:57:22,512 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 08:57:22,808 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-06-30 08:57:22,809 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (5, 601)
+2025-06-30 08:57:22,809 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-30 08:57:22,809 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 08:57:22,809 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-7.759621 max=12.232270
+Running initial clustering …
+Using 122 thresholds from 0.10 to 12.20 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-30 08:57:23,272 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-30 08:57:23,273 - INFO - utils.stats_utils - [perform_cluster_permutation_test:344] - No clusters found to be statistically significant (p < 0.05).
+2025-06-30 08:57:23,273 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:502] -   Specific task 'PP_spec vs AP Fam. 2' for AO05: Peak AUC = 0.796
+2025-06-30 08:57:23,316 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:57:23,316 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:57:23,317 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:57:23,317 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:57:23,317 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:57:23,318 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:57:23,318 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:57:23,318 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:57:23,318 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:57:23,318 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 5 splits.
+2025-06-30 08:57:23,318 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:57:23,320 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:57:23,320 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 08:57:31,356 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.710
+2025-06-30 08:57:31,357 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 08:57:31,357 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-06-30 08:57:38,426 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.373 +/- 0.152
+2025-06-30 08:57:38,435 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.356', 'accuracy': '0.801', 'precision': '0.278', 'recall': '0.208', 'f1_score': '0.238', 'balanced_accuracy': '0.557'}
+2025-06-30 08:57:38,435 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (5, 601)
+2025-06-30 08:57:38,435 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 08:57:38,735 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-06-30 08:57:38,735 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (5, 601)
+2025-06-30 08:57:38,735 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-30 08:57:38,735 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 08:57:38,735 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-10.086978 max=10.987315
+Running initial clustering …
+Using 109 thresholds from 0.10 to 10.90 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-30 08:57:39,131 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-30 08:57:39,131 - INFO - utils.stats_utils - [perform_cluster_permutation_test:344] - No clusters found to be statistically significant (p < 0.05).
+2025-06-30 08:57:39,131 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:502] -   Specific task 'PP_spec vs AP Fam. 3' for AO05: Peak AUC = 0.710
+2025-06-30 08:57:39,175 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:57:39,175 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:57:39,176 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:57:39,176 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:57:39,177 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:57:39,177 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:57:39,177 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:57:39,177 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:57:39,177 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:57:39,177 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 5 splits.
+2025-06-30 08:57:39,177 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:57:39,181 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:57:39,181 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 08:57:47,164 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.740
+2025-06-30 08:57:47,164 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 08:57:47,164 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-06-30 08:57:53,771 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.623 +/- 0.072
+2025-06-30 08:57:53,780 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.622', 'accuracy': '0.764', 'precision': '0.062', 'recall': '0.042', 'f1_score': '0.050', 'balanced_accuracy': '0.466'}
+2025-06-30 08:57:53,780 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (5, 601)
+2025-06-30 08:57:53,780 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 08:57:54,079 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-06-30 08:57:54,079 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (5, 601)
+2025-06-30 08:57:54,079 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-30 08:57:54,079 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 08:57:54,079 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-9.425468 max=19.432780
+Running initial clustering …
+Using 194 thresholds from 0.10 to 19.40 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-30 08:57:54,520 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-30 08:57:54,520 - INFO - utils.stats_utils - [perform_cluster_permutation_test:344] - No clusters found to be statistically significant (p < 0.05).
+2025-06-30 08:57:54,520 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:502] -   Specific task 'PP_spec vs AP Fam. 4' for AO05: Peak AUC = 0.740
+2025-06-30 08:57:54,563 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:57:54,563 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:57:54,564 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:57:54,565 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:57:54,565 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:57:54,565 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:57:54,565 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:57:54,565 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:57:54,565 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:57:54,565 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 5 splits.
+2025-06-30 08:57:54,565 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:57:54,567 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:57:54,567 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 08:58:02,650 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.681
+2025-06-30 08:58:02,651 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 08:58:02,651 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+submitit WARNING (2025-06-30 08:58:05,846) - Bypassing signal SIGCONT
+2025-06-30 08:58:05,846 - WARNING - submitit - [bypass:196] - Bypassing signal SIGCONT
+submitit WARNING (2025-06-30 08:58:05,847) - Bypassing signal SIGTERM
+2025-06-30 08:58:05,847 - WARNING - submitit - [bypass:196] - Bypassing signal SIGTERM
+2025-06-30 08:58:09,517 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.547 +/- 0.151
+2025-06-30 08:58:09,526 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.450', 'accuracy': '0.819', 'precision': '0.000', 'recall': '0.000', 'f1_score': '0.000', 'balanced_accuracy': '0.478'}
+2025-06-30 08:58:09,526 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (5, 601)
+2025-06-30 08:58:09,526 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 08:58:09,825 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-06-30 08:58:09,825 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (5, 601)
+2025-06-30 08:58:09,825 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-30 08:58:09,825 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 08:58:09,825 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-14.172792 max=14.320979
+Running initial clustering …
+Using 143 thresholds from 0.10 to 14.30 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-30 08:58:10,294 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-30 08:58:10,294 - INFO - utils.stats_utils - [perform_cluster_permutation_test:344] - No clusters found to be statistically significant (p < 0.05).
+2025-06-30 08:58:10,295 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:502] -   Specific task 'PP_spec vs AP Fam. 5' for AO05: Peak AUC = 0.681
+2025-06-30 08:58:10,337 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:58:10,337 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:58:10,339 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:58:10,339 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:58:10,339 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:58:10,339 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:58:10,339 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:58:10,339 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:58:10,339 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:58:10,339 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 5 splits.
+2025-06-30 08:58:10,340 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:58:10,343 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:58:10,343 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 08:58:18,312 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.802
+2025-06-30 08:58:18,312 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 08:58:18,313 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-06-30 08:58:24,357 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.720 +/- 0.016
+2025-06-30 08:58:24,367 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.687', 'accuracy': '0.882', 'precision': '0.250', 'recall': '0.062', 'f1_score': '0.100', 'balanced_accuracy': '0.520'}
+2025-06-30 08:58:24,367 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (5, 601)
+2025-06-30 08:58:24,367 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 08:58:24,667 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-06-30 08:58:24,667 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (5, 601)
+2025-06-30 08:58:24,667 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-30 08:58:24,667 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 08:58:24,667 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-19.541053 max=10.619426
+Running initial clustering …
+Using 106 thresholds from 0.10 to 10.60 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-30 08:58:25,097 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-30 08:58:25,097 - INFO - utils.stats_utils - [perform_cluster_permutation_test:344] - No clusters found to be statistically significant (p < 0.05).
+2025-06-30 08:58:25,097 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:502] -   Specific task 'PP_spec vs AP Fam. 6' for AO05: Peak AUC = 0.802
+2025-06-30 08:58:25,097 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:514] -   --- Specific Task Comparisons for AO05 DONE ---
+2025-06-30 08:58:25,098 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:518] -   --- 3. Stats on stack of Specific Task Mean Curves for AO05 ---
+2025-06-30 08:58:25,098 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (6, 601)
+2025-06-30 08:58:25,098 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 08:58:25,400 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-06-30 08:58:25,400 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (6, 601)
+2025-06-30 08:58:25,400 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=40
+2025-06-30 08:58:25,400 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 08:58:25,400 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-6.829546 max=5.404689
+Running initial clustering …
+Using 54 thresholds from 0.10 to 5.40 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-30 08:58:25,684 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-30 08:58:25,685 - INFO - utils.stats_utils - [perform_cluster_permutation_test:344] - No clusters found to be statistically significant (p < 0.05).
+2025-06-30 08:58:25,685 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:561] -   --- Stats on stack of Specific Task Mean Curves for AO05 DONE ---
+2025-06-30 08:58:25,685 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:567] -   --- 4. Inter-Family Decoding Tasks (e.g. AP_fam_X vs AP_fam_Y) for AO05 ---
+2025-06-30 08:58:25,699 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:58:25,699 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:58:25,701 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:58:25,701 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:58:25,701 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:58:25,701 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:58:25,701 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:58:25,701 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:58:25,701 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:58:25,701 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 5 splits.
+2025-06-30 08:58:25,701 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:58:25,703 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:58:25,703 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-06-30 08:58:32,002 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.802
+2025-06-30 08:58:32,002 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-06-30 08:58:32,002 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-06-30 08:58:33,144 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.595 +/- 0.132
+2025-06-30 08:58:33,151 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.543', 'accuracy': '0.408', 'precision': '0.444', 'recall': '0.462', 'f1_score': '0.453', 'balanced_accuracy': '0.405'}
+2025-06-30 08:58:33,151 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (5, 601)
+2025-06-30 08:58:33,151 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-06-30 08:58:33,460 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-06-30 08:58:33,460 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (5, 601)
+2025-06-30 08:58:33,460 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-06-30 08:58:33,460 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-06-30 08:58:33,460 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-5.531391 max=12.130806
+Running initial clustering …
+Using 121 thresholds from 0.10 to 12.10 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 601 clusters
+2025-06-30 08:58:33,960 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 601 initial clusters found (after processing slices).
+2025-06-30 08:58:33,960 - INFO - utils.stats_utils - [perform_cluster_permutation_test:344] - No clusters found to be statistically significant (p < 0.05).
+2025-06-30 08:58:33,960 - INFO - examples.run_decoding_one_pp - [execute_single_subject_decoding:624] -   Inter-Family task 'AP FAMILY 1 vs AP FAMILY 2' for AO05: Peak AUC = 0.802
+2025-06-30 08:58:33,974 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-06-30 08:58:33,974 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-06-30 08:58:33,975 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-06-30 08:58:33,975 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:58:33,975 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-06-30 08:58:33,975 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-06-30 08:58:33,975 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-06-30 08:58:33,975 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-06-30 08:58:33,975 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-06-30 08:58:33,975 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 5 splits.
+2025-06-30 08:58:33,976 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-06-30 08:58:33,983 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-06-30 08:58:33,983 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...

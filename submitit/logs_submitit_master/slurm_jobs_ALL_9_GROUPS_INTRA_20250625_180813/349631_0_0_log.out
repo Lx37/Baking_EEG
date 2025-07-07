@@ -1,5 +1,0 @@
-submitit INFO (2025-06-25 18:08:16,748) - Starting with JobEnvironment(job_id=349631_0, hostname=node2, local_rank=0(1), node=0(1), global_rank=0(1))
-submitit INFO (2025-06-25 18:08:16,749) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/logs_submitit_master/slurm_jobs_ALL_9_GROUPS_INTRA_20250625_180813/349631_0_submitted.pkl
-DEBUG Worker - project_root: /home/tom.balay/Baking_EEG
-DEBUG Worker - parent_dir: /home/tom.balay
-DEBUG Worker - sys.path: ['/home/tom.balay', '/home/tom.balay/Baking_EEG', '/home/tom.balay/Baking_EEG/submitit']...

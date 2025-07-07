@@ -1,8 +1,6 @@
-
 import sys
 import os
 
-# Ajouter le répertoire parent (racine du projet) au chemin Python
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from config.decoding_config import (
     CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
@@ -17,7 +15,7 @@ from config.decoding_config import (
     COMPUTE_TGM_FOR_MAIN_COMPARISON, COMPUTE_TGM_FOR_SPECIFIC_COMPARISONS,
     COMPUTE_TGM_FOR_INTER_FAMILY_COMPARISONS,
     # Protocol-specific functions
-    get_protocol_config, get_protocol_ap_families
+    get_protocol_config,get_protocol_ap_families, get_protocol_pp_comparison_events
 )
 from config.config import ALL_SUBJECT_GROUPS
 from utils import stats_utils as bEEG_stats
@@ -32,6 +30,7 @@ from utils.utils import (
 )
 from utils.vizualization_utils_PP import create_subject_decoding_dashboard_plots
 from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
+
 
 import logging
 import time
@@ -49,16 +48,28 @@ from sklearn.pipeline import Pipeline
 from mne.decoding import CSP
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
+# =============================================================================
+# LABEL ENCODING STANDARDIZATION
+# =============================================================================
+# Throughout this script, we maintain consistent label encoding:
+# - PP (Propre Prénom) = 1 (positive class)
+# - AP () = 0 (negative class)
+# This ensures consistent interpretation of:
+# - AUC scores (>0.5 = PP better decoded than AP)
+# - Probability outputs (predict_proba[:, 1] = probability of PP)
+# - All classification metrics across different comparison types
+# =============================================================================
 
-# --- Configuration du Logging ---
-LOG_DIR_RUN_ONE = './logs_run_single_subject'  # Dossier de logs spécifique
+
+# --- Logging Configuration ---
+LOG_DIR_RUN_ONE = './logs_run_single_subject'  # Specific log directory for single subject analysis
 os.makedirs(LOG_DIR_RUN_ONE, exist_ok=True)
 LOG_FILENAME_RUN_ONE = os.path.join(
     LOG_DIR_RUN_ONE,
     datetime.now().strftime('log_run_single_subject_%Y-%m-%d_%H%M%S.log')
 )
 
-# Supprimer les handlers existants pour éviter la duplication des logs
+# Remove existing handlers to prevent log duplication
 for handler in logging.getLogger().handlers[:]:
     logging.getLogger().removeHandler(handler)
 
@@ -72,10 +83,10 @@ logging.basicConfig(
     ]
 )
 logger_run_one = logging.getLogger(__name__)
-# Configurer les loggers des modules importés si nécessaire
+# Configure loggers for imported modules if needed
 logging.getLogger("Baking_EEG.decoding_core").setLevel(logging.INFO)
 logging.getLogger("Baking_EEG.utils.data_loading_utils").setLevel(logging.INFO)
-# ... autres loggers de modules
+
 
 
 def get_protocol_cv_folds(detected_protocol):
@@ -93,16 +104,6 @@ def get_protocol_cv_folds(detected_protocol):
         return 5   # 5 folds for PPext3, Battery and other protocols
 
 
-def get_protocol_ap_families_for_comparison(detected_protocol):
-    """Get AP families configuration for specific protocol comparisons.
-    
-    Args:
-        detected_protocol (str): Protocol type ('delirium', 'battery', 'ppext3', etc.)
-        
-    Returns:
-        dict: Protocol-specific AP families configuration
-    """
-    return get_protocol_ap_families(detected_protocol if detected_protocol else 'delirium')
 
 
 def extract_frequency_info_from_path(base_input_data_path, group_affiliation):
@@ -128,40 +129,20 @@ def extract_frequency_info_from_path(base_input_data_path, group_affiliation):
     return ""  # No frequency info
 
 
-def get_protocol_specific_pp_comparison_events(detected_protocol):
-    """Get PP events for specific comparisons based on protocol.
-    
-    Args:
-        detected_protocol (str): Protocol type ('delirium', 'battery', 'ppext3', etc.)
-        
-    Returns:
-        list: List of PP event codes for specific comparisons
-    """
-    if detected_protocol and detected_protocol.lower() == 'delirium':
-        # Delirium protocol uses specific PP codes
-        return ["PP/10", "PP/20", "PP/30"]
-    elif detected_protocol and detected_protocol.lower() == 'battery':
-        # Battery protocol uses different PP structure
-        return ["PP/Music/", "PP/Conv/"]
-    elif detected_protocol and detected_protocol.lower() == 'ppext3':
-        # PPext3 protocol uses extended PP structure  
-        return ["PP/Music/", "PP/Noise/", "PP/Conv/", "PP/Dio/"]
-    else:
-        # Default to delirium for unknown protocols
-        return ["PP/10", "PP/20", "PP/30"]
+
 
 
 def execute_single_subject_decoding(
     subject_identifier,
     group_affiliation,
     decoding_protocol_identifier="Single_Protocol_Analysis",
-    # Utilisation des constantes importées pour les valeurs par défaut
+    # Using imported constants for default values
     save_results_flag=None,
     enable_verbose_logging=False,
     generate_plots_flag=None,
     base_input_data_path=None,
     base_output_results_path=None,
-    n_jobs_for_processing=None,  # Peut être surchargé
+    n_jobs_for_processing=None,  # Can be overridden
     classifier_type=None,
     use_grid_search_for_subject=None,
     use_csp_for_temporal_subject=None,
@@ -221,22 +202,34 @@ def execute_single_subject_decoding(
     total_start_time = time.time()
     subject_results_dir = None
     subject_results = {
-        "subject_id": subject_identifier, "group": group_affiliation,
+        "subject_id": subject_identifier, 
+        "group": group_affiliation,
         "decoding_protocol_identifier": decoding_protocol_identifier,
-        "classifier_type_used": classifier_type, "epochs_time_points": None,
-        "pp_ap_main_original_labels": None, "pp_ap_main_pred_probas_global": None,
-        "pp_ap_main_pred_labels_global": None, "pp_ap_main_cv_global_scores": None,
-        "pp_ap_main_scores_1d_all_folds": None, "pp_ap_main_scores_1d_mean": None,
-        "pp_ap_main_temporal_1d_fdr": None, "pp_ap_main_temporal_1d_cluster": None,
-        "pp_ap_main_tgm_all_folds": None, "pp_ap_main_tgm_mean": None,
-        "pp_ap_main_tgm_fdr": None, "pp_ap_main_mean_auc_global": np.nan,
-        "pp_ap_main_global_metrics": {}, "pp_ap_specific_ap_results": [],
-        "pp_ap_mean_of_specific_scores_1d": None, "pp_ap_sem_of_specific_scores_1d": None,
-        "pp_ap_mean_specific_fdr": None, "pp_ap_mean_specific_cluster": None,
-        "pp_ap_ap_vs_ap_results": [], "pp_ap_ap_centric_avg_results": [],
+        "classifier_type_used": classifier_type,
+        "epochs_time_points": None,
+        "pp_ap_main_original_labels": None,
+        "pp_ap_main_pred_probas_global": None,
+        "pp_ap_main_pred_labels_global": None, 
+        "pp_ap_main_cv_global_scores": None,
+        "pp_ap_main_scores_1d_all_folds": None, 
+        "pp_ap_main_scores_1d_mean": None,
+        "pp_ap_main_temporal_1d_fdr": None, 
+        "pp_ap_main_temporal_1d_cluster": None,
+        "pp_ap_main_tgm_all_folds": None, 
+        "pp_ap_main_tgm_mean": None,
+        "pp_ap_main_tgm_fdr": None, 
+        "pp_ap_main_mean_auc_global": np.nan,
+        "pp_ap_main_global_metrics": {}, 
+        "pp_ap_specific_ap_results": [],
+        "pp_ap_mean_of_specific_scores_1d": None, 
+        "pp_ap_sem_of_specific_scores_1d": None,
+        "pp_ap_mean_specific_fdr": None, 
+        "pp_ap_mean_specific_cluster": None,
+        "pp_ap_ap_vs_ap_results": [], 
+        "pp_ap_ap_centric_avg_results": [],
     }
 
-    # Convertir n_jobs_for_processing si c'est "auto"
+    # Convert n_jobs_for_processing if it's "auto"
     if isinstance(n_jobs_for_processing, str) and n_jobs_for_processing.lower() == "auto":
         actual_n_jobs = -1
     else:
@@ -249,15 +242,18 @@ def execute_single_subject_decoding(
             actual_n_jobs = -1
 
     try:
+        # Ensure paths are configured (fallback for direct function calls)
         if not base_input_data_path or not base_output_results_path:
             current_user = getuser()
             cfg_input, cfg_output = configure_project_paths(current_user)
             base_input_data_path = base_input_data_path or cfg_input
             base_output_results_path = base_output_results_path or cfg_output
+            logger_run_one.info("Auto-configured paths: input=%s, output=%s", 
+                               base_input_data_path, base_output_results_path)
 
         logger_run_one.info(
             "Starting decoding for subject: %s (Group: %s, Task Set ID: %s, Classifier: %s, "
-            "GS: %s, CSP (temp): %s, ANOVA FS (temp): %s, n_jobs: %s)",
+            "GS: %s, CSP : %s, ANOVA FS : %s, n_jobs: %s)",
             subject_identifier, group_affiliation, decoding_protocol_identifier,
             classifier_type, use_grid_search_for_subject,
             use_csp_for_temporal_subject, use_anova_fs_for_temporal_subject, actual_n_jobs
@@ -286,7 +282,7 @@ def execute_single_subject_decoding(
         )
         
         # Get protocol-specific configurations after detection
-        protocol_pp_events = get_protocol_specific_pp_comparison_events(detected_protocol)
+        protocol_pp_events = get_protocol_pp_comparison_events(detected_protocol)
         
         logger_run_one.info(
             "Using protocol-specific loading configuration for %s: %s", 
@@ -331,7 +327,7 @@ def execute_single_subject_decoding(
         subject_results["epochs_time_points"] = epochs_object.times
         
         # Get protocol-specific configurations
-        protocol_ap_families = get_protocol_ap_families_for_comparison(detected_protocol)
+        protocol_ap_families = get_protocol_ap_families(detected_protocol)
         protocol_cv_folds = get_protocol_cv_folds(detected_protocol)
         # protocol_pp_events already defined above after protocol detection
         
@@ -370,11 +366,12 @@ def execute_single_subject_decoding(
 
         if xpp_main_data is not None and xap_main_data is not None and \
            xpp_main_data.size > 0 and xap_main_data.size > 0:
+            # STANDARDIZED: PP=1 (positive class), AP=0 (negative class)
             main_protocol_data = np.concatenate(
-                [xap_main_data, xpp_main_data], axis=0)
+                [xpp_main_data, xap_main_data], axis=0)
             main_protocol_labels_orig = np.concatenate(
-                [np.zeros(xap_main_data.shape[0]),
-                 np.ones(xpp_main_data.shape[0])]
+                [np.ones(xpp_main_data.shape[0]),   # PP = 1 (positive class)
+                 np.zeros(xap_main_data.shape[0])]  # AP = 0 (negative class)
             )
             subject_results["pp_ap_main_original_labels"] = main_protocol_labels_orig.copy(
             )
@@ -451,11 +448,12 @@ def execute_single_subject_decoding(
                         "fdr_significance_data": None, "cluster_significance_data": None
                     }
                     if ap_family_data_enum is not None and ap_family_data_enum.size > 0:
+                        # STANDARDIZED: PP=1 (positive class), AP=0 (negative class)
                         task_data_specific_current = np.concatenate(
                             [pp_specific_data, ap_family_data_enum], axis=0)
                         task_labels_specific_orig = np.concatenate(
-                            [np.zeros(pp_specific_data.shape[0]),
-                             np.ones(ap_family_data_enum.shape[0])]
+                            [np.ones(pp_specific_data.shape[0]),    # PP = 1 (positive class)
+                             np.zeros(ap_family_data_enum.shape[0])] # AP = 0 (negative class)
                         )
                         task_labels_specific_enc = LabelEncoder().fit_transform(task_labels_specific_orig)
 
@@ -502,15 +500,15 @@ def execute_single_subject_decoding(
                                 logger_run_one.info("  Specific task '%s' for %s: Peak AUC = %.3f", comparison_name_specific,
                                                     subject_identifier, peak_auc_val if pd.notna(peak_auc_val) else -1)
                     else:
-                        logger_run_one.info("Subj %s: Données manquantes pour %s dans la tâche spécifique '%s'. Ceci peut être normal selon le protocole du sujet.",
+                        logger_run_one.info("Subject %s: Missing data for %s in specific task '%s'. This may be normal depending on subject's protocol.",
                                             subject_identifier, ap_family_key_enum, comparison_name_specific)
                     subject_results["pp_ap_specific_ap_results"].append(
                         task_result_specific)
             else:
                 logger_run_one.info(
-                    "Subj %s: PP_FOR_SPECIFIC_COMPARISON data manquante. "
-                    "Ceci est normal si le sujet n'a pas ce type de données spécifiques selon le protocole. "
-                    "Passage aux comparaisons inter-familles.", subject_identifier)
+                    "Subject %s: PP_FOR_SPECIFIC_COMPARISON data missing. "
+                    "This is normal if the subject doesn't have this type of specific data according to the protocol. "
+                    "Moving to inter-family comparisons.", subject_identifier)
         logger_run_one.info(
             "  --- Specific Task Comparisons for %s DONE ---", subject_identifier)
 
@@ -563,6 +561,7 @@ def execute_single_subject_decoding(
             else:
                 logger_run_one.warning(
                     "Subj %s: Not enough valid specific task curves (%d) for stack statistics.", subject_identifier, len(valid_mean_scores_for_stack))
+
 
         logger_run_one.info(
             "  --- 4. Inter-Family Decoding Tasks (e.g. AP_fam_X vs AP_fam_Y) for %s ---", subject_identifier)
@@ -752,6 +751,7 @@ def execute_single_subject_decoding(
             "Unexpected error during main processing logic for subject %s: %s", subject_identifier, e, exc_info=True)
         return subject_results
 
+    # Setup results directory and save/plot if requested
     if save_results_flag or generate_plots_flag:
         try:
             # Get the detected protocol for folder organization
@@ -789,6 +789,7 @@ def execute_single_subject_decoding(
                 "Failed to setup results directory for %s: %s. Plots/saving skipped.", subject_identifier, e_setup_dir, exc_info=True)
             subject_results_dir = None
 
+    # Save results if requested
     if save_results_flag and subject_results_dir:
         try:
             results_file_path = os.path.join(
@@ -816,6 +817,7 @@ def execute_single_subject_decoding(
             logger_run_one.error("Failed to save results for %s to %s: %s",
                                  subject_identifier, subject_results_dir, e_save, exc_info=True)
 
+    # Generate plots if requested
     if generate_plots_flag and subject_results.get("epochs_time_points") is not None:
         if subject_results_dir:
             try:
@@ -863,6 +865,7 @@ def execute_single_subject_decoding(
         logger_run_one.warning(
             "Dashboard plot generation skipped for %s (missing 'epochs_time_points').", subject_identifier)
 
+
     logger_run_one.info("Finished processing subject %s (Task Set ID: %s). Total time: %.2fs",
                         subject_identifier, decoding_protocol_identifier, time.time() - total_start_time)
     return subject_results
@@ -879,11 +882,11 @@ if __name__ == "__main__":
                             help="Override default classifier type from config.")
     cli_parser.add_argument("--n_jobs_override", type=str, default=None,
                             help="Override n_jobs from config (e.g., '4' or 'auto').")
-    # Ajouter d'autres arguments CLI si nécessaire pour surcharger les constantes de config
+
 
     command_line_args = cli_parser.parse_args()
 
-    # Déterminer n_jobs_to_use à partir de l'override ou de la config
+
     n_jobs_arg_str = command_line_args.n_jobs_override if command_line_args.n_jobs_override is not None else N_JOBS_PROCESSING
     try:
         n_jobs_to_use = -1 if n_jobs_arg_str.lower() == "auto" else int(n_jobs_arg_str)
@@ -910,7 +913,7 @@ if __name__ == "__main__":
     logger_run_one.info("  ANOVA FS for Temporal Pipelines (from config): %s",
                         USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES)
 
-    # Résoudre l'affiliation du groupe si non fournie
+
     resolved_group_affiliation = command_line_args.group
     if not resolved_group_affiliation:
         resolved_group_affiliation = "unknown"  # Default
@@ -924,20 +927,14 @@ if __name__ == "__main__":
             logger_run_one.warning(
                 f"Subject ID '{command_line_args.subject_id}' not found in any predefined group. Using affiliation 'unknown'.")
 
-    # Appeler la fonction d'orchestration pour un seul sujet
     execute_single_subject_decoding(
         subject_identifier=command_line_args.subject_id,
         group_affiliation=resolved_group_affiliation,
         base_input_data_path=main_input_path,
         base_output_results_path=main_output_path,
-        n_jobs_for_processing=n_jobs_to_use,  # La valeur calculée
-        classifier_type=classifier_type_to_use,  # La valeur calculée
-        # Les autres paramètres utiliseront les valeurs par défaut de la fonction,
-        # qui sont elles-mêmes basées sur les constantes importées de decoding_config.py
-        # Si vous voulez surcharger plus de paramètres via CLI, ajoutez des arguments
-        # à argparse et passez-les ici.
-        # Par exemple, si vous aviez un --use_gs_override :
-        # use_grid_search_for_subject = command_line_args.use_gs_override if command_line_args.use_gs_override is not None else USE_GRID_SEARCH_OPTIMIZATION,
+        n_jobs_for_processing=n_jobs_to_use, 
+        classifier_type=classifier_type_to_use, 
+
     )
 
     logger_run_one.info("\n%s EEG SINGLE SUBJECT DECODING SCRIPT FINISHED (%s) %s",

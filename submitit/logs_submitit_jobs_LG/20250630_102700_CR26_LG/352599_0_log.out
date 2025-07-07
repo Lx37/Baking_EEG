@@ -1,0 +1,14 @@
+submitit INFO (2025-06-30 14:57:45,776) - Starting with JobEnvironment(job_id=352599, hostname=node20, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-06-30 14:57:45,776) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/logs_submitit_jobs_LG/20250630_102700_CR26_LG/352599_submitted.pkl
+2025-06-30 14:57:48,121 - INFO - examples.run_decoding_one_group_pp - [<module>:39] - Tentative d'import de execute_single_subject_decoding...
+2025-06-30 14:57:48,122 - INFO - examples.run_decoding_one_group_pp - [<module>:42] - ✅ Import de execute_single_subject_decoding réussi
+2025-06-30 14:57:48,123 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:193] - Starting LG decoding for subject: CR26 (Group: MCS-, Task Set ID: Single_LG_Protocol_Analysis, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-06-30 14:57:48,123 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:204] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-06-30 14:57:48,124 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'MCS-' not found for subject 'CR26'. Subject found in group 'MCS-'. Using its path convention.
+2025-06-30 14:57:48,124 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'CR26' (group: 'MCS-') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data/'.
+2025-06-30 14:57:48,124 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:213] - Detected protocol 'unknown' for subject CR26
+2025-06-30 14:57:48,124 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:219] - Epochs object loading failed for CR26. Aborting subject.
+submitit INFO (2025-06-30 14:57:48,124) - Job completed successfully
+2025-06-30 14:57:48,124 - INFO - submitit - [process_job:56] - Job completed successfully
+submitit INFO (2025-06-30 14:57:48,125) - Exiting after successful completion
+2025-06-30 14:57:48,125 - INFO - submitit - [process_job:61] - Exiting after successful completion
