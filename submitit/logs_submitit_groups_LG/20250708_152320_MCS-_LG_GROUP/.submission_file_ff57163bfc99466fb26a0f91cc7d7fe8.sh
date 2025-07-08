@@ -1,0 +1,1 @@
+/home/tom.balay/Baking_EEG/submitit/logs_submitit_groups_LG/20250708_152320_MCS-_LG_GROUP/363549_submission.sh

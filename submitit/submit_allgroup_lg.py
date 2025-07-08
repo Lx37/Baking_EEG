@@ -7,6 +7,8 @@ from datetime import datetime
 import getpass
 import submitit
 import time 
+
+# Configuration du projet
 try:
     PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 except NameError:
@@ -14,6 +16,28 @@ except NameError:
 
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
+
+# Configuration des logs
+LOG_DIR_SUBMITIT_GROUPS = './logs_submitit_groups_LG'
+os.makedirs(LOG_DIR_SUBMITIT_GROUPS, exist_ok=True)
+
+# Configuration de l'environnement cluster
+PATH_TO_VENV_ACTIVATE_ON_CLUSTER = "/home/tom.balay/.venvs/py3.11_cluster/bin/activate"
+PROJECT_ROOT_ON_CLUSTER_FOR_JOB = PROJECT_ROOT
+
+SETUP_COMMANDS_FOR_SLURM_JOB_CPU = f"""
+echo "--- Configuration de l'environnement pour le job Slurm LG (PID: $$) ---"
+echo "Date et heure: $(date)"
+echo "Hostname: $(hostname)"
+echo "Job ID Slurm: $SLURM_JOB_ID"
+module purge
+echo "Activation de l'environnement virtuel: {PATH_TO_VENV_ACTIVATE_ON_CLUSTER}"
+source {PATH_TO_VENV_ACTIVATE_ON_CLUSTER}
+if [ $? -ne 0 ]; then echo "ERREUR: Échec de l'activation de l'environnement virtuel."; exit 1; fi
+export PYTHONPATH="{PROJECT_ROOT_ON_CLUSTER_FOR_JOB}:${{PYTHONPATH}}"
+echo "PYTHONPATH: $PYTHONPATH"
+echo "--- Environnement LG configuré ---"
+"""
 
 
 from config.config import ALL_SUBJECT_GROUPS
@@ -29,8 +53,10 @@ from config.decoding_config import (
 )
 
 
-def decoding_task_wrapper(**kwargs):
- 
+def group_decoding_task_wrapper(**kwargs):
+    """
+    Wrapper function to execute group LG decoding on cluster.
+    """
     import sys
     import os
 
@@ -39,89 +65,139 @@ def decoding_task_wrapper(**kwargs):
     if project_root not in sys.path:
         sys.path.insert(0, project_root)
         
-    from examples.run_decoding_one_lg import execute_single_subject_lg_decoding
+    # Import the LG group analysis function
+    from examples.run_decoding_one_group_lg import execute_group_intra_subject_lg_decoding_analysis
     
-    return execute_single_subject_lg_decoding(**kwargs)
+    return execute_group_intra_subject_lg_decoding_analysis(**kwargs)
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - [%(name)s:%(lineno)d] - %(message)s')
 logger = logging.getLogger(__name__)
 
 def main():
-    
-    logger.info("--- Démarrage de la soumission pour TOUS LES SUJETS (Protocole LG) ---")
+    """
+    Main function to submit group LG decoding jobs to cluster.
+    Each group is processed on a separate node.
+    """
+    logger.info("--- Démarrage de la soumission pour TOUS LES GROUPES (Protocole LG) ---")
 
     user = getpass.getuser()
     base_input_path, base_output_path = configure_project_paths(user)
 
-    
-    common_job_kwargs = {
-        "base_input_data_path": base_input_path,
-        "base_output_results_path": base_output_path,
-        "n_jobs_for_processing": 40, # Sera utilisé par le worker
-        "save_results_flag": SAVE_ANALYSIS_RESULTS,
-        "generate_plots_flag": GENERATE_PLOTS,
-        "loading_conditions_config": CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG,
-        "classifier_type": CLASSIFIER_MODEL_TYPE,
-        "use_grid_search_for_subject": USE_GRID_SEARCH_OPTIMIZATION,
-        "param_grid_config_for_subject": PARAM_GRID_CONFIG_EXTENDED if USE_GRID_SEARCH_OPTIMIZATION else None,
-        "cv_folds_for_gs_subject": CV_FOLDS_FOR_GRIDSEARCH_INTERNAL if USE_GRID_SEARCH_OPTIMIZATION else 0,
-        "fixed_params_for_subject": FIXED_CLASSIFIER_PARAMS_CONFIG if not USE_GRID_SEARCH_OPTIMIZATION else None,
-        "compute_intra_subject_stats_flag": COMPUTE_INTRA_SUBJECT_STATISTICS,
-        "n_perms_for_intra_subject_clusters": N_PERMUTATIONS_INTRA_SUBJECT,
-        "compute_tgm_flag": COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
-        "cluster_threshold_config_intra_fold": INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
-        "use_csp_for_temporal_subject": USE_CSP_FOR_TEMPORAL_PIPELINES,
-        "use_anova_fs_for_temporal_subject": USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES
-    }
+    # Configuration Slurm pour les jobs de groupe
+    SLURM_CPUS_PER_GROUP_JOB = 40  # CPUs par groupe
+    SLURM_MEMORY_PER_JOB = "75G"   # Mémoire par groupe
+    SLURM_TIMEOUT_MINUTES = 1200000 * 60  # Timeout en minutes
+    SLURM_PARTITION = "CPU"
+    SLURM_ACCOUNT = "tom.balay"
 
+    logger.info(f"Configuration Slurm:")
+    logger.info(f"  CPUs par groupe: {SLURM_CPUS_PER_GROUP_JOB}")
+    logger.info(f"  Mémoire par groupe: {SLURM_MEMORY_PER_JOB}")
+    logger.info(f"  Timeout: {SLURM_TIMEOUT_MINUTES} minutes")
+    logger.info(f"  Partition: {SLURM_PARTITION}")
+
+    # Groupes à traiter
+    GROUPS_TO_PROCESS = list(ALL_SUBJECT_GROUPS.keys())
+    logger.info(f"Groupes à traiter: {GROUPS_TO_PROCESS}")
+    logger.info(f"Nombre total de groupes: {len(GROUPS_TO_PROCESS)}")
 
     submitted_jobs = []
     failed_submissions = []
 
-    for group_name, subject_list in ALL_SUBJECT_GROUPS.items():
-        logger.info(f"\n--- Préparation des soumissions pour le groupe: {group_name} ---")
-        for subject_id in subject_list:
-            logger.info(f"  Configuration de la soumission pour le sujet: {subject_id} du groupe {group_name}")
+    for group_name in GROUPS_TO_PROCESS:
+        if group_name not in ALL_SUBJECT_GROUPS:
+            logger.warning(f"Groupe '{group_name}' non trouvé dans la configuration. Ignoré.")
+            continue
 
-          
-            log_folder_subject = f"logs_submitit_jobs_LG/{datetime.now().strftime('%Y%m%d_%H%M%S')}_{subject_id}_LG"
-            
-          
-            executor = submitit.AutoExecutor(folder=log_folder_subject)
-            executor.update_parameters(
-                timeout_min=12 * 60,  # Temps maximum pour un sujet
-                slurm_partition="CPU",
-                slurm_mem="60G", # Mémoire par sujet
-                slurm_cpus_per_task=40, # CPUs par sujet (ou ajuster si N_JOBS_PROCESSING est différent)
-                slurm_job_name=f"LG_{subject_id}", # Nom du job dans Slurm
-                slurm_additional_parameters={"account": "tom.balay"} # Compte Slurm
-            )
+        subjects_for_this_group = ALL_SUBJECT_GROUPS[group_name]
+        if not subjects_for_this_group:
+            logger.warning(f"Aucun sujet défini pour le groupe '{group_name}'. Ignoré.")
+            continue
 
+        logger.info(f"\n--- Préparation de la soumission pour le groupe: {group_name} ---")
+        logger.info(f"  Nombre de sujets dans ce groupe: {len(subjects_for_this_group)}")
+        logger.info(f"  Sujets: {', '.join(subjects_for_this_group)}")
 
-            subject_specific_kwargs = {
-                "subject_identifier": subject_id,
-                "group_affiliation": group_name,
-                **common_job_kwargs # Fusionner avec les paramètres communs
+        # Dossier de logs spécifique pour ce groupe
+        current_time_str = datetime.now().strftime('%Y%m%d_%H%M%S')
+        log_folder_group = f"logs_submitit_groups_LG/{current_time_str}_{group_name}_LG_GROUP"
+        
+        # Configuration de l'exécuteur Submitit
+        executor = submitit.AutoExecutor(folder=log_folder_group)
+        executor.update_parameters(
+            timeout_min=SLURM_TIMEOUT_MINUTES,
+            setup=SETUP_COMMANDS_FOR_SLURM_JOB_CPU,
+            slurm_partition=SLURM_PARTITION,
+            slurm_mem=SLURM_MEMORY_PER_JOB,
+            slurm_cpus_per_task=SLURM_CPUS_PER_GROUP_JOB,
+            slurm_job_name=f"LG_GROUP_{group_name}",
+            slurm_additional_parameters={
+                "account": SLURM_ACCOUNT,
+                "nodes": 1,  # Un nœud par groupe
+                "exclusive": True  # Utilisation exclusive du nœud
             }
+        )
 
-            try:
-                logger.info(f"    Soumission du WRAPPER pour {subject_id} (Groupe: {group_name})...")
-                job = executor.submit(decoding_task_wrapper, **subject_specific_kwargs)
-                logger.info(f"    Job pour {subject_id} soumis avec l'ID: {job.job_id}. Logs dans: {os.path.abspath(log_folder_subject)}")
-                submitted_jobs.append(job)
+        # Paramètres pour le groupe
+        group_job_kwargs = {
+            "subject_ids_in_group": subjects_for_this_group,
+            "group_identifier": group_name,
+            "decoding_protocol_identifier": f'Group_LG_Intra_{group_name}',
+            "base_input_data_path": base_input_path,
+            "base_output_results_path": base_output_path,
+            "enable_verbose_logging": True,
+            "n_jobs_for_each_subject": SLURM_CPUS_PER_GROUP_JOB,
+            "save_results_flag": SAVE_ANALYSIS_RESULTS,
+            "generate_plots_flag": False,  # Pas de plots sur le cluster
+            "loading_conditions_config": CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG,
+            "classifier_type_for_group_runs": CLASSIFIER_MODEL_TYPE,
+            "use_grid_search_for_group": USE_GRID_SEARCH_OPTIMIZATION,
+            "use_csp_for_temporal_group": USE_CSP_FOR_TEMPORAL_PIPELINES,
+            "use_anova_fs_for_temporal_group": USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
+            "param_grid_config_for_group": PARAM_GRID_CONFIG_EXTENDED if USE_GRID_SEARCH_OPTIMIZATION else None,
+            "cv_folds_for_gs_group": CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
+            "fixed_params_for_group": FIXED_CLASSIFIER_PARAMS_CONFIG if not USE_GRID_SEARCH_OPTIMIZATION else None,
+            "compute_intra_subject_stats_for_group_runs_flag": True,
+            "n_perms_intra_subject_folds_for_group_runs": N_PERMUTATIONS_INTRA_SUBJECT,
+            "compute_tgm_for_group_subjects_flag": COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
+            "cluster_threshold_config_intra_fold_group": INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
+        }
+
+        try:
+            logger.info(f"  Soumission du job pour le groupe {group_name}...")
+            job = executor.submit(group_decoding_task_wrapper, **group_job_kwargs)
+            logger.info(f"  Job pour le groupe {group_name} soumis avec l'ID: {job.job_id}")
+            logger.info(f"  Logs dans: {os.path.abspath(log_folder_group)}")
+            submitted_jobs.append({
+                "job": job,
+                "group_name": group_name,
+                "n_subjects": len(subjects_for_this_group),
+                "log_folder": log_folder_group
+            })
               
-            
-            except Exception as e_submit:
-                logger.error(f"    Échec de la soumission pour {subject_id}: {e_submit}", exc_info=True)
-                failed_submissions.append({"subject_id": subject_id, "error": str(e_submit)})
+        except Exception as e_submit:
+            logger.error(f"  Échec de la soumission pour le groupe {group_name}: {e_submit}", exc_info=True)
+            failed_submissions.append({"group_name": group_name, "error": str(e_submit)})
 
     logger.info(f"\n--- Fin des soumissions ---")
-    logger.info(f"Nombre total de jobs soumis: {len(submitted_jobs)}")
+    logger.info(f"Nombre total de jobs de groupe soumis: {len(submitted_jobs)}")
+    total_subjects = sum(job_info["n_subjects"] for job_info in submitted_jobs)
+    logger.info(f"Nombre total de sujets à traiter: {total_subjects}")
+    
     if failed_submissions:
         logger.warning(f"Nombre de soumissions échouées: {len(failed_submissions)}")
         for failed in failed_submissions:
-            logger.warning(f"  - Sujet: {failed['subject_id']}, Erreur: {failed['error']}")
+            logger.warning(f"  - Groupe: {failed['group_name']}, Erreur: {failed['error']}")
+
+    # Affichage du résumé des jobs soumis
+    if submitted_jobs:
+        logger.info(f"\n--- Résumé des jobs soumis ---")
+        for job_info in submitted_jobs:
+            logger.info(f"  Groupe: {job_info['group_name']} | Job ID: {job_info['job'].job_id} | "
+                       f"Sujets: {job_info['n_subjects']} | Logs: {job_info['log_folder']}")
+
+    logger.info("\n--- Script de soumission terminé ---")
 
 if __name__ == "__main__":
     main()

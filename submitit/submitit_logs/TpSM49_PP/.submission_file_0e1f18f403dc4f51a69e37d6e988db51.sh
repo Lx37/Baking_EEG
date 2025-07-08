@@ -1,1 +1,0 @@
-/home/tom.balay/Baking_EEG/submitit/submitit_logs/TpSM49_PP/360778_submission.sh

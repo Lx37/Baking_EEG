@@ -21,6 +21,7 @@ from Baking_EEG._4_decoding_core import run_temporal_decoding_analysis
 from utils.loading_PP_utils import load_epochs_data_auto_protocol
 from utils.utils import configure_project_paths
 from config.config import sfreq as default_sfreq
+from utils.stats_utils import perform_pointwise_fdr_correction_on_scores, perform_cluster_permutation_test
 
 
 logging.basicConfig(
@@ -35,7 +36,9 @@ SAMPLING_FREQUENCIES = [350, 250, 200, 125, 100]  # Hz
 ORIGINAL_FREQ = 500  # Fréquence d'origine assumée
 
 
-TEST_SUBJECT_FILE = "/Users/tom/Desktop/ENSC/Stage CAP/BakingEEG_data/ME64_preproc_noICA_PPAP-epo_ar.fif"
+TEST_SUBJECT_FILE = "/mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/TpSM49_PP_preproc_noICA_PP-epo_ar.fif"
+#/mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/TpSM49_PP_preproc_noICA_PP-epo_ar.fif
+#/Users/tom/Desktop/ENSC/Stage CAP/BakingEEG_data/ME64_preproc_noICA_PPAP-epo_ar.fif
 RANDOM_STATE = 42
 
 
@@ -166,6 +169,11 @@ def run_single_combination_test(epochs, labels, n_folds, sampling_freq, original
         mean_auc = np.mean(cv_scores)
         std_auc = np.std(cv_scores)
         mean_accuracy = global_metrics.get('accuracy', np.nan) if global_metrics else np.nan
+        
+        # Informations sur les données
+        n_trials, n_channels, n_times_decimated = X.shape
+        n_times_original = len(epochs.times) if epochs is not None else n_times_decimated
+        decimation_factor = original_freq / sampling_freq
         
         # Temps de décodage temporal
         times = epochs_decimated.times
@@ -343,7 +351,9 @@ def create_simulated_data():
         'n_epochs': n_epochs,
         'sampling_freq': sfreq,
         'n_channels': n_channels,
-        'event_id': event_id
+        'event_id': event_id,
+        'pp_count': n_epochs // 2,  # condition_1
+        'ap_count': n_epochs // 2   # condition_2
     }
     
     logger.info(f"Données simulées créées: {n_epochs} epochs, {n_channels} canaux, {sfreq}Hz")
@@ -449,14 +459,17 @@ def create_visualization_page1(results_df, subject_info):
 
 def create_visualization_page2(results_df, subject_info):
     """
-    Crée la page 2 des visualisations: Analyses par fréquence et par folds.
+    Crée la page 2 des visualisations: Analyses par fréquence et par folds avec statistiques.
     
     Args:
         results_df (pd.DataFrame): Résultats des tests
         subject_info (dict): Informations sur le sujet
     """
+    # Calculer les statistiques temporelles
+    stats_dict = compute_temporal_statistics(results_df, chance_level=0.5)
+    
     fig, axes = plt.subplots(2, 2, figsize=(16, 12))
-    fig.suptitle(f'Page 2: Analyses Détaillées - Sujet {subject_info["subject_id"]}', fontsize=16, fontweight='bold')
+    fig.suptitle(f'Page 2: Analyses Détaillées avec Statistiques - Sujet {subject_info["subject_id"]}', fontsize=16, fontweight='bold')
     
 
     successful_results = results_df[results_df['success']].copy()
@@ -465,58 +478,131 @@ def create_visualization_page2(results_df, subject_info):
         plt.text(0.5, 0.5, 'Aucun résultat valide disponible', ha='center', va='center', transform=fig.transFigure, fontsize=20)
         return fig
     
-    # 1. AUC en fonction du nombre de folds (par fréquence)
+    # Calculer le résumé des significativités
+    significance_summary = calculate_significance_summary(stats_dict)
+    
+    # 1. AUC en fonction du nombre de folds (par fréquence) avec marqueurs de significativité
     for freq in SAMPLING_FREQUENCIES:
         freq_data = successful_results[successful_results['sampling_freq'] == freq]
         if len(freq_data) > 0:
-            axes[0,0].plot(freq_data['n_folds'], freq_data['mean_auc'], 'o-', label=f'{freq}Hz', linewidth=2, markersize=6)
+            # Plot principal
+            line = axes[0,0].plot(freq_data['n_folds'], freq_data['mean_auc'], 'o-', label=f'{freq}Hz', linewidth=2, markersize=6)
+            color = line[0].get_color()
             axes[0,0].fill_between(freq_data['n_folds'], 
                                  freq_data['mean_auc'] - freq_data['std_auc'],
-                                 freq_data['mean_auc'] + freq_data['std_auc'], alpha=0.2)
+                                 freq_data['mean_auc'] + freq_data['std_auc'], alpha=0.2, color=color)
+            
+            # Ajouter des marqueurs pour les combinaisons significatives
+            for _, row in freq_data.iterrows():
+                combination_key = f"{row['n_folds']}_folds_{freq}Hz"
+                if combination_key in significance_summary and significance_summary[combination_key]['has_significance']:
+                    # Marqueur étoile pour significativité
+                    axes[0,0].scatter(row['n_folds'], row['mean_auc'], marker='*', 
+                                    s=100, color='red', zorder=5, alpha=0.8)
     
     axes[0,0].set_xlabel('Nombre de folds')
     axes[0,0].set_ylabel('AUC ± std')
-    axes[0,0].set_title('AUC vs Nombre de Folds (par fréquence)')
+    axes[0,0].set_title('AUC vs Nombre de Folds (par fréquence)\n* = significativité temporelle')
     axes[0,0].legend()
     axes[0,0].grid(True, alpha=0.3)
     axes[0,0].axhline(y=0.5, color='red', linestyle='--', alpha=0.5, label='Chance level')
     
-    # 2. AUC en fonction de la fréquence (par nombre de folds)
+    # 2. AUC en fonction de la fréquence (par nombre de folds) avec marqueurs de significativité
     for n_folds in N_FOLDS_TO_TEST:
         fold_data = successful_results[successful_results['n_folds'] == n_folds]
         if len(fold_data) > 0:
-            axes[0,1].plot(fold_data['sampling_freq'], fold_data['mean_auc'], 'o-', label=f'{n_folds} folds', linewidth=2, markersize=6)
+            # Plot principal
+            line = axes[0,1].plot(fold_data['sampling_freq'], fold_data['mean_auc'], 'o-', label=f'{n_folds} folds', linewidth=2, markersize=6)
+            color = line[0].get_color()
             axes[0,1].fill_between(fold_data['sampling_freq'], 
                                  fold_data['mean_auc'] - fold_data['std_auc'],
-                                 fold_data['mean_auc'] + fold_data['std_auc'], alpha=0.2)
+                                 fold_data['mean_auc'] + fold_data['std_auc'], alpha=0.2, color=color)
+            
+            # Ajouter des marqueurs pour les combinaisons significatives
+            for _, row in fold_data.iterrows():
+                combination_key = f"{n_folds}_folds_{row['sampling_freq']}Hz"
+                if combination_key in significance_summary and significance_summary[combination_key]['has_significance']:
+                    # Marqueur étoile pour significativité
+                    axes[0,1].scatter(row['sampling_freq'], row['mean_auc'], marker='*', 
+                                    s=100, color='red', zorder=5, alpha=0.8)
     
     axes[0,1].set_xlabel('Fréquence d\'échantillonnage (Hz)')
     axes[0,1].set_ylabel('AUC ± std')
-    axes[0,1].set_title('AUC vs Fréquence d\'échantillonnage (par folds)')
+    axes[0,1].set_title('AUC vs Fréquence d\'échantillonnage (par folds)\n* = significativité temporelle')
     axes[0,1].legend()
     axes[0,1].grid(True, alpha=0.3)
     axes[0,1].axhline(y=0.5, color='red', linestyle='--', alpha=0.5, label='Chance level')
     
-    # 3. Temps de pic en fonction de la fréquence
-    for n_folds in N_FOLDS_TO_TEST:
-        fold_data = successful_results[successful_results['n_folds'] == n_folds]
-        if len(fold_data) > 0:
-            axes[1,0].plot(fold_data['sampling_freq'], fold_data['peak_time'], 'o-', label=f'{n_folds} folds', linewidth=2, markersize=6)
+    # 3. Heatmap des pourcentages de significativité FDR
+    if significance_summary:
+        # Créer des matrices pour les heatmaps
+        fdr_matrix = np.full((len(N_FOLDS_TO_TEST), len(SAMPLING_FREQUENCIES)), np.nan)
+        cluster_matrix = np.full((len(N_FOLDS_TO_TEST), len(SAMPLING_FREQUENCIES)), np.nan)
+        
+        for combination_key, sig_data in significance_summary.items():
+            fold_idx = N_FOLDS_TO_TEST.index(sig_data['n_folds'])
+            freq_idx = SAMPLING_FREQUENCIES.index(sig_data['sampling_freq'])
+            fdr_matrix[fold_idx, freq_idx] = sig_data['fdr_percent']
+            cluster_matrix[fold_idx, freq_idx] = sig_data['cluster_percent']
+        
+        # Plot FDR heatmap
+        im1 = axes[1,0].imshow(fdr_matrix, cmap='Reds', aspect='auto', vmin=0, vmax=100)
+        axes[1,0].set_xticks(range(len(SAMPLING_FREQUENCIES)))
+        axes[1,0].set_xticklabels(SAMPLING_FREQUENCIES)
+        axes[1,0].set_yticks(range(len(N_FOLDS_TO_TEST)))
+        axes[1,0].set_yticklabels(N_FOLDS_TO_TEST)
+        axes[1,0].set_xlabel('Fréquence d\'échantillonnage (Hz)')
+        axes[1,0].set_ylabel('Nombre de folds')
+        axes[1,0].set_title('% Temps Significatif (FDR)')
+        
+        # Ajouter les valeurs dans les cases
+        for i in range(len(N_FOLDS_TO_TEST)):
+            for j in range(len(SAMPLING_FREQUENCIES)):
+                if not np.isnan(fdr_matrix[i, j]):
+                    axes[1,0].text(j, i, f'{fdr_matrix[i, j]:.1f}%', 
+                                 ha='center', va='center', fontsize=8)
+        
+        plt.colorbar(im1, ax=axes[1,0], label='% temps FDR significatif')
+    else:
+        axes[1,0].text(0.5, 0.5, 'Pas de données statistiques', ha='center', va='center', 
+                     transform=axes[1,0].transAxes)
+        axes[1,0].set_title('% Temps Significatif (FDR)')
     
-    axes[1,0].set_xlabel('Fréquence d\'échantillonnage (Hz)')
-    axes[1,0].set_ylabel('Temps de pic (s)')
-    axes[1,0].set_title('Temps de Pic Temporal vs Fréquence')
-    axes[1,0].legend()
-    axes[1,0].grid(True, alpha=0.3)
-    
-    # 4. Distribution des performances
-    successful_results['combination'] = successful_results['n_folds'].astype(str) + ' folds'
-    sns.boxplot(data=successful_results, x='sampling_freq', y='mean_auc', hue='combination', ax=axes[1,1])
-    axes[1,1].set_xlabel('Fréquence d\'échantillonnage (Hz)')
-    axes[1,1].set_ylabel('AUC')
-    axes[1,1].set_title('Distribution des AUC par Fréquence et Folds')
-    axes[1,1].legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-    axes[1,1].grid(True, alpha=0.3)
+    # 4. Résumé des meilleures combinaisons
+    if significance_summary:
+        # Trouver les combinaisons avec le plus de significativité
+        sig_combinations = [(k, v) for k, v in significance_summary.items() if v['has_significance']]
+        sig_combinations.sort(key=lambda x: x[1]['fdr_percent'] + x[1]['cluster_percent'], reverse=True)
+        
+        axes[1,1].axis('off')
+        
+        summary_text = "TOP COMBINAISONS SIGNIFICATIVES:\n\n"
+        
+        if sig_combinations:
+            for i, (combination_key, sig_data) in enumerate(sig_combinations[:8]):  # Top 8
+                auc_row = successful_results[
+                    (successful_results['n_folds'] == sig_data['n_folds']) & 
+                    (successful_results['sampling_freq'] == sig_data['sampling_freq'])
+                ]
+                if len(auc_row) > 0:
+                    auc_value = auc_row.iloc[0]['mean_auc']
+                    summary_text += f"{i+1}. {sig_data['n_folds']} folds, {sig_data['sampling_freq']}Hz\n"
+                    summary_text += f"   AUC: {auc_value:.3f}\n"
+                    summary_text += f"   FDR: {sig_data['fdr_percent']:.1f}% temps\n"
+                    summary_text += f"   Cluster: {sig_data['cluster_percent']:.1f}% temps\n\n"
+        else:
+            summary_text += "Aucune combinaison significative trouvée.\n"
+            summary_text += "Toutes les courbes temporelles sont\n"
+            summary_text += "non-significatives vs chance level."
+        
+        axes[1,1].text(0.05, 0.95, summary_text, transform=axes[1,1].transAxes, 
+                     fontsize=10, va='top', ha='left',
+                     bbox=dict(boxstyle='round', facecolor='lightgray', alpha=0.8))
+        axes[1,1].set_title('Résumé Statistique')
+    else:
+        axes[1,1].text(0.5, 0.5, 'Pas de données statistiques disponibles', 
+                     ha='center', va='center', transform=axes[1,1].transAxes)
+        axes[1,1].set_title('Résumé Statistique')
     
     plt.tight_layout()
     return fig
@@ -533,7 +619,9 @@ def create_visualization_page3(results_df, subject_info):
     from matplotlib.gridspec import GridSpec
     import scipy.stats
     
-  
+    # Calculer les statistiques temporelles
+    stats_dict = compute_temporal_statistics(results_df, chance_level=0.5)
+    
     successful_results = results_df[results_df['success'] & results_df['temporal_scores'].notna()].copy()
     
     if len(successful_results) == 0:
@@ -609,8 +697,8 @@ def create_visualization_page3(results_df, subject_info):
                 
 
                 total_epochs = subject_info['n_epochs']
-                pp_count = subject_info['pp_count']
-                ap_count = subject_info['ap_count']
+                pp_count = subject_info.get('pp_count', 'N/A')
+                ap_count = subject_info.get('ap_count', 'N/A')
                 
                 mean_label = f'Mean AUC ({total_epochs} epochs: {pp_count}PP+{ap_count}AP)'
                 ax_temp.plot(common_times, mean_scores, color='black', linewidth=3.0, label=mean_label)
@@ -621,7 +709,14 @@ def create_visualization_page3(results_df, subject_info):
                                    mean_scores + sem_scores,
                                    color='black', alpha=0.2, label='SEM (across combinations)')
     
-  
+    # Ajouter les barres de significativité pour chaque courbe
+    # On utilise la courbe principale pour les statistiques
+    main_combination_key = f"{main_result['n_folds']}_folds_{main_result['sampling_freq']}Hz"
+    if main_combination_key in stats_dict:
+        main_stats = stats_dict[main_combination_key]
+        add_significance_bars_to_axis(ax_temp, main_stats['times'], 
+                                    main_stats['fdr_data'], main_stats['cluster_data'])
+    
     ax_temp.axhline(0.5, color='red', linestyle='--', alpha=0.7, label='Chance (0.5)')
     ax_temp.axvline(0, color='red', linestyle=':', alpha=0.7, label='Stimulus Onset')
     
@@ -680,6 +775,160 @@ def create_visualization_page3(results_df, subject_info):
     return fig
 
 
+def create_visualization_page4_statistics(results_df, subject_info):
+    """
+    Crée les pages 4+ des visualisations: Analyse statistique détaillée pour chaque courbe avec SEM.
+    Retourne une liste de figures pour les différentes pages.
+    
+    Args:
+        results_df (pd.DataFrame): Résultats des tests
+        subject_info (dict): Informations sur le sujet
+    """
+    # Calculer les statistiques temporelles
+    stats_dict = compute_temporal_statistics(results_df, chance_level=0.5)
+    
+    successful_results = results_df[results_df['success'] & results_df['temporal_scores'].notna()].copy()
+    
+    if len(successful_results) == 0 or len(stats_dict) == 0:
+        fig, ax = plt.subplots(figsize=(16, 12))
+        ax.text(0.5, 0.5, 'Aucune donnée statistique disponible', ha='center', va='center', transform=ax.transAxes, fontsize=20)
+        return [fig]
+    
+    # Configuration pour l'affichage : 3x2 = 6 plots par page
+    plots_per_page = 6
+    n_cols = 2
+    n_rows = 3
+    
+    # Trier les combinaisons pour un affichage cohérent
+    sorted_combinations = []
+    for combination_key, stats_data in stats_dict.items():
+        parts = combination_key.split('_')
+        n_folds = int(parts[0])
+        sampling_freq = int(parts[2].replace('Hz', ''))
+        sorted_combinations.append((n_folds, sampling_freq, combination_key, stats_data))
+    
+    # Trier par nombre de folds puis par fréquence
+    sorted_combinations.sort(key=lambda x: (x[0], x[1]))
+    
+    # Créer les pages
+    figures = []
+    n_combinations = len(sorted_combinations)
+    n_pages = int(np.ceil(n_combinations / plots_per_page))
+    
+    for page_num in range(n_pages):
+        fig, axes = plt.subplots(n_rows, n_cols, figsize=(20, 18))
+        fig.suptitle(f'Page {4 + page_num}: Analyse Temporelle avec SEM et Significativité - Sujet {subject_info["subject_id"]} ({page_num+1}/{n_pages})', 
+                    fontsize=16, fontweight='bold')
+        
+        # S'assurer que axes est un array 2D
+        if n_rows == 1:
+            axes = axes.reshape(1, -1)
+        elif n_cols == 1:
+            axes = axes.reshape(-1, 1)
+        
+        start_idx = page_num * plots_per_page
+        end_idx = min(start_idx + plots_per_page, n_combinations)
+        
+        plot_idx = 0
+        
+        for combo_idx in range(start_idx, end_idx):
+            n_folds, sampling_freq, combination_key, stats_data = sorted_combinations[combo_idx]
+            
+            row = plot_idx // n_cols
+            col = plot_idx % n_cols
+            ax = axes[row, col]
+            
+            # Trouver les données correspondantes dans results_df
+            matching_row = successful_results[
+                (successful_results['n_folds'] == n_folds) & 
+                (successful_results['sampling_freq'] == sampling_freq)
+            ]
+            
+            if len(matching_row) == 0:
+                ax.axis('off')
+                plot_idx += 1
+                continue
+                
+            row_data = matching_row.iloc[0]
+            times = stats_data['times']
+            temporal_scores = row_data['temporal_scores']
+            
+            # Calculer la SEM à partir de tous les folds
+            all_fold_scores = row_data['temporal_scores_all_folds']
+            if all_fold_scores is not None:
+                if isinstance(all_fold_scores, list):
+                    all_fold_scores = np.array(all_fold_scores)
+                
+                if all_fold_scores.ndim == 1:
+                    all_fold_scores = all_fold_scores[np.newaxis, :]
+                elif all_fold_scores.ndim > 2:
+                    all_fold_scores = all_fold_scores.reshape(all_fold_scores.shape[0], -1)
+                
+                # Calculer SEM
+                sem_scores = scipy.stats.sem(all_fold_scores, axis=0)
+                
+                # Tracer la courbe principale avec SEM
+                ax.plot(times, temporal_scores, 'b-', linewidth=2.5, 
+                       label=f'{n_folds} folds, {sampling_freq}Hz (AUC: {row_data["mean_auc"]:.3f})')
+                
+                # Ajouter la zone SEM
+                ax.fill_between(times, 
+                              temporal_scores - sem_scores,
+                              temporal_scores + sem_scores,
+                              color='blue', alpha=0.2, label='SEM')
+            else:
+                # Pas de données de folds multiples, tracer seulement la courbe moyenne
+                ax.plot(times, temporal_scores, 'b-', linewidth=2.5, 
+                       label=f'{n_folds} folds, {sampling_freq}Hz (AUC: {row_data["mean_auc"]:.3f})')
+            
+            # Ajouter les barres de significativité en bas du plot
+            add_significance_bars_to_axis(ax, times, stats_data['fdr_data'], stats_data['cluster_data'])
+            
+            # Ajouter les lignes de référence
+            ax.axhline(0.5, color='red', linestyle='--', alpha=0.7, label='Chance (0.5)')
+            ax.axvline(0, color='red', linestyle=':', alpha=0.7, label='Stimulus Onset')
+            
+            # Formatting
+            ax.set_xlabel('Time (s)')
+            ax.set_ylabel('ROC AUC')
+            ax.set_title(f'{n_folds} folds, {sampling_freq}Hz\nAUC: {row_data["mean_auc"]:.3f}±{row_data["std_auc"]:.3f}')
+            ax.legend(fontsize=8)
+            ax.grid(True, alpha=0.3)
+            
+            # Ajuster les limites y pour inclure les barres de significativité
+            y_min, y_max = ax.get_ylim()
+            ax.set_ylim(y_min - 0.08 * (y_max - y_min), y_max)
+            
+            # Ajouter des informations statistiques en texte dans le coin
+            stats_text = ""
+            if stats_data['fdr_data'] and stats_data['fdr_data'].get('mask') is not None:
+                n_sig_fdr = np.sum(stats_data['fdr_data']['mask'])
+                fdr_percent = (n_sig_fdr / len(times)) * 100
+                stats_text += f"FDR: {fdr_percent:.1f}%\n"
+            
+            if stats_data['cluster_data'] and stats_data['cluster_data'].get('global_mask') is not None:
+                n_sig_cluster = np.sum(stats_data['cluster_data']['global_mask'])
+                cluster_percent = (n_sig_cluster / len(times)) * 100
+                stats_text += f"Cluster: {cluster_percent:.1f}%\n"
+            
+            if stats_text:
+                ax.text(0.02, 0.98, stats_text.strip(), transform=ax.transAxes, va='top', ha='left',
+                       bbox=dict(boxstyle='round', facecolor='white', alpha=0.8), fontsize=8)
+            
+            plot_idx += 1
+        
+        # Cacher les axes vides
+        for i in range(plot_idx, n_rows * n_cols):
+            row = i // n_cols
+            col = i % n_cols
+            axes[row, col].axis('off')
+        
+        plt.tight_layout()
+        figures.append(fig)
+    
+    return figures
+
+
 def save_results_and_visualizations(results_df, subject_info):
     """
     Sauvegarde les résultats et génère les visualisations.
@@ -715,6 +964,13 @@ def save_results_and_visualizations(results_df, subject_info):
     fig3.savefig(os.path.join(output_dir, 'page3_temporal_analysis.png'), dpi=300, bbox_inches='tight')
     fig3.savefig(os.path.join(output_dir, 'page3_temporal_analysis.pdf'), bbox_inches='tight')
     
+    # Page 4+: Analyses statistiques détaillées (multiples pages)
+    page4_figures = create_visualization_page4_statistics(results_df, subject_info)
+    for i, fig in enumerate(page4_figures):
+        page_num = 4 + i
+        fig.savefig(os.path.join(output_dir, f'page{page_num}_statistical_analysis_detailed.png'), dpi=300, bbox_inches='tight')
+        fig.savefig(os.path.join(output_dir, f'page{page_num}_statistical_analysis_detailed.pdf'), bbox_inches='tight')
+    
     plt.show()
     
     create_summary_report(results_df, subject_info, output_dir)
@@ -733,6 +989,10 @@ def create_summary_report(results_df, subject_info, output_dir):
         subject_info (dict): Informations sur le sujet
         output_dir (str): Répertoire de sortie
     """
+    # Calculer les statistiques temporelles pour le rapport
+    stats_dict = compute_temporal_statistics(results_df, chance_level=0.5)
+    significance_summary = calculate_significance_summary(stats_dict)
+    
     report_file = os.path.join(output_dir, 'synthesis_report.txt')
     
     with open(report_file, 'w', encoding='utf-8') as f:
@@ -754,7 +1014,34 @@ def create_summary_report(results_df, subject_info, output_dir):
         successful_results = results_df[results_df['success']]
         f.write("RÉSULTATS GÉNÉRAUX:\n")
         f.write(f"- Tests réussis: {len(successful_results)}/{len(results_df)}\n")
-        f.write(f"- Taux de réussite: {len(successful_results)/len(results_df)*100:.1f}%\n\n")
+        f.write(f"- Taux de réussite: {len(successful_results)/len(results_df)*100:.1f}%\n")
+        f.write(f"- Analyses statistiques: {len(stats_dict)} combinaisons\n\n")
+        
+        # Résumé des significativités
+        if significance_summary:
+            sig_combinations = [v for v in significance_summary.values() if v['has_significance']]
+            f.write("SIGNIFICATIVITÉ TEMPORELLE:\n")
+            f.write(f"- Combinaisons significatives: {len(sig_combinations)}/{len(significance_summary)}\n")
+            f.write(f"- Taux de significativité: {len(sig_combinations)/len(significance_summary)*100:.1f}%\n\n")
+            
+            if sig_combinations:
+                # Top 5 combinaisons significatives
+                sig_combinations.sort(key=lambda x: x['fdr_percent'] + x['cluster_percent'], reverse=True)
+                f.write("TOP 5 COMBINAISONS SIGNIFICATIVES:\n")
+                for i, sig_data in enumerate(sig_combinations[:5]):
+                    auc_row = successful_results[
+                        (successful_results['n_folds'] == sig_data['n_folds']) & 
+                        (successful_results['sampling_freq'] == sig_data['sampling_freq'])
+                    ]
+                    if len(auc_row) > 0:
+                        auc_value = auc_row.iloc[0]['mean_auc']
+                        f.write(f"{i+1}. {sig_data['n_folds']} folds, {sig_data['sampling_freq']}Hz - AUC: {auc_value:.3f}\n")
+                        f.write(f"   FDR significatif: {sig_data['fdr_percent']:.1f}% du temps\n")
+                        f.write(f"   Cluster significatif: {sig_data['cluster_percent']:.1f}% du temps\n")
+                f.write("\n")
+        else:
+            f.write("SIGNIFICATIVITÉ TEMPORELLE:\n")
+            f.write("- Aucune analyse statistique disponible\n\n")
         
         if len(successful_results) > 0:
             # Meilleures performances
@@ -763,7 +1050,16 @@ def create_summary_report(results_df, subject_info, output_dir):
             f.write(f"- Configuration: {best_auc['n_folds']} folds, {best_auc['sampling_freq']} Hz\n")
             f.write(f"- AUC: {best_auc['mean_auc']:.3f} ± {best_auc['std_auc']:.3f}\n")
             f.write(f"- Précision: {best_auc['mean_accuracy']:.3f}\n")
-            f.write(f"- Score de pic: {best_auc['peak_score']:.3f} à {best_auc['peak_time']:.3f}s\n\n")
+            f.write(f"- Score de pic: {best_auc['peak_score']:.3f} à {best_auc['peak_time']:.3f}s\n")
+            
+            # Vérifier la significativité de la meilleure performance
+            best_key = f"{best_auc['n_folds']}_folds_{best_auc['sampling_freq']}Hz"
+            if best_key in significance_summary and significance_summary[best_key]['has_significance']:
+                best_sig = significance_summary[best_key]
+                f.write(f"- Significativité: FDR {best_sig['fdr_percent']:.1f}%, Cluster {best_sig['cluster_percent']:.1f}%\n")
+            else:
+                f.write(f"- Significativité: Non significative\n")
+            f.write("\n")
             
             # Stabilité (plus faible variabilité)
             most_stable = successful_results.loc[successful_results['std_auc'].idxmin()]
@@ -779,7 +1075,10 @@ def create_summary_report(results_df, subject_info, output_dir):
                 if len(freq_data) > 0:
                     mean_auc = freq_data['mean_auc'].mean()
                     std_auc = freq_data['mean_auc'].std()
-                    f.write(f"- {freq} Hz: AUC moyen = {mean_auc:.3f} ± {std_auc:.3f} (n={len(freq_data)})\n")
+                    # Compter les combinaisons significatives pour cette fréquence
+                    freq_sig_count = sum(1 for v in significance_summary.values() 
+                                       if v['sampling_freq'] == freq and v['has_significance'])
+                    f.write(f"- {freq} Hz: AUC moyen = {mean_auc:.3f} ± {std_auc:.3f} (n={len(freq_data)}, {freq_sig_count} sig.)\n")
             
             f.write("\nANALYSE PAR NOMBRE DE FOLDS:\n")
             for n_folds in N_FOLDS_TO_TEST:
@@ -787,48 +1086,363 @@ def create_summary_report(results_df, subject_info, output_dir):
                 if len(fold_data) > 0:
                     mean_auc = fold_data['mean_auc'].mean()
                     std_auc = fold_data['mean_auc'].std()
-                    f.write(f"- {n_folds} folds: AUC moyen = {mean_auc:.3f} ± {std_auc:.3f} (n={len(fold_data)})\n")
+                    # Compter les combinaisons significatives pour ce nombre de folds
+                    fold_sig_count = sum(1 for v in significance_summary.values() 
+                                       if v['n_folds'] == n_folds and v['has_significance'])
+                    f.write(f"- {n_folds} folds: AUC moyen = {mean_auc:.3f} ± {std_auc:.3f} (n={len(fold_data)}, {fold_sig_count} sig.)\n")
         
         f.write("\nFICHIERS GÉNÉRÉS:\n")
         f.write("- results_summary.csv: Résultats détaillés\n")
         f.write("- page1_performance_heatmaps.png/.pdf: Heatmaps des performances\n")
-        f.write("- page2_detailed_analysis.png/.pdf: Analyses détaillées\n")
-        f.write("- page3_temporal_analysis.png/.pdf: Analyses temporelles\n")
+        f.write("- page2_detailed_analysis.png/.pdf: Analyses détaillées avec statistiques\n")
+        f.write("- page3_temporal_analysis.png/.pdf: Analyses temporelles avec significativité\n")
+        f.write("- page4+_statistical_analysis_detailed.png/.pdf: Analyses statistiques détaillées (multiples pages)\n")
         f.write("- synthesis_report.txt: Ce rapport de synthèse\n")
     
     logger.info(f"Rapport de synthèse créé: {report_file}")
 
 
-def main():
+def compute_temporal_statistics(results_df, chance_level=0.5):
     """
-    Fonction principale d'exécution du script.
-    """
-    logger.info("=" * 60)
-    logger.info("DÉBUT DE L'ANALYSE FOLDS ET FRÉQUENCES D'ÉCHANTILLONNAGE")
-    logger.info("=" * 60)
+    Calcule les statistiques (FDR et cluster) pour chaque courbe temporelle.
     
-    start_time = datetime.now()
+    Args:
+        results_df (pd.DataFrame): Résultats avec les scores temporels
+        chance_level (float): Niveau de chance pour les tests
+        
+    Returns:
+        dict: Dictionnaire avec les statistiques pour chaque combinaison
+    """
+    logger.info("Calcul des statistiques temporelles...")
+    
+    stats_dict = {}
+    
+    # Filtrer les résultats valides avec données temporelles
+    valid_results = results_df[
+        results_df['success'] & 
+        results_df['temporal_scores_all_folds'].notna()
+    ].copy()
+    
+    for idx, row in valid_results.iterrows():
+        combination_key = f"{row['n_folds']}_folds_{row['sampling_freq']}Hz"
+        
+        try:
+            # Récupérer les scores de tous les folds
+            all_fold_scores = row['temporal_scores_all_folds']
+            times = row['times']
+            
+            if all_fold_scores is None or times is None:
+                logger.warning(f"Données manquantes pour {combination_key}")
+                continue
+                
+            # Convertir en array numpy si nécessaire
+            if isinstance(all_fold_scores, list):
+                all_fold_scores = np.array(all_fold_scores)
+            
+            # S'assurer que les dimensions sont correctes (n_folds, n_times)
+            if all_fold_scores.ndim == 1:
+                # Un seul fold, ajouter une dimension
+                all_fold_scores = all_fold_scores[np.newaxis, :]
+            elif all_fold_scores.ndim > 2:
+                # Reshape si nécessaire
+                all_fold_scores = all_fold_scores.reshape(all_fold_scores.shape[0], -1)
+            
+            n_folds, n_times = all_fold_scores.shape
+            
+            logger.debug(f"Stats pour {combination_key}: {n_folds} folds, {n_times} temps")
+            
+            # Test FDR pointwise
+            try:
+                fdr_stats, fdr_mask, fdr_p_corrected, fdr_test_info = perform_pointwise_fdr_correction_on_scores(
+                    input_data_array=all_fold_scores,
+                    chance_level=chance_level,
+                    alpha_significance_level=0.05,
+                    fdr_correction_method="indep",
+                    alternative_hypothesis="greater",
+                    statistical_test_type="wilcoxon"
+                )
+                
+                fdr_data = {
+                    'stats': fdr_stats,
+                    'mask': fdr_mask,
+                    'p_corrected': fdr_p_corrected,
+                    'test_info': fdr_test_info
+                }
+            except Exception as e:
+                logger.warning(f"Erreur FDR pour {combination_key}: {e}")
+                fdr_data = None
+            
+            # Test cluster permutation
+            try:
+                cluster_stats, cluster_masks, cluster_p_values, h0_distribution = perform_cluster_permutation_test(
+                    input_data_array=all_fold_scores,
+                    chance_level=chance_level,
+                    n_permutations=1024,
+                    cluster_threshold_config=2.0,  # threshold t-stat
+                    alternative_hypothesis="greater",
+                    n_jobs=1,
+                    random_seed=42
+                )
+                
+                # Créer un masque global pour tous les clusters significatifs
+                cluster_global_mask = np.zeros(n_times, dtype=bool)
+                if cluster_masks and cluster_p_values is not None:
+                    for mask, p_val in zip(cluster_masks, cluster_p_values):
+                        if p_val < 0.05 and mask is not None:
+                            cluster_global_mask |= mask
+                
+                cluster_data = {
+                    'stats': cluster_stats,
+                    'masks': cluster_masks,
+                    'p_values': cluster_p_values,
+                    'h0_distribution': h0_distribution,
+                    'global_mask': cluster_global_mask
+                }
+            except Exception as e:
+                logger.warning(f"Erreur cluster pour {combination_key}: {e}")
+                cluster_data = None
+            
+            stats_dict[combination_key] = {
+                'times': times,
+                'fdr_data': fdr_data,
+                'cluster_data': cluster_data,
+                'n_folds': n_folds,
+                'n_times': n_times
+            }
+            
+        except Exception as e:
+            logger.error(f"Erreur générale stats pour {combination_key}: {e}")
+            continue
+    
+    logger.info(f"Statistiques calculées pour {len(stats_dict)} combinaisons")
+    return stats_dict
+
+
+def calculate_significance_summary(stats_dict):
+    """
+    Calcule un résumé des statistiques de significativité pour chaque combinaison.
+    
+    Args:
+        stats_dict: Dictionnaire des statistiques temporelles
+        
+    Returns:
+        dict: Résumé avec pourcentages de temps significatifs
+    """
+    significance_summary = {}
+    
+    for combination_key, stats_data in stats_dict.items():
+        parts = combination_key.split('_')
+        n_folds = int(parts[0])
+        sampling_freq = int(parts[2].replace('Hz', ''))
+        
+        n_times = stats_data['n_times']
+        
+        # Calculer les pourcentages de significativité
+        fdr_percent = 0
+        cluster_percent = 0
+        
+        if stats_data['fdr_data'] and stats_data['fdr_data'].get('mask') is not None:
+            fdr_percent = (np.sum(stats_data['fdr_data']['mask']) / n_times) * 100
+            
+        if stats_data['cluster_data'] and stats_data['cluster_data'].get('global_mask') is not None:
+            cluster_percent = (np.sum(stats_data['cluster_data']['global_mask']) / n_times) * 100
+        
+        significance_summary[combination_key] = {
+            'n_folds': n_folds,
+            'sampling_freq': sampling_freq,
+            'fdr_percent': fdr_percent,
+            'cluster_percent': cluster_percent,
+            'has_significance': fdr_percent > 0 or cluster_percent > 0
+        }
+    
+    return significance_summary
+
+
+def add_significance_bars_to_axis(ax, times, fdr_data=None, cluster_data=None):
+    """
+    Ajoute les barres de significativité à un axe matplotlib.
+    
+    Args:
+        ax: Axe matplotlib
+        times: Array des temps
+        fdr_data: Données FDR (dict avec 'mask')
+        cluster_data: Données cluster (dict avec 'global_mask')
+    """
+    y_min, y_max = ax.get_ylim()
+    bar_height = 0.01 * (y_max - y_min)
+    
+    # Barre FDR (en vert, plus proche du bas)
+    if fdr_data and fdr_data.get('mask') is not None:
+        fdr_mask = fdr_data['mask']
+        if np.any(fdr_mask):
+            y_fdr = y_min + 0.01 * (y_max - y_min)
+            ax.fill_between(times, y_fdr - bar_height/2, y_fdr + bar_height/2,
+                          where=fdr_mask, color='green', alpha=0.8,
+                          step='mid', label='FDR p<0.05')
+    
+    # Barre cluster (en orange, légèrement au-dessus)
+    if cluster_data and cluster_data.get('global_mask') is not None:
+        cluster_mask = cluster_data['global_mask']
+        if np.any(cluster_mask):
+            y_cluster = y_min + 0.03 * (y_max - y_min)
+            ax.fill_between(times, y_cluster - bar_height/2, y_cluster + bar_height/2,
+                          where=cluster_mask, color='orange', alpha=0.8,
+                          step='mid', label='Cluster p<0.05')
+    
+
+
+def run_quick_test():
+    """
+    Exécute un test rapide avec un sous-ensemble de paramètres pour validation.
+    """
+    logger.info("=== TEST RAPIDE ===")
+    
+    # Paramètres réduits pour test rapide
+    global N_FOLDS_TO_TEST, SAMPLING_FREQUENCIES
+    original_folds = N_FOLDS_TO_TEST.copy()
+    original_freqs = SAMPLING_FREQUENCIES.copy()
+    
+    # Réduire les paramètres pour test rapide
+    N_FOLDS_TO_TEST = [2, 5]
+    SAMPLING_FREQUENCIES = [250, 125]
     
     try:
-      
         results_df, subject_info = run_comprehensive_analysis()
-        
-      
         output_dir = save_results_and_visualizations(results_df, subject_info)
+        logger.info(f"Test rapide terminé. Résultats dans: {output_dir}")
+        return output_dir
+    finally:
+        # Restaurer les paramètres originaux
+        N_FOLDS_TO_TEST = original_folds
+        SAMPLING_FREQUENCIES = original_freqs
+
+
+def main():
+    """
+    Fonction principale pour exécuter l'analyse complète ou un test rapide.
+    """
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Test de décimation et folds pour EEG')
+    parser.add_argument('--quick', action='store_true', 
+                       help='Exécuter un test rapide avec paramètres réduits')
+    parser.add_argument('--subject-file', type=str, default=None,
+                       help='Fichier de données du sujet (optionnel)')
+    parser.add_argument('--output-dir', type=str, default=None,
+                       help='Répertoire de sortie (optionnel)')
+    
+    args = parser.parse_args()
+    
+    # Modifier le fichier sujet si spécifié
+    if args.subject_file:
+        global TEST_SUBJECT_FILE
+        TEST_SUBJECT_FILE = args.subject_file
+        logger.info(f"Utilisation du fichier sujet: {TEST_SUBJECT_FILE}")
+    
+    try:
+        if args.quick:
+            logger.info("Lancement du test rapide...")
+            output_dir = run_quick_test()
+        else:
+            logger.info("Lancement de l'analyse complète...")
+            results_df, subject_info = run_comprehensive_analysis()
+            output_dir = save_results_and_visualizations(results_df, subject_info)
         
-        end_time = datetime.now()
-        duration = end_time - start_time
-        
-        logger.info("=" * 60)
+        logger.info("=" * 50)
         logger.info("ANALYSE TERMINÉE AVEC SUCCÈS")
-        logger.info(f"Durée totale: {duration}")
-        logger.info(f"Résultats disponibles dans: {output_dir}")
-        logger.info("=" * 60)
+        logger.info(f"Résultats sauvegardés dans: {output_dir}")
+        logger.info("=" * 50)
         
+        # Copier dans le répertoire spécifié si demandé
+        if args.output_dir:
+            import shutil
+            final_output = os.path.join(args.output_dir, os.path.basename(output_dir))
+            shutil.copytree(output_dir, final_output)
+            logger.info(f"Résultats copiés dans: {final_output}")
+        
+        return output_dir
+        
+    except KeyboardInterrupt:
+        logger.info("Analyse interrompue par l'utilisateur")
+        return None
     except Exception as e:
-        logger.error(f"Erreur lors de l'exécution: {str(e)}")
-        raise
+        logger.error(f"Erreur durant l'analyse: {e}", exc_info=True)
+        return None
+
+
+def validate_installation():
+    """
+    Valide que toutes les dépendances nécessaires sont installées.
+    """
+    required_modules = [
+        'numpy', 'pandas', 'matplotlib', 'seaborn', 'sklearn', 'mne', 'scipy'
+    ]
+    
+    missing_modules = []
+    
+    for module in required_modules:
+        try:
+            __import__(module)
+        except ImportError:
+            missing_modules.append(module)
+    
+    if missing_modules:
+        logger.error(f"Modules manquants: {missing_modules}")
+        logger.error("Installez les dépendances avec: pip install numpy pandas matplotlib seaborn scikit-learn mne scipy")
+        return False
+    
+    # Vérifier les fonctions stats
+    try:
+        from utils.stats_utils import perform_pointwise_fdr_correction_on_scores, perform_cluster_permutation_test
+        logger.info("Modules statistiques trouvés")
+    except ImportError as e:
+        logger.error(f"Modules statistiques manquants: {e}")
+        return False
+    
+    logger.info("Toutes les dépendances sont installées")
+    return True
+
+
+def print_usage_info():
+    """
+    Affiche les informations d'utilisation du script.
+    """
+    print("\n" + "="*60)
+    print("SCRIPT DE TEST - DÉCIMATION ET FOLDS POUR EEG")
+    print("="*60)
+    print("\nUsage:")
+    print("  python test_decimate_folds.py [options]")
+    print("\nOptions:")
+    print("  --quick                    Test rapide (2 folds × 2 fréquences)")
+    print("  --subject-file PATH        Fichier de données personnalisé")
+    print("  --output-dir PATH          Répertoire de sortie personnalisé")
+    print("  -h, --help                 Afficher cette aide")
+    print("\nExemples:")
+    print("  python test_decimate_folds.py --quick")
+    print("  python test_decimate_folds.py --subject-file /path/to/data.fif")
+    print("  python test_decimate_folds.py --output-dir /path/to/results")
+    print("\nConfiguration actuelle:")
+    print(f"  - Fichier sujet: {TEST_SUBJECT_FILE}")
+    print(f"  - Folds testés: {N_FOLDS_TO_TEST}")
+    print(f"  - Fréquences testées: {SAMPLING_FREQUENCIES} Hz")
+    print(f"  - Total combinaisons: {len(N_FOLDS_TO_TEST) * len(SAMPLING_FREQUENCIES)}")
+    print("\nSorties générées:")
+    print("  - results_summary.csv: Données tabulaires")
+    print("  - page1_performance_heatmaps.png/pdf: Heatmaps performances")
+    print("  - page2_detailed_analysis.png/pdf: Analyses détaillées")
+    print("  - page3_temporal_analysis.png/pdf: Analyses temporelles")
+    print("  - page4_statistical_analysis.png/pdf: Statistiques détaillées")
+    print("  - synthesis_report.txt: Rapport de synthèse")
+    print("="*60)
 
 
 if __name__ == "__main__":
+    # Afficher les informations d'utilisation
+    print_usage_info()
+    
+    # Valider l'installation
+    if not validate_installation():
+        sys.exit(1)
+    
+    # Lancer l'analyse
     main()

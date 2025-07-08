@@ -40,6 +40,8 @@ from config.decoding_config import (
     FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
     CHANCE_LEVEL_AUC, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
     COMPUTE_INTRA_SUBJECT_STATISTICS, COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
+    COMPUTE_TGM_FOR_MAIN_COMPARISON, COMPUTE_TGM_FOR_SPECIFIC_COMPARISONS,
+    COMPUTE_TGM_FOR_INTER_FAMILY_COMPARISONS,
     CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG, SAVE_ANALYSIS_RESULTS,
     GENERATE_PLOTS, N_JOBS_PROCESSING
 )
@@ -128,7 +130,7 @@ def execute_single_subject_lg_decoding(
     if n_perms_for_intra_subject_clusters is None:
         n_perms_for_intra_subject_clusters = N_PERMUTATIONS_INTRA_SUBJECT
     if compute_tgm_flag is None:
-        compute_tgm_flag = COMPUTE_TEMPORAL_GENERALIZATION_MATRICES
+        compute_tgm_flag = COMPUTE_TGM_FOR_MAIN_COMPARISON  
     if loading_conditions_config is None:
         loading_conditions_config = CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG
     if cluster_threshold_config_intra_fold is None:
@@ -145,21 +147,48 @@ def execute_single_subject_lg_decoding(
         "classifier_type_used": classifier_type,
         "epochs_time_points": None,
         # Main LG decoding results (LS vs LD)
-        "lg_main_original_labels": None,
-        "lg_main_pred_probas_global": None,
-        "lg_main_pred_labels_global": None,
-        "lg_main_cv_global_scores": None,
-        "lg_main_scores_1d_all_folds": None,
-        "lg_main_scores_1d_mean": None,
-        "lg_main_temporal_1d_fdr": None,
-        "lg_main_temporal_1d_cluster": None,
-        "lg_main_tgm_all_folds": None,
-        "lg_main_tgm_mean": None,
-        "lg_main_tgm_fdr": None,
-        "lg_main_mean_auc_global": np.nan,
-        "lg_main_global_metrics": {},
-        # Specific LG comparison results
+        "lg_ls_ld_original_labels": None,
+        "lg_ls_ld_pred_probas_global": None,
+        "lg_ls_ld_pred_labels_global": None,
+        "lg_ls_ld_cv_global_scores": None,
+        "lg_ls_ld_scores_1d_all_folds": None,
+        "lg_ls_ld_scores_1d_mean": None,
+        "lg_ls_ld_temporal_1d_fdr": None,
+        "lg_ls_ld_temporal_1d_cluster": None,
+        "lg_ls_ld_tgm_all_folds": None,
+        "lg_ls_ld_tgm_mean": None,
+        "lg_ls_ld_tgm_fdr": None,
+        "lg_ls_ld_mean_auc_global": np.nan,
+        "lg_ls_ld_global_metrics": {},
+        # Global Standard vs Global Deviant decoding results (GS vs GD)
+        "lg_gs_gd_original_labels": None,
+        "lg_gs_gd_pred_probas_global": None,
+        "lg_gs_gd_pred_labels_global": None,
+        "lg_gs_gd_cv_global_scores": None,
+        "lg_gs_gd_scores_1d_all_folds": None,
+        "lg_gs_gd_scores_1d_mean": None,
+        "lg_gs_gd_temporal_1d_fdr": None,
+        "lg_gs_gd_temporal_1d_cluster": None,
+        "lg_gs_gd_tgm_all_folds": None,
+        "lg_gs_gd_tgm_mean": None,
+        "lg_gs_gd_tgm_fdr": None,
+        "lg_gs_gd_mean_auc_global": np.nan,
+        "lg_gs_gd_global_metrics": {},
+        # Specific LG comparison results (4 comparisons with individual keys)
         "lg_specific_comparison_results": [],
+        "lg_lsgs_vs_lsgd_scores_1d_mean": None,
+        "lg_lsgs_vs_lsgd_temporal_1d_fdr": None,
+        "lg_lsgs_vs_lsgd_temporal_1d_cluster": None,
+        "lg_ldgs_vs_ldgd_scores_1d_mean": None,
+        "lg_ldgs_vs_ldgd_temporal_1d_fdr": None,
+        "lg_ldgs_vs_ldgd_temporal_1d_cluster": None,
+        "lg_lsgs_vs_ldgs_scores_1d_mean": None,
+        "lg_lsgs_vs_ldgs_temporal_1d_fdr": None,
+        "lg_lsgs_vs_ldgs_temporal_1d_cluster": None,
+        "lg_lsgd_vs_ldgd_scores_1d_mean": None,
+        "lg_lsgd_vs_ldgd_temporal_1d_fdr": None,
+        "lg_lsgd_vs_ldgd_temporal_1d_cluster": None,
+        # Stack statistics
         "lg_mean_of_specific_scores_1d": None,
         "lg_sem_of_specific_scores_1d": None,
         "lg_mean_specific_fdr": None,
@@ -257,22 +286,22 @@ def execute_single_subject_lg_decoding(
         logger.info("  --- 1. Main LG Decoding (LS vs LD) for %s ---",
                     subject_identifier)
 
-        ls_main_data = returned_data_dict.get("LS_ALL")
-        ld_main_data = returned_data_dict.get("LD_ALL")
+        ls_data = returned_data_dict.get("LS_ALL")
+        ld_data = returned_data_dict.get("LD_ALL")
 
-        if (ls_main_data is not None and ld_main_data is not None and
-                ls_main_data.size > 0 and ld_main_data.size > 0):
+        if (ls_data is not None and ld_data is not None and
+                ls_data.size > 0 and ld_data.size > 0):
 
-            main_lg_data = np.concatenate([ls_main_data, ld_main_data], axis=0)
-            main_lg_labels_orig = np.concatenate([
-                np.zeros(ls_main_data.shape[0]),
-                np.ones(ld_main_data.shape[0])
+            ls_ld_data = np.concatenate([ls_data, ld_data], axis=0)
+            ls_ld_labels_orig = np.concatenate([
+                np.zeros(ls_data.shape[0]),
+                np.ones(ld_data.shape[0])
             ])
-            subject_results["lg_main_original_labels"] = (
-                main_lg_labels_orig.copy())
+            subject_results["lg_ls_ld_original_labels"] = (
+                ls_ld_labels_orig.copy())
 
             main_labels_encoded = LabelEncoder().fit_transform(
-                main_lg_labels_orig)
+                ls_ld_labels_orig)
 
             if len(np.unique(main_labels_encoded)) < 2:
                 logger.error(
@@ -295,9 +324,9 @@ def execute_single_subject_lg_decoding(
                         n_splits=num_cv_splits_main, shuffle=True,
                         random_state=42)
 
-                    main_decoding_output = run_temporal_decoding_analysis(
-                        epochs_data=main_lg_data,
-                        target_labels=main_lg_labels_orig,
+                    ls_ld_decoding_output = run_temporal_decoding_analysis(
+                        epochs_data=ls_ld_data,
+                        target_labels=ls_ld_labels_orig,
                         classifier_model_type=classifier_type,
                         use_grid_search=use_grid_search_for_subject,
                         use_csp_for_temporal_pipelines=use_csp_for_temporal_subject,
@@ -320,26 +349,26 @@ def execute_single_subject_lg_decoding(
                     )
 
                     subject_results.update({
-                        "lg_main_pred_probas_global": main_decoding_output[0],
-                        "lg_main_pred_labels_global": main_decoding_output[1],
-                        "lg_main_cv_global_scores": main_decoding_output[2],
-                        "lg_main_scores_1d_mean": main_decoding_output[3],
-                        "lg_main_global_metrics": main_decoding_output[4],
-                        "lg_main_temporal_1d_fdr": main_decoding_output[5],
-                        "lg_main_temporal_1d_cluster": main_decoding_output[6],
-                        "lg_main_scores_1d_all_folds": main_decoding_output[7],
-                        "lg_main_tgm_mean": main_decoding_output[8],
-                        "lg_main_tgm_fdr": main_decoding_output[9],
-                        "lg_main_tgm_all_folds": main_decoding_output[11],
+                        "lg_ls_ld_pred_probas_global": ls_ld_decoding_output[0],
+                        "lg_ls_ld_pred_labels_global": ls_ld_decoding_output[1],
+                        "lg_ls_ld_cv_global_scores": ls_ld_decoding_output[2],
+                        "lg_ls_ld_scores_1d_mean": ls_ld_decoding_output[3],
+                        "lg_ls_ld_global_metrics": ls_ld_decoding_output[4],
+                        "lg_ls_ld_temporal_1d_fdr": ls_ld_decoding_output[5],
+                        "lg_ls_ld_temporal_1d_cluster": ls_ld_decoding_output[6],
+                        "lg_ls_ld_scores_1d_all_folds": ls_ld_decoding_output[7],
+                        "lg_ls_ld_tgm_mean": ls_ld_decoding_output[8],
+                        "lg_ls_ld_tgm_fdr": ls_ld_decoding_output[9],
+                        "lg_ls_ld_tgm_all_folds": ls_ld_decoding_output[11],
                     })
 
                     mean_auc_val = (
-                        np.nanmean(main_decoding_output[2])
-                        if (main_decoding_output[2] is not None and
-                            main_decoding_output[2].size > 0)
+                        np.nanmean(ls_ld_decoding_output[2])
+                        if (ls_ld_decoding_output[2] is not None and
+                            ls_ld_decoding_output[2].size > 0)
                         else np.nan)
 
-                    subject_results["lg_main_mean_auc_global"] = mean_auc_val
+                    subject_results["lg_ls_ld_mean_auc_global"] = mean_auc_val
 
                     logger.info(
                         "Main LG Decoding for %s DONE. Mean Global AUC: %.3f",
@@ -349,6 +378,101 @@ def execute_single_subject_lg_decoding(
             logger.warning(
                 "Subj %s: Missing LS_ALL or LD_ALL data. "
                 "Skipping main LG decoding.", subject_identifier)
+
+        # === 1.2. GS vs GD Decoding ===
+        logger.info("  --- 1.2. GS vs GD Decoding for %s ---", subject_identifier)
+
+        gs_data = returned_data_dict.get("GS_ALL")
+        gd_data = returned_data_dict.get("GD_ALL")
+
+        if (gs_data is not None and gd_data is not None and
+                gs_data.size > 0 and gd_data.size > 0):
+
+            gs_gd_data = np.concatenate([gs_data, gd_data], axis=0)
+            gs_gd_labels_orig = np.concatenate([
+                np.zeros(gs_data.shape[0]),
+                np.ones(gd_data.shape[0])
+            ])
+            subject_results["lg_gs_gd_original_labels"] = (
+                gs_gd_labels_orig.copy())
+
+            gs_gd_labels_encoded = LabelEncoder().fit_transform(
+                gs_gd_labels_orig)
+
+            if len(np.unique(gs_gd_labels_encoded)) < 2:
+                logger.error(
+                    "Subj %s: Only one class for GS vs GD decoding. Skipping.",
+                    subject_identifier)
+            else:
+                min_samples_gs_gd = np.min(np.bincount(gs_gd_labels_encoded))
+                num_cv_splits_gs_gd = (
+                    min(10, min_samples_gs_gd)
+                    if min_samples_gs_gd >= 2 else 0)
+
+                if num_cv_splits_gs_gd < 2:
+                    logger.error(
+                        "Subj %s: Not enough samples for CV in GS vs GD "
+                        "decoding (%d splits). Skipping.",
+                        subject_identifier, num_cv_splits_gs_gd)
+                else:
+                    cv_splitter_gs_gd = StratifiedKFold(
+                        n_splits=num_cv_splits_gs_gd, shuffle=True,
+                        random_state=42)
+
+                    gs_gd_decoding_output = run_temporal_decoding_analysis(
+                        epochs_data=gs_gd_data,
+                        target_labels=gs_gd_labels_orig,
+                        classifier_model_type=classifier_type,
+                        use_grid_search=use_grid_search_for_subject,
+                        use_csp_for_temporal_pipelines=use_csp_for_temporal_subject,
+                        use_anova_fs_for_temporal_pipelines=use_anova_fs_for_temporal_subject,
+                        param_grid_config=current_param_grid_for_clf_dict,
+                        cv_folds_for_gridsearch=cv_folds_for_gs_subject,
+                        fixed_classifier_params=(
+                            current_fixed_params_for_clf_dict),
+                        cross_validation_splitter=cv_splitter_gs_gd,
+                        n_jobs_external=actual_n_jobs,
+                        compute_intra_fold_stats=(
+                            compute_intra_subject_stats_flag),
+                        n_permutations_for_intra_fold_clusters=(
+                            n_perms_for_intra_subject_clusters),
+                        compute_temporal_generalization_matrix=(
+                            compute_tgm_flag),
+                        chance_level=CHANCE_LEVEL_AUC,
+                        cluster_threshold_config_intra_fold=(
+                            cluster_threshold_config_intra_fold)
+                    )
+
+                    subject_results.update({
+                        "lg_gs_gd_pred_probas_global": gs_gd_decoding_output[0],
+                        "lg_gs_gd_pred_labels_global": gs_gd_decoding_output[1],
+                        "lg_gs_gd_cv_global_scores": gs_gd_decoding_output[2],
+                        "lg_gs_gd_scores_1d_mean": gs_gd_decoding_output[3],
+                        "lg_gs_gd_global_metrics": gs_gd_decoding_output[4],
+                        "lg_gs_gd_temporal_1d_fdr": gs_gd_decoding_output[5],
+                        "lg_gs_gd_temporal_1d_cluster": gs_gd_decoding_output[6],
+                        "lg_gs_gd_scores_1d_all_folds": gs_gd_decoding_output[7],
+                        "lg_gs_gd_tgm_mean": gs_gd_decoding_output[8],
+                        "lg_gs_gd_tgm_fdr": gs_gd_decoding_output[9],
+                        "lg_gs_gd_tgm_all_folds": gs_gd_decoding_output[11],
+                    })
+
+                    mean_auc_val_gs_gd = (
+                        np.nanmean(gs_gd_decoding_output[2])
+                        if (gs_gd_decoding_output[2] is not None and
+                            gs_gd_decoding_output[2].size > 0)
+                        else np.nan)
+
+                    subject_results["lg_gs_gd_mean_auc_global"] = mean_auc_val_gs_gd
+
+                    logger.info(
+                        "GS vs GD Decoding for %s DONE. Mean Global AUC: %.3f",
+                        subject_identifier,
+                        mean_auc_val_gs_gd if pd.notna(mean_auc_val_gs_gd) else -1)
+        else:
+            logger.warning(
+                "Subj %s: Missing GS_ALL or GD_ALL data. "
+                "Skipping GS vs GD decoding.", subject_identifier)
 
         logger.info(
             "  --- 2. Specific LG Comparisons (e.g. LS/GS vs LS/GD, "
@@ -363,18 +487,22 @@ def execute_single_subject_lg_decoding(
             # Define specific LG comparisons
             lg_specific_comparisons = [
                 ("LSGS", "LSGD",
-                 "Local Standard: Global Standard vs Global Deviant"),
+                 "Local Standard: Global Standard vs Global Deviant",
+                 "lsgs_vs_lsgd"),
                 ("LDGS", "LDGD",
-                 "Local Deviant: Global Standard vs Global Deviant"),
+                 "Local Deviant: Global Standard vs Global Deviant",
+                 "ldgs_vs_ldgd"),
                 ("LSGS", "LDGS",
-                 "Global Standard: Local Standard vs Local Deviant"),
+                 "Global Standard: Local Standard vs Local Deviant",
+                 "lsgs_vs_ldgs"),
                 ("LSGD", "LDGD",
-                 "Global Deviant: Local Standard vs Local Deviant"),
+                 "Global Deviant: Local Standard vs Local Deviant",
+                 "lsgd_vs_ldgd"),
             ]
 
             subject_results["lg_specific_comparison_results"] = []
 
-            for condition1_key, condition2_key, comparison_name in (
+            for condition1_key, condition2_key, comparison_name, result_key in (
                     lg_specific_comparisons):
 
                 condition1_data = returned_data_dict.get(condition1_key)
@@ -455,6 +583,11 @@ def execute_single_subject_lg_decoding(
                                     specific_task_output[6]),
                                 "all_folds_scores_1d": specific_task_output[7]
                             })
+
+                            # Save results with individual keys for each comparison
+                            subject_results[f"lg_{result_key}_scores_1d_mean"] = specific_task_output[3]
+                            subject_results[f"lg_{result_key}_temporal_1d_fdr"] = specific_task_output[5]
+                            subject_results[f"lg_{result_key}_temporal_1d_cluster"] = specific_task_output[6]
 
                             peak_auc_val = (
                                 np.nanmax(specific_task_output[3])
@@ -596,20 +729,53 @@ def execute_single_subject_lg_decoding(
                     "group": group_affiliation,
                     "protocol_task_id": decoding_protocol_identifier,
                     "classifier": classifier_type}
-                csv_summary_data["lg_main_global_auc_mean"] = (
-                    subject_results.get("lg_main_mean_auc_global", np.nan))
+                csv_summary_data["lg_ls_ld_global_auc_mean"] = (
+                    subject_results.get("lg_ls_ld_mean_auc_global", np.nan))
 
                 cv_scores_main = subject_results.get(
-                    "lg_main_cv_global_scores")
-                csv_summary_data["lg_main_global_auc_std"] = (
+                    "lg_ls_ld_cv_global_scores")
+                csv_summary_data["lg_ls_ld_global_auc_std"] = (
                     np.nanstd(cv_scores_main)
                     if (cv_scores_main is not None and
                         cv_scores_main.size > 0) else np.nan)
 
+                # Add GS vs GD metrics
+                csv_summary_data["lg_gs_gd_global_auc_mean"] = (
+                    subject_results.get("lg_gs_gd_mean_auc_global", np.nan))
+
+                cv_scores_gs_gd = subject_results.get(
+                    "lg_gs_gd_cv_global_scores")
+                csv_summary_data["lg_gs_gd_global_auc_std"] = (
+                    np.nanstd(cv_scores_gs_gd)
+                    if (cv_scores_gs_gd is not None and
+                        cv_scores_gs_gd.size > 0) else np.nan)
+
                 main_metrics = subject_results.get(
-                    "lg_main_global_metrics", {})
+                    "lg_ls_ld_global_metrics", {})
                 for k_metric, v_metric in main_metrics.items():
-                    csv_summary_data[f"lg_main_metric_{k_metric}"] = v_metric
+                    csv_summary_data[f"lg_ls_ld_metric_{k_metric}"] = v_metric
+
+                # Add GS vs GD metrics
+                gs_gd_metrics = subject_results.get(
+                    "lg_gs_gd_global_metrics", {})
+                for k_metric, v_metric in gs_gd_metrics.items():
+                    csv_summary_data[f"lg_gs_gd_metric_{k_metric}"] = v_metric
+
+                # Add peak AUC for each specific comparison
+                specific_comparisons_keys = [
+                    "lsgs_vs_lsgd", "ldgs_vs_ldgd", "lsgs_vs_ldgs", "lsgd_vs_ldgd"
+                ]
+                for comp_key in specific_comparisons_keys:
+                    scores_key = f"lg_{comp_key}_scores_1d_mean"
+                    if scores_key in subject_results:
+                        scores = subject_results[scores_key]
+                        if scores is not None and len(scores) > 0:
+                            peak_auc = np.nanmax(scores)
+                            csv_summary_data[f"lg_{comp_key}_peak_auc"] = peak_auc
+                        else:
+                            csv_summary_data[f"lg_{comp_key}_peak_auc"] = np.nan
+                    else:
+                        csv_summary_data[f"lg_{comp_key}_peak_auc"] = np.nan
 
                 summary_csv_path = os.path.join(
                     subject_results_dir, "lg_summary_metrics.csv")
@@ -638,28 +804,78 @@ def execute_single_subject_lg_decoding(
                         "CHANCE_LEVEL_AUC": CHANCE_LEVEL_AUC,
                         "protocol_type": "LG",
 
-                        "lg_main_original_labels_array": (
-                            subject_results.get("lg_main_original_labels")),
-                        "lg_main_predicted_probabilities_global": (
-                            subject_results.get("lg_main_pred_probas_global")),
-                        "lg_main_predicted_labels_global": (
-                            subject_results.get("lg_main_pred_labels_global")),
-                        "lg_main_cross_validation_global_scores": (
-                            subject_results.get("lg_main_cv_global_scores")),
-                        "lg_main_temporal_scores_1d_all_folds": (
-                            subject_results.get("lg_main_scores_1d_all_folds")),
-                        "lg_main_mean_temporal_decoding_scores_1d": (
-                            subject_results.get("lg_main_scores_1d_mean")),
-                        "lg_main_temporal_1d_fdr_sig_data": (
-                            subject_results.get("lg_main_temporal_1d_fdr")),
-                        "lg_main_temporal_1d_cluster_sig_data": (
-                            subject_results.get("lg_main_temporal_1d_cluster")),
-                        "lg_main_mean_temporal_generalization_matrix_scores": (
-                            subject_results.get("lg_main_tgm_mean")),
-                        "lg_main_tgm_fdr_sig_data": (
-                            subject_results.get("lg_main_tgm_fdr")),
-                        "lg_main_decoding_global_metrics_for_plot": (
-                            subject_results.get("lg_main_global_metrics", {})),
+                        "lg_ls_ld_original_labels_array": (
+                            subject_results.get("lg_ls_ld_original_labels")),
+                        "lg_ls_ld_predicted_probabilities_global": (
+                            subject_results.get("lg_ls_ld_pred_probas_global")),
+                        "lg_ls_ld_predicted_labels_global": (
+                            subject_results.get("lg_ls_ld_pred_labels_global")),
+                        "lg_ls_ld_cross_validation_global_scores": (
+                            subject_results.get("lg_ls_ld_cv_global_scores")),
+                        "lg_ls_ld_temporal_scores_1d_all_folds": (
+                            subject_results.get("lg_ls_ld_scores_1d_all_folds")),
+                        "lg_ls_ld_mean_temporal_decoding_scores_1d": (
+                            subject_results.get("lg_ls_ld_scores_1d_mean")),
+                        "lg_ls_ld_temporal_1d_fdr_sig_data": (
+                            subject_results.get("lg_ls_ld_temporal_1d_fdr")),
+                        "lg_ls_ld_temporal_1d_cluster_sig_data": (
+                            subject_results.get("lg_ls_ld_temporal_1d_cluster")),
+                        "lg_ls_ld_mean_temporal_generalization_matrix_scores": (
+                            subject_results.get("lg_ls_ld_tgm_mean")),
+                        "lg_ls_ld_tgm_fdr_sig_data": (
+                            subject_results.get("lg_ls_ld_tgm_fdr")),
+                        "lg_ls_ld_decoding_global_metrics_for_plot": (
+                            subject_results.get("lg_ls_ld_global_metrics", {})),
+
+                        # GS vs GD decoding results
+                        "lg_gs_gd_original_labels_array": (
+                            subject_results.get("lg_gs_gd_original_labels")),
+                        "lg_gs_gd_predicted_probabilities_global": (
+                            subject_results.get("lg_gs_gd_pred_probas_global")),
+                        "lg_gs_gd_predicted_labels_global": (
+                            subject_results.get("lg_gs_gd_pred_labels_global")),
+                        "lg_gs_gd_cross_validation_global_scores": (
+                            subject_results.get("lg_gs_gd_cv_global_scores")),
+                        "lg_gs_gd_temporal_scores_1d_all_folds": (
+                            subject_results.get("lg_gs_gd_scores_1d_all_folds")),
+                        "lg_gs_gd_mean_temporal_decoding_scores_1d": (
+                            subject_results.get("lg_gs_gd_scores_1d_mean")),
+                        "lg_gs_gd_temporal_1d_fdr_sig_data": (
+                            subject_results.get("lg_gs_gd_temporal_1d_fdr")),
+                        "lg_gs_gd_temporal_1d_cluster_sig_data": (
+                            subject_results.get("lg_gs_gd_temporal_1d_cluster")),
+                        "lg_gs_gd_mean_temporal_generalization_matrix_scores": (
+                            subject_results.get("lg_gs_gd_tgm_mean")),
+                        "lg_gs_gd_tgm_fdr_sig_data": (
+                            subject_results.get("lg_gs_gd_tgm_fdr")),
+                        "lg_gs_gd_decoding_global_metrics_for_plot": (
+                            subject_results.get("lg_gs_gd_global_metrics", {})),
+
+                        # Individual comparison results
+                        "lg_lsgs_vs_lsgd_scores_1d_mean": (
+                            subject_results.get("lg_lsgs_vs_lsgd_scores_1d_mean")),
+                        "lg_lsgs_vs_lsgd_temporal_1d_fdr": (
+                            subject_results.get("lg_lsgs_vs_lsgd_temporal_1d_fdr")),
+                        "lg_lsgs_vs_lsgd_temporal_1d_cluster": (
+                            subject_results.get("lg_lsgs_vs_lsgd_temporal_1d_cluster")),
+                        "lg_ldgs_vs_ldgd_scores_1d_mean": (
+                            subject_results.get("lg_ldgs_vs_ldgd_scores_1d_mean")),
+                        "lg_ldgs_vs_ldgd_temporal_1d_fdr": (
+                            subject_results.get("lg_ldgs_vs_ldgd_temporal_1d_fdr")),
+                        "lg_ldgs_vs_ldgd_temporal_1d_cluster": (
+                            subject_results.get("lg_ldgs_vs_ldgd_temporal_1d_cluster")),
+                        "lg_lsgs_vs_ldgs_scores_1d_mean": (
+                            subject_results.get("lg_lsgs_vs_ldgs_scores_1d_mean")),
+                        "lg_lsgs_vs_ldgs_temporal_1d_fdr": (
+                            subject_results.get("lg_lsgs_vs_ldgs_temporal_1d_fdr")),
+                        "lg_lsgs_vs_ldgs_temporal_1d_cluster": (
+                            subject_results.get("lg_lsgs_vs_ldgs_temporal_1d_cluster")),
+                        "lg_lsgd_vs_ldgd_scores_1d_mean": (
+                            subject_results.get("lg_lsgd_vs_ldgd_scores_1d_mean")),
+                        "lg_lsgd_vs_ldgd_temporal_1d_fdr": (
+                            subject_results.get("lg_lsgd_vs_ldgd_temporal_1d_fdr")),
+                        "lg_lsgd_vs_ldgd_temporal_1d_cluster": (
+                            subject_results.get("lg_lsgd_vs_ldgd_temporal_1d_cluster")),
 
                         "lg_specific_comparison_results": (
                             subject_results.get("lg_specific_comparison_results")),

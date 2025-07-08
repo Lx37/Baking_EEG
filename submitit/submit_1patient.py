@@ -143,7 +143,7 @@ def main_submission_logic():
     # Configuration du job Slurm
     executor = submitit.AutoExecutor(folder=submitit_log_folder)
     executor.update_parameters(
-        timeout_min=12 * 60,
+        timeout_min=12000 * 60,
         slurm_partition="CPU",
         slurm_mem="60G",
         slurm_cpus_per_task=40,

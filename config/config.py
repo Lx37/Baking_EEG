@@ -316,13 +316,12 @@ EGI_con_chan_BRU = [
 
 #################################
 ######### ID of SUBJECT  ########
-
 ALL_SUBJECT_GROUPS = {
     "CONTROLS_DELIRIUM": [
         "TPC2",
         "TPLV4",
         "TTDV5",
-        "TYS6", #Att 401 points temporels pour protocole LG
+       # "TYS6",  # Att 401 points temporels pour protocole LG
         "LAB1",
         "LAG6",
         "LAT3",
@@ -361,10 +360,8 @@ ALL_SUBJECT_GROUPS = {
         "MB103",
     ],
 
-
     "COMA": [
         "AD94",
-        "AE93",
         "AM88",
         "AP84",
         "AS_FRA",
@@ -387,7 +384,6 @@ ALL_SUBJECT_GROUPS = {
         "LA_PIE",
         "MA_VAL",
         "MB73",
-        "ME63",
         "ME63",
         "ME64",
         "MP68",
@@ -426,6 +422,7 @@ ALL_SUBJECT_GROUPS = {
         "TT45",
         "YG72",
     ],
+
     "VS": [
         "CB31",
         "DZ44",
@@ -454,6 +451,7 @@ ALL_SUBJECT_GROUPS = {
         "TpML3J8",
         "VS91",
     ],
+
     "MCS-": [
         "BT25",
         "CB34",
@@ -462,7 +460,9 @@ ALL_SUBJECT_GROUPS = {
         "MC40",
         "ML33",
     ],
-    "MCS+": [
+
+    "MCS": [
+        "AE93",
         "AG42",
         "CW41",
         "DA75",
@@ -482,10 +482,7 @@ ALL_SUBJECT_GROUPS = {
         "IR27",
         "NF35",
     ],
- #  "EMCS": [
-  #      "TpAF11J8",
-   #     "TpJM2J8",
-    #],
+
     "DELIRIUM+": [
         "TpAB19",
         "TpAK24",
@@ -499,7 +496,7 @@ ALL_SUBJECT_GROUPS = {
         "TpJA20",
         "TpJB25",
         "TpJB26",
-       # "TpJC5", 301 temporal points 
+        # "TpJC5", 301 points temporels
         "TpJCD29",
         "TpJLR17",
         "TpJPS55",
@@ -513,6 +510,7 @@ ALL_SUBJECT_GROUPS = {
         "TpRD38",
         "TpSM49",
     ],
+
     "DELIRIUM-": [
         "TpAC23",
         "TpAG51",
@@ -539,22 +537,4 @@ ALL_SUBJECT_GROUPS = {
         "TpSD30",
         "TpYB41",
     ],
-    # "xx": [
-    #     "AG98",
-    #     "AM88",
-    #     "LC97",
-    #     "MA101",
-    #     "MA99",
-    #     "MG96",
-    #     "MM87",
-    #     "PF100",
-    #     "PM95",
-    #     "SM51",
-    #     "VT47",
-    #     "XL89",
-    # ],
-    # "xxx": [
-    #     "DR92",
-    #     "FP102",
-    # ],
 }

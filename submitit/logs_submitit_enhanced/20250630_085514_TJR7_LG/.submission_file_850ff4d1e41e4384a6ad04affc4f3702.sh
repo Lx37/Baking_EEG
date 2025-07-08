@@ -1,1 +1,0 @@
-/home/tom.balay/Baking_EEG/submitit/logs_submitit_enhanced/20250630_085514_TJR7_LG/352136_submission.sh

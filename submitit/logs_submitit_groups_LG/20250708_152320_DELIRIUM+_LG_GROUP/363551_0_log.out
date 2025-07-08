@@ -1,0 +1,142 @@
+submitit INFO (2025-07-08 15:56:54,639) - Starting with JobEnvironment(job_id=363551, hostname=node8, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-07-08 15:56:54,640) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/logs_submitit_groups_LG/20250708_152320_DELIRIUM+_LG_GROUP/363551_submitted.pkl
+2025-07-08 15:57:03,889 - INFO - examples.run_decoding_one_group_pp - [<module>:39] - Tentative d'import de execute_single_subject_decoding...
+2025-07-08 15:57:03,889 - INFO - examples.run_decoding_one_group_pp - [<module>:42] - ✅ Import de execute_single_subject_decoding réussi
+2025-07-08 15:57:03,895 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:96] - Starting intra-subject LG decoding analysis for GROUP: DELIRIUM+. GS: False, CSP: False, ANOVA FS: True. n_jobs_subj: 40.
+2025-07-08 15:57:03,895 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'DELIRIUM+': Processing Subject 1/24: TpAB19 ---
+2025-07-08 15:57:03,895 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpAB19 (Group: DELIRIUM+, Task Set ID: Group_LG_Intra_DELIRIUM+_Subj_TpAB19, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:57:03,896 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:57:03,899 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:163] - No preprocessed LG epoch FIF file found for 'TpAB19' in '/mnt/data/tom.balay/data/Baking_EEG_data/LG_PATIENTS_DELIRIUM+_0.5'. Checked 8 candidates (first 5: ['/mnt/data/tom.balay/data/Baking_EEG_data/LG_PATIENTS_DELIRIUM+_0.5/TpAB19_LG_preproc_ICA_LG-epo_ar.fif', '/mnt/data/tom.balay/data/Baking_EEG_data/LG_PATIENTS_DELIRIUM+_0.5/TpAB19_LG_preproc_ICA_LG-epo.fif', '/mnt/data/tom.balay/data/Baking_EEG_data/LG_PATIENTS_DELIRIUM+_0.5/TpAB19_LG_preproc_noICA_LG-epo_ar.fif', '/mnt/data/tom.balay/data/Baking_EEG_data/LG_PATIENTS_DELIRIUM+_0.5/TpAB19_LG_preproc_noICA_LG-epo.fif', '/mnt/data/tom.balay/data/Baking_EEG_data/LG_PATIENTS_DELIRIUM+_0.5/AB19_LG_preproc_ICA_LG-epo_ar.fif']).
+2025-07-08 15:57:03,899 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpAB19
+2025-07-08 15:57:03,899 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpAB19. Aborting subject.
+2025-07-08 15:57:03,900 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpAB19 processing failed or returned invalid results.
+2025-07-08 15:57:03,900 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'DELIRIUM+': Processing Subject 2/24: TpAK24 ---
+2025-07-08 15:57:03,900 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpAK24 (Group: DELIRIUM+, Task Set ID: Group_LG_Intra_DELIRIUM+_Subj_TpAK24, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:57:03,901 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:57:03,902 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:163] - No preprocessed LG epoch FIF file found for 'TpAK24' in '/mnt/data/tom.balay/data/Baking_EEG_data/LG_PATIENTS_DELIRIUM+_0.5'. Checked 8 candidates (first 5: ['/mnt/data/tom.balay/data/Baking_EEG_data/LG_PATIENTS_DELIRIUM+_0.5/TpAK24_LG_preproc_ICA_LG-epo_ar.fif', '/mnt/data/tom.balay/data/Baking_EEG_data/LG_PATIENTS_DELIRIUM+_0.5/TpAK24_LG_preproc_ICA_LG-epo.fif', '/mnt/data/tom.balay/data/Baking_EEG_data/LG_PATIENTS_DELIRIUM+_0.5/TpAK24_LG_preproc_noICA_LG-epo_ar.fif', '/mnt/data/tom.balay/data/Baking_EEG_data/LG_PATIENTS_DELIRIUM+_0.5/TpAK24_LG_preproc_noICA_LG-epo.fif', '/mnt/data/tom.balay/data/Baking_EEG_data/LG_PATIENTS_DELIRIUM+_0.5/AK24_LG_preproc_ICA_LG-epo_ar.fif']).
+2025-07-08 15:57:03,903 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpAK24
+2025-07-08 15:57:03,903 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpAK24. Aborting subject.
+2025-07-08 15:57:03,903 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpAK24 processing failed or returned invalid results.
+2025-07-08 15:57:03,903 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'DELIRIUM+': Processing Subject 3/24: TpAK27 ---
+2025-07-08 15:57:03,904 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpAK27 (Group: DELIRIUM+, Task Set ID: Group_LG_Intra_DELIRIUM+_Subj_TpAK27, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:57:03,904 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:57:03,905 - INFO - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:172] - Loading LG epoch data for subject 'TpAK27' from: /mnt/data/tom.balay/data/Baking_EEG_data/LG_PATIENTS_DELIRIUM+_0.5/TpAK27_LG_preproc_noICA_LG-epo_ar.fif
+2025-07-08 15:57:07,501 - INFO - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:183] - LG Event IDs available for TpAK27:
+2025-07-08 15:57:07,501 - INFO - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:187] -   - 'LS/GS': 11
+2025-07-08 15:57:07,502 - INFO - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:187] -   - 'LS/GD': 12
+2025-07-08 15:57:07,502 - INFO - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:187] -   - 'LD/GS': 21
+2025-07-08 15:57:07,502 - INFO - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:187] -   - 'LD/GD': 22
+2025-07-08 15:57:09,044 - INFO - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:207] - Processing LG conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:57:13,465 - INFO - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:304] -   LG Data shapes for 'TpAK27': LS_ALL=(452, 124, 801), LD_ALL=(472, 124, 801), GS_ALL=(740, 124, 801), GD_ALL=(184, 124, 801), LSGS=(360, 124, 801), LSGD=(92, 124, 801), LDGS=(380, 124, 801), LDGD=(92, 124, 801). Loaded in 9.56s
+2025-07-08 15:57:13,466 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'LG_PATIENTS_DELIRIUMM+' for subject TpAK27
+2025-07-08 15:57:13,467 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:283] - --- Starting Main LG Protocol Decoding for TpAK27 ---
+2025-07-08 15:57:13,467 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:286] -   --- 1. Main LG Decoding (LS vs LD) for TpAK27 ---
+2025-07-08 15:57:14,283 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-08 15:57:14,284 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-07-08 15:57:14,298 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-07-08 15:57:14,298 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-08 15:57:14,299 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-07-08 15:57:14,299 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-07-08 15:57:14,299 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-08 15:57:14,300 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-08 15:57:14,300 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-08 15:57:14,300 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-07-08 15:57:14,300 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-08 15:57:14,348 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-08 15:57:14,349 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-08 16:02:33,841 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.646
+2025-07-08 16:02:33,843 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-07-08 16:02:33,843 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-07-08 16:21:04,752 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.638 +/- 0.033
+2025-07-08 16:21:04,798 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.634', 'accuracy': '0.603', 'precision': '0.616', 'recall': '0.589', 'f1_score': '0.602', 'balanced_accuracy': '0.603'}
+2025-07-08 16:21:04,799 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 801)
+2025-07-08 16:21:04,799 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-07-08 16:21:07,039 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 58 point(s) found significant (p_fdr < 0.05).
+2025-07-08 16:21:07,039 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 801)
+2025-07-08 16:21:07,039 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-07-08 16:21:07,040 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-07-08 16:21:07,040 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-6.925002 max=6.918009
+Running initial clustering …
+Using 69 thresholds from 0.10 to 6.90 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 801 clusters
+2025-07-08 16:21:15,082 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 801 initial clusters found (after processing slices).
+2025-07-08 16:21:15,084 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #453: p-value = 0.0410. Mask shape: (801,), Num True points: 1
+2025-07-08 16:21:15,085 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #454: p-value = 0.0361. Mask shape: (801,), Num True points: 1
+2025-07-08 16:21:15,085 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #455: p-value = 0.0205. Mask shape: (801,), Num True points: 1
+2025-07-08 16:21:15,085 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #456: p-value = 0.0303. Mask shape: (801,), Num True points: 1
+2025-07-08 16:21:15,085 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #457: p-value = 0.0312. Mask shape: (801,), Num True points: 1
+2025-07-08 16:21:15,086 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #458: p-value = 0.0186. Mask shape: (801,), Num True points: 1
+2025-07-08 16:21:15,086 - INFO - utils.stats_utils - [perform_cluster_permutation_test:338] -   Significant Cluster #460: p-value = 0.0283. Mask shape: (801,), Num True points: 1
+2025-07-08 16:21:15,094 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:373] - Main LG Decoding for TpAK27 DONE. Mean Global AUC: 0.638
+2025-07-08 16:21:15,094 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:383] -   --- 1.2. GS vs GD Decoding for TpAK27 ---
+2025-07-08 16:21:15,953 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-08 16:21:15,954 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-07-08 16:21:15,972 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-07-08 16:21:15,972 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-08 16:21:15,973 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-07-08 16:21:15,974 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-07-08 16:21:15,974 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-08 16:21:15,974 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-08 16:21:15,975 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-08 16:21:15,975 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-07-08 16:21:15,975 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-08 16:21:16,022 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-08 16:21:16,022 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-08 16:26:29,667 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.584
+2025-07-08 16:26:29,668 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-07-08 16:26:29,668 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-07-08 16:41:59,004 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.519 +/- 0.061
+2025-07-08 16:41:59,053 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.534', 'accuracy': '0.682', 'precision': '0.222', 'recall': '0.239', 'f1_score': '0.230', 'balanced_accuracy': '0.516'}
+2025-07-08 16:41:59,054 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 801)
+2025-07-08 16:41:59,054 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-07-08 16:42:01,303 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-07-08 16:42:01,304 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 801)
+2025-07-08 16:42:01,304 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-07-08 16:42:01,304 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-07-08 16:42:01,304 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-6.602709 max=3.408285
+Running initial clustering …
+Using 34 thresholds from 0.10 to 3.40 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 801 clusters
+2025-07-08 16:42:08,975 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 801 initial clusters found (after processing slices).
+2025-07-08 16:42:08,977 - INFO - utils.stats_utils - [perform_cluster_permutation_test:344] - No clusters found to be statistically significant (p < 0.05).
+2025-07-08 16:42:08,982 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:468] - GS vs GD Decoding for TpAK27 DONE. Mean Global AUC: 0.519
+2025-07-08 16:42:08,982 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:477] -   --- 2. Specific LG Comparisons (e.g. LS/GS vs LS/GD, LD/GS vs LD/GD) for TpAK27 ---
+2025-07-08 16:42:09,393 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-08 16:42:09,393 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-07-08 16:42:09,411 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-07-08 16:42:09,411 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-08 16:42:09,411 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-07-08 16:42:09,412 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-07-08 16:42:09,412 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-08 16:42:09,413 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-08 16:42:09,413 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-08 16:42:09,413 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 10 splits.
+2025-07-08 16:42:09,414 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-08 16:42:09,462 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-08 16:42:09,462 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-08 16:43:56,963 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.618
+2025-07-08 16:43:56,965 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:346] - Starting TGM computation (GeneralizingEstimator)...
+2025-07-08 18:49:58,299 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:373] - TGM computation done. Peak mean TGM AUC: 0.646
+2025-07-08 18:49:58,300 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=40)...
+2025-07-08 18:53:45,769 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.510 +/- 0.097
+2025-07-08 18:53:45,815 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.501', 'accuracy': '0.681', 'precision': '0.229', 'recall': '0.239', 'f1_score': '0.234', 'balanced_accuracy': '0.517'}
+2025-07-08 18:53:45,816 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 801)
+2025-07-08 18:53:45,816 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
+2025-07-08 18:53:48,088 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:714] - FDR correction completed. 0 point(s) found significant (p_fdr < 0.05).
+2025-07-08 18:53:48,089 - INFO - utils.stats_utils - [perform_cluster_permutation_test:195] - Executing cluster-based permutation test. Data shape (obs, features...): (10, 801)
+2025-07-08 18:53:48,089 - INFO - utils.stats_utils - [perform_cluster_permutation_test:199] -   Parameters: n_permutations=1024, threshold_config={'start': 0.1, 'step': 0.1}, alternative='greater' (MNE tail=1), n_jobs=-1
+2025-07-08 18:53:48,089 - INFO - utils.stats_utils - [perform_cluster_permutation_test:210] -   Using MNE's default stat_fun (ttest_1samp_no_p) for permutation test.
+2025-07-08 18:53:48,089 - INFO - utils.stats_utils - [perform_cluster_permutation_test:242] -   Input data is 2D (features). MNE will use default temporal connectivity inference if applicable.
+stat_fun(H1): min=-6.367514 max=4.498961
+Running initial clustering …
+Using 44 thresholds from 0.10 to 4.40 for TFCE computation (h_power=2.00, e_power=0.50)
+Found 801 clusters
+2025-07-08 18:53:54,199 - INFO - utils.stats_utils - [perform_cluster_permutation_test:314] - Cluster permutation test completed. 801 initial clusters found (after processing slices).
+2025-07-08 18:53:54,201 - INFO - utils.stats_utils - [perform_cluster_permutation_test:344] - No clusters found to be statistically significant (p < 0.05).
+2025-07-08 18:53:54,232 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:439] - Performing pointwise wilcoxon with FDR correction. Data shape for test (obs, features if any): (10, 641601)
+2025-07-08 18:53:54,233 - INFO - utils.stats_utils - [perform_pointwise_fdr_correction_on_scores:443] -   Parameters: chance=0.5, alpha=0.05, test_type='wilcoxon', FDR_method='indep', alternative='greater'
