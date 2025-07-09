@@ -1867,3 +1867,4 @@
 2025-07-09 19:23:51,448 - INFO - Starting 1D temporal decoding (SlidingEstimator)...
 [Parallel(n_jobs=-1)]: Using backend LokyBackend with 40 concurrent workers.
 [Parallel(n_jobs=-1)]: Done   2 out of  32 | elapsed:  1.4min remaining: 20.7min
+[Parallel(n_jobs=-1)]: Done   9 out of  32 | elapsed:  2.6min remaining:  6.6min
