@@ -1,0 +1,74 @@
+RAPPORT DE SYNTHÈSE - TEST FOLDS ET FRÉQUENCES D'ÉCHANTILLONNAGE
+======================================================================
+
+Sujet testé: ME64
+Date d'analyse: 2025-07-08 18:25:35
+Fréquence originale: 500.0 Hz
+Nombre d'epochs: 476
+Nombre de canaux: 126
+
+PARAMÈTRES TESTÉS:
+- Nombres de folds: [2, 5, 7, 9, 13, 16]
+- Fréquences d'échantillonnage: [350, 250, 200, 125, 100] Hz
+- Total de combinaisons: 30
+
+RÉSULTATS GÉNÉRAUX:
+- Tests réussis: 30/30
+- Taux de réussite: 100.0%
+- Analyses statistiques: 30 combinaisons
+
+SIGNIFICATIVITÉ TEMPORELLE:
+- Combinaisons significatives: 20/30
+- Taux de significativité: 66.7%
+
+TOP 5 COMBINAISONS SIGNIFICATIVES:
+1. 16 folds, 100Hz - AUC: 0.911
+   FDR significatif: 39.2% du temps
+   Cluster significatif: 36.7% du temps
+2. 9 folds, 250Hz - AUC: 0.909
+   FDR significatif: 30.7% du temps
+   Cluster significatif: 38.0% du temps
+3. 16 folds, 125Hz - AUC: 0.915
+   FDR significatif: 36.7% du temps
+   Cluster significatif: 30.7% du temps
+4. 9 folds, 125Hz - AUC: 0.909
+   FDR significatif: 30.0% du temps
+   Cluster significatif: 36.7% du temps
+5. 16 folds, 200Hz - AUC: 0.912
+   FDR significatif: 36.2% du temps
+   Cluster significatif: 30.4% du temps
+
+MEILLEURE PERFORMANCE:
+- Configuration: 5 folds, 250 Hz
+- AUC: 0.926 ± 0.024
+- Précision: 0.908
+- Score de pic: 0.766 à 0.152s
+- Significativité: Non significative
+
+CONFIGURATION LA PLUS STABLE:
+- Configuration: 2 folds, 100 Hz
+- AUC: 0.898 ± 0.006
+- Coefficient de variation: 0.007
+
+ANALYSE PAR FRÉQUENCE:
+- 350 Hz: AUC moyen = 0.911 ± 0.009 (n=6, 4 sig.)
+- 250 Hz: AUC moyen = 0.912 ± 0.009 (n=6, 4 sig.)
+- 200 Hz: AUC moyen = 0.910 ± 0.009 (n=6, 4 sig.)
+- 125 Hz: AUC moyen = 0.911 ± 0.009 (n=6, 4 sig.)
+- 100 Hz: AUC moyen = 0.909 ± 0.009 (n=6, 4 sig.)
+
+ANALYSE PAR NOMBRE DE FOLDS:
+- 2 folds: AUC moyen = 0.899 ± 0.001 (n=5, 0 sig.)
+- 5 folds: AUC moyen = 0.925 ± 0.001 (n=5, 0 sig.)
+- 7 folds: AUC moyen = 0.905 ± 0.001 (n=5, 5 sig.)
+- 9 folds: AUC moyen = 0.908 ± 0.001 (n=5, 5 sig.)
+- 13 folds: AUC moyen = 0.913 ± 0.002 (n=5, 5 sig.)
+- 16 folds: AUC moyen = 0.913 ± 0.002 (n=5, 5 sig.)
+
+FICHIERS GÉNÉRÉS:
+- results_summary.csv: Résultats détaillés
+- page1_performance_heatmaps.png/.pdf: Heatmaps des performances
+- page2_detailed_analysis.png/.pdf: Analyses détaillées avec statistiques
+- page3_temporal_analysis.png/.pdf: Analyses temporelles avec significativité
+- page4_statistical_analysis.png/.pdf: Analyse statistique détaillée par courbe
+- synthesis_report.txt: Ce rapport de synthèse

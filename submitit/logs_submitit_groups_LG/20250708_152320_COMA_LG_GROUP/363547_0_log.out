@@ -1,0 +1,551 @@
+submitit INFO (2025-07-08 15:56:52,983) - Starting with JobEnvironment(job_id=363547, hostname=node10, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-07-08 15:56:52,983) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/logs_submitit_groups_LG/20250708_152320_COMA_LG_GROUP/363547_submitted.pkl
+2025-07-08 15:56:56,983 - INFO - examples.run_decoding_one_group_pp - [<module>:39] - Tentative d'import de execute_single_subject_decoding...
+2025-07-08 15:56:56,984 - INFO - examples.run_decoding_one_group_pp - [<module>:42] - ✅ Import de execute_single_subject_decoding réussi
+2025-07-08 15:56:56,986 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:96] - Starting intra-subject LG decoding analysis for GROUP: COMA. GS: False, CSP: False, ANOVA FS: True. n_jobs_subj: 40.
+2025-07-08 15:56:56,986 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 1/60: AD94 ---
+2025-07-08 15:56:56,986 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: AD94 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_AD94, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,986 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,987 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'AD94'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,987 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'AD94' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,987 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject AD94
+2025-07-08 15:56:56,987 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for AD94. Aborting subject.
+2025-07-08 15:56:56,987 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject AD94 processing failed or returned invalid results.
+2025-07-08 15:56:56,987 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 2/60: AM88 ---
+2025-07-08 15:56:56,988 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: AM88 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_AM88, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,988 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,988 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'AM88'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,988 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'AM88' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,988 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject AM88
+2025-07-08 15:56:56,988 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for AM88. Aborting subject.
+2025-07-08 15:56:56,988 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject AM88 processing failed or returned invalid results.
+2025-07-08 15:56:56,988 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 3/60: AP84 ---
+2025-07-08 15:56:56,988 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: AP84 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_AP84, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,988 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,988 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'AP84'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,988 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'AP84' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,988 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject AP84
+2025-07-08 15:56:56,988 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for AP84. Aborting subject.
+2025-07-08 15:56:56,989 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject AP84 processing failed or returned invalid results.
+2025-07-08 15:56:56,989 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 4/60: AS_FRA ---
+2025-07-08 15:56:56,989 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: AS_FRA (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_AS_FRA, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,989 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,989 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'AS_FRA'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,989 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'AS_FRA' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,989 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject AS_FRA
+2025-07-08 15:56:56,989 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for AS_FRA. Aborting subject.
+2025-07-08 15:56:56,989 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject AS_FRA processing failed or returned invalid results.
+2025-07-08 15:56:56,989 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 5/60: BO_AXE ---
+2025-07-08 15:56:56,989 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: BO_AXE (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_BO_AXE, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,989 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,989 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'BO_AXE'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,989 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'BO_AXE' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,990 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject BO_AXE
+2025-07-08 15:56:56,990 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for BO_AXE. Aborting subject.
+2025-07-08 15:56:56,990 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject BO_AXE processing failed or returned invalid results.
+2025-07-08 15:56:56,990 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 6/60: BR_JEA ---
+2025-07-08 15:56:56,990 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: BR_JEA (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_BR_JEA, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,990 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,990 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'BR_JEA'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,990 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'BR_JEA' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,990 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject BR_JEA
+2025-07-08 15:56:56,990 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for BR_JEA. Aborting subject.
+2025-07-08 15:56:56,990 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject BR_JEA processing failed or returned invalid results.
+2025-07-08 15:56:56,990 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 7/60: BS81 ---
+2025-07-08 15:56:56,990 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: BS81 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_BS81, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,990 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,991 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'BS81'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,991 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'BS81' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,991 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject BS81
+2025-07-08 15:56:56,991 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for BS81. Aborting subject.
+2025-07-08 15:56:56,991 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject BS81 processing failed or returned invalid results.
+2025-07-08 15:56:56,991 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 8/60: CA55 ---
+2025-07-08 15:56:56,991 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: CA55 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_CA55, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,991 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,991 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'CA55'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,991 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'CA55' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,991 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject CA55
+2025-07-08 15:56:56,991 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for CA55. Aborting subject.
+2025-07-08 15:56:56,991 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject CA55 processing failed or returned invalid results.
+2025-07-08 15:56:56,991 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 9/60: CI_MIC ---
+2025-07-08 15:56:56,992 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: CI_MIC (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_CI_MIC, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,992 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,992 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'CI_MIC'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,992 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'CI_MIC' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,992 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject CI_MIC
+2025-07-08 15:56:56,992 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for CI_MIC. Aborting subject.
+2025-07-08 15:56:56,992 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject CI_MIC processing failed or returned invalid results.
+2025-07-08 15:56:56,992 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 10/60: CS38 ---
+2025-07-08 15:56:56,992 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: CS38 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_CS38, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,992 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,992 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'CS38'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,992 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'CS38' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,992 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject CS38
+2025-07-08 15:56:56,992 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for CS38. Aborting subject.
+2025-07-08 15:56:56,993 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject CS38 processing failed or returned invalid results.
+2025-07-08 15:56:56,993 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 11/60: DE_HEN ---
+2025-07-08 15:56:56,993 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: DE_HEN (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_DE_HEN, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,993 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,993 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'DE_HEN'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,993 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'DE_HEN' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,993 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject DE_HEN
+2025-07-08 15:56:56,993 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for DE_HEN. Aborting subject.
+2025-07-08 15:56:56,993 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject DE_HEN processing failed or returned invalid results.
+2025-07-08 15:56:56,993 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 12/60: DR92 ---
+2025-07-08 15:56:56,993 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: DR92 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_DR92, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,993 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,993 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'DR92'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,993 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'DR92' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,994 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject DR92
+2025-07-08 15:56:56,994 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for DR92. Aborting subject.
+2025-07-08 15:56:56,994 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject DR92 processing failed or returned invalid results.
+2025-07-08 15:56:56,994 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 13/60: DU_CHR ---
+2025-07-08 15:56:56,994 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: DU_CHR (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_DU_CHR, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,994 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,994 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'DU_CHR'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,994 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'DU_CHR' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,994 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject DU_CHR
+2025-07-08 15:56:56,994 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for DU_CHR. Aborting subject.
+2025-07-08 15:56:56,994 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject DU_CHR processing failed or returned invalid results.
+2025-07-08 15:56:56,994 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 14/60: FB83 ---
+2025-07-08 15:56:56,994 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: FB83 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_FB83, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,994 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,994 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'FB83'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,995 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'FB83' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,995 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject FB83
+2025-07-08 15:56:56,995 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for FB83. Aborting subject.
+2025-07-08 15:56:56,995 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject FB83 processing failed or returned invalid results.
+2025-07-08 15:56:56,995 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 15/60: GA_MAR ---
+2025-07-08 15:56:56,995 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: GA_MAR (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_GA_MAR, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,995 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,995 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'GA_MAR'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,995 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'GA_MAR' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,995 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject GA_MAR
+2025-07-08 15:56:56,995 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for GA_MAR. Aborting subject.
+2025-07-08 15:56:56,995 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject GA_MAR processing failed or returned invalid results.
+2025-07-08 15:56:56,995 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 16/60: GV77 ---
+2025-07-08 15:56:56,995 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: GV77 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_GV77, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,995 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,996 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'GV77'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,996 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'GV77' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,996 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject GV77
+2025-07-08 15:56:56,996 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for GV77. Aborting subject.
+2025-07-08 15:56:56,996 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject GV77 processing failed or returned invalid results.
+2025-07-08 15:56:56,996 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 17/60: JC39 ---
+2025-07-08 15:56:56,996 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: JC39 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_JC39, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,996 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,996 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'JC39'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,996 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'JC39' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,996 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject JC39
+2025-07-08 15:56:56,996 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for JC39. Aborting subject.
+2025-07-08 15:56:56,996 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject JC39 processing failed or returned invalid results.
+2025-07-08 15:56:56,996 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 18/60: JM78 ---
+2025-07-08 15:56:56,997 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: JM78 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_JM78, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,997 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,997 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'JM78'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,997 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'JM78' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,997 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject JM78
+2025-07-08 15:56:56,997 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for JM78. Aborting subject.
+2025-07-08 15:56:56,997 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject JM78 processing failed or returned invalid results.
+2025-07-08 15:56:56,997 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 19/60: JR79 ---
+2025-07-08 15:56:56,997 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: JR79 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_JR79, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,997 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,997 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'JR79'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,997 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'JR79' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,997 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject JR79
+2025-07-08 15:56:56,997 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for JR79. Aborting subject.
+2025-07-08 15:56:56,998 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject JR79 processing failed or returned invalid results.
+2025-07-08 15:56:56,998 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 20/60: KS76 ---
+2025-07-08 15:56:56,998 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: KS76 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_KS76, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,998 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,998 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'KS76'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,998 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'KS76' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,998 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject KS76
+2025-07-08 15:56:56,998 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for KS76. Aborting subject.
+2025-07-08 15:56:56,998 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject KS76 processing failed or returned invalid results.
+2025-07-08 15:56:56,998 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 21/60: LA_PIE ---
+2025-07-08 15:56:56,998 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: LA_PIE (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_LA_PIE, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,998 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,998 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'LA_PIE'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,998 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'LA_PIE' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,998 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject LA_PIE
+2025-07-08 15:56:56,999 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for LA_PIE. Aborting subject.
+2025-07-08 15:56:56,999 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject LA_PIE processing failed or returned invalid results.
+2025-07-08 15:56:56,999 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 22/60: MA_VAL ---
+2025-07-08 15:56:56,999 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: MA_VAL (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_MA_VAL, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,999 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,999 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'MA_VAL'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,999 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'MA_VAL' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:56,999 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject MA_VAL
+2025-07-08 15:56:56,999 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for MA_VAL. Aborting subject.
+2025-07-08 15:56:56,999 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject MA_VAL processing failed or returned invalid results.
+2025-07-08 15:56:56,999 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 23/60: MB73 ---
+2025-07-08 15:56:56,999 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: MB73 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_MB73, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:56,999 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:56,999 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'MB73'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:56,999 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'MB73' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,000 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject MB73
+2025-07-08 15:56:57,000 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for MB73. Aborting subject.
+2025-07-08 15:56:57,000 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject MB73 processing failed or returned invalid results.
+2025-07-08 15:56:57,000 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 24/60: ME63 ---
+2025-07-08 15:56:57,000 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: ME63 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_ME63, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,000 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,000 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'ME63'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,000 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'ME63' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,000 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject ME63
+2025-07-08 15:56:57,000 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for ME63. Aborting subject.
+2025-07-08 15:56:57,000 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject ME63 processing failed or returned invalid results.
+2025-07-08 15:56:57,000 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 25/60: ME64 ---
+2025-07-08 15:56:57,000 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: ME64 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_ME64, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,000 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,001 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'ME64'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,001 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'ME64' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,001 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject ME64
+2025-07-08 15:56:57,001 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for ME64. Aborting subject.
+2025-07-08 15:56:57,001 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject ME64 processing failed or returned invalid results.
+2025-07-08 15:56:57,001 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 26/60: MP68 ---
+2025-07-08 15:56:57,001 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: MP68 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_MP68, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,001 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,001 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'MP68'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,001 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'MP68' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,001 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject MP68
+2025-07-08 15:56:57,001 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for MP68. Aborting subject.
+2025-07-08 15:56:57,001 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject MP68 processing failed or returned invalid results.
+2025-07-08 15:56:57,001 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 27/60: NN65 ---
+2025-07-08 15:56:57,001 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: NN65 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_NN65, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,002 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,002 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'NN65'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,002 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'NN65' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,002 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject NN65
+2025-07-08 15:56:57,002 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for NN65. Aborting subject.
+2025-07-08 15:56:57,002 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject NN65 processing failed or returned invalid results.
+2025-07-08 15:56:57,002 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 28/60: RE_JOS ---
+2025-07-08 15:56:57,002 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: RE_JOS (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_RE_JOS, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,002 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,002 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'RE_JOS'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,002 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'RE_JOS' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,002 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject RE_JOS
+2025-07-08 15:56:57,002 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for RE_JOS. Aborting subject.
+2025-07-08 15:56:57,002 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject RE_JOS processing failed or returned invalid results.
+2025-07-08 15:56:57,002 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 29/60: SB67 ---
+2025-07-08 15:56:57,003 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: SB67 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_SB67, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,003 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,003 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'SB67'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,003 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'SB67' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,003 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject SB67
+2025-07-08 15:56:57,003 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for SB67. Aborting subject.
+2025-07-08 15:56:57,003 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject SB67 processing failed or returned invalid results.
+2025-07-08 15:56:57,003 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 30/60: TF53 ---
+2025-07-08 15:56:57,003 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TF53 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TF53, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,003 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,003 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TF53'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,003 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TF53' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,003 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TF53
+2025-07-08 15:56:57,003 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TF53. Aborting subject.
+2025-07-08 15:56:57,004 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TF53 processing failed or returned invalid results.
+2025-07-08 15:56:57,004 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 31/60: TpAB15J1 ---
+2025-07-08 15:56:57,004 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpAB15J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpAB15J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,004 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,004 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpAB15J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,004 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpAB15J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,004 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpAB15J1
+2025-07-08 15:56:57,004 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpAB15J1. Aborting subject.
+2025-07-08 15:56:57,004 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpAB15J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,004 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 32/60: TpAF11J1 ---
+2025-07-08 15:56:57,004 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpAF11J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpAF11J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,004 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,004 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpAF11J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,004 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpAF11J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,004 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpAF11J1
+2025-07-08 15:56:57,005 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpAF11J1. Aborting subject.
+2025-07-08 15:56:57,005 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpAF11J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,005 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 33/60: TpAT19J1 ---
+2025-07-08 15:56:57,005 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpAT19J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpAT19J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,005 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,005 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpAT19J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,005 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpAT19J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,005 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpAT19J1
+2025-07-08 15:56:57,005 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpAT19J1. Aborting subject.
+2025-07-08 15:56:57,005 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpAT19J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,005 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 34/60: TpBD10J1 ---
+2025-07-08 15:56:57,005 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpBD10J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpBD10J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,005 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,005 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpBD10J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,006 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpBD10J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,006 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpBD10J1
+2025-07-08 15:56:57,006 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpBD10J1. Aborting subject.
+2025-07-08 15:56:57,006 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpBD10J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,006 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 35/60: TpCF24J1 ---
+2025-07-08 15:56:57,006 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpCF24J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpCF24J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,006 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,006 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpCF24J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,006 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpCF24J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,006 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpCF24J1
+2025-07-08 15:56:57,006 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpCF24J1. Aborting subject.
+2025-07-08 15:56:57,006 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpCF24J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,006 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 36/60: TpCL14j1 ---
+2025-07-08 15:56:57,006 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpCL14j1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpCL14j1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,006 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,007 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpCL14j1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,007 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpCL14j1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,007 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpCL14j1
+2025-07-08 15:56:57,007 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpCL14j1. Aborting subject.
+2025-07-08 15:56:57,007 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpCL14j1 processing failed or returned invalid results.
+2025-07-08 15:56:57,007 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 37/60: TpDC12J1 ---
+2025-07-08 15:56:57,007 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpDC12J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpDC12J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,007 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,007 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpDC12J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,007 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpDC12J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,007 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpDC12J1
+2025-07-08 15:56:57,007 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpDC12J1. Aborting subject.
+2025-07-08 15:56:57,007 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpDC12J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,007 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 38/60: TpDC12J8 ---
+2025-07-08 15:56:57,007 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpDC12J8 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpDC12J8, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,008 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,008 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpDC12J8'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,008 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpDC12J8' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,008 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpDC12J8
+2025-07-08 15:56:57,008 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpDC12J8. Aborting subject.
+2025-07-08 15:56:57,008 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpDC12J8 processing failed or returned invalid results.
+2025-07-08 15:56:57,008 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 39/60: TpDC22J1 ---
+2025-07-08 15:56:57,008 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpDC22J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpDC22J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,008 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,008 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpDC22J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,008 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpDC22J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,008 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpDC22J1
+2025-07-08 15:56:57,008 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpDC22J1. Aborting subject.
+2025-07-08 15:56:57,008 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpDC22J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,009 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 40/60: TpDL8J1 ---
+2025-07-08 15:56:57,009 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpDL8J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpDL8J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,009 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,009 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpDL8J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,009 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpDL8J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,009 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpDL8J1
+2025-07-08 15:56:57,009 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpDL8J1. Aborting subject.
+2025-07-08 15:56:57,009 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpDL8J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,009 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 41/60: TpDP7J1 ---
+2025-07-08 15:56:57,009 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpDP7J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpDP7J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,009 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,009 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpDP7J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,009 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpDP7J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,009 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpDP7J1
+2025-07-08 15:56:57,009 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpDP7J1. Aborting subject.
+2025-07-08 15:56:57,010 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpDP7J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,010 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 42/60: TpDP7J8 ---
+2025-07-08 15:56:57,010 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpDP7J8 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpDP7J8, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,010 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,010 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpDP7J8'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,010 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpDP7J8' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,010 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpDP7J8
+2025-07-08 15:56:57,010 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpDP7J8. Aborting subject.
+2025-07-08 15:56:57,010 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpDP7J8 processing failed or returned invalid results.
+2025-07-08 15:56:57,010 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 43/60: TpDP7_Surnom ---
+2025-07-08 15:56:57,010 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpDP7_Surnom (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpDP7_Surnom, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,010 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,010 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpDP7_Surnom'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,010 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpDP7_Surnom' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,011 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpDP7_Surnom
+2025-07-08 15:56:57,011 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpDP7_Surnom. Aborting subject.
+2025-07-08 15:56:57,011 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpDP7_Surnom processing failed or returned invalid results.
+2025-07-08 15:56:57,011 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 44/60: TpEM13J1 ---
+2025-07-08 15:56:57,011 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpEM13J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpEM13J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,011 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,011 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpEM13J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,011 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpEM13J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,011 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpEM13J1
+2025-07-08 15:56:57,011 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpEM13J1. Aborting subject.
+2025-07-08 15:56:57,011 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpEM13J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,011 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 45/60: TpEP16J1 ---
+2025-07-08 15:56:57,011 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpEP16J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpEP16J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,011 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,011 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpEP16J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,012 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpEP16J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,012 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpEP16J1
+2025-07-08 15:56:57,012 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpEP16J1. Aborting subject.
+2025-07-08 15:56:57,012 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpEP16J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,012 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 46/60: TpEP20J1 ---
+2025-07-08 15:56:57,012 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpEP20J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpEP20J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,012 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,012 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpEP20J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,012 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpEP20J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,012 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpEP20J1
+2025-07-08 15:56:57,012 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpEP20J1. Aborting subject.
+2025-07-08 15:56:57,012 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpEP20J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,012 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 47/60: TpFJ5J1 ---
+2025-07-08 15:56:57,012 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpFJ5J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpFJ5J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,012 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,013 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpFJ5J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,013 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpFJ5J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,013 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpFJ5J1
+2025-07-08 15:56:57,013 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpFJ5J1. Aborting subject.
+2025-07-08 15:56:57,013 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpFJ5J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,013 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 48/60: TpFJ5J8 ---
+2025-07-08 15:56:57,013 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpFJ5J8 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpFJ5J8, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,013 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,013 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpFJ5J8'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,013 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpFJ5J8' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,013 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpFJ5J8
+2025-07-08 15:56:57,013 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpFJ5J8. Aborting subject.
+2025-07-08 15:56:57,013 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpFJ5J8 processing failed or returned invalid results.
+2025-07-08 15:56:57,013 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 49/60: TpFM25J1 ---
+2025-07-08 15:56:57,014 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpFM25J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpFM25J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,014 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,014 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpFM25J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,014 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpFM25J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,014 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpFM25J1
+2025-07-08 15:56:57,014 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpFM25J1. Aborting subject.
+2025-07-08 15:56:57,014 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpFM25J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,014 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 50/60: TpJM2J1 ---
+2025-07-08 15:56:57,014 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpJM2J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpJM2J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,014 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,014 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpJM2J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,014 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpJM2J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,014 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpJM2J1
+2025-07-08 15:56:57,014 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpJM2J1. Aborting subject.
+2025-07-08 15:56:57,014 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpJM2J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,015 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 51/60: TpLC21J1 ---
+2025-07-08 15:56:57,015 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpLC21J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpLC21J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,015 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,015 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpLC21J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,015 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpLC21J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,015 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpLC21J1
+2025-07-08 15:56:57,015 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpLC21J1. Aborting subject.
+2025-07-08 15:56:57,015 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpLC21J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,015 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 52/60: TpLJ6J1 ---
+2025-07-08 15:56:57,015 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpLJ6J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpLJ6J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,015 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,015 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpLJ6J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,015 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpLJ6J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,015 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpLJ6J1
+2025-07-08 15:56:57,016 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpLJ6J1. Aborting subject.
+2025-07-08 15:56:57,016 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpLJ6J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,016 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 53/60: TpMD4J1 ---
+2025-07-08 15:56:57,016 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpMD4J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpMD4J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,016 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,016 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpMD4J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,016 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpMD4J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,016 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpMD4J1
+2025-07-08 15:56:57,016 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpMD4J1. Aborting subject.
+2025-07-08 15:56:57,016 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpMD4J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,016 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 54/60: TpMG17J1 ---
+2025-07-08 15:56:57,016 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpMG17J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpMG17J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,016 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,016 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpMG17J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,016 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpMG17J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,017 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpMG17J1
+2025-07-08 15:56:57,017 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpMG17J1. Aborting subject.
+2025-07-08 15:56:57,017 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpMG17J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,017 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 55/60: TpML3J1 ---
+2025-07-08 15:56:57,017 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpML3J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpML3J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,017 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,017 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpML3J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,017 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpML3J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,017 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpML3J1
+2025-07-08 15:56:57,017 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpML3J1. Aborting subject.
+2025-07-08 15:56:57,017 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpML3J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,017 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 56/60: TpPC23J1 ---
+2025-07-08 15:56:57,017 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpPC23J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpPC23J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,017 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,017 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpPC23J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,018 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpPC23J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,018 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpPC23J1
+2025-07-08 15:56:57,018 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpPC23J1. Aborting subject.
+2025-07-08 15:56:57,018 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpPC23J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,018 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 57/60: TpTP1J1 ---
+2025-07-08 15:56:57,018 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpTP1J1 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpTP1J1, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,018 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,018 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpTP1J1'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,018 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpTP1J1' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,018 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpTP1J1
+2025-07-08 15:56:57,018 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpTP1J1. Aborting subject.
+2025-07-08 15:56:57,018 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpTP1J1 processing failed or returned invalid results.
+2025-07-08 15:56:57,018 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 58/60: TpTP1J8 ---
+2025-07-08 15:56:57,018 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TpTP1J8 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TpTP1J8, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,019 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,019 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TpTP1J8'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,019 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TpTP1J8' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,019 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TpTP1J8
+2025-07-08 15:56:57,019 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TpTP1J8. Aborting subject.
+2025-07-08 15:56:57,019 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TpTP1J8 processing failed or returned invalid results.
+2025-07-08 15:56:57,019 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 59/60: TT45 ---
+2025-07-08 15:56:57,019 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: TT45 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_TT45, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,019 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,019 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'TT45'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,019 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'TT45' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,019 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject TT45
+2025-07-08 15:56:57,019 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for TT45. Aborting subject.
+2025-07-08 15:56:57,019 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject TT45 processing failed or returned invalid results.
+2025-07-08 15:56:57,019 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:105] - 
+--- LG Group 'COMA': Processing Subject 60/60: YG72 ---
+2025-07-08 15:56:57,020 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:222] - Starting LG decoding for subject: YG72 (Group: COMA, Task Set ID: Group_LG_Intra_COMA_Subj_YG72, Classifier: svc, GS: False, CSP: False, ANOVA FS: True, n_jobs: 40)
+2025-07-08 15:56:57,020 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:233] - Using LG loading conditions: ['LS_ALL', 'LD_ALL', 'GS_ALL', 'GD_ALL', 'LSGS', 'LSGD', 'LDGS', 'LDGD']
+2025-07-08 15:56:57,020 - WARNING - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:96] - Original group path for 'COMA' not found for subject 'YG72'. Subject found in group 'COMA'. Using its path convention.
+2025-07-08 15:56:57,020 - ERROR - utils.loading_LG_utils - [load_epochs_data_for_lg_decoding:135] - Data directory for subject 'YG72' (group: 'COMA') not found. Attempted path: 'None'. Base input: '/mnt/data/tom.balay/data/Baking_EEG_data'.
+2025-07-08 15:56:57,020 - INFO - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:242] - Detected protocol 'unknown' for subject YG72
+2025-07-08 15:56:57,020 - ERROR - examples.run_decoding_one_lg - [execute_single_subject_lg_decoding:248] - Epochs object loading failed for YG72. Aborting subject.
+2025-07-08 15:56:57,020 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:141] - Subject YG72 processing failed or returned invalid results.
+2025-07-08 15:56:57,020 - INFO - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:149] - LG Group analysis for 'COMA' completed in 0.03s. Successfully processed: 0/60 subjects.
+2025-07-08 15:56:57,020 - WARNING - examples.run_decoding_one_group_lg - [execute_group_intra_subject_lg_decoding_analysis:158] - No subjects were successfully processed!
+submitit INFO (2025-07-08 15:56:57,020) - Job completed successfully
+2025-07-08 15:56:57,020 - INFO - submitit - [process_job:56] - Job completed successfully
+submitit INFO (2025-07-08 15:56:57,021) - Exiting after successful completion
+2025-07-08 15:56:57,021 - INFO - submitit - [process_job:61] - Exiting after successful completion

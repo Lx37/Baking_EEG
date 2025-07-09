@@ -1,0 +1,1279 @@
+submitit INFO (2025-07-09 11:10:35,007) - Starting with JobEnvironment(job_id=364138, hostname=node9, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-07-09 11:10:35,007) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/logs_test_csp_fs_20250709_111033/364138_submitted.pkl
+=== DÉBUT DU JOB SUR LE CLUSTER ===
+Timestamp: 2025-07-09 11:10:35.008958
+Fichier sujet: /mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/TpSM49_PP_preproc_noICA_PP-epo_ar.fif
+Mode rapide: True
+Répertoire de sortie: /home/tom.balay/test_csp_fs_results
+Working directory: /home/tom.balay/Baking_EEG/submitit
+Python path: ['/home/tom.balay/Baking_EEG', '/home/tom.balay/Baking_EEG/submitit', '/usr/lib/python311.zip']
+2025-07-09 11:10:38,408 - INFO - examples.run_decoding_one_group_pp - [<module>:39] - Tentative d'import de execute_single_subject_decoding...
+2025-07-09 11:10:38,409 - INFO - examples.run_decoding_one_group_pp - [<module>:42] - ✅ Import de execute_single_subject_decoding réussi
+Lancement du test rapide...
+2025-07-09 11:10:38,432 - INFO - examples.test_decimate_folds - [run_quick_test:1325] - === TEST RAPIDE ===
+2025-07-09 11:10:38,432 - INFO - examples.test_decimate_folds - [load_test_data:237] - Chargement des données depuis /mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/TpSM49_PP_preproc_noICA_PP-epo_ar.fif
+2025-07-09 11:10:40,712 - INFO - examples.test_decimate_folds - [load_test_data:254] - Événements trouvés: 21 types
+2025-07-09 11:10:40,713 - INFO - examples.test_decimate_folds - [load_test_data:255] - Événements PP: ['PP/10', 'PP/20', 'PP/30']...
+2025-07-09 11:10:40,713 - INFO - examples.test_decimate_folds - [load_test_data:256] - Événements AP: ['AP/11', 'AP/12', 'AP/13', 'AP/14', 'AP/15']...
+2025-07-09 11:10:40,850 - INFO - examples.test_decimate_folds - [load_test_data:299] - Données chargées: 476 epochs
+2025-07-09 11:10:40,850 - INFO - examples.test_decimate_folds - [load_test_data:300] - PP: 70, AP: 406
+2025-07-09 11:10:40,850 - INFO - examples.test_decimate_folds - [load_test_data:301] - Fréquence: 500.0Hz, Canaux: 126
+2025-07-09 11:10:40,852 - INFO - examples.test_decimate_folds - [run_comprehensive_analysis:397] - Début de l'analyse complète: 2 folds × 2 fréquences × 2 CSP × 2 FS = 16 combinaisons
+2025-07-09 11:10:40,852 - INFO - examples.test_decimate_folds - [run_single_combination_test:124] - Test: 2 folds, 250Hz
+2025-07-09 11:10:40,852 - INFO - examples.test_decimate_folds - [decimate_epochs_to_target_freq:97] - Décimation: 500.0Hz -> 250Hz (facteur: 2.0)
+2025-07-09 11:10:50,653 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-09 11:10:50,653 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): False
+2025-07-09 11:10:50,655 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:10:50,655 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:10:50,655 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:10:50,656 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:10:50,656 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:10:50,656 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:10:50,656 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 2 splits.
+2025-07-09 11:10:50,656 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-09 11:10:50,658 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-09 11:10:50,658 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-09 11:10:57,254 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.755
+2025-07-09 11:10:57,256 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-07-09 11:10:57,256 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=-1)...
+2025-07-09 11:11:08,539 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.900 +/- 0.006
+2025-07-09 11:11:08,556 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.895', 'accuracy': '0.878', 'precision': '0.636', 'recall': '0.400', 'f1_score': '0.491', 'balanced_accuracy': '0.680'}
+2025-07-09 11:11:08,556 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:547] - Skipping intra-fold stats (flag disabled or not enough folds/timepoints).
+2025-07-09 11:11:08,557 - INFO - examples.test_decimate_folds - [run_comprehensive_analysis:412] - ✓ 2 folds, 250Hz: AUC=0.900±0.006
+2025-07-09 11:11:08,558 - INFO - examples.test_decimate_folds - [run_single_combination_test:124] - Test: 2 folds, 250Hz+FS
+2025-07-09 11:11:08,558 - INFO - examples.test_decimate_folds - [decimate_epochs_to_target_freq:97] - Décimation: 500.0Hz -> 250Hz (facteur: 2.0)
+2025-07-09 11:11:18,348 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-09 11:11:18,348 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-07-09 11:11:18,350 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-07-09 11:11:18,350 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:11:18,350 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-07-09 11:11:18,351 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-07-09 11:11:18,351 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:11:18,351 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:11:18,351 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:11:18,351 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 2 splits.
+2025-07-09 11:11:18,351 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-09 11:11:18,353 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-09 11:11:18,353 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-09 11:11:23,902 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.765
+2025-07-09 11:11:23,902 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-07-09 11:11:23,902 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=-1)...
+2025-07-09 11:11:35,210 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.900 +/- 0.006
+2025-07-09 11:11:35,226 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.895', 'accuracy': '0.878', 'precision': '0.636', 'recall': '0.400', 'f1_score': '0.491', 'balanced_accuracy': '0.680'}
+2025-07-09 11:11:35,226 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:547] - Skipping intra-fold stats (flag disabled or not enough folds/timepoints).
+2025-07-09 11:11:35,227 - INFO - examples.test_decimate_folds - [run_comprehensive_analysis:412] - ✓ 2 folds, 250Hz+FS: AUC=0.900±0.006
+2025-07-09 11:11:35,227 - INFO - examples.test_decimate_folds - [run_single_combination_test:124] - Test: 2 folds, 250Hz+CSP
+2025-07-09 11:11:35,227 - INFO - examples.test_decimate_folds - [decimate_epochs_to_target_freq:97] - Décimation: 500.0Hz -> 250Hz (facteur: 2.0)
+2025-07-09 11:11:45,005 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-09 11:11:45,005 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): True, ANOVA FS (temporal): False
+2025-07-09 11:11:45,007 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: True, ANOVA FS: False
+2025-07-09 11:11:45,007 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=True, bool()=True
+2025-07-09 11:11:45,007 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:81] -    Étape CSP 'csp_feature_extraction' ajoutée (n_components fixe=4).
+2025-07-09 11:11:45,007 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'csp_feature_extraction', 'svc_classifier']
+2025-07-09 11:11:45,007 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:11:45,007 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:11:45,007 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:11:45,007 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 2 splits.
+2025-07-09 11:11:45,008 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-09 11:11:45,009 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-09 11:11:45,009 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-09 11:11:48,007 - ERROR - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:341] - Error in 1D temporal decoding: X must have at least 3 dimensions.
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/_parallel_backends.py", line 273, in _wrap_func_call
+    return func()
+           ^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in __call__
+    return [func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in <listcomp>
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/parallel.py", line 128, in run_verbose
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/search_light.py", line 359, in _sl_fit
+    est.fit(X[..., ii], y, **fit_params)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/base.py", line 1152, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 423, in fit
+    Xt = self._fit(X, y, **fit_params_steps)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 377, in _fit
+    X, fitted_transformer = fit_transform_one_cached(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/memory.py", line 353, in __call__
+    return self.func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 957, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **fit_params)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 252, in fit_transform
+    return super().fit_transform(X, y=y, **fit_params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/mixin.py", line 33, in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 176, in fit
+    self._check_Xy(X, y)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 159, in _check_Xy
+    raise ValueError("X must have at least 3 dimensions.")
+ValueError: X must have at least 3 dimensions.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/externals/loky/process_executor.py", line 463, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in __call__
+    return [func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in <listcomp>
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/parallel.py", line 128, in run_verbose
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "<decorator-gen-4>", line 12, in _fit_and_score
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/base.py", line 448, in _fit_and_score
+    estimator.fit(X_train, y_train, **fit_params)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/search_light.py", line 102, in fit
+    estimators = parallel(
+                 ^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1952, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1595, in _get_outputs
+    yield from self._retrieve()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1699, in _retrieve
+    self._raise_error_fast()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1734, in _raise_error_fast
+    error_job.get_result(self.timeout)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 736, in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 754, in _return_or_raise
+    raise self._result
+ValueError: X must have at least 3 dimensions.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tom.balay/Baking_EEG/examples/../Baking_EEG/_4_decoding_core.py", line 318, in run_temporal_decoding_analysis
+    scores_1d_cv_raw = cross_val_multiscore(
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "<decorator-gen-279>", line 12, in cross_val_multiscore
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/base.py", line 389, in cross_val_multiscore
+    scores = parallel(
+             ^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1952, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1595, in _get_outputs
+    yield from self._retrieve()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1699, in _retrieve
+    self._raise_error_fast()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1734, in _raise_error_fast
+    error_job.get_result(self.timeout)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 736, in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 754, in _return_or_raise
+    raise self._result
+ValueError: X must have at least 3 dimensions.
+2025-07-09 11:11:48,013 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-07-09 11:11:48,013 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=-1)...
+2025-07-09 11:11:59,846 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.900 +/- 0.006
+2025-07-09 11:11:59,862 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.895', 'accuracy': '0.878', 'precision': '0.636', 'recall': '0.400', 'f1_score': '0.491', 'balanced_accuracy': '0.680'}
+2025-07-09 11:11:59,863 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:547] - Skipping intra-fold stats (flag disabled or not enough folds/timepoints).
+2025-07-09 11:11:59,864 - INFO - examples.test_decimate_folds - [run_comprehensive_analysis:412] - ✓ 2 folds, 250Hz+CSP: AUC=0.900±0.006
+2025-07-09 11:11:59,864 - INFO - examples.test_decimate_folds - [run_single_combination_test:124] - Test: 2 folds, 250Hz+CSP+FS
+2025-07-09 11:11:59,864 - INFO - examples.test_decimate_folds - [decimate_epochs_to_target_freq:97] - Décimation: 500.0Hz -> 250Hz (facteur: 2.0)
+2025-07-09 11:12:09,663 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-09 11:12:09,664 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): True, ANOVA FS (temporal): True
+2025-07-09 11:12:09,665 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: True, ANOVA FS: False
+2025-07-09 11:12:09,666 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=True, bool()=True
+2025-07-09 11:12:09,666 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:81] -    Étape CSP 'csp_feature_extraction' ajoutée (n_components fixe=4).
+2025-07-09 11:12:09,666 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'csp_feature_extraction', 'svc_classifier']
+2025-07-09 11:12:09,666 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:12:09,666 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:12:09,666 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:12:09,666 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 2 splits.
+2025-07-09 11:12:09,666 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-09 11:12:09,668 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-09 11:12:09,669 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-09 11:12:12,543 - ERROR - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:341] - Error in 1D temporal decoding: X must have at least 3 dimensions.
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/_parallel_backends.py", line 273, in _wrap_func_call
+    return func()
+           ^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in __call__
+    return [func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in <listcomp>
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/parallel.py", line 128, in run_verbose
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/search_light.py", line 359, in _sl_fit
+    est.fit(X[..., ii], y, **fit_params)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/base.py", line 1152, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 423, in fit
+    Xt = self._fit(X, y, **fit_params_steps)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 377, in _fit
+    X, fitted_transformer = fit_transform_one_cached(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/memory.py", line 353, in __call__
+    return self.func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 957, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **fit_params)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 252, in fit_transform
+    return super().fit_transform(X, y=y, **fit_params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/mixin.py", line 33, in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 176, in fit
+    self._check_Xy(X, y)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 159, in _check_Xy
+    raise ValueError("X must have at least 3 dimensions.")
+ValueError: X must have at least 3 dimensions.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/externals/loky/process_executor.py", line 463, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in __call__
+    return [func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in <listcomp>
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/parallel.py", line 128, in run_verbose
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "<decorator-gen-4>", line 12, in _fit_and_score
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/base.py", line 448, in _fit_and_score
+    estimator.fit(X_train, y_train, **fit_params)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/search_light.py", line 102, in fit
+    estimators = parallel(
+                 ^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1952, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1595, in _get_outputs
+    yield from self._retrieve()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1699, in _retrieve
+    self._raise_error_fast()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1734, in _raise_error_fast
+    error_job.get_result(self.timeout)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 736, in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 754, in _return_or_raise
+    raise self._result
+ValueError: X must have at least 3 dimensions.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tom.balay/Baking_EEG/examples/../Baking_EEG/_4_decoding_core.py", line 318, in run_temporal_decoding_analysis
+    scores_1d_cv_raw = cross_val_multiscore(
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "<decorator-gen-279>", line 12, in cross_val_multiscore
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/base.py", line 389, in cross_val_multiscore
+    scores = parallel(
+             ^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1952, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1595, in _get_outputs
+    yield from self._retrieve()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1699, in _retrieve
+    self._raise_error_fast()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1734, in _raise_error_fast
+    error_job.get_result(self.timeout)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 736, in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 754, in _return_or_raise
+    raise self._result
+ValueError: X must have at least 3 dimensions.
+2025-07-09 11:12:12,546 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-07-09 11:12:12,546 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=-1)...
+2025-07-09 11:12:24,401 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.900 +/- 0.006
+2025-07-09 11:12:24,417 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.895', 'accuracy': '0.878', 'precision': '0.636', 'recall': '0.400', 'f1_score': '0.491', 'balanced_accuracy': '0.680'}
+2025-07-09 11:12:24,417 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:547] - Skipping intra-fold stats (flag disabled or not enough folds/timepoints).
+2025-07-09 11:12:24,419 - INFO - examples.test_decimate_folds - [run_comprehensive_analysis:412] - ✓ 2 folds, 250Hz+CSP+FS: AUC=0.900±0.006
+2025-07-09 11:12:24,419 - INFO - examples.test_decimate_folds - [run_single_combination_test:124] - Test: 2 folds, 125Hz
+2025-07-09 11:12:24,419 - INFO - examples.test_decimate_folds - [decimate_epochs_to_target_freq:97] - Décimation: 500.0Hz -> 125Hz (facteur: 4.0)
+2025-07-09 11:12:34,067 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-09 11:12:34,067 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): False
+2025-07-09 11:12:34,068 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:12:34,068 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:12:34,068 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:12:34,069 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:12:34,069 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:12:34,069 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:12:34,069 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 2 splits.
+2025-07-09 11:12:34,069 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-09 11:12:34,070 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-09 11:12:34,070 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-09 11:12:37,521 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.752
+2025-07-09 11:12:37,521 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-07-09 11:12:37,521 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=-1)...
+2025-07-09 11:12:43,625 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.899 +/- 0.006
+2025-07-09 11:12:43,639 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.895', 'accuracy': '0.880', 'precision': '0.651', 'recall': '0.400', 'f1_score': '0.496', 'balanced_accuracy': '0.682'}
+2025-07-09 11:12:43,640 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:547] - Skipping intra-fold stats (flag disabled or not enough folds/timepoints).
+2025-07-09 11:12:43,640 - INFO - examples.test_decimate_folds - [run_comprehensive_analysis:412] - ✓ 2 folds, 125Hz: AUC=0.899±0.006
+2025-07-09 11:12:43,640 - INFO - examples.test_decimate_folds - [run_single_combination_test:124] - Test: 2 folds, 125Hz+FS
+2025-07-09 11:12:43,640 - INFO - examples.test_decimate_folds - [decimate_epochs_to_target_freq:97] - Décimation: 500.0Hz -> 125Hz (facteur: 4.0)
+2025-07-09 11:12:53,244 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-09 11:12:53,244 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-07-09 11:12:53,245 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-07-09 11:12:53,245 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:12:53,245 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-07-09 11:12:53,245 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-07-09 11:12:53,245 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:12:53,245 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:12:53,245 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:12:53,245 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 2 splits.
+2025-07-09 11:12:53,245 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-09 11:12:53,246 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-09 11:12:53,246 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-09 11:12:56,471 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.765
+2025-07-09 11:12:56,471 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-07-09 11:12:56,471 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=-1)...
+2025-07-09 11:13:02,066 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.899 +/- 0.006
+2025-07-09 11:13:02,080 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.895', 'accuracy': '0.880', 'precision': '0.651', 'recall': '0.400', 'f1_score': '0.496', 'balanced_accuracy': '0.682'}
+2025-07-09 11:13:02,080 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:547] - Skipping intra-fold stats (flag disabled or not enough folds/timepoints).
+2025-07-09 11:13:02,081 - INFO - examples.test_decimate_folds - [run_comprehensive_analysis:412] - ✓ 2 folds, 125Hz+FS: AUC=0.899±0.006
+2025-07-09 11:13:02,081 - INFO - examples.test_decimate_folds - [run_single_combination_test:124] - Test: 2 folds, 125Hz+CSP
+2025-07-09 11:13:02,081 - INFO - examples.test_decimate_folds - [decimate_epochs_to_target_freq:97] - Décimation: 500.0Hz -> 125Hz (facteur: 4.0)
+2025-07-09 11:13:11,689 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-09 11:13:11,690 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): True, ANOVA FS (temporal): False
+2025-07-09 11:13:11,690 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: True, ANOVA FS: False
+2025-07-09 11:13:11,690 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=True, bool()=True
+2025-07-09 11:13:11,690 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:81] -    Étape CSP 'csp_feature_extraction' ajoutée (n_components fixe=4).
+2025-07-09 11:13:11,690 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'csp_feature_extraction', 'svc_classifier']
+2025-07-09 11:13:11,691 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:13:11,691 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:13:11,691 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:13:11,691 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 2 splits.
+2025-07-09 11:13:11,691 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-09 11:13:11,691 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-09 11:13:11,691 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-09 11:13:14,297 - ERROR - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:341] - Error in 1D temporal decoding: X must have at least 3 dimensions.
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/_parallel_backends.py", line 273, in _wrap_func_call
+    return func()
+           ^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in __call__
+    return [func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in <listcomp>
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/parallel.py", line 128, in run_verbose
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/search_light.py", line 359, in _sl_fit
+    est.fit(X[..., ii], y, **fit_params)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/base.py", line 1152, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 423, in fit
+    Xt = self._fit(X, y, **fit_params_steps)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 377, in _fit
+    X, fitted_transformer = fit_transform_one_cached(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/memory.py", line 353, in __call__
+    return self.func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 957, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **fit_params)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 252, in fit_transform
+    return super().fit_transform(X, y=y, **fit_params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/mixin.py", line 33, in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 176, in fit
+    self._check_Xy(X, y)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 159, in _check_Xy
+    raise ValueError("X must have at least 3 dimensions.")
+ValueError: X must have at least 3 dimensions.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/externals/loky/process_executor.py", line 463, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in __call__
+    return [func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in <listcomp>
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/parallel.py", line 128, in run_verbose
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "<decorator-gen-4>", line 12, in _fit_and_score
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/base.py", line 448, in _fit_and_score
+    estimator.fit(X_train, y_train, **fit_params)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/search_light.py", line 102, in fit
+    estimators = parallel(
+                 ^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1952, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1595, in _get_outputs
+    yield from self._retrieve()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1699, in _retrieve
+    self._raise_error_fast()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1734, in _raise_error_fast
+    error_job.get_result(self.timeout)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 736, in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 754, in _return_or_raise
+    raise self._result
+ValueError: X must have at least 3 dimensions.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tom.balay/Baking_EEG/examples/../Baking_EEG/_4_decoding_core.py", line 318, in run_temporal_decoding_analysis
+    scores_1d_cv_raw = cross_val_multiscore(
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "<decorator-gen-279>", line 12, in cross_val_multiscore
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/base.py", line 389, in cross_val_multiscore
+    scores = parallel(
+             ^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1952, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1595, in _get_outputs
+    yield from self._retrieve()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1699, in _retrieve
+    self._raise_error_fast()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1734, in _raise_error_fast
+    error_job.get_result(self.timeout)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 736, in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 754, in _return_or_raise
+    raise self._result
+ValueError: X must have at least 3 dimensions.
+2025-07-09 11:13:14,299 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-07-09 11:13:14,299 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=-1)...
+2025-07-09 11:13:20,454 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.899 +/- 0.006
+2025-07-09 11:13:20,470 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.895', 'accuracy': '0.880', 'precision': '0.651', 'recall': '0.400', 'f1_score': '0.496', 'balanced_accuracy': '0.682'}
+2025-07-09 11:13:20,470 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:547] - Skipping intra-fold stats (flag disabled or not enough folds/timepoints).
+2025-07-09 11:13:20,471 - INFO - examples.test_decimate_folds - [run_comprehensive_analysis:412] - ✓ 2 folds, 125Hz+CSP: AUC=0.899±0.006
+2025-07-09 11:13:20,471 - INFO - examples.test_decimate_folds - [run_single_combination_test:124] - Test: 2 folds, 125Hz+CSP+FS
+2025-07-09 11:13:20,471 - INFO - examples.test_decimate_folds - [decimate_epochs_to_target_freq:97] - Décimation: 500.0Hz -> 125Hz (facteur: 4.0)
+2025-07-09 11:13:30,112 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-09 11:13:30,112 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): True, ANOVA FS (temporal): True
+2025-07-09 11:13:30,113 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: True, ANOVA FS: False
+2025-07-09 11:13:30,113 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=True, bool()=True
+2025-07-09 11:13:30,113 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:81] -    Étape CSP 'csp_feature_extraction' ajoutée (n_components fixe=4).
+2025-07-09 11:13:30,113 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'csp_feature_extraction', 'svc_classifier']
+2025-07-09 11:13:30,113 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:13:30,113 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:13:30,113 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:13:30,113 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 2 splits.
+2025-07-09 11:13:30,113 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-09 11:13:30,114 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-09 11:13:30,114 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-09 11:13:32,668 - ERROR - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:341] - Error in 1D temporal decoding: X must have at least 3 dimensions.
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/_parallel_backends.py", line 273, in _wrap_func_call
+    return func()
+           ^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in __call__
+    return [func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in <listcomp>
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/parallel.py", line 128, in run_verbose
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/search_light.py", line 359, in _sl_fit
+    est.fit(X[..., ii], y, **fit_params)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/base.py", line 1152, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 423, in fit
+    Xt = self._fit(X, y, **fit_params_steps)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 377, in _fit
+    X, fitted_transformer = fit_transform_one_cached(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/memory.py", line 353, in __call__
+    return self.func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 957, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **fit_params)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 252, in fit_transform
+    return super().fit_transform(X, y=y, **fit_params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/mixin.py", line 33, in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 176, in fit
+    self._check_Xy(X, y)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 159, in _check_Xy
+    raise ValueError("X must have at least 3 dimensions.")
+ValueError: X must have at least 3 dimensions.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/externals/loky/process_executor.py", line 463, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in __call__
+    return [func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in <listcomp>
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/parallel.py", line 128, in run_verbose
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "<decorator-gen-4>", line 12, in _fit_and_score
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/base.py", line 448, in _fit_and_score
+    estimator.fit(X_train, y_train, **fit_params)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/search_light.py", line 102, in fit
+    estimators = parallel(
+                 ^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1952, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1595, in _get_outputs
+    yield from self._retrieve()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1699, in _retrieve
+    self._raise_error_fast()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1734, in _raise_error_fast
+    error_job.get_result(self.timeout)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 736, in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 754, in _return_or_raise
+    raise self._result
+ValueError: X must have at least 3 dimensions.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tom.balay/Baking_EEG/examples/../Baking_EEG/_4_decoding_core.py", line 318, in run_temporal_decoding_analysis
+    scores_1d_cv_raw = cross_val_multiscore(
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "<decorator-gen-279>", line 12, in cross_val_multiscore
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/base.py", line 389, in cross_val_multiscore
+    scores = parallel(
+             ^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1952, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1595, in _get_outputs
+    yield from self._retrieve()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1699, in _retrieve
+    self._raise_error_fast()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1734, in _raise_error_fast
+    error_job.get_result(self.timeout)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 736, in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 754, in _return_or_raise
+    raise self._result
+ValueError: X must have at least 3 dimensions.
+2025-07-09 11:13:32,670 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-07-09 11:13:32,670 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=-1)...
+2025-07-09 11:13:39,273 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.899 +/- 0.006
+2025-07-09 11:13:39,289 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.895', 'accuracy': '0.880', 'precision': '0.651', 'recall': '0.400', 'f1_score': '0.496', 'balanced_accuracy': '0.682'}
+2025-07-09 11:13:39,289 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:547] - Skipping intra-fold stats (flag disabled or not enough folds/timepoints).
+2025-07-09 11:13:39,290 - INFO - examples.test_decimate_folds - [run_comprehensive_analysis:412] - ✓ 2 folds, 125Hz+CSP+FS: AUC=0.899±0.006
+2025-07-09 11:13:39,291 - INFO - examples.test_decimate_folds - [run_single_combination_test:124] - Test: 5 folds, 250Hz
+2025-07-09 11:13:39,291 - INFO - examples.test_decimate_folds - [decimate_epochs_to_target_freq:97] - Décimation: 500.0Hz -> 250Hz (facteur: 2.0)
+2025-07-09 11:13:49,081 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-09 11:13:49,081 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): False
+2025-07-09 11:13:49,082 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:13:49,082 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:13:49,082 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:13:49,083 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:13:49,083 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:13:49,083 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:13:49,083 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 5 splits.
+2025-07-09 11:13:49,083 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-09 11:13:49,087 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-09 11:13:49,087 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-09 11:14:17,955 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.766
+2025-07-09 11:14:17,956 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-07-09 11:14:17,956 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=-1)...
+2025-07-09 11:14:34,247 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.926 +/- 0.024
+2025-07-09 11:14:34,261 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.919', 'accuracy': '0.908', 'precision': '0.771', 'recall': '0.529', 'f1_score': '0.627', 'balanced_accuracy': '0.751'}
+2025-07-09 11:14:34,261 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:547] - Skipping intra-fold stats (flag disabled or not enough folds/timepoints).
+2025-07-09 11:14:34,262 - INFO - examples.test_decimate_folds - [run_comprehensive_analysis:412] - ✓ 5 folds, 250Hz: AUC=0.926±0.024
+2025-07-09 11:14:34,262 - INFO - examples.test_decimate_folds - [run_single_combination_test:124] - Test: 5 folds, 250Hz+FS
+2025-07-09 11:14:34,262 - INFO - examples.test_decimate_folds - [decimate_epochs_to_target_freq:97] - Décimation: 500.0Hz -> 250Hz (facteur: 2.0)
+2025-07-09 11:14:44,051 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-09 11:14:44,051 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-07-09 11:14:44,053 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-07-09 11:14:44,053 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:14:44,053 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-07-09 11:14:44,053 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-07-09 11:14:44,053 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:14:44,053 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:14:44,053 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:14:44,054 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 5 splits.
+2025-07-09 11:14:44,054 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-09 11:14:44,056 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-09 11:14:44,056 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-09 11:14:53,868 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.773
+2025-07-09 11:14:53,868 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-07-09 11:14:53,868 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=-1)...
+2025-07-09 11:15:10,416 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.926 +/- 0.024
+2025-07-09 11:15:10,431 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.919', 'accuracy': '0.908', 'precision': '0.771', 'recall': '0.529', 'f1_score': '0.627', 'balanced_accuracy': '0.751'}
+2025-07-09 11:15:10,431 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:547] - Skipping intra-fold stats (flag disabled or not enough folds/timepoints).
+2025-07-09 11:15:10,432 - INFO - examples.test_decimate_folds - [run_comprehensive_analysis:412] - ✓ 5 folds, 250Hz+FS: AUC=0.926±0.024
+2025-07-09 11:15:10,432 - INFO - examples.test_decimate_folds - [run_single_combination_test:124] - Test: 5 folds, 250Hz+CSP
+2025-07-09 11:15:10,432 - INFO - examples.test_decimate_folds - [decimate_epochs_to_target_freq:97] - Décimation: 500.0Hz -> 250Hz (facteur: 2.0)
+2025-07-09 11:15:20,216 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-09 11:15:20,216 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): True, ANOVA FS (temporal): False
+2025-07-09 11:15:20,216 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: True, ANOVA FS: False
+2025-07-09 11:15:20,217 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=True, bool()=True
+2025-07-09 11:15:20,217 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:81] -    Étape CSP 'csp_feature_extraction' ajoutée (n_components fixe=4).
+2025-07-09 11:15:20,217 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'csp_feature_extraction', 'svc_classifier']
+2025-07-09 11:15:20,217 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:15:20,217 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:15:20,217 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:15:20,217 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 5 splits.
+2025-07-09 11:15:20,217 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-09 11:15:20,218 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-09 11:15:20,218 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-09 11:15:23,493 - ERROR - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:341] - Error in 1D temporal decoding: X must have at least 3 dimensions.
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/_parallel_backends.py", line 273, in _wrap_func_call
+    return func()
+           ^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in __call__
+    return [func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in <listcomp>
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/parallel.py", line 128, in run_verbose
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/search_light.py", line 359, in _sl_fit
+    est.fit(X[..., ii], y, **fit_params)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/base.py", line 1152, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 423, in fit
+    Xt = self._fit(X, y, **fit_params_steps)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 377, in _fit
+    X, fitted_transformer = fit_transform_one_cached(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/memory.py", line 353, in __call__
+    return self.func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 957, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **fit_params)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 252, in fit_transform
+    return super().fit_transform(X, y=y, **fit_params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/mixin.py", line 33, in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 176, in fit
+    self._check_Xy(X, y)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 159, in _check_Xy
+    raise ValueError("X must have at least 3 dimensions.")
+ValueError: X must have at least 3 dimensions.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/externals/loky/process_executor.py", line 463, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in __call__
+    return [func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in <listcomp>
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/parallel.py", line 128, in run_verbose
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "<decorator-gen-4>", line 12, in _fit_and_score
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/base.py", line 448, in _fit_and_score
+    estimator.fit(X_train, y_train, **fit_params)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/search_light.py", line 102, in fit
+    estimators = parallel(
+                 ^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1952, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1595, in _get_outputs
+    yield from self._retrieve()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1699, in _retrieve
+    self._raise_error_fast()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1734, in _raise_error_fast
+    error_job.get_result(self.timeout)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 736, in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 754, in _return_or_raise
+    raise self._result
+ValueError: X must have at least 3 dimensions.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tom.balay/Baking_EEG/examples/../Baking_EEG/_4_decoding_core.py", line 318, in run_temporal_decoding_analysis
+    scores_1d_cv_raw = cross_val_multiscore(
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "<decorator-gen-279>", line 12, in cross_val_multiscore
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/base.py", line 389, in cross_val_multiscore
+    scores = parallel(
+             ^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1952, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1595, in _get_outputs
+    yield from self._retrieve()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1699, in _retrieve
+    self._raise_error_fast()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1734, in _raise_error_fast
+    error_job.get_result(self.timeout)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 736, in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 754, in _return_or_raise
+    raise self._result
+ValueError: X must have at least 3 dimensions.
+2025-07-09 11:15:23,495 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-07-09 11:15:23,496 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=-1)...
+2025-07-09 11:15:41,088 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.926 +/- 0.024
+2025-07-09 11:15:41,105 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.919', 'accuracy': '0.908', 'precision': '0.771', 'recall': '0.529', 'f1_score': '0.627', 'balanced_accuracy': '0.751'}
+2025-07-09 11:15:41,106 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:547] - Skipping intra-fold stats (flag disabled or not enough folds/timepoints).
+2025-07-09 11:15:41,107 - INFO - examples.test_decimate_folds - [run_comprehensive_analysis:412] - ✓ 5 folds, 250Hz+CSP: AUC=0.926±0.024
+2025-07-09 11:15:41,107 - INFO - examples.test_decimate_folds - [run_single_combination_test:124] - Test: 5 folds, 250Hz+CSP+FS
+2025-07-09 11:15:41,107 - INFO - examples.test_decimate_folds - [decimate_epochs_to_target_freq:97] - Décimation: 500.0Hz -> 250Hz (facteur: 2.0)
+2025-07-09 11:15:50,915 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-09 11:15:50,915 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): True, ANOVA FS (temporal): True
+2025-07-09 11:15:50,917 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: True, ANOVA FS: False
+2025-07-09 11:15:50,917 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=True, bool()=True
+2025-07-09 11:15:50,917 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:81] -    Étape CSP 'csp_feature_extraction' ajoutée (n_components fixe=4).
+2025-07-09 11:15:50,918 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'csp_feature_extraction', 'svc_classifier']
+2025-07-09 11:15:50,918 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:15:50,918 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:15:50,918 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:15:50,918 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 5 splits.
+2025-07-09 11:15:50,918 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-09 11:15:50,921 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-09 11:15:50,921 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-09 11:15:53,913 - ERROR - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:341] - Error in 1D temporal decoding: X must have at least 3 dimensions.
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/_parallel_backends.py", line 273, in _wrap_func_call
+    return func()
+           ^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in __call__
+    return [func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in <listcomp>
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/parallel.py", line 128, in run_verbose
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/search_light.py", line 359, in _sl_fit
+    est.fit(X[..., ii], y, **fit_params)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/base.py", line 1152, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 423, in fit
+    Xt = self._fit(X, y, **fit_params_steps)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 377, in _fit
+    X, fitted_transformer = fit_transform_one_cached(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/memory.py", line 353, in __call__
+    return self.func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 957, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **fit_params)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 252, in fit_transform
+    return super().fit_transform(X, y=y, **fit_params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/mixin.py", line 33, in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 176, in fit
+    self._check_Xy(X, y)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 159, in _check_Xy
+    raise ValueError("X must have at least 3 dimensions.")
+ValueError: X must have at least 3 dimensions.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/externals/loky/process_executor.py", line 463, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in __call__
+    return [func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in <listcomp>
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/parallel.py", line 128, in run_verbose
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "<decorator-gen-4>", line 12, in _fit_and_score
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/base.py", line 448, in _fit_and_score
+    estimator.fit(X_train, y_train, **fit_params)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/search_light.py", line 102, in fit
+    estimators = parallel(
+                 ^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1952, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1595, in _get_outputs
+    yield from self._retrieve()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1699, in _retrieve
+    self._raise_error_fast()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1734, in _raise_error_fast
+    error_job.get_result(self.timeout)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 736, in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 754, in _return_or_raise
+    raise self._result
+ValueError: X must have at least 3 dimensions.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tom.balay/Baking_EEG/examples/../Baking_EEG/_4_decoding_core.py", line 318, in run_temporal_decoding_analysis
+    scores_1d_cv_raw = cross_val_multiscore(
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "<decorator-gen-279>", line 12, in cross_val_multiscore
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/base.py", line 389, in cross_val_multiscore
+    scores = parallel(
+             ^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1952, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1595, in _get_outputs
+    yield from self._retrieve()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1699, in _retrieve
+    self._raise_error_fast()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1734, in _raise_error_fast
+    error_job.get_result(self.timeout)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 736, in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 754, in _return_or_raise
+    raise self._result
+ValueError: X must have at least 3 dimensions.
+2025-07-09 11:15:53,915 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-07-09 11:15:53,915 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=-1)...
+2025-07-09 11:16:10,928 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.926 +/- 0.024
+2025-07-09 11:16:10,943 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.919', 'accuracy': '0.908', 'precision': '0.771', 'recall': '0.529', 'f1_score': '0.627', 'balanced_accuracy': '0.751'}
+2025-07-09 11:16:10,943 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:547] - Skipping intra-fold stats (flag disabled or not enough folds/timepoints).
+2025-07-09 11:16:10,944 - INFO - examples.test_decimate_folds - [run_comprehensive_analysis:412] - ✓ 5 folds, 250Hz+CSP+FS: AUC=0.926±0.024
+2025-07-09 11:16:10,944 - INFO - examples.test_decimate_folds - [run_single_combination_test:124] - Test: 5 folds, 125Hz
+2025-07-09 11:16:10,945 - INFO - examples.test_decimate_folds - [decimate_epochs_to_target_freq:97] - Décimation: 500.0Hz -> 125Hz (facteur: 4.0)
+2025-07-09 11:16:20,601 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-09 11:16:20,601 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): False
+2025-07-09 11:16:20,601 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:16:20,602 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:16:20,602 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:16:20,602 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:16:20,602 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:16:20,602 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:16:20,602 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 5 splits.
+2025-07-09 11:16:20,602 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-09 11:16:20,603 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-09 11:16:20,603 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-09 11:16:35,835 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.766
+2025-07-09 11:16:35,835 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-07-09 11:16:35,835 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=-1)...
+2025-07-09 11:16:45,132 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.925 +/- 0.024
+2025-07-09 11:16:45,147 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.919', 'accuracy': '0.908', 'precision': '0.771', 'recall': '0.529', 'f1_score': '0.627', 'balanced_accuracy': '0.751'}
+2025-07-09 11:16:45,147 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:547] - Skipping intra-fold stats (flag disabled or not enough folds/timepoints).
+2025-07-09 11:16:45,147 - INFO - examples.test_decimate_folds - [run_comprehensive_analysis:412] - ✓ 5 folds, 125Hz: AUC=0.925±0.024
+2025-07-09 11:16:45,148 - INFO - examples.test_decimate_folds - [run_single_combination_test:124] - Test: 5 folds, 125Hz+FS
+2025-07-09 11:16:45,148 - INFO - examples.test_decimate_folds - [decimate_epochs_to_target_freq:97] - Décimation: 500.0Hz -> 125Hz (facteur: 4.0)
+2025-07-09 11:16:54,779 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-09 11:16:54,779 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): False, ANOVA FS (temporal): True
+2025-07-09 11:16:54,780 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: True
+2025-07-09 11:16:54,780 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:16:54,780 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:91] -    Étape ANOVA FS 'anova_feature_selection' ajoutée (percentile fixe=15).
+2025-07-09 11:16:54,780 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'anova_feature_selection', 'svc_classifier']
+2025-07-09 11:16:54,780 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:16:54,780 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:16:54,780 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:16:54,780 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 5 splits.
+2025-07-09 11:16:54,780 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-09 11:16:54,781 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-09 11:16:54,781 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-09 11:17:00,107 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:338] - 1D temporal decoding done. Peak mean AUC: 0.766
+2025-07-09 11:17:00,107 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-07-09 11:17:00,107 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=-1)...
+2025-07-09 11:17:08,978 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.925 +/- 0.024
+2025-07-09 11:17:08,993 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.919', 'accuracy': '0.908', 'precision': '0.771', 'recall': '0.529', 'f1_score': '0.627', 'balanced_accuracy': '0.751'}
+2025-07-09 11:17:08,993 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:547] - Skipping intra-fold stats (flag disabled or not enough folds/timepoints).
+2025-07-09 11:17:08,994 - INFO - examples.test_decimate_folds - [run_comprehensive_analysis:412] - ✓ 5 folds, 125Hz+FS: AUC=0.925±0.024
+2025-07-09 11:17:08,994 - INFO - examples.test_decimate_folds - [run_single_combination_test:124] - Test: 5 folds, 125Hz+CSP
+2025-07-09 11:17:08,994 - INFO - examples.test_decimate_folds - [decimate_epochs_to_target_freq:97] - Décimation: 500.0Hz -> 125Hz (facteur: 4.0)
+2025-07-09 11:17:18,634 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-09 11:17:18,634 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): True, ANOVA FS (temporal): False
+2025-07-09 11:17:18,635 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: True, ANOVA FS: False
+2025-07-09 11:17:18,635 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=True, bool()=True
+2025-07-09 11:17:18,635 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:81] -    Étape CSP 'csp_feature_extraction' ajoutée (n_components fixe=4).
+2025-07-09 11:17:18,635 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'csp_feature_extraction', 'svc_classifier']
+2025-07-09 11:17:18,635 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:17:18,635 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:17:18,635 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:17:18,636 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 5 splits.
+2025-07-09 11:17:18,636 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-09 11:17:18,636 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-09 11:17:18,637 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-09 11:17:21,571 - ERROR - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:341] - Error in 1D temporal decoding: X must have at least 3 dimensions.
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/_parallel_backends.py", line 273, in _wrap_func_call
+    return func()
+           ^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in __call__
+    return [func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in <listcomp>
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/parallel.py", line 128, in run_verbose
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/search_light.py", line 359, in _sl_fit
+    est.fit(X[..., ii], y, **fit_params)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/base.py", line 1152, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 423, in fit
+    Xt = self._fit(X, y, **fit_params_steps)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 377, in _fit
+    X, fitted_transformer = fit_transform_one_cached(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/memory.py", line 353, in __call__
+    return self.func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 957, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **fit_params)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 252, in fit_transform
+    return super().fit_transform(X, y=y, **fit_params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/mixin.py", line 33, in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 176, in fit
+    self._check_Xy(X, y)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 159, in _check_Xy
+    raise ValueError("X must have at least 3 dimensions.")
+ValueError: X must have at least 3 dimensions.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/externals/loky/process_executor.py", line 463, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in __call__
+    return [func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in <listcomp>
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/parallel.py", line 128, in run_verbose
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "<decorator-gen-4>", line 12, in _fit_and_score
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/base.py", line 448, in _fit_and_score
+    estimator.fit(X_train, y_train, **fit_params)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/search_light.py", line 102, in fit
+    estimators = parallel(
+                 ^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1952, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1595, in _get_outputs
+    yield from self._retrieve()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1699, in _retrieve
+    self._raise_error_fast()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1734, in _raise_error_fast
+    error_job.get_result(self.timeout)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 736, in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 754, in _return_or_raise
+    raise self._result
+ValueError: X must have at least 3 dimensions.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tom.balay/Baking_EEG/examples/../Baking_EEG/_4_decoding_core.py", line 318, in run_temporal_decoding_analysis
+    scores_1d_cv_raw = cross_val_multiscore(
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "<decorator-gen-279>", line 12, in cross_val_multiscore
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/base.py", line 389, in cross_val_multiscore
+    scores = parallel(
+             ^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1952, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1595, in _get_outputs
+    yield from self._retrieve()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1699, in _retrieve
+    self._raise_error_fast()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1734, in _raise_error_fast
+    error_job.get_result(self.timeout)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 736, in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 754, in _return_or_raise
+    raise self._result
+ValueError: X must have at least 3 dimensions.
+2025-07-09 11:17:21,575 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-07-09 11:17:21,575 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=-1)...
+2025-07-09 11:17:31,201 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.925 +/- 0.024
+2025-07-09 11:17:31,217 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.919', 'accuracy': '0.908', 'precision': '0.771', 'recall': '0.529', 'f1_score': '0.627', 'balanced_accuracy': '0.751'}
+2025-07-09 11:17:31,217 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:547] - Skipping intra-fold stats (flag disabled or not enough folds/timepoints).
+2025-07-09 11:17:31,218 - INFO - examples.test_decimate_folds - [run_comprehensive_analysis:412] - ✓ 5 folds, 125Hz+CSP: AUC=0.925±0.024
+2025-07-09 11:17:31,218 - INFO - examples.test_decimate_folds - [run_single_combination_test:124] - Test: 5 folds, 125Hz+CSP+FS
+2025-07-09 11:17:31,218 - INFO - examples.test_decimate_folds - [decimate_epochs_to_target_freq:97] - Décimation: 500.0Hz -> 125Hz (facteur: 4.0)
+2025-07-09 11:17:40,885 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:68] - --- Temporal Ddcoding Analysis ---
+2025-07-09 11:17:40,885 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:69] - Clf: svc, GS: False, CSP (temporal): True, ANOVA FS (temporal): True
+2025-07-09 11:17:40,886 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: True, ANOVA FS: False
+2025-07-09 11:17:40,886 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=True, bool()=True
+2025-07-09 11:17:40,886 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:81] -    Étape CSP 'csp_feature_extraction' ajoutée (n_components fixe=4).
+2025-07-09 11:17:40,886 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'csp_feature_extraction', 'svc_classifier']
+2025-07-09 11:17:40,886 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:57] - Pipeline à hyperparamètres fixes: type='svc', CSP: False, ANOVA FS: False
+2025-07-09 11:17:40,886 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:68] - DEBUG: add_csp_step type=bool, value=False, bool()=False
+2025-07-09 11:17:40,886 - INFO - base.base_decoding - [_build_standard_classifier_pipeline:123] - Structure finale du pipeline: ['scaler', 'svc_classifier']
+2025-07-09 11:17:40,887 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:246] - CV strategy: StratifiedKFold with 5 splits.
+2025-07-09 11:17:40,887 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:258] - Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).
+2025-07-09 11:17:40,887 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:294] - MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).
+2025-07-09 11:17:40,888 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:310] - Starting 1D temporal decoding (SlidingEstimator)...
+2025-07-09 11:17:43,663 - ERROR - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:341] - Error in 1D temporal decoding: X must have at least 3 dimensions.
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/_parallel_backends.py", line 273, in _wrap_func_call
+    return func()
+           ^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in __call__
+    return [func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in <listcomp>
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/parallel.py", line 128, in run_verbose
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/search_light.py", line 359, in _sl_fit
+    est.fit(X[..., ii], y, **fit_params)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/base.py", line 1152, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 423, in fit
+    Xt = self._fit(X, y, **fit_params_steps)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 377, in _fit
+    X, fitted_transformer = fit_transform_one_cached(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/memory.py", line 353, in __call__
+    return self.func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/sklearn/pipeline.py", line 957, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **fit_params)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 252, in fit_transform
+    return super().fit_transform(X, y=y, **fit_params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/mixin.py", line 33, in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 176, in fit
+    self._check_Xy(X, y)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/csp.py", line 159, in _check_Xy
+    raise ValueError("X must have at least 3 dimensions.")
+ValueError: X must have at least 3 dimensions.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/externals/loky/process_executor.py", line 463, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in __call__
+    return [func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 589, in <listcomp>
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/parallel.py", line 128, in run_verbose
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "<decorator-gen-4>", line 12, in _fit_and_score
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/base.py", line 448, in _fit_and_score
+    estimator.fit(X_train, y_train, **fit_params)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/search_light.py", line 102, in fit
+    estimators = parallel(
+                 ^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1952, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1595, in _get_outputs
+    yield from self._retrieve()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1699, in _retrieve
+    self._raise_error_fast()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1734, in _raise_error_fast
+    error_job.get_result(self.timeout)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 736, in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 754, in _return_or_raise
+    raise self._result
+ValueError: X must have at least 3 dimensions.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tom.balay/Baking_EEG/examples/../Baking_EEG/_4_decoding_core.py", line 318, in run_temporal_decoding_analysis
+    scores_1d_cv_raw = cross_val_multiscore(
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "<decorator-gen-279>", line 12, in cross_val_multiscore
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/mne/decoding/base.py", line 389, in cross_val_multiscore
+    scores = parallel(
+             ^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1952, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1595, in _get_outputs
+    yield from self._retrieve()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1699, in _retrieve
+    self._raise_error_fast()
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 1734, in _raise_error_fast
+    error_job.get_result(self.timeout)
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 736, in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tom.balay/.venvs/py3.11_cluster/lib/python3.11/site-packages/joblib/parallel.py", line 754, in _return_or_raise
+    raise self._result
+ValueError: X must have at least 3 dimensions.
+2025-07-09 11:17:43,665 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:379] - TGM computation disabled.
+2025-07-09 11:17:43,665 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:382] - Starting global decoding (n_jobs_folds=-1)...
+2025-07-09 11:17:52,940 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:439] - Global decoding done. Mean CV AUC: 0.925 +/- 0.024
+2025-07-09 11:17:52,956 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:478] -   Overall global metrics (aggregated): {'roc_auc': '0.919', 'accuracy': '0.908', 'precision': '0.771', 'recall': '0.529', 'f1_score': '0.627', 'balanced_accuracy': '0.751'}
+2025-07-09 11:17:52,956 - INFO - Baking_EEG._4_decoding_core - [run_temporal_decoding_analysis:547] - Skipping intra-fold stats (flag disabled or not enough folds/timepoints).
+2025-07-09 11:17:52,957 - INFO - examples.test_decimate_folds - [run_comprehensive_analysis:412] - ✓ 5 folds, 125Hz+CSP+FS: AUC=0.925±0.024
+2025-07-09 11:17:52,983 - INFO - examples.test_decimate_folds - [run_comprehensive_analysis:426] - Analyse terminée. 16/16 tests réussis.
+2025-07-09 11:17:53,228 - INFO - examples.test_decimate_folds - [save_results_and_visualizations:975] - Résultats sauvegardés: test_folds_sampling_results_20250709_111752/results_summary.csv
+2025-07-09 11:17:53,228 - INFO - examples.test_decimate_folds - [save_results_and_visualizations:978] - Génération des visualisations...
+ERREUR durant l'exécution: Index contains duplicate entries, cannot reshape
+submitit ERROR (2025-07-09 11:17:53,424) - Submitted job triggered an exception
+2025-07-09 11:17:53,424 - ERROR - submitit - [process_job:68] - Submitted job triggered an exception
