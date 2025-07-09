@@ -1,6 +1,8 @@
+
 #!/usr/bin/env python3
 """
-Script submitit simplifié pour lancer les tests CSP/FS avec paramètres pré-définis.
+Script de soumission pour les tests de décimation et folds sur cluster SLURM.
+Version adaptée sans feature selection.
 """
 
 import os
@@ -30,7 +32,7 @@ QUICK_TEST = False  # Mettre False pour analyse complète
 PARTITION = "CPU"
 MEM = "60G"
 CPUS = 40
-TIMEOUT_MIN = 12000 * 60  # en minutes
+TIMEOUT_MIN = 720  # 12 heures en minutes
 ACCOUNT = "tom.balay"
 
 def create_job_function():
@@ -51,7 +53,6 @@ def create_job_function():
         print(f"Timestamp: {datetime.now()}")
         print(f"Fichier sujet: {SUBJECT_FILE}")
         print(f"Mode rapide: {QUICK_TEST}")
-        print(f"Répertoire de sortie: {OUTPUT_DIR}")
         print(f"Working directory: {os.getcwd()}")
         print(f"Python path: {sys.path[:3]}")
         
@@ -71,17 +72,9 @@ def create_job_function():
                 results_df, subject_info = run_comprehensive_analysis()
                 output_dir = save_results_and_visualizations(results_df, subject_info)
             
-            # Déplacer les résultats vers le répertoire de sortie final
-            if OUTPUT_DIR and output_dir:
-                import shutil
-                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-                final_output = os.path.join(OUTPUT_DIR, f"cluster_results_{timestamp}")
-                os.makedirs(os.path.dirname(final_output), exist_ok=True)
-                shutil.move(output_dir, final_output)
-                print(f"Résultats déplacés vers: {final_output}")
-                return final_output
-            else:
-                return output_dir
+            print(f"Analyse terminée avec succès!")
+            print(f"Résultats sauvegardés dans: {output_dir}")
+            return output_dir
                 
         except Exception as e:
             print(f"ERREUR durant l'exécution: {e}")
@@ -97,33 +90,44 @@ def main():
     """
     Fonction principale pour soumettre le job.
     """
+    import argparse
     
-    # Vérifier que le fichier sujet existe
-    if not os.path.exists(SUBJECT_FILE):
-        logger.error(f"Fichier sujet non trouvé: {SUBJECT_FILE}")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description='Soumission des tests de décimation sur cluster')
+    parser.add_argument('--quick', action='store_true', 
+                       help='Exécuter un test rapide avec paramètres réduits')
+    parser.add_argument('--local', action='store_true', 
+                       help='Exécuter localement au lieu de soumettre sur cluster')
+    parser.add_argument('--subject-file', type=str, default=None,
+                       help='Fichier de données du sujet (optionnel)')
     
-    # Créer le répertoire de sortie
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    args = parser.parse_args()
     
-    # Créer le répertoire de logs submitit
+    # Modifier les paramètres selon les arguments
+    global QUICK_TEST, SUBJECT_FILE
+    if args.quick:
+        QUICK_TEST = True
+    if args.subject_file:
+        SUBJECT_FILE = args.subject_file
+    
+    logger.info(f"Configuration:")
+    logger.info(f"  - Mode rapide: {QUICK_TEST}")
+    logger.info(f"  - Fichier sujet: {SUBJECT_FILE}")
+    
+    if args.local:
+        logger.info("Exécution locale...")
+        job_function = create_job_function()
+        output_dir = job_function()
+        logger.info(f"Terminé! Résultats dans: {output_dir}")
+        return
+    
+    # Soumission sur cluster
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    logs_dir = os.path.join(os.path.dirname(__file__), f"logs_test_csp_fs_{timestamp}")
-    os.makedirs(logs_dir, exist_ok=True)
+    logs_dir = f"logs_decimate_folds_{timestamp}"
     
-    logger.info("=== CONFIGURATION DE SOUMISSION ===")
-    logger.info(f"Fichier sujet: {SUBJECT_FILE}")
-    logger.info(f"Répertoire de sortie: {OUTPUT_DIR}")
-    logger.info(f"Mode rapide: {QUICK_TEST}")
-    logger.info(f"Partition: {PARTITION}")
-    logger.info(f"CPUs: {CPUS}")
-    logger.info(f"Mémoire: {MEM}")
-    logger.info(f"Timeout: {TIMEOUT_MIN} minutes")
-    logger.info(f"Account: {ACCOUNT}")
-    logger.info(f"Logs dans: {logs_dir}")
-    logger.info("=" * 40)
+    logger.info(f"Soumission du job sur le cluster...")
+    logger.info(f"Logs seront sauvegardés dans: {logs_dir}")
     
-    # Commandes de setup (modules à charger sur le cluster)
+    # Configuration pour l'environnement
     setup_commands = [
         "module load python/3.11",
         "source ~/.venvs/py3.11_cluster/bin/activate",
@@ -138,7 +142,8 @@ def main():
             slurm_mem=MEM,
             slurm_cpus_per_task=CPUS,
             slurm_additional_parameters={"account": ACCOUNT},
-            local_setup=setup_commands,
+            slurm_job_name="decimate_folds_analysis",
+            slurm_setup=setup_commands,
         )
         
         # Créer et soumettre le job
@@ -148,11 +153,7 @@ def main():
         logger.info(f"Job soumis avec l'ID: {job.job_id}")
         logger.info(f"Logs disponibles dans: {logs_dir}")
         logger.info(f"Statut du job: {job.state}")
-        
-        # Optionnel : attendre le résultat
-        # logger.info("Attente de la fin du job...")
-        # result = job.result()  # Bloque jusqu'à la fin
-        # logger.info(f"Job terminé. Résultats dans: {result}")
+        logger.info("Utilisez 'squeue -u tom.balay' pour voir le statut")
         
         return job
     
@@ -161,6 +162,7 @@ def main():
         import traceback
         traceback.print_exc()
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

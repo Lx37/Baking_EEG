@@ -142,23 +142,9 @@ FIXED_CLASSIFIER_PARAMS_CONFIG = {
     }
 }
 
-# === ADVANCED CSP CONFIGURATION ===
-# CSP selection options
-CSP_SELECTION_OPTIONS = {
-    "method": "variance",  # "variance", "mutual_info", "manual"
-    "n_components_range": [2, 4, 6, 8, 10],
-    "automatic_selection": True,
-    "cross_validate_components": True
-}
-
-# Default CSP configuration
-DEFAULT_CSP_CONFIG = {
-    "n_components": 4,
-    "reg": None,
-    "log": True,
-    "norm_trace": False,
-    "transform_into": "average_power"
-}
+# === ADVANCED FEATURE SELECTION CONFIGURATION ===
+# Feature selection methods (CSP functionality removed)
+# ANOVA F-score based feature selection is used instead
 
 # === PROTOCOL-SPECIFIC CONFIGURATIONS ===
 

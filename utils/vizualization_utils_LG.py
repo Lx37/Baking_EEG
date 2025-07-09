@@ -11,14 +11,14 @@ import scipy.stats
 
 logger_viz_lg = logging.getLogger(__name__)
 
-# Styling parameters
+
 FONT_SIZE_TITLE = 14
 FONT_SIZE_LABEL = 12
 FONT_SIZE_TICK = 10
 FONT_SIZE_LEGEND = 11
 DPI_VALUE = 150
 
-# Import stats utilities
+
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)

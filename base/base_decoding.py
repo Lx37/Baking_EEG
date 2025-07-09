@@ -9,7 +9,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
-from mne.decoding import CSP
+# from mne.decoding import CSP  # Removed CSP functionality
 
 # Configuration du logging
 logger_base_decoding = logging.getLogger(__name__)
@@ -21,18 +21,16 @@ def _build_standard_classifier_pipeline(
     classifier_model_type="svc",
     random_seed_state=42,
     use_grid_search=False,
-    add_csp_step=False,
     add_anova_fs_step=False,
     svc_c=1.0, svc_kernel='linear', svc_gamma='scale',
     logreg_c=1.0, logreg_penalty='l2',
     rf_n_estimators=100, rf_max_depth=None,
-    fs_percentile=15,
-    csp_n_components=4
+    fs_percentile=15
 ):
     """
     Construit un pipeline de classification scikit-learn.
 
-    Pipeline: Scaler -> [CSP (optionnel)] -> [ANOVA FS (optionnel)] ->
+    Pipeline: Scaler -> [ANOVA FS (optionnel)] ->
     Classifier.
     Les hyperparamètres sont pris des arguments si use_grid_search=False,
     sinon ils sont généralement optimisés par GridSearchCV.
@@ -42,7 +40,6 @@ def _build_standard_classifier_pipeline(
         random_seed_state (int): État aléatoire pour la reproductibilité.
         use_grid_search (bool): Si True, les paramètres fixes sont des
             valeurs par défaut.
-        add_csp_step (bool): Si True, ajoute CSP.
         add_anova_fs_step (bool): Si True, ajoute la sélection de
             caractéristiques ANOVA.
         svc_c, svc_kernel, ...: Hyperparamètres fixes pour les composants
@@ -50,36 +47,21 @@ def _build_standard_classifier_pipeline(
 
     Returns:
         tuple: (pipeline, nom_étape_classifier, nom_étape_anova_fs,
-                nom_étape_csp)
+                nom_étape_csp_unused)
     """
     log_prefix = ("Pipeline de base pour GridSearchCV" if use_grid_search
                   else "Pipeline à hyperparamètres fixes")
     logger_base_decoding.info(
-        "%s: type='%s', CSP: %s, ANOVA FS: %s",
-        log_prefix, classifier_model_type, add_csp_step, add_anova_fs_step
+        "%s: type='%s', ANOVA FS: %s",
+        log_prefix, classifier_model_type, add_anova_fs_step
     )
 
     steps = [("scaler", StandardScaler())]
     pipeline_clf_name = ""
     anova_fs_name = None
-    csp_name = None
+    csp_name = None  # Unused, kept for compatibility
 
-
-    logger_base_decoding.info("DEBUG: add_csp_step type=%s, value=%s, "
-                               "bool()=%s",
-                               type(add_csp_step).__name__,
-                               repr(add_csp_step),
-                               bool(add_csp_step))
-
-    if add_csp_step:
-        csp_name = "csp_feature_extraction"
-        n_comp = csp_n_components if not use_grid_search else 4
-        steps.append((csp_name, CSP(n_components=n_comp, reg=None,
-                                    log=True, norm_trace=False)))
-        log_detail = ("n_components à optimiser" if use_grid_search
-                      else f"n_components fixe={csp_n_components}")
-        logger_base_decoding.info(
-            "   Étape CSP '%s' ajoutée (%s).", csp_name, log_detail)
+    # CSP functionality removed - no longer supported
 
     if add_anova_fs_step:
         anova_fs_name = "anova_feature_selection"
@@ -212,7 +194,7 @@ def calculate_fold_sample_weights(train_labels_enc):
     
     This ensures that class balancing is computed based on the actual
     class distribution in each training fold, which is more accurate
-    than using global weights when using StratifiedKFold.
+    than using global weights when using RepeatedStratifiedKFold.
     
     Args:
         train_labels_enc (np.ndarray): Encoded labels for training fold

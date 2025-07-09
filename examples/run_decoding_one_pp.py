@@ -4,7 +4,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from config.decoding_config import (
     CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
-    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
+    USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
     PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
     FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
     CHANCE_LEVEL_AUC, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
@@ -40,13 +40,16 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import StratifiedKFold
+# from sklearn.model_selection import StratifiedKFold  
+from sklearn.model_selection import RepeatedStratifiedKFold
 import itertools
 import scipy.stats
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
-from mne.decoding import CSP
+
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+
+
 
 # =============================================================================
 # LABEL ENCODING STANDARDIZATION
@@ -62,14 +65,14 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 
 # --- Logging Configuration ---
-LOG_DIR_RUN_ONE = './logs_run_single_subject'  # Specific log directory for single subject analysis
+LOG_DIR_RUN_ONE = './logs_run_single_subject'  
 os.makedirs(LOG_DIR_RUN_ONE, exist_ok=True)
 LOG_FILENAME_RUN_ONE = os.path.join(
     LOG_DIR_RUN_ONE,
     datetime.now().strftime('log_run_single_subject_%Y-%m-%d_%H%M%S.log')
 )
 
-# Remove existing handlers to prevent log duplication
+
 for handler in logging.getLogger().handlers[:]:
     logging.getLogger().removeHandler(handler)
 
@@ -83,7 +86,7 @@ logging.basicConfig(
     ]
 )
 logger_run_one = logging.getLogger(__name__)
-# Configure loggers for imported modules if needed
+
 logging.getLogger("Baking_EEG.decoding_core").setLevel(logging.INFO)
 logging.getLogger("Baking_EEG.utils.data_loading_utils").setLevel(logging.INFO)
 
@@ -145,7 +148,6 @@ def execute_single_subject_decoding(
     n_jobs_for_processing=None,  # Can be overridden
     classifier_type=None,
     use_grid_search_for_subject=None,
-    use_csp_for_temporal_subject=None,
     use_anova_fs_for_temporal_subject=None,
     param_grid_config_for_subject=None,
     cv_folds_for_gs_subject=None,
@@ -159,7 +161,7 @@ def execute_single_subject_decoding(
     """Executes decoding analysis for a single subject for the defined
     single protocol."""
 
-    # Initialize default values
+
     if save_results_flag is None:
         save_results_flag = SAVE_ANALYSIS_RESULTS
     if generate_plots_flag is None:
@@ -170,8 +172,6 @@ def execute_single_subject_decoding(
         classifier_type = CLASSIFIER_MODEL_TYPE
     if use_grid_search_for_subject is None:
         use_grid_search_for_subject = USE_GRID_SEARCH_OPTIMIZATION
-    if use_csp_for_temporal_subject is None:
-        use_csp_for_temporal_subject = USE_CSP_FOR_TEMPORAL_PIPELINES
     if use_anova_fs_for_temporal_subject is None:
         use_anova_fs_for_temporal_subject = USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES
     if param_grid_config_for_subject is None:
@@ -229,7 +229,7 @@ def execute_single_subject_decoding(
         "pp_ap_ap_centric_avg_results": [],
     }
 
-    # Convert n_jobs_for_processing if it's "auto"
+   
     if isinstance(n_jobs_for_processing, str) and n_jobs_for_processing.lower() == "auto":
         actual_n_jobs = -1
     else:
@@ -242,7 +242,7 @@ def execute_single_subject_decoding(
             actual_n_jobs = -1
 
     try:
-        # Ensure paths are configured (fallback for direct function calls)
+     
         if not base_input_data_path or not base_output_results_path:
             current_user = getuser()
             cfg_input, cfg_output = configure_project_paths(current_user)
@@ -253,35 +253,35 @@ def execute_single_subject_decoding(
 
         logger_run_one.info(
             "Starting decoding for subject: %s (Group: %s, Task Set ID: %s, Classifier: %s, "
-            "GS: %s, CSP : %s, ANOVA FS : %s, n_jobs: %s)",
+            "GS: %s, ANOVA FS : %s, n_jobs: %s)",
             subject_identifier, group_affiliation, decoding_protocol_identifier,
             classifier_type, use_grid_search_for_subject,
-            use_csp_for_temporal_subject, use_anova_fs_for_temporal_subject, actual_n_jobs
+            use_anova_fs_for_temporal_subject, actual_n_jobs
         )
 
-        # First, load epochs with basic config to detect protocol
+      
         basic_loading_conditions = {"XPP_ALL": "PP/", "XAP_ALL": "AP/"}
         epochs_object, returned_data_dict_basic, detected_protocol = load_epochs_data_auto_protocol(
             subject_identifier, group_affiliation, base_input_data_path,
             basic_loading_conditions, enable_verbose_logging
         )
 
-        # Log detected protocol information
+  
         logger_run_one.info(
             "Detected protocol '%s' for subject %s",
             detected_protocol, subject_identifier
         )
 
-        # Get protocol-specific configuration and reload data
+      
         actual_loading_conditions = get_protocol_config(detected_protocol.lower() if detected_protocol else 'delirium')
         
-        # Reload epochs with protocol-specific configuration
+       
         epochs_object, returned_data_dict, detected_protocol = load_epochs_data_auto_protocol(
             subject_identifier, group_affiliation, base_input_data_path,
             actual_loading_conditions, enable_verbose_logging
         )
         
-        # Get protocol-specific configurations after detection
+       
         protocol_pp_events = get_protocol_pp_comparison_events(detected_protocol)
         
         logger_run_one.info(
@@ -297,7 +297,7 @@ def execute_single_subject_decoding(
                 "Epochs object loading failed for %s. Aborting subject.", subject_identifier)
             return subject_results
 
-        # Check if we have any valid data before proceeding
+
         total_valid_epochs = sum(
             arr.shape[0] for arr in returned_data_dict.values()
             if hasattr(arr, 'shape') and arr.ndim == 3 and arr.shape[0] > 0
@@ -309,7 +309,7 @@ def execute_single_subject_decoding(
                 "Available conditions: %s. Aborting analysis.",
                 subject_identifier, list(returned_data_dict.keys())
             )
-            # Log what was actually loaded for debugging
+           
             for condition, data in returned_data_dict.items():
                 if hasattr(data, 'shape'):
                     logger_run_one.info("  %s: shape %s", condition, data.shape)
@@ -322,14 +322,14 @@ def execute_single_subject_decoding(
             total_valid_epochs, subject_identifier
         )
 
-        # Store protocol information and epoch times
+      
         subject_results["detected_protocol"] = detected_protocol
         subject_results["epochs_time_points"] = epochs_object.times
         
-        # Get protocol-specific configurations
+      
         protocol_ap_families = get_protocol_ap_families(detected_protocol)
         protocol_cv_folds = get_protocol_cv_folds(detected_protocol)
-        # protocol_pp_events already defined above after protocol detection
+     
         
         logger_run_one.info(
             "Protocol-specific settings for %s: CV folds=%d, AP families=%d, PP events=%s",
@@ -341,7 +341,7 @@ def execute_single_subject_decoding(
 
         if use_grid_search_for_subject:
             if param_grid_config_for_subject and classifier_type in param_grid_config_for_subject:
-                # Déjà le dictionnaire complet
+          
                 current_param_grid_for_clf_dict = param_grid_config_for_subject
             else:
                 logger_run_one.warning(
@@ -384,17 +384,22 @@ def execute_single_subject_decoding(
                 min_samples_main = np.min(np.bincount(main_labels_encoded))
                 num_cv_splits_main = min(protocol_cv_folds, min_samples_main)
                 
+             
+                # main_cv_splitter = StratifiedKFold(
+                #    n_splits=num_cv_splits_main, shuffle=True, random_state=42)
+                main_cv_splitter = RepeatedStratifiedKFold(
+                    n_splits=num_cv_splits_main, n_repeats=5, random_state=42)
+                
                 main_decoding_output = run_temporal_decoding_analysis(
                         epochs_data=main_protocol_data, 
                         target_labels=main_labels_encoded,
                         classifier_model_type=classifier_type, 
                         use_grid_search=use_grid_search_for_subject,
-                        use_csp_for_temporal_pipelines=use_csp_for_temporal_subject, 
                         use_anova_fs_for_temporal_pipelines=use_anova_fs_for_temporal_subject,
                         param_grid_config=current_param_grid_for_clf_dict, 
                         cv_folds_for_gridsearch=cv_folds_for_gs_subject,
                         fixed_classifier_params=current_fixed_params_for_clf_dict,
-                        cross_validation_splitter=num_cv_splits_main,
+                        cross_validation_splitter=main_cv_splitter,
                         trial_sample_weights="auto",
                         n_jobs_external=actual_n_jobs,
                         group_labels_for_cv=None,
@@ -420,8 +425,9 @@ def execute_single_subject_decoding(
                 mean_auc_val = np.nanmean(
                         main_decoding_output[2]) if main_decoding_output[2] is not None and main_decoding_output[2].size > 0 else np.nan
                 subject_results["pp_ap_main_mean_auc_global"] = mean_auc_val
-                logger_run_one.info("Main Decoding for %s DONE. Mean Global AUC: %.3f",
-                                        subject_identifier, mean_auc_val if pd.notna(mean_auc_val) else -1)
+                logger_run_one.info("Main Decoding for %s DONE. Mean Global AUC: %.3f (using RepeatedStratifiedKFold with %d splits × 5 repeats = %d total folds)",
+                                        subject_identifier, mean_auc_val if pd.notna(mean_auc_val) else -1, 
+                                        num_cv_splits_main, num_cv_splits_main * 5)
         else:
             logger_run_one.warning(
                 "Subj %s: Missing XPP_ALL or XAP_ALL data. Skipping main decoding.", subject_identifier)
@@ -448,7 +454,7 @@ def execute_single_subject_decoding(
                         "fdr_significance_data": None, "cluster_significance_data": None
                     }
                     if ap_family_data_enum is not None and ap_family_data_enum.size > 0:
-                        # STANDARDIZED: PP=1 (positive class), AP=0 (negative class)
+                      
                         task_data_specific_current = np.concatenate(
                             [pp_specific_data, ap_family_data_enum], axis=0)
                         task_labels_specific_orig = np.concatenate(
@@ -469,14 +475,14 @@ def execute_single_subject_decoding(
                                 logger_run_one.warning(
                                     "Subj %s, Task '%s': Not enough samples for CV (%d splits). Skipping.", subject_identifier, comparison_name_specific, num_cv_task_spec)
                             else:
-                                cv_splitter_task_spec = StratifiedKFold(
-                                    n_splits=num_cv_task_spec, shuffle=True, random_state=42)
+                             
+                                cv_splitter_task_spec = RepeatedStratifiedKFold(
+                                    n_splits=num_cv_task_spec, n_repeats=3, random_state=42)
                                 specific_task_output = run_temporal_decoding_analysis(
                                     epochs_data=task_data_specific_current,
                                     target_labels=task_labels_specific_orig,
                                     classifier_model_type=classifier_type,
                                     use_grid_search=use_grid_search_for_subject,
-                                    use_csp_for_temporal_pipelines=use_csp_for_temporal_subject,
                                     use_anova_fs_for_temporal_pipelines=use_anova_fs_for_temporal_subject,
                                     param_grid_config=current_param_grid_for_clf_dict,
                                     cv_folds_for_gridsearch=cv_folds_for_gs_subject,
@@ -594,12 +600,12 @@ def execute_single_subject_decoding(
                             logger_run_one.warning(
                                 "Subj %s, Task '%s': Not enough samples for CV (%d splits). Skipping.", subject_identifier, comparison_name_ap_vs_ap, num_cv_ap_vs_ap)
                         else:
-                            cv_splitter_ap_vs_ap = StratifiedKFold(
-                                n_splits=num_cv_ap_vs_ap, shuffle=True, random_state=42)
+                           
+                            cv_splitter_ap_vs_ap = RepeatedStratifiedKFold(
+                                n_splits=num_cv_ap_vs_ap, n_repeats=3, random_state=42)
                             ap_vs_ap_task_output = run_temporal_decoding_analysis(
                                 epochs_data=task_data_ap_vs_ap, target_labels=task_labels_ap_vs_ap_orig,
                                 classifier_model_type=classifier_type, use_grid_search=use_grid_search_for_subject,
-                                use_csp_for_temporal_pipelines=use_csp_for_temporal_subject,
                                 use_anova_fs_for_temporal_pipelines=use_anova_fs_for_temporal_subject,
                                 param_grid_config=current_param_grid_for_clf_dict,
                                 cv_folds_for_gridsearch=cv_folds_for_gs_subject,
@@ -691,7 +697,7 @@ def execute_single_subject_decoding(
 
                             _, fdr_mask_centric, fdr_pval_centric, fdr_test_info_centric = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
                                 stacked_curves_for_avg, CHANCE_LEVEL_AUC, alternative_hypothesis="greater",
-                                statistical_test_type="wilcoxon"  # Force Wilcoxon test
+                                statistical_test_type="wilcoxon"  
                             )
                             ap_centric_avg_item["fdr_sig_data"] = {
                                 "mask": fdr_mask_centric, "p_values": fdr_pval_centric, 
@@ -751,7 +757,7 @@ def execute_single_subject_decoding(
             "Unexpected error during main processing logic for subject %s: %s", subject_identifier, e, exc_info=True)
         return subject_results
 
-    # Setup results directory and save/plot if requested
+
     if save_results_flag or generate_plots_flag:
         try:
             # Get the detected protocol for folder organization
@@ -789,7 +795,7 @@ def execute_single_subject_decoding(
                 "Failed to setup results directory for %s: %s. Plots/saving skipped.", subject_identifier, e_setup_dir, exc_info=True)
             subject_results_dir = None
 
-    # Save results if requested
+
     if save_results_flag and subject_results_dir:
         try:
             results_file_path = os.path.join(
@@ -817,7 +823,7 @@ def execute_single_subject_decoding(
             logger_run_one.error("Failed to save results for %s to %s: %s",
                                  subject_identifier, subject_results_dir, e_save, exc_info=True)
 
-    # Generate plots if requested
+
     if generate_plots_flag and subject_results.get("epochs_time_points") is not None:
         if subject_results_dir:
             try:
@@ -908,15 +914,13 @@ if __name__ == "__main__":
                         classifier_type_to_use, n_jobs_to_use)
     logger_run_one.info(
         "  GridSearch Optimization (from config): %s", USE_GRID_SEARCH_OPTIMIZATION)
-    logger_run_one.info(
-        "  CSP for Temporal Pipelines (from config): %s", USE_CSP_FOR_TEMPORAL_PIPELINES)
     logger_run_one.info("  ANOVA FS for Temporal Pipelines (from config): %s",
                         USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES)
 
 
     resolved_group_affiliation = command_line_args.group
     if not resolved_group_affiliation:
-        resolved_group_affiliation = "unknown"  # Default
+        resolved_group_affiliation = "unknown"  
         for grp, s_list in ALL_SUBJECT_GROUPS.items():
             if command_line_args.subject_id in s_list:
                 resolved_group_affiliation = grp

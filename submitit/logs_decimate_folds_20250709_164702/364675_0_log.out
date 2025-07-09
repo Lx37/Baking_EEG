@@ -1,0 +1,9 @@
+submitit INFO (2025-07-09 16:47:04,293) - Starting with JobEnvironment(job_id=364675, hostname=node9, local_rank=0(1), node=0(1), global_rank=0(1))
+submitit INFO (2025-07-09 16:47:04,293) - Loading pickle: /home/tom.balay/Baking_EEG/submitit/logs_decimate_folds_20250709_164702/364675_submitted.pkl
+=== DÉBUT DU JOB SUR LE CLUSTER ===
+Timestamp: 2025-07-09 16:47:04.294378
+Fichier sujet: /mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/TpSM49_PP_preproc_noICA_PP-epo_ar.fif
+Mode rapide: False
+Working directory: /home/tom.balay/Baking_EEG/submitit
+Python path: ['/home/tom.balay/Baking_EEG', '/home/tom.balay/Baking_EEG/submitit', '/usr/lib/python311.zip']
+Lancement de l'analyse complète...

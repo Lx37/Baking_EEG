@@ -79,7 +79,7 @@ def execute_group_intra_subject_lg_decoding_analysis(
     n_perms_intra_subject_folds_for_group_runs=N_PERMUTATIONS_INTRA_SUBJECT,
     compute_tgm_for_group_subjects_flag=COMPUTE_TGM_FOR_MAIN_COMPARISON
 ):
-    """Executes intra-subject LG decoding for all subjects in a group."""
+
     
     if not isinstance(subject_ids_in_group, list) or not subject_ids_in_group:
         logger_run_group_lg.error("subject_ids_in_group must be a non-empty list.")
@@ -130,7 +130,7 @@ def execute_group_intra_subject_lg_decoding_analysis(
                 loading_conditions_config=loading_conditions_config
             )
 
-            # Check if processing was successful
+
             lg_auc = subject_output_dict.get("lg_ls_ld_mean_auc_global", np.nan)
             if pd.notna(lg_auc):
                 processed_subjects.append(subject_id_current)

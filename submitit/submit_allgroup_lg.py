@@ -48,7 +48,7 @@ from config.decoding_config import (
     N_PERMUTATIONS_INTRA_SUBJECT, COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
     INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG, COMPUTE_INTRA_SUBJECT_STATISTICS,
     PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
-    FIXED_CLASSIFIER_PARAMS_CONFIG, USE_CSP_FOR_TEMPORAL_PIPELINES,
+    FIXED_CLASSIFIER_PARAMS_CONFIG,
     USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES
 )
 
@@ -153,7 +153,7 @@ def main():
             "loading_conditions_config": CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG,
             "classifier_type_for_group_runs": CLASSIFIER_MODEL_TYPE,
             "use_grid_search_for_group": USE_GRID_SEARCH_OPTIMIZATION,
-            "use_csp_for_temporal_group": USE_CSP_FOR_TEMPORAL_PIPELINES,
+            # CSP functionality removed - no longer used
             "use_anova_fs_for_temporal_group": USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
             "param_grid_config_for_group": PARAM_GRID_CONFIG_EXTENDED if USE_GRID_SEARCH_OPTIMIZATION else None,
             "cv_folds_for_gs_group": CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,

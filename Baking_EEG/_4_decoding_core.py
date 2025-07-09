@@ -2,7 +2,7 @@ import logging
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import StratifiedKFold, GroupKFold, GridSearchCV
+from sklearn.model_selection import RepeatedStratifiedKFold, GroupKFold, GridSearchCV
 from mne.decoding import SlidingEstimator, GeneralizingEstimator, cross_val_multiscore
 from mne.parallel import parallel_func
 from sklearn.base import clone
@@ -28,13 +28,13 @@ def run_temporal_decoding_analysis(
     classifier_model_type=DEFAULT_CLASSIFIER_TYPE_MODULE_INTERNAL,
     use_grid_search=USE_GRID_SEARCH,
     use_anova_fs_for_temporal_pipelines=USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
-    param_grid_config=None,  # Full grid config, specific clf grid extracted inside
+    param_grid_config=None,  
     cv_folds_for_gridsearch=3,
-    fixed_classifier_params=None,  # Dict for the specific classifier_model_type
-    cross_validation_splitter=5,  # int for KFold or a CV splitter instance
-    trial_sample_weights="auto",  # None, "auto", or np.ndarray
-    n_jobs_external=1,  # For global decoding parallel folds
-    group_labels_for_cv=None,  # For GroupKFold
+    fixed_classifier_params=None,  
+    cross_validation_splitter=5,  
+    trial_sample_weights="auto",  
+    n_jobs_external=1,  
+    group_labels_for_cv=None,  
     compute_intra_fold_stats=True,
     chance_level=CHANCE_LEVEL_AUC,
     n_permutations_for_intra_fold_clusters=1000,
@@ -63,7 +63,7 @@ def run_temporal_decoding_analysis(
         use_anova_fs_for_temporal_pipelines
     )
 
-    # Basic input validation
+  
     if not isinstance(epochs_data, np.ndarray) or epochs_data.ndim != 3:
         logger_decoding_core.error("epochs_data must be a 3D NumPy array.")
         return (None,) * 12  # Return tuple of Nones matching expected output
@@ -104,7 +104,7 @@ def run_temporal_decoding_analysis(
             "epochs_data has zero time points. Cannot proceed.")
         return empty_results_tuple
 
-    # Ensure parameters are not tuples (legacy check)
+  
     if isinstance(use_anova_fs_for_temporal_pipelines, tuple):
         use_anova_fs_for_temporal_pipelines = use_anova_fs_for_temporal_pipelines[0] if len(use_anova_fs_for_temporal_pipelines) > 0 else False
         
@@ -115,7 +115,6 @@ def run_temporal_decoding_analysis(
         _build_standard_classifier_pipeline(
             classifier_model_type=classifier_model_type,
             use_grid_search=use_grid_search,
-            add_csp_step=False,  # Not used for temporal pipelines
             add_anova_fs_step=use_anova_fs_for_temporal_pipelines,  # FS is compatible with 2D data
             **(fixed_classifier_params if fixed_classifier_params and not use_grid_search else {})
         )
@@ -163,7 +162,6 @@ def run_temporal_decoding_analysis(
         _build_standard_classifier_pipeline(
             classifier_model_type=classifier_model_type,
             use_grid_search=use_grid_search,
-            add_csp_step=False,  # Not using CSP for global decoding either
             add_anova_fs_step=use_anova_fs_for_temporal_pipelines,  # Can use FS for global decoding
             **(fixed_classifier_params if fixed_classifier_params and not use_grid_search else {})
         )
@@ -187,7 +185,7 @@ def run_temporal_decoding_analysis(
             )
             current_grid_global = {
                 f'{clf_name_global}__C': [0.1, 1, 10]}
-            # Add defaults for FS if it is in the pipeline
+            
             if fs_name_global:
                 current_grid_global[f'{fs_name_global}__percentile'] = [15, 30]
         if not current_grid_global:
@@ -213,17 +211,17 @@ def run_temporal_decoding_analysis(
                 actual_cv_splitter = GroupKFold(n_splits=n_splits)
             else: 
                 logger_decoding_core.warning(
-                    f"Cannot perform GroupKFold with {n_splits_req} splits for {n_groups} groups. Will attempt StratifiedKFold if possible.")
+                    f"Cannot perform GroupKFold with {n_splits_req} splits for {n_groups} groups. Will attempt RepeatedStratifiedKFold if possible.")
             
-        # Fallback to StratifiedKFold if GroupKFold not applicable or failed
+        # Fallback to RepeatedStratifiedKFold if GroupKFold not applicable or failed
         if actual_cv_splitter is None:
             min_class_count = np.min(np.bincount(target_labels_enc))
-            # n_splits for StratifiedKFold cannot exceed min_class_count
+            # n_splits for RepeatedStratifiedKFold cannot exceed min_class_count
             n_splits = min(
                 n_splits_req, min_class_count) if min_class_count >= 2 else 0
             if n_splits >= 2:
-                actual_cv_splitter = StratifiedKFold(
-                    n_splits=n_splits, shuffle=True, random_state=42)
+                actual_cv_splitter = RepeatedStratifiedKFold(
+                    n_splits=n_splits, n_repeats=5, random_state=42)
     elif (hasattr(cross_validation_splitter, "split") and 
           hasattr(cross_validation_splitter, "get_n_splits")):
         actual_cv_splitter = cross_validation_splitter  # Use provided splitter
@@ -246,7 +244,7 @@ def run_temporal_decoding_analysis(
     
     if isinstance(trial_sample_weights, str) and trial_sample_weights.lower() == "auto":
         use_fold_specific_weights = True
-        logger_decoding_core.info("Sample weights: Auto-calculated per fold (recommended for StratifiedKFold).")
+        logger_decoding_core.info("Sample weights: Auto-calculated per fold (recommended for RepeatedStratifiedKFold).")
     elif isinstance(trial_sample_weights, np.ndarray):
         if trial_sample_weights.shape == (n_trials,):
             effective_sample_weights = trial_sample_weights
@@ -284,7 +282,7 @@ def run_temporal_decoding_analysis(
         # MNE's cross_val_multiscore will handle this automatically per fold
         logger_decoding_core.info(
             "MNE Estimators: Using fold-specific balancing via class_weight='balanced' (if supported by classifier).")
-        # Note: The classifier should have been built with class_weight='balanced' in _build_standard_classifier_pipeline
+       
     elif effective_sample_weights is not None:
         if not use_grid_search:
             if clf_name_mne:  # Ensure classifier step name is known
@@ -376,7 +374,7 @@ def run_temporal_decoding_analysis(
         n_trials, -1)  # Flatten channels and times
     parallel_global, pfunc_global, _ = parallel_func(
         _execute_global_decoding_for_one_fold, n_jobs=n_jobs_external, verbose=0
-    )    # actual_cv_splitter might be GroupKFold, which requires groups in split()
+    )   
     cv_splits_global = list(actual_cv_splitter.split(
         epochs_flat_global, target_labels_enc, groups=cv_groups_mne
     ))
@@ -401,7 +399,7 @@ def run_temporal_decoding_analysis(
             if isinstance(probas_f, np.ndarray) and probas_f.ndim == 2 and probas_f.shape[0] == len(test_idx_g):
                 if probas_f.shape[1] == probas_global_agg.shape[1]:
                     probas_global_agg[test_idx_g] = probas_f
-                elif probas_f.shape[1] == 1 and probas_global_agg.shape[1] == 2: # Handle single proba output for binary
+                elif probas_f.shape[1] == 1 and probas_global_agg.shape[1] == 2: 
                     probas_global_agg[test_idx_g, 1] = probas_f.ravel()
                     probas_global_agg[test_idx_g, 0] = 1 - probas_f.ravel()
                 else:
@@ -552,7 +550,7 @@ def calculate_fold_sample_weights(train_labels_enc):
     
     This ensures that class balancing is computed based on the actual
     class distribution in each training fold, which is more accurate
-    than using global weights when using StratifiedKFold.
+    than using global weights when using RepeatedStratifiedKFold.
     
     Args:
         train_labels_enc (np.ndarray): Encoded labels for training fold

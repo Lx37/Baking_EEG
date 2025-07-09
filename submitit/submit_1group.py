@@ -54,7 +54,6 @@ try:
 
         CLASSIFIER_MODEL_TYPE,
         USE_GRID_SEARCH_OPTIMIZATION,
-        USE_CSP_FOR_TEMPORAL_PIPELINES,
         USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
         PARAM_GRID_CONFIG_EXTENDED,
         CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
@@ -210,7 +209,8 @@ def main():
 
                     "classifier_type_for_group_runs": CLASSIFIER_MODEL_TYPE,
                     "use_grid_search_for_group": USE_GRID_SEARCH_OPTIMIZATION,
-                    "use_csp_for_temporal_group": USE_CSP_FOR_TEMPORAL_PIPELINES,
+                    # CSP functionality removed - no longer used
+                    "use_csp_for_temporal_group": False,
                     "use_anova_fs_for_temporal_group": USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
                     "param_grid_config_for_group": PARAM_GRID_CONFIG_EXTENDED if USE_GRID_SEARCH_OPTIMIZATION else None,
                     "cv_folds_for_gs_group": CV_FOLDS_FOR_GRIDSEARCH_INTERNAL if USE_GRID_SEARCH_OPTIMIZATION else 0,

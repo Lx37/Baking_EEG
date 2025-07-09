@@ -11,7 +11,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import RepeatedStratifiedKFold
 import itertools
 import scipy.stats
 
@@ -35,7 +35,7 @@ from utils import stats_utils as bEEG_stats
 from config.config import ALL_SUBJECT_GROUPS
 from config.decoding_config import (
     CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
-    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
+    USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
     PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
     FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
     CHANCE_LEVEL_AUC, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
@@ -85,7 +85,6 @@ def execute_single_subject_lg_decoding(
     n_jobs_for_processing=None,
     classifier_type=None,
     use_grid_search_for_subject=None,
-    use_csp_for_temporal_subject=None,
     use_anova_fs_for_temporal_subject=None,
     param_grid_config_for_subject=None,
     cv_folds_for_gs_subject=None,
@@ -96,9 +95,7 @@ def execute_single_subject_lg_decoding(
     loading_conditions_config=None,
     cluster_threshold_config_intra_fold=None
 ):
-    """Execute LG decoding analysis for a single subject."""
-
-    # Initialize default values
+$
     if save_results_flag is None:
         save_results_flag = SAVE_ANALYSIS_RESULTS
     if generate_plots_flag is None:
@@ -109,8 +106,8 @@ def execute_single_subject_lg_decoding(
         classifier_type = CLASSIFIER_MODEL_TYPE
     if use_grid_search_for_subject is None:
         use_grid_search_for_subject = USE_GRID_SEARCH_OPTIMIZATION
-    if use_csp_for_temporal_subject is None:
-        use_csp_for_temporal_subject = USE_CSP_FOR_TEMPORAL_PIPELINES
+
+    use_csp_for_temporal_subject = False  
     if use_anova_fs_for_temporal_subject is None:
         use_anova_fs_for_temporal_subject = USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES
     if param_grid_config_for_subject is None:
@@ -174,7 +171,7 @@ def execute_single_subject_lg_decoding(
         "lg_gs_gd_tgm_fdr": None,
         "lg_gs_gd_mean_auc_global": np.nan,
         "lg_gs_gd_global_metrics": {},
-        # Specific LG comparison results (4 comparisons with individual keys)
+       
         "lg_specific_comparison_results": [],
         "lg_lsgs_vs_lsgd_scores_1d_mean": None,
         "lg_lsgs_vs_lsgd_temporal_1d_fdr": None,
@@ -188,14 +185,14 @@ def execute_single_subject_lg_decoding(
         "lg_lsgd_vs_ldgd_scores_1d_mean": None,
         "lg_lsgd_vs_ldgd_temporal_1d_fdr": None,
         "lg_lsgd_vs_ldgd_temporal_1d_cluster": None,
-        # Stack statistics
+      
         "lg_mean_of_specific_scores_1d": None,
         "lg_sem_of_specific_scores_1d": None,
         "lg_mean_specific_fdr": None,
         "lg_mean_specific_cluster": None,
-        # Global Standard vs Global Deviant comparisons
+      
         "lg_global_effect_results": [],
-        # Local effect centric averages
+
         "lg_local_effect_centric_avg_results": [],
     }
 
@@ -221,11 +218,11 @@ def execute_single_subject_lg_decoding(
 
         logger.info(
             "Starting LG decoding for subject: %s (Group: %s, "
-            "Task Set ID: %s, Classifier: %s, GS: %s, CSP: %s, "
+            "Task Set ID: %s, Classifier: %s, GS: %s, "
             "ANOVA FS: %s, n_jobs: %s)",
             subject_identifier, group_affiliation,
             decoding_protocol_identifier, classifier_type,
-            use_grid_search_for_subject, use_csp_for_temporal_subject,
+            use_grid_search_for_subject,
             use_anova_fs_for_temporal_subject, actual_n_jobs
         )
 
@@ -238,7 +235,7 @@ def execute_single_subject_lg_decoding(
             actual_loading_conditions, enable_verbose_logging
         )
 
-        # Log detected protocol information
+    
         logger.info(
             "Detected protocol '%s' for subject %s",
             detected_protocol, subject_identifier
@@ -253,7 +250,7 @@ def execute_single_subject_lg_decoding(
         subject_results["epochs_time_points"] = epochs_object.times.copy()
         subject_results["detected_protocol"] = detected_protocol
 
-        # Handle param_grid_config and fixed_params
+
         current_fixed_params_for_clf_dict = None
         current_param_grid_for_clf_dict = None
 
@@ -279,7 +276,7 @@ def execute_single_subject_lg_decoding(
                     "defaults will be used.",
                     subject_identifier, classifier_type)
 
-        # Start of LG protocol decoding logic
+
         logger.info("--- Starting Main LG Protocol Decoding for %s ---",
                     subject_identifier)
 
@@ -320,8 +317,8 @@ def execute_single_subject_lg_decoding(
                         subject_identifier, num_cv_splits_main)
                     return subject_results
                 else:
-                    cv_splitter_main = StratifiedKFold(
-                        n_splits=num_cv_splits_main, shuffle=True,
+                    cv_splitter_main = RepeatedStratifiedKFold(
+                        n_splits=num_cv_splits_main, n_repeats=3,
                         random_state=42)
 
                     ls_ld_decoding_output = run_temporal_decoding_analysis(
@@ -329,7 +326,6 @@ def execute_single_subject_lg_decoding(
                         target_labels=ls_ld_labels_orig,
                         classifier_model_type=classifier_type,
                         use_grid_search=use_grid_search_for_subject,
-                        use_csp_for_temporal_pipelines=use_csp_for_temporal_subject,
                         use_anova_fs_for_temporal_pipelines=use_anova_fs_for_temporal_subject,
                         param_grid_config=current_param_grid_for_clf_dict,
                         cv_folds_for_gridsearch=cv_folds_for_gs_subject,
@@ -415,8 +411,8 @@ def execute_single_subject_lg_decoding(
                         "decoding (%d splits). Skipping.",
                         subject_identifier, num_cv_splits_gs_gd)
                 else:
-                    cv_splitter_gs_gd = StratifiedKFold(
-                        n_splits=num_cv_splits_gs_gd, shuffle=True,
+                    cv_splitter_gs_gd = RepeatedStratifiedKFold(
+                        n_splits=num_cv_splits_gs_gd, n_repeats=3,
                         random_state=42)
 
                     gs_gd_decoding_output = run_temporal_decoding_analysis(
@@ -424,7 +420,6 @@ def execute_single_subject_lg_decoding(
                         target_labels=gs_gd_labels_orig,
                         classifier_model_type=classifier_type,
                         use_grid_search=use_grid_search_for_subject,
-                        use_csp_for_temporal_pipelines=use_csp_for_temporal_subject,
                         use_anova_fs_for_temporal_pipelines=use_anova_fs_for_temporal_subject,
                         param_grid_config=current_param_grid_for_clf_dict,
                         cv_folds_for_gridsearch=cv_folds_for_gs_subject,
@@ -548,8 +543,8 @@ def execute_single_subject_lg_decoding(
                                 subject_identifier, comparison_name,
                                 num_cv_task_spec)
                         else:
-                            cv_splitter_task_spec = StratifiedKFold(
-                                n_splits=num_cv_task_spec, shuffle=True,
+                            cv_splitter_task_spec = RepeatedStratifiedKFold(
+                                n_splits=num_cv_task_spec, n_repeats=3,
                                 random_state=42)
 
                             specific_task_output = (
@@ -558,7 +553,6 @@ def execute_single_subject_lg_decoding(
                                     target_labels=task_labels_specific_orig,
                                     classifier_model_type=classifier_type,
                                     use_grid_search=use_grid_search_for_subject,
-                                    use_csp_for_temporal_pipelines=use_csp_for_temporal_subject,
                                     use_anova_fs_for_temporal_pipelines=use_anova_fs_for_temporal_subject,
                                     param_grid_config=current_param_grid_for_clf_dict,
                                     cv_folds_for_gridsearch=cv_folds_for_gs_subject,
@@ -1000,8 +994,7 @@ if __name__ == "__main__":
                 classifier_type_to_use, n_jobs_to_use)
     logger.info("  GridSearch Optimization (from config): %s",
                 USE_GRID_SEARCH_OPTIMIZATION)
-    logger.info("  CSP for Temporal Pipelines (from config): %s",
-                USE_CSP_FOR_TEMPORAL_PIPELINES)
+    # CSP functionality has been removed from the pipeline
     logger.info("  ANOVA FS for Temporal Pipelines (from config): %s",
                 USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES)
 

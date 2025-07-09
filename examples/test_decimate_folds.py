@@ -9,6 +9,7 @@ import logging
 from datetime import datetime
 import argparse
 from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import RepeatedStratifiedKFold
 from sklearn.model_selection import StratifiedKFold
 from sklearn.feature_selection import SelectPercentile, f_classif
 import mne
@@ -34,12 +35,12 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-N_FOLDS_TO_TEST = [2, 5, 7, 9, 13, 16]
-SAMPLING_FREQUENCIES = [350, 250, 200, 125, 100]  # Hz
+N_FOLDS_TO_TEST = [2, 5, 7, 9, 13, 16, 20, 24, 28, 32, 36]
+SAMPLING_FREQUENCIES = [500, 350, 250, 200, 125, 100]  # Hz
 ORIGINAL_FREQ = 500  # Fréquence d'origine assumée
 
-# Configuration pour les tests
-FEATURE_SELECTION_CONFIGS = [False, True]  # Sans FeatureSelection, avec FeatureSelection (percentile)
+
+# FEATURE_SELECTION_CONFIGS 
 
 TEST_SUBJECT_FILE = "/mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/TpSM49_PP_preproc_noICA_PP-epo_ar.fif"
 #/mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/TpSM49_PP_preproc_noICA_PP-epo_ar.fif
@@ -47,12 +48,11 @@ TEST_SUBJECT_FILE = "/mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRI
 RANDOM_STATE = 42
 
 
-def create_empty_result(n_folds, sampling_freq, use_feature_selection=False):
+def create_empty_result(n_folds, sampling_freq):
     """Crée un résultat vide en cas d'erreur."""
     return {
         'n_folds': n_folds,
         'sampling_freq': sampling_freq,
-        'use_feature_selection': use_feature_selection,
         'mean_auc': np.nan,
         'std_auc': np.nan,
         'mean_accuracy': np.nan,
@@ -83,10 +83,9 @@ def decimate_epochs_to_target_freq(epochs, target_freq, original_freq=500):
         mne.Epochs: Epochs décimées
     """
     if target_freq >= original_freq:
-        logger.warning(f"Fréquence cible {target_freq}Hz >= fréquence originale {original_freq}Hz. Pas de décimation.")
+        logger.info(f"Fréquence cible {target_freq}Hz >= fréquence originale {original_freq}Hz. Pas de décimation.")
         return epochs
     
-
     decimation_factor = original_freq / target_freq
     
     if decimation_factor == 1:
@@ -94,16 +93,15 @@ def decimate_epochs_to_target_freq(epochs, target_freq, original_freq=500):
     
     logger.info(f"Décimation: {original_freq}Hz -> {target_freq}Hz (facteur: {decimation_factor:.1f})")
     
-
     epochs_decimated = epochs.copy()
     epochs_decimated = epochs_decimated.resample(sfreq=target_freq, verbose=False)
     
     return epochs_decimated
 
 
-def run_single_combination_test(epochs, labels, n_folds, sampling_freq, original_freq=500, use_feature_selection=False):
+def run_single_combination_test(epochs, labels, n_folds, sampling_freq, original_freq=500):
     """
-    Teste une combinaison spécifique de folds, fréquence d'échantillonnage et FeatureSelection.
+    Teste une combinaison spécifique de folds et fréquence d'échantillonnage.
     
     Args:
         epochs (mne.Epochs): Epochs MNE
@@ -111,13 +109,11 @@ def run_single_combination_test(epochs, labels, n_folds, sampling_freq, original
         n_folds (int): Nombre de folds pour la validation croisée
         sampling_freq (float): Fréquence d'échantillonnage cible
         original_freq (float): Fréquence d'origine
-        use_feature_selection (bool): Utiliser ANOVA FeatureSelection pour les pipelines temporels
         
     Returns:
         dict: Résultats du test
     """
-    fs_str = "+FS" if use_feature_selection else ""
-    logger.info(f"Test: {n_folds} folds, {sampling_freq}Hz{fs_str}")
+    logger.info(f"Test: {n_folds} folds, {sampling_freq}Hz")
     
     try:
        
@@ -131,8 +127,8 @@ def run_single_combination_test(epochs, labels, n_folds, sampling_freq, original
         le = LabelEncoder()
         y_encoded = le.fit_transform(y)
         
-
         cv_splitter = StratifiedKFold(n_splits=n_folds, shuffle=True, random_state=RANDOM_STATE)
+        #cv_splitter = RepeatedStratifiedKFold(n_splits=n_folds, n_repeats=5, random_state=RANDOM_STATE)
         
 
         results = run_temporal_decoding_analysis(
@@ -141,7 +137,7 @@ def run_single_combination_test(epochs, labels, n_folds, sampling_freq, original
             classifier_model_type="svc",
             cross_validation_splitter=cv_splitter,
             use_grid_search=False,
-            use_anova_fs_for_temporal_pipelines=use_feature_selection,
+            use_anova_fs_for_temporal_pipelines=False,
             compute_intra_fold_stats=False,
             compute_temporal_generalization_matrix=False,
             n_jobs_external=-1,
@@ -160,32 +156,29 @@ def run_single_combination_test(epochs, labels, n_folds, sampling_freq, original
             global_metrics = results[4]
             all_fold_scores = results[7]  # scores_1d_all_folds
         else:
-            fs_str = "+FS" if use_feature_selection else ""
-            logger.error(f"Format de résultats inattendu pour {n_folds} folds, {sampling_freq}Hz{fs_str}")
-            return create_empty_result(n_folds, sampling_freq, use_feature_selection)
+            logger.error(f"Format de résultats inattendu pour {n_folds} folds, {sampling_freq}Hz")
+            return create_empty_result(n_folds, sampling_freq)
         
-        # Vérifier que les résultats sont valides
+      
         if cv_scores is None or len(cv_scores) == 0:
-            fs_str = "+FS" if use_feature_selection else ""
-            logger.error(f"Scores CV invalides pour {n_folds} folds, {sampling_freq}Hz{fs_str}")
-            return create_empty_result(n_folds, sampling_freq, use_feature_selection)
+            logger.error(f"Scores CV invalides pour {n_folds} folds, {sampling_freq}Hz")
+            return create_empty_result(n_folds, sampling_freq)
             
         if temporal_scores is None or len(temporal_scores) == 0:
-            fs_str = "+FS" if use_feature_selection else ""
-            logger.error(f"Scores temporels invalides pour {n_folds} folds, {sampling_freq}Hz{fs_str}")
-            return create_empty_result(n_folds, sampling_freq, use_feature_selection)
+            logger.error(f"Scores temporels invalides pour {n_folds} folds, {sampling_freq}Hz")
+            return create_empty_result(n_folds, sampling_freq)
         
-        # Extraire les métriques principales
+      
         mean_auc = np.mean(cv_scores)
         std_auc = np.std(cv_scores)
         mean_accuracy = global_metrics.get('accuracy', np.nan) if global_metrics else np.nan
         
-        # Informations sur les données
+      
         n_trials, n_channels, n_times_decimated = X.shape
         n_times_original = len(epochs.times) if epochs is not None else n_times_decimated
         decimation_factor = original_freq / sampling_freq
         
-        # Temps de décodage temporal
+     
         times = epochs_decimated.times
         peak_time_idx = np.argmax(temporal_scores)
         peak_time = times[peak_time_idx]
@@ -194,7 +187,6 @@ def run_single_combination_test(epochs, labels, n_folds, sampling_freq, original
         return {
             'n_folds': n_folds,
             'sampling_freq': sampling_freq,
-            'use_feature_selection': use_feature_selection,
             'mean_auc': mean_auc,
             'std_auc': std_auc,
             'mean_accuracy': mean_accuracy,
@@ -212,9 +204,8 @@ def run_single_combination_test(epochs, labels, n_folds, sampling_freq, original
         }
         
     except Exception as e:
-        fs_str = "+FS" if use_feature_selection else ""
-        logger.error(f"Erreur pour {n_folds} folds, {sampling_freq}Hz{fs_str}: {str(e)}")
-        return create_empty_result(n_folds, sampling_freq, use_feature_selection)
+        logger.error(f"Erreur pour {n_folds} folds, {sampling_freq}Hz: {str(e)}")
+        return create_empty_result(n_folds, sampling_freq)
 
 
 def load_test_data():
@@ -375,7 +366,7 @@ def create_simulated_data():
 
 def run_comprehensive_analysis():
     """
-    Exécute l'analyse complète de toutes les combinaisons incluant FeatureSelection.
+    Exécute l'analyse complète de toutes les combinaisons.
     
     Returns:
         pd.DataFrame: Résultats de tous les tests
@@ -383,25 +374,23 @@ def run_comprehensive_analysis():
 
     epochs, labels, subject_info = load_test_data()
     
-    total_combinations = len(N_FOLDS_TO_TEST) * len(SAMPLING_FREQUENCIES) * len(FEATURE_SELECTION_CONFIGS)
-    logger.info(f"Début de l'analyse complète: {len(N_FOLDS_TO_TEST)} folds × {len(SAMPLING_FREQUENCIES)} fréquences × {len(FEATURE_SELECTION_CONFIGS)} FS = {total_combinations} combinaisons")
+    total_combinations = len(N_FOLDS_TO_TEST) * len(SAMPLING_FREQUENCIES)
+    logger.info(f"Début de l'analyse complète: {len(N_FOLDS_TO_TEST)} folds × {len(SAMPLING_FREQUENCIES)} fréquences = {total_combinations} combinaisons")
     
    
     all_results = []
     
   
-    for n_folds, sampling_freq, use_fs in product(N_FOLDS_TO_TEST, SAMPLING_FREQUENCIES, FEATURE_SELECTION_CONFIGS):
+    for n_folds, sampling_freq in product(N_FOLDS_TO_TEST, SAMPLING_FREQUENCIES):
         result = run_single_combination_test(
-            epochs, labels, n_folds, sampling_freq, subject_info['sampling_freq'], use_fs
+            epochs, labels, n_folds, sampling_freq, subject_info['sampling_freq']
         )
         all_results.append(result)
         
         if result['success']:
-            fs_str = "+FS" if use_fs else ""
-            logger.info(f"✓ {n_folds} folds, {sampling_freq}Hz{fs_str}: AUC={result['mean_auc']:.3f}±{result['std_auc']:.3f}")
+            logger.info(f"✓ {n_folds} folds, {sampling_freq}Hz: AUC={result['mean_auc']:.3f}±{result['std_auc']:.3f}")
         else:
-            fs_str = "+FS" if use_fs else ""
-            logger.error(f"✗ {n_folds} folds, {sampling_freq}Hz{fs_str}: ÉCHEC")
+            logger.error(f"✗ {n_folds} folds, {sampling_freq}Hz: ÉCHEC")
     
     
     results_df = pd.DataFrame(all_results)
@@ -794,6 +783,7 @@ def create_visualization_page4_statistics(results_df, subject_info):
     """
     Crée les pages 4+ des visualisations: Analyse statistique détaillée pour chaque courbe avec SEM.
     Retourne une liste de figures pour les différentes pages.
+    Adapté pour gérer un grand nombre de combinaisons (11 folds × 6 fréquences = 66 combinaisons).
     
     Args:
         results_df (pd.DataFrame): Résultats des tests
@@ -809,9 +799,9 @@ def create_visualization_page4_statistics(results_df, subject_info):
         ax.text(0.5, 0.5, 'Aucune donnée statistique disponible', ha='center', va='center', transform=ax.transAxes, fontsize=20)
         return [fig]
     
-    # Configuration pour l'affichage : 3x2 = 6 plots par page
-    plots_per_page = 6
-    n_cols = 2
+    # Configuration pour l'affichage : 3x3 = 9 plots par page (plus dense pour gérer plus de combinaisons)
+    plots_per_page = 9
+    n_cols = 3
     n_rows = 3
     
     # Trier les combinaisons pour un affichage cohérent
@@ -830,8 +820,10 @@ def create_visualization_page4_statistics(results_df, subject_info):
     n_combinations = len(sorted_combinations)
     n_pages = int(np.ceil(n_combinations / plots_per_page))
     
+    logger.info(f"Création de {n_pages} pages de statistiques détaillées pour {n_combinations} combinaisons")
+    
     for page_num in range(n_pages):
-        fig, axes = plt.subplots(n_rows, n_cols, figsize=(20, 18))
+        fig, axes = plt.subplots(n_rows, n_cols, figsize=(24, 18))  # Plus large pour 3x3
         fig.suptitle(f'Page {4 + page_num}: Analyse Temporelle avec SEM et Significativité - Sujet {subject_info["subject_id"]} ({page_num+1}/{n_pages})', 
                     fontsize=16, fontweight='bold')
         
@@ -883,8 +875,8 @@ def create_visualization_page4_statistics(results_df, subject_info):
                 sem_scores = scipy.stats.sem(all_fold_scores, axis=0)
                 
                 # Tracer la courbe principale avec SEM
-                ax.plot(times, temporal_scores, 'b-', linewidth=2.5, 
-                       label=f'{n_folds} folds, {sampling_freq}Hz (AUC: {row_data["mean_auc"]:.3f})')
+                ax.plot(times, temporal_scores, 'b-', linewidth=2.0, 
+                       label=f'{n_folds}F, {sampling_freq}Hz (AUC: {row_data["mean_auc"]:.3f})')
                 
                 # Ajouter la zone SEM
                 ax.fill_between(times, 
@@ -893,8 +885,8 @@ def create_visualization_page4_statistics(results_df, subject_info):
                               color='blue', alpha=0.2, label='SEM')
             else:
                 # Pas de données de folds multiples, tracer seulement la courbe moyenne
-                ax.plot(times, temporal_scores, 'b-', linewidth=2.5, 
-                       label=f'{n_folds} folds, {sampling_freq}Hz (AUC: {row_data["mean_auc"]:.3f})')
+                ax.plot(times, temporal_scores, 'b-', linewidth=2.0, 
+                       label=f'{n_folds}F, {sampling_freq}Hz (AUC: {row_data["mean_auc"]:.3f})')
             
             # Ajouter les barres de significativité en bas du plot
             add_significance_bars_to_axis(ax, times, stats_data['fdr_data'], stats_data['cluster_data'])
@@ -903,12 +895,13 @@ def create_visualization_page4_statistics(results_df, subject_info):
             ax.axhline(0.5, color='red', linestyle='--', alpha=0.7, label='Chance (0.5)')
             ax.axvline(0, color='red', linestyle=':', alpha=0.7, label='Stimulus Onset')
             
-            # Formatting
-            ax.set_xlabel('Time (s)')
-            ax.set_ylabel('ROC AUC')
-            ax.set_title(f'{n_folds} folds, {sampling_freq}Hz\nAUC: {row_data["mean_auc"]:.3f}±{row_data["std_auc"]:.3f}')
-            ax.legend(fontsize=8)
+            # Formatting - plus compact pour 3x3
+            ax.set_xlabel('Time (s)', fontsize=9)
+            ax.set_ylabel('ROC AUC', fontsize=9)
+            ax.set_title(f'{n_folds} folds, {sampling_freq}Hz\nAUC: {row_data["mean_auc"]:.3f}±{row_data["std_auc"]:.3f}', fontsize=10)
+            ax.legend(fontsize=7)
             ax.grid(True, alpha=0.3)
+            ax.tick_params(labelsize=8)
             
             # Ajuster les limites y pour inclure les barres de significativité
             y_min, y_max = ax.get_ylim()
@@ -928,7 +921,7 @@ def create_visualization_page4_statistics(results_df, subject_info):
             
             if stats_text:
                 ax.text(0.02, 0.98, stats_text.strip(), transform=ax.transAxes, va='top', ha='left',
-                       bbox=dict(boxstyle='round', facecolor='white', alpha=0.8), fontsize=8)
+                       bbox=dict(boxstyle='round', facecolor='white', alpha=0.8), fontsize=7)
             
             plot_idx += 1
         
@@ -979,12 +972,19 @@ def save_results_and_visualizations(results_df, subject_info):
     fig3.savefig(os.path.join(output_dir, 'page3_temporal_analysis.png'), dpi=300, bbox_inches='tight')
     fig3.savefig(os.path.join(output_dir, 'page3_temporal_analysis.pdf'), bbox_inches='tight')
     
-    # Page 4+: Analyses statistiques détaillées (multiples pages)
+
+    fig_high_folds = create_visualization_high_folds_analysis(results_df, subject_info)
+    fig_high_folds.savefig(os.path.join(output_dir, 'page_special_high_folds_analysis.png'), dpi=300, bbox_inches='tight')
+    fig_high_folds.savefig(os.path.join(output_dir, 'page_special_high_folds_analysis.pdf'), bbox_inches='tight')
+    
+    # Pages 4+: Analyses statistiques détaillées (multiples pages - maintenant 3x3 layout)
     page4_figures = create_visualization_page4_statistics(results_df, subject_info)
     for i, fig in enumerate(page4_figures):
         page_num = 4 + i
         fig.savefig(os.path.join(output_dir, f'page{page_num}_statistical_analysis_detailed.png'), dpi=300, bbox_inches='tight')
         fig.savefig(os.path.join(output_dir, f'page{page_num}_statistical_analysis_detailed.pdf'), bbox_inches='tight')
+    
+    logger.info(f"Généré {len(page4_figures)} pages d'analyses statistiques détaillées")
     
     plt.show()
     
@@ -1023,16 +1023,18 @@ def create_summary_report(results_df, subject_info, output_dir):
         f.write("PARAMÈTRES TESTÉS:\n")
         f.write(f"- Nombres de folds: {N_FOLDS_TO_TEST}\n")
         f.write(f"- Fréquences d'échantillonnage: {SAMPLING_FREQUENCIES} Hz\n")
-        f.write(f"- Total de combinaisons: {len(N_FOLDS_TO_TEST) * len(SAMPLING_FREQUENCIES)}\n\n")
+        f.write(f"- Total de combinaisons: {len(N_FOLDS_TO_TEST) * len(SAMPLING_FREQUENCIES)}\n")
+        f.write(f"- Nouveaux folds ajoutés: [20, 24, 28, 32, 36]\n")
+        f.write(f"- Fréquence 500 Hz ajoutée (pas de décimation)\n\n")
         
-        # Statistiques de réussite
+
         successful_results = results_df[results_df['success']]
         f.write("RÉSULTATS GÉNÉRAUX:\n")
         f.write(f"- Tests réussis: {len(successful_results)}/{len(results_df)}\n")
         f.write(f"- Taux de réussite: {len(successful_results)/len(results_df)*100:.1f}%\n")
         f.write(f"- Analyses statistiques: {len(stats_dict)} combinaisons\n\n")
         
-        # Résumé des significativités
+
         if significance_summary:
             sig_combinations = [v for v in significance_summary.values() if v['has_significance']]
             f.write("SIGNIFICATIVITÉ TEMPORELLE:\n")
@@ -1040,7 +1042,7 @@ def create_summary_report(results_df, subject_info, output_dir):
             f.write(f"- Taux de significativité: {len(sig_combinations)/len(significance_summary)*100:.1f}%\n\n")
             
             if sig_combinations:
-                # Top 5 combinaisons significatives
+
                 sig_combinations.sort(key=lambda x: x['fdr_percent'] + x['cluster_percent'], reverse=True)
                 f.write("TOP 5 COMBINAISONS SIGNIFICATIVES:\n")
                 for i, sig_data in enumerate(sig_combinations[:5]):
@@ -1059,7 +1061,7 @@ def create_summary_report(results_df, subject_info, output_dir):
             f.write("- Aucune analyse statistique disponible\n\n")
         
         if len(successful_results) > 0:
-            # Meilleures performances
+            
             best_auc = successful_results.loc[successful_results['mean_auc'].idxmax()]
             f.write("MEILLEURE PERFORMANCE:\n")
             f.write(f"- Configuration: {best_auc['n_folds']} folds, {best_auc['sampling_freq']} Hz\n")
@@ -1067,7 +1069,7 @@ def create_summary_report(results_df, subject_info, output_dir):
             f.write(f"- Précision: {best_auc['mean_accuracy']:.3f}\n")
             f.write(f"- Score de pic: {best_auc['peak_score']:.3f} à {best_auc['peak_time']:.3f}s\n")
             
-            # Vérifier la significativité de la meilleure performance
+           
             best_key = f"{best_auc['n_folds']}_folds_{best_auc['sampling_freq']}Hz"
             if best_key in significance_summary and significance_summary[best_key]['has_significance']:
                 best_sig = significance_summary[best_key]
@@ -1076,7 +1078,7 @@ def create_summary_report(results_df, subject_info, output_dir):
                 f.write(f"- Significativité: Non significative\n")
             f.write("\n")
             
-            # Stabilité (plus faible variabilité)
+          
             most_stable = successful_results.loc[successful_results['std_auc'].idxmin()]
             f.write("CONFIGURATION LA PLUS STABLE:\n")
             f.write(f"- Configuration: {most_stable['n_folds']} folds, {most_stable['sampling_freq']} Hz\n")
@@ -1111,7 +1113,7 @@ def create_summary_report(results_df, subject_info, output_dir):
         f.write("- page1_performance_heatmaps.png/.pdf: Heatmaps des performances\n")
         f.write("- page2_detailed_analysis.png/.pdf: Analyses détaillées avec statistiques\n")
         f.write("- page3_temporal_analysis.png/.pdf: Analyses temporelles avec significativité\n")
-        f.write("- page4+_statistical_analysis_detailed.png/.pdf: Analyses statistiques détaillées (multiples pages)\n")
+        f.write("- page4+_statistical_analysis.png/.pdf: Analyses statistiques détaillées (multiples pages)\n")
         f.write("- synthesis_report.txt: Ce rapport de synthèse\n")
     
     logger.info(f"Rapport de synthèse créé: {report_file}")
@@ -1313,15 +1315,13 @@ def run_quick_test():
     logger.info("=== TEST RAPIDE ===")
     
     # Paramètres réduits pour test rapide
-    global N_FOLDS_TO_TEST, SAMPLING_FREQUENCIES, FEATURE_SELECTION_CONFIGS
+    global N_FOLDS_TO_TEST, SAMPLING_FREQUENCIES
     original_folds = N_FOLDS_TO_TEST.copy()
     original_freqs = SAMPLING_FREQUENCIES.copy()
-    original_fs = FEATURE_SELECTION_CONFIGS.copy()
     
-    # Réduire les paramètres pour test rapide
-    N_FOLDS_TO_TEST = [2, 5]
-    SAMPLING_FREQUENCIES = [250, 125]
-    FEATURE_SELECTION_CONFIGS = [False, True]  # Garder les deux configurations
+    # Réduire les paramètres pour test rapide - inclure quelques nouveaux folds
+    N_FOLDS_TO_TEST = [2, 5, 20, 32]  # Mélange ancien/nouveau
+    SAMPLING_FREQUENCIES = [500, 250, 125]  # Inclure 500 Hz
     
     try:
         results_df, subject_info = run_comprehensive_analysis()
@@ -1332,13 +1332,10 @@ def run_quick_test():
         # Restaurer les paramètres originaux
         N_FOLDS_TO_TEST = original_folds
         SAMPLING_FREQUENCIES = original_freqs
-        FEATURE_SELECTION_CONFIGS = original_fs
 
 
 def main():
-    """
-    Fonction principale pour exécuter l'analyse complète ou un test rapide.
-    """
+
     
     parser = argparse.ArgumentParser(description='Test de décimation et folds pour EEG')
     parser.add_argument('--quick', action='store_true', 
@@ -1350,7 +1347,7 @@ def main():
     
     args = parser.parse_args()
     
-    # Modifier le fichier sujet si spécifié
+
     if args.subject_file:
         global TEST_SUBJECT_FILE
         TEST_SUBJECT_FILE = args.subject_file
@@ -1370,7 +1367,7 @@ def main():
         logger.info(f"Résultats sauvegardés dans: {output_dir}")
         logger.info("=" * 50)
         
-        # Copier dans le répertoire spécifié si demandé
+
         if args.output_dir:
             import shutil
             final_output = os.path.join(args.output_dir, os.path.basename(output_dir))
@@ -1408,7 +1405,7 @@ def validate_installation():
         logger.error("Installez les dépendances avec: pip install numpy pandas matplotlib seaborn scikit-learn mne scipy")
         return False
     
-    # Vérifier les fonctions stats
+
     try:
         from utils.stats_utils import perform_pointwise_fdr_correction_on_scores, perform_cluster_permutation_test
         logger.info("Modules statistiques trouvés")
@@ -1442,27 +1439,29 @@ def print_usage_info():
     print(f"  - Fichier sujet: {TEST_SUBJECT_FILE}")
     print(f"  - Folds testés: {N_FOLDS_TO_TEST}")
     print(f"  - Fréquences testées: {SAMPLING_FREQUENCIES} Hz")
-    print(f"  - CSP configs: {CSP_CONFIGS}")
-    print(f"  - FeatureSelection configs: {FEATURE_SELECTION_CONFIGS}")
-    total_combinations = len(N_FOLDS_TO_TEST) * len(SAMPLING_FREQUENCIES) * len(CSP_CONFIGS) * len(FEATURE_SELECTION_CONFIGS)
+    print(f"  - FeatureSelection configs: Désactivée")
+    print(f"  - Nouveaux hauts folds: [20, 24, 28, 32, 36]")
+    print(f"  - Fréquence 500 Hz ajoutée")
+    total_combinations = len(N_FOLDS_TO_TEST) * len(SAMPLING_FREQUENCIES)
     print(f"  - Total combinaisons: {total_combinations}")
     print("\nSorties générées:")
     print("  - results_summary.csv: Données tabulaires")
     print("  - page1_performance_heatmaps.png/pdf: Heatmaps performances")
     print("  - page2_detailed_analysis.png/pdf: Analyses détaillées")
     print("  - page3_temporal_analysis.png/pdf: Analyses temporelles")
-    print("  - page4_statistical_analysis.png/pdf: Statistiques détaillées")
+    print("  - page_special_high_folds_analysis.png/pdf: Analyse hauts folds")
+    print("  - page4+_statistical_analysis.png/pdf: Statistiques détaillées (3x3 layout)")
     print("  - synthesis_report.txt: Rapport de synthèse")
     print("="*60)
 
 
 if __name__ == "__main__":
-    # Afficher les informations d'utilisation
+  
     print_usage_info()
     
-    # Valider l'installation
+
     if not validate_installation():
         sys.exit(1)
     
-    # Lancer l'analyse
+
     main()

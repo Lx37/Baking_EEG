@@ -101,7 +101,7 @@ def execute_group_intra_subject_decoding_analysis(
     fixed_params_for_group=FIXED_CLASSIFIER_PARAMS_CONFIG if not USE_GRID_SEARCH_OPTIMIZATION else None,
     loading_conditions_config=CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT
 ):
-    """Executes intra-subject decoding for all subjects in a group - simplified loop only."""
+
     if not isinstance(subject_ids_in_group, list) or not subject_ids_in_group:
         logger_run_group.error("subject_ids_in_group must be a non-empty list.")
         return {}

@@ -152,7 +152,7 @@ def import_configurations():
             N_PERMUTATIONS_INTRA_SUBJECT, COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
             INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG, COMPUTE_INTRA_SUBJECT_STATISTICS,
             PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
-            FIXED_CLASSIFIER_PARAMS_CONFIG, USE_CSP_FOR_TEMPORAL_PIPELINES,
+            FIXED_CLASSIFIER_PARAMS_CONFIG,
             USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES
         )
         log_info(
@@ -174,7 +174,7 @@ def import_configurations():
                 'PARAM_GRID_CONFIG_EXTENDED': PARAM_GRID_CONFIG_EXTENDED,
                 'CV_FOLDS_FOR_GRIDSEARCH_INTERNAL': CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
                 'FIXED_CLASSIFIER_PARAMS_CONFIG': FIXED_CLASSIFIER_PARAMS_CONFIG,
-                'USE_CSP_FOR_TEMPORAL_PIPELINES': USE_CSP_FOR_TEMPORAL_PIPELINES,
+                # CSP functionality removed - no longer used
                 'USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES': USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES
             }
         }
@@ -476,14 +476,14 @@ def main():
         "n_perms_for_intra_subject_clusters": dc['N_PERMUTATIONS_INTRA_SUBJECT'],
         "compute_tgm_flag": dc['COMPUTE_TEMPORAL_GENERALIZATION_MATRICES'],
         "cluster_threshold_config_intra_fold": dc['INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG'],
-        "use_csp_for_temporal_subject": dc['USE_CSP_FOR_TEMPORAL_PIPELINES'],
+        # CSP functionality removed - no longer used
         "use_anova_fs_for_temporal_subject": dc['USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES']
     }
 
 
     log_info("Paramètres clés:", logger)
     critical_params = [
-        'classifier_type', 'use_grid_search_for_subject', 'use_csp_for_temporal_subject',
+        'classifier_type', 'use_grid_search_for_subject',
         'use_anova_fs_for_temporal_subject', 'save_results_flag', 'generate_plots_flag',
         'compute_tgm_flag', 'compute_intra_subject_stats_flag'
     ]

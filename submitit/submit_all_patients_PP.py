@@ -298,7 +298,7 @@ logger.info(f"PROJECT_ROOT_FOR_PYTHONPATH (ajouté à sys.path): {PROJECT_ROOT_F
 try:
     from utils.utils import configure_project_paths
     from config.decoding_config import (
-        CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION, USE_CSP_FOR_TEMPORAL_PIPELINES,
+        CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
         USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES, PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
         FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT, COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
         INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG, COMPUTE_INTRA_SUBJECT_STATISTICS, SAVE_ANALYSIS_RESULTS,
@@ -415,7 +415,7 @@ def main_submission_logic():
                 "base_output_results_path": base_output_path, "n_jobs_for_processing": N_CPUS_FOR_JOB,
                 "classifier_type": CLASSIFIER_MODEL_TYPE,
                 "use_grid_search_for_subject": USE_GRID_SEARCH_OPTIMIZATION,
-                "use_csp_for_temporal_subject": USE_CSP_FOR_TEMPORAL_PIPELINES,
+                # CSP functionality removed - no longer used
                 "use_anova_fs_for_temporal_subject": USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
                 "param_grid_config_for_subject": PARAM_GRID_CONFIG_EXTENDED if USE_GRID_SEARCH_OPTIMIZATION else None,
                 "cv_folds_for_gs_subject": CV_FOLDS_FOR_GRIDSEARCH_INTERNAL if USE_GRID_SEARCH_OPTIMIZATION else 0,
