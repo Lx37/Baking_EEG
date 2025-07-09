@@ -94,7 +94,32 @@ ipython_config.py
 #   install all needed dependencies.
 #Pipfile.lock
 
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow
+# Logs et résultats temporaires
+submitit/submitit_logs/
+logs_*/
+*.pkl
+*.log
+
+# Résultats volumineux
+results/
+*.h5
+*.fif
+*.mat
+
+# Fichiers Python temporaires
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
 __pypackages__/
 
 # Celery stuff
