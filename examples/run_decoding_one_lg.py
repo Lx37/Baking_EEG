@@ -569,7 +569,7 @@ def execute_single_subject_lg_decoding(
                                         compute_intra_subject_stats_flag),
                                     n_permutations_for_intra_fold_clusters=(
                                         n_perms_for_intra_subject_clusters),
-                                    compute_temporal_generalization_matrix=True,
+                                    compute_temporal_generalization_matrix=compute_tgm_flag,
                                     chance_level=CHANCE_LEVEL_AUC,
                                     cluster_threshold_config_intra_fold=(
                                         cluster_threshold_config_intra_fold)
@@ -963,6 +963,9 @@ if __name__ == "__main__":
     cli_parser.add_argument(
         "--n_jobs_override", type=str, default=None,
         help="Override n_jobs from config (e.g., '4' or 'auto').")
+    cli_parser.add_argument(
+        "--no-tgm", action="store_true",
+        help="Disable TGM computation (recommended for cluster to avoid timeouts).")
 
     command_line_args = cli_parser.parse_args()
 
@@ -1019,6 +1022,14 @@ if __name__ == "__main__":
                 "Using affiliation 'unknown'.",
                 command_line_args.subject_id)
 
+    # Determine TGM flag
+    compute_tgm_flag = not command_line_args.no_tgm
+    
+    if command_line_args.no_tgm:
+        logger.info("TGM computation disabled via --no-tgm flag")
+    else:
+        logger.info("TGM computation enabled (default or via config)")
+
     # Call the orchestration function for a single LG subject
     execute_single_subject_lg_decoding(
         subject_identifier=command_line_args.subject_id,
@@ -1027,6 +1038,7 @@ if __name__ == "__main__":
         base_output_results_path=main_output_path,
         n_jobs_for_processing=n_jobs_to_use,
         classifier_type=classifier_type_to_use,
+        compute_tgm_flag=compute_tgm_flag,
     )
 
     logger.info(

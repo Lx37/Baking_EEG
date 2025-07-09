@@ -1,0 +1,1 @@
+/home/tom.balay/Baking_EEG/submitit/logs_test_csp_fs_20250709_111033/364138_submission.sh

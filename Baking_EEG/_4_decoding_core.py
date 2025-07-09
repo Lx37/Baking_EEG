@@ -16,7 +16,6 @@ from utils import stats_utils as bEEG_stats
 from config.decoding_config import (DEFAULT_CLASSIFIER_TYPE_MODULE_INTERNAL,
                                      CHANCE_LEVEL_AUC,
                                      INTERNAL_N_JOBS_FOR_MNE_DECODING,
-                                     USE_CSP_FOR_TEMPORAL_PIPELINES,
                                      USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
                                      USE_GRID_SEARCH,
                                      COMPUTE_TEMPORAL_GENERALIZATION_MATRICES)
@@ -28,7 +27,6 @@ def run_temporal_decoding_analysis(
     target_labels,  # (n_trials,)
     classifier_model_type=DEFAULT_CLASSIFIER_TYPE_MODULE_INTERNAL,
     use_grid_search=USE_GRID_SEARCH,
-    use_csp_for_temporal_pipelines=USE_CSP_FOR_TEMPORAL_PIPELINES,
     use_anova_fs_for_temporal_pipelines=USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
     param_grid_config=None,  # Full grid config, specific clf grid extracted inside
     cv_folds_for_gridsearch=3,
@@ -50,13 +48,6 @@ def run_temporal_decoding_analysis(
     """
     
    
-    if isinstance(use_csp_for_temporal_pipelines, tuple):
-        logger_decoding_core.warning(
-            " conversion en booléen",
-            use_csp_for_temporal_pipelines
-        )
-        use_csp_for_temporal_pipelines = bool(use_csp_for_temporal_pipelines[0]) if use_csp_for_temporal_pipelines else False
-    
     if isinstance(use_anova_fs_for_temporal_pipelines, tuple):
         logger_decoding_core.warning(
             " conversion en booléen",
@@ -67,8 +58,8 @@ def run_temporal_decoding_analysis(
     
     logger_decoding_core.info("--- Temporal Ddcoding Analysis ---")
     logger_decoding_core.info(
-        "Clf: %s, GS: %s, CSP (temporal): %s, ANOVA FS (temporal): %s",
-        classifier_model_type, use_grid_search, use_csp_for_temporal_pipelines,
+        "Clf: %s, GS: %s, ANOVA FS (temporal): %s",
+        classifier_model_type, use_grid_search,
         use_anova_fs_for_temporal_pipelines
     )
 
@@ -113,21 +104,19 @@ def run_temporal_decoding_analysis(
             "epochs_data has zero time points. Cannot proceed.")
         return empty_results_tuple
 
-  
-    if isinstance(use_csp_for_temporal_pipelines, tuple):
-        use_csp_for_temporal_pipelines = use_csp_for_temporal_pipelines[0] if len(use_csp_for_temporal_pipelines) > 0 else False
+    # Ensure parameters are not tuples (legacy check)
     if isinstance(use_anova_fs_for_temporal_pipelines, tuple):
         use_anova_fs_for_temporal_pipelines = use_anova_fs_for_temporal_pipelines[0] if len(use_anova_fs_for_temporal_pipelines) > 0 else False
         
     # --- Prepare classifier/pipeline for MNE (Sliding/Generalizing) ---
-
-    pipeline_mne, clf_name_mne, fs_name_mne, csp_name_mne = \
+    
+    logger_decoding_core.info("Building temporal pipeline with FeatureSelection support")
+    pipeline_mne, clf_name_mne, fs_name_mne, _ = \
         _build_standard_classifier_pipeline(
             classifier_model_type=classifier_model_type,
             use_grid_search=use_grid_search,
-            add_csp_step=use_csp_for_temporal_pipelines,
-            add_anova_fs_step=(use_anova_fs_for_temporal_pipelines and
-                               not use_csp_for_temporal_pipelines),  # ANOVA if not CSP
+            add_csp_step=False,  # Not used for temporal pipelines
+            add_anova_fs_step=use_anova_fs_for_temporal_pipelines,  # FS is compatible with 2D data
             **(fixed_classifier_params if fixed_classifier_params and not use_grid_search else {})
         )
 
@@ -140,8 +129,7 @@ def run_temporal_decoding_analysis(
             current_grid_mne = {
                 k: v for k, v in full_grid_for_clf.items()
                 if k.startswith(f"{clf_name_mne}__") or
-                (fs_name_mne and k.startswith(f"{fs_name_mne}__")) or
-                   (csp_name_mne and k.startswith(f"{csp_name_mne}__"))
+                (fs_name_mne and k.startswith(f"{fs_name_mne}__"))
             }
             logger_decoding_core.info(" param_grid for MNE GS: %s",
                                    current_grid_mne)
@@ -154,8 +142,6 @@ def run_temporal_decoding_analysis(
             current_grid_mne = {f'{clf_name_mne}__C': [0.1, 1, 10]}  
             if fs_name_mne:
                 current_grid_mne[f'{fs_name_mne}__percentile'] = [15, 30]
-            if csp_name_mne: current_grid_mne[f'{csp_name_mne}__n_components'] = [
-                4, 8]
 
         if not current_grid_mne:
             logger_decoding_core.error(
@@ -172,25 +158,27 @@ def run_temporal_decoding_analysis(
         final_estimator_mne = pipeline_mne
 
     # --- Prepare classifier/pipeline for global decoding ---
-    # Global decoding typically doesn't use CSP/ANOVA FS in this setup
-    pipeline_global, clf_name_global, _, _ = _build_standard_classifier_pipeline(
-        classifier_model_type=classifier_model_type, use_grid_search=use_grid_search,
-        # Usually no spatial filtering for global
-        add_csp_step=False, add_anova_fs_step=False,
-        **(fixed_classifier_params if fixed_classifier_params and not use_grid_search else {})
-    )
+    logger_decoding_core.info("Building global pipeline with FeatureSelection support")
+    pipeline_global, clf_name_global, fs_name_global, _ = \
+        _build_standard_classifier_pipeline(
+            classifier_model_type=classifier_model_type,
+            use_grid_search=use_grid_search,
+            add_csp_step=False,  # Not using CSP for global decoding either
+            add_anova_fs_step=use_anova_fs_for_temporal_pipelines,  # Can use FS for global decoding
+            **(fixed_classifier_params if fixed_classifier_params and not use_grid_search else {})
+        )
     final_estimator_global = None
     if use_grid_search:
         current_grid_global = {}
         if param_grid_config and classifier_model_type in param_grid_config:
-           
             full_grid_for_clf = param_grid_config[classifier_model_type]
             current_grid_global = {
                 k: v for k, v in full_grid_for_clf.items()
-                # Only classifier params for global
-                if k.startswith(f"{clf_name_global}__")
+                # Include classifier and FS params for global decoding
+                if k.startswith(f"{clf_name_global}__") or
+                (fs_name_global and k.startswith(f"{fs_name_global}__"))
             }
-            logger_decoding_core.info("Using (classifier-only) param_grid for Global GS: %s",
+            logger_decoding_core.info("Using (classifier+FS) param_grid for Global GS: %s",
                                    current_grid_global)
         else:
             logger_decoding_core.warning(
@@ -198,7 +186,10 @@ def run_temporal_decoding_analysis(
                 classifier_model_type
             )
             current_grid_global = {
-                f'{clf_name_global}__C': [0.1, 1, 10]}  
+                f'{clf_name_global}__C': [0.1, 1, 10]}
+            # Add defaults for FS if it is in the pipeline
+            if fs_name_global:
+                current_grid_global[f'{fs_name_global}__percentile'] = [15, 30]
         if not current_grid_global:
             logger_decoding_core.error(
                 "No grid for Global GS (%s). Aborting.", classifier_model_type)

@@ -169,6 +169,8 @@ if __name__ == "__main__":
                             help="Override default classifier type from config.")
     cli_parser.add_argument("--n_jobs_override", type=str, default=None,
                             help="Override n_jobs from config (e.g., '4' or 'auto').")
+    cli_parser.add_argument("--no-tgm", action="store_true",
+                            help="Disable TGM computation for all subjects (recommended for cluster to avoid timeouts).")
 
     command_line_args = cli_parser.parse_args()
 
@@ -202,6 +204,14 @@ if __name__ == "__main__":
     logger_run_group_lg.info("  CSP for Temporal Pipelines: %s", USE_CSP_FOR_TEMPORAL_PIPELINES)
     logger_run_group_lg.info("  ANOVA FS for Temporal Pipelines: %s", USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES)
 
+    # Determine TGM flag
+    compute_tgm_for_group = not command_line_args.no_tgm
+    
+    if command_line_args.no_tgm:
+        logger_run_group_lg.info("TGM computation disabled for all subjects via --no-tgm flag")
+    else:
+        logger_run_group_lg.info("TGM computation enabled for all subjects (default or via config)")
+
     execute_group_intra_subject_lg_decoding_analysis(
         subject_ids_in_group=subject_list,
         group_identifier=group_name,
@@ -210,6 +220,7 @@ if __name__ == "__main__":
         n_jobs_for_each_subject=n_jobs_to_use,
         classifier_type_for_group_runs=classifier_type_to_use,
         generate_plots_flag=False,  # Disable plots
+        compute_tgm_for_group_subjects_flag=compute_tgm_for_group,
     )
 
     logger_run_group_lg.info("\n%s EEG GROUP LG DECODING SCRIPT FINISHED (%s) %s",

@@ -1,0 +1,1 @@
+/home/tom.balay/Baking_EEG/submitit/logs_submitit_groups_LG/20250709_105012_DELIRIUM-_LG_GROUP/364125_submission.sh

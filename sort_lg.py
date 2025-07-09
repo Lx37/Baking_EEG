@@ -324,7 +324,7 @@ def main():
     Fonction principale
     """
     # Exemple d'utilisation
-    source_directory = "/crnldata/cap/users/_tom/LG_fab"
+    source_directory = "/crnldata/cap/users/_tom/LG_fab/LG_PATIENTS_DoC"
     
     print("=== ORGANISATION DES FICHIERS PAR GROUPE ===")
     print(f"Répertoire source: {source_directory}")

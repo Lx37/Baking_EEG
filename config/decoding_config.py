@@ -50,7 +50,6 @@ CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG = {
 
 # === GLOBAL ANALYSIS CONFIGURATION ===
 USE_GRID_SEARCH_OPTIMIZATION = False
-USE_CSP_FOR_TEMPORAL_PIPELINES = False
 USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES = True
 N_JOBS_PROCESSING = "auto"
 CLASSIFIER_MODEL_TYPE = "svc"  # Options: "svc", "logreg", "rf"
@@ -99,7 +98,6 @@ COMPUTE_TGM_FOR_INTER_FAMILY_COMPARISONS = False  # AP_family vs AP_family
 # =========DECODING CORE =============
 
 USE_GRID_SEARCH = USE_GRID_SEARCH_OPTIMIZATION  
-USE_CSP_FOR_TEMPORAL_PIPELINES = False
 USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES = True
 
 # === Hyperparameter grids for GridSearchCV ===
@@ -108,20 +106,17 @@ PARAM_GRID_CONFIG_EXTENDED = {
         'svc_classifier__C': [0.01, 0.1, 1, 10, 100],
         'svc_classifier__kernel': ['linear', 'rbf'],
         'svc_classifier__gamma': ['scale', 'auto', 0.001, 0.01, 0.1],
-        'anova_feature_selection__percentile': [10, 20, 30, 50, 75],
-        'csp_feature_extraction__n_components': [2, 4, 6, 8, 10, 12]
+        'anova_feature_selection__percentile': [10, 20, 30, 50, 75]
     },
     "logreg": {
         'logreg_classifier__C': [0.01, 0.1, 1, 10, 100],
         'logreg_classifier__penalty': ['l1', 'l2'],
-        'anova_feature_selection__percentile': [10, 20, 30, 50, 75],
-        'csp_feature_extraction__n_components': [2, 4, 6, 8, 10, 12]
+        'anova_feature_selection__percentile': [10, 20, 30, 50, 75]
     },
     "rf": {
         'rf_classifier__n_estimators': [50, 100, 200, 300],
         'rf_classifier__max_depth': [None, 10, 20, 30],
-        'anova_feature_selection__percentile': [25, 50, 75, 100],
-        'csp_feature_extraction__n_components': [4, 8, 12, 16]
+        'anova_feature_selection__percentile': [25, 50, 75, 100]
     }
 }
 CV_FOLDS_FOR_GRIDSEARCH_INTERNAL = 5
@@ -133,20 +128,17 @@ FIXED_CLASSIFIER_PARAMS_CONFIG = {
         'svc_c': 1.0,
         'svc_kernel': 'linear',
         'svc_gamma': 'scale',
-        'fs_percentile': 15,
-        'csp_n_components': 4
+        'fs_percentile': 15
     },
     "logreg": {
         'logreg_c': 1.0,
         'logreg_penalty': 'l2',
-        'fs_percentile': 15,
-        'csp_n_components': 4
+        'fs_percentile': 15
     },
     "rf": {
         'rf_n_estimators': 100,
         'rf_max_depth': None,
-        'fs_percentile': 75,
-        'csp_n_components': 8
+        'fs_percentile': 75
     }
 }
 

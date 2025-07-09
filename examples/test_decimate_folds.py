@@ -7,9 +7,12 @@ import seaborn as sns
 from itertools import product
 import logging
 from datetime import datetime
+import argparse
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import StratifiedKFold
+from sklearn.feature_selection import SelectPercentile, f_classif
 import mne
+
 from scipy import signal
 import scipy.stats
 import warnings
@@ -35,6 +38,8 @@ N_FOLDS_TO_TEST = [2, 5, 7, 9, 13, 16]
 SAMPLING_FREQUENCIES = [350, 250, 200, 125, 100]  # Hz
 ORIGINAL_FREQ = 500  # Fréquence d'origine assumée
 
+# Configuration pour les tests
+FEATURE_SELECTION_CONFIGS = [False, True]  # Sans FeatureSelection, avec FeatureSelection (percentile)
 
 TEST_SUBJECT_FILE = "/mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/TpSM49_PP_preproc_noICA_PP-epo_ar.fif"
 #/mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/TpSM49_PP_preproc_noICA_PP-epo_ar.fif
@@ -42,11 +47,12 @@ TEST_SUBJECT_FILE = "/mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRI
 RANDOM_STATE = 42
 
 
-def create_empty_result(n_folds, sampling_freq):
+def create_empty_result(n_folds, sampling_freq, use_feature_selection=False):
     """Crée un résultat vide en cas d'erreur."""
     return {
         'n_folds': n_folds,
         'sampling_freq': sampling_freq,
+        'use_feature_selection': use_feature_selection,
         'mean_auc': np.nan,
         'std_auc': np.nan,
         'mean_accuracy': np.nan,
@@ -95,9 +101,9 @@ def decimate_epochs_to_target_freq(epochs, target_freq, original_freq=500):
     return epochs_decimated
 
 
-def run_single_combination_test(epochs, labels, n_folds, sampling_freq, original_freq=500):
+def run_single_combination_test(epochs, labels, n_folds, sampling_freq, original_freq=500, use_feature_selection=False):
     """
-    Teste une combinaison spécifique de folds et fréquence d'échantillonnage.
+    Teste une combinaison spécifique de folds, fréquence d'échantillonnage et FeatureSelection.
     
     Args:
         epochs (mne.Epochs): Epochs MNE
@@ -105,11 +111,13 @@ def run_single_combination_test(epochs, labels, n_folds, sampling_freq, original
         n_folds (int): Nombre de folds pour la validation croisée
         sampling_freq (float): Fréquence d'échantillonnage cible
         original_freq (float): Fréquence d'origine
+        use_feature_selection (bool): Utiliser ANOVA FeatureSelection pour les pipelines temporels
         
     Returns:
         dict: Résultats du test
     """
-    logger.info(f"Test: {n_folds} folds, {sampling_freq}Hz")
+    fs_str = "+FS" if use_feature_selection else ""
+    logger.info(f"Test: {n_folds} folds, {sampling_freq}Hz{fs_str}")
     
     try:
        
@@ -133,8 +141,7 @@ def run_single_combination_test(epochs, labels, n_folds, sampling_freq, original
             classifier_model_type="svc",
             cross_validation_splitter=cv_splitter,
             use_grid_search=False,
-            use_csp_for_temporal_pipelines=False,
-            use_anova_fs_for_temporal_pipelines=False,
+            use_anova_fs_for_temporal_pipelines=use_feature_selection,
             compute_intra_fold_stats=False,
             compute_temporal_generalization_matrix=False,
             n_jobs_external=-1,
@@ -153,17 +160,20 @@ def run_single_combination_test(epochs, labels, n_folds, sampling_freq, original
             global_metrics = results[4]
             all_fold_scores = results[7]  # scores_1d_all_folds
         else:
-            logger.error(f"Format de résultats inattendu pour {n_folds} folds, {sampling_freq}Hz")
-            return create_empty_result(n_folds, sampling_freq)
+            fs_str = "+FS" if use_feature_selection else ""
+            logger.error(f"Format de résultats inattendu pour {n_folds} folds, {sampling_freq}Hz{fs_str}")
+            return create_empty_result(n_folds, sampling_freq, use_feature_selection)
         
         # Vérifier que les résultats sont valides
         if cv_scores is None or len(cv_scores) == 0:
-            logger.error(f"Scores CV invalides pour {n_folds} folds, {sampling_freq}Hz")
-            return create_empty_result(n_folds, sampling_freq)
+            fs_str = "+FS" if use_feature_selection else ""
+            logger.error(f"Scores CV invalides pour {n_folds} folds, {sampling_freq}Hz{fs_str}")
+            return create_empty_result(n_folds, sampling_freq, use_feature_selection)
             
         if temporal_scores is None or len(temporal_scores) == 0:
-            logger.error(f"Scores temporels invalides pour {n_folds} folds, {sampling_freq}Hz")
-            return create_empty_result(n_folds, sampling_freq)
+            fs_str = "+FS" if use_feature_selection else ""
+            logger.error(f"Scores temporels invalides pour {n_folds} folds, {sampling_freq}Hz{fs_str}")
+            return create_empty_result(n_folds, sampling_freq, use_feature_selection)
         
         # Extraire les métriques principales
         mean_auc = np.mean(cv_scores)
@@ -184,6 +194,7 @@ def run_single_combination_test(epochs, labels, n_folds, sampling_freq, original
         return {
             'n_folds': n_folds,
             'sampling_freq': sampling_freq,
+            'use_feature_selection': use_feature_selection,
             'mean_auc': mean_auc,
             'std_auc': std_auc,
             'mean_accuracy': mean_accuracy,
@@ -201,8 +212,9 @@ def run_single_combination_test(epochs, labels, n_folds, sampling_freq, original
         }
         
     except Exception as e:
-        logger.error(f"Erreur pour {n_folds} folds, {sampling_freq}Hz: {str(e)}")
-        return create_empty_result(n_folds, sampling_freq)
+        fs_str = "+FS" if use_feature_selection else ""
+        logger.error(f"Erreur pour {n_folds} folds, {sampling_freq}Hz{fs_str}: {str(e)}")
+        return create_empty_result(n_folds, sampling_freq, use_feature_selection)
 
 
 def load_test_data():
@@ -363,7 +375,7 @@ def create_simulated_data():
 
 def run_comprehensive_analysis():
     """
-    Exécute l'analyse complète de toutes les combinaisons.
+    Exécute l'analyse complète de toutes les combinaisons incluant FeatureSelection.
     
     Returns:
         pd.DataFrame: Résultats de tous les tests
@@ -371,22 +383,25 @@ def run_comprehensive_analysis():
 
     epochs, labels, subject_info = load_test_data()
     
-    logger.info(f"Début de l'analyse complète: {len(N_FOLDS_TO_TEST)} folds × {len(SAMPLING_FREQUENCIES)} fréquences = {len(N_FOLDS_TO_TEST) * len(SAMPLING_FREQUENCIES)} combinaisons")
+    total_combinations = len(N_FOLDS_TO_TEST) * len(SAMPLING_FREQUENCIES) * len(FEATURE_SELECTION_CONFIGS)
+    logger.info(f"Début de l'analyse complète: {len(N_FOLDS_TO_TEST)} folds × {len(SAMPLING_FREQUENCIES)} fréquences × {len(FEATURE_SELECTION_CONFIGS)} FS = {total_combinations} combinaisons")
     
    
     all_results = []
     
   
-    for n_folds, sampling_freq in product(N_FOLDS_TO_TEST, SAMPLING_FREQUENCIES):
+    for n_folds, sampling_freq, use_fs in product(N_FOLDS_TO_TEST, SAMPLING_FREQUENCIES, FEATURE_SELECTION_CONFIGS):
         result = run_single_combination_test(
-            epochs, labels, n_folds, sampling_freq, subject_info['sampling_freq']
+            epochs, labels, n_folds, sampling_freq, subject_info['sampling_freq'], use_fs
         )
         all_results.append(result)
         
         if result['success']:
-            logger.info(f"✓ {n_folds} folds, {sampling_freq}Hz: AUC={result['mean_auc']:.3f}±{result['std_auc']:.3f}")
+            fs_str = "+FS" if use_fs else ""
+            logger.info(f"✓ {n_folds} folds, {sampling_freq}Hz{fs_str}: AUC={result['mean_auc']:.3f}±{result['std_auc']:.3f}")
         else:
-            logger.error(f"✗ {n_folds} folds, {sampling_freq}Hz: ÉCHEC")
+            fs_str = "+FS" if use_fs else ""
+            logger.error(f"✗ {n_folds} folds, {sampling_freq}Hz{fs_str}: ÉCHEC")
     
     
     results_df = pd.DataFrame(all_results)
@@ -1298,13 +1313,15 @@ def run_quick_test():
     logger.info("=== TEST RAPIDE ===")
     
     # Paramètres réduits pour test rapide
-    global N_FOLDS_TO_TEST, SAMPLING_FREQUENCIES
+    global N_FOLDS_TO_TEST, SAMPLING_FREQUENCIES, FEATURE_SELECTION_CONFIGS
     original_folds = N_FOLDS_TO_TEST.copy()
     original_freqs = SAMPLING_FREQUENCIES.copy()
+    original_fs = FEATURE_SELECTION_CONFIGS.copy()
     
     # Réduire les paramètres pour test rapide
     N_FOLDS_TO_TEST = [2, 5]
     SAMPLING_FREQUENCIES = [250, 125]
+    FEATURE_SELECTION_CONFIGS = [False, True]  # Garder les deux configurations
     
     try:
         results_df, subject_info = run_comprehensive_analysis()
@@ -1315,13 +1332,13 @@ def run_quick_test():
         # Restaurer les paramètres originaux
         N_FOLDS_TO_TEST = original_folds
         SAMPLING_FREQUENCIES = original_freqs
+        FEATURE_SELECTION_CONFIGS = original_fs
 
 
 def main():
     """
     Fonction principale pour exécuter l'analyse complète ou un test rapide.
     """
-    import argparse
     
     parser = argparse.ArgumentParser(description='Test de décimation et folds pour EEG')
     parser.add_argument('--quick', action='store_true', 
@@ -1425,7 +1442,10 @@ def print_usage_info():
     print(f"  - Fichier sujet: {TEST_SUBJECT_FILE}")
     print(f"  - Folds testés: {N_FOLDS_TO_TEST}")
     print(f"  - Fréquences testées: {SAMPLING_FREQUENCIES} Hz")
-    print(f"  - Total combinaisons: {len(N_FOLDS_TO_TEST) * len(SAMPLING_FREQUENCIES)}")
+    print(f"  - CSP configs: {CSP_CONFIGS}")
+    print(f"  - FeatureSelection configs: {FEATURE_SELECTION_CONFIGS}")
+    total_combinations = len(N_FOLDS_TO_TEST) * len(SAMPLING_FREQUENCIES) * len(CSP_CONFIGS) * len(FEATURE_SELECTION_CONFIGS)
+    print(f"  - Total combinaisons: {total_combinations}")
     print("\nSorties générées:")
     print("  - results_summary.csv: Données tabulaires")
     print("  - page1_performance_heatmaps.png/pdf: Heatmaps performances")
