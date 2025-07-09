@@ -1868,3 +1868,11 @@
 [Parallel(n_jobs=-1)]: Using backend LokyBackend with 40 concurrent workers.
 [Parallel(n_jobs=-1)]: Done   2 out of  32 | elapsed:  1.4min remaining: 20.7min
 [Parallel(n_jobs=-1)]: Done   9 out of  32 | elapsed:  2.6min remaining:  6.6min
+[Parallel(n_jobs=-1)]: Done  16 out of  32 | elapsed:  3.2min remaining:  3.2min
+[Parallel(n_jobs=-1)]: Done  23 out of  32 | elapsed:  3.4min remaining:  1.3min
+[Parallel(n_jobs=-1)]: Done  30 out of  32 | elapsed:  3.7min remaining:   14.7s
+[Parallel(n_jobs=-1)]: Done  32 out of  32 | elapsed:  3.7min finished
+2025-07-09 19:27:33,551 - INFO - 1D temporal decoding done. Peak mean AUC: 0.754
+2025-07-09 19:27:33,552 - INFO - TGM computation disabled.
+2025-07-09 19:27:33,552 - INFO - Starting global decoding (n_jobs_folds=-1)...
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 40 concurrent workers.
