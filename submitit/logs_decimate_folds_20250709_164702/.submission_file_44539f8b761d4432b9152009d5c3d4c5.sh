@@ -1,1 +1,0 @@
-/home/tom.balay/Baking_EEG/submitit/logs_decimate_folds_20250709_164702/364675_submission.sh
