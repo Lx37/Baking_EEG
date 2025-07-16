@@ -49,7 +49,7 @@ def configure_project_paths(current_user_login):
         current_user_login, base_input_data_path
     )
 
-    output_version_folder_name = "V15"  # Versioning for results
+    output_version_folder_name = "V17"  # Versioning for results
     user_output_results_paths = {
         "tom.balay": (f"/home/tom.balay/results/"
                       f"Baking_EEG_results_{output_version_folder_name}"),

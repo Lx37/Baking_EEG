@@ -36,7 +36,7 @@ def execute_single_subject_decoding_wrapper(**kwargs):
     print(f"DEBUG Worker - sys.path: {sys.path[:3]}...")
     
 
-    from config.config import ALL_SUBJECT_GROUPS
+    from config.config import ALL_SUBJECTS_GROUPS
     
     subject_id = kwargs.get("subject_identifier")
     group_affiliation = kwargs.get("group_affiliation")
@@ -49,7 +49,7 @@ def execute_single_subject_decoding_wrapper(**kwargs):
         print("DEBUG Worker - Using PP protocol")
         from examples.run_decoding_one_pp import execute_single_subject_decoding
         return execute_single_subject_decoding(**kwargs)
-    elif group_affiliation in ["COMA", "VS", "MCS+", "MCS-", "CONTROLS_COMA"]:
+    elif group_affiliation in ["COMA", "VS", "MCS", "CONTROLS_COMA"]:  # Unified MCS group
         
         print("DEBUG Worker - Using PP protocol (extended/battery)")
         from examples.run_decoding_one_pp import execute_single_subject_decoding
@@ -81,7 +81,7 @@ def main_submission_logic():
         sys.path.insert(0, PROJECT_ROOT)
         
     try:
-        from config.config import ALL_SUBJECT_GROUPS
+        from config.config import ALL_SUBJECTS_GROUPS
         from utils.utils import configure_project_paths
         from config.decoding_config import (
             CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
@@ -97,14 +97,14 @@ def main_submission_logic():
         sys.exit(1)
 
 
-    target_subject_group = next((group for group, subjects in ALL_SUBJECT_GROUPS.items() if TARGET_SUBJECT_ID_FOR_JOB in subjects), None)
+    target_subject_group = next((group for group, subjects in ALL_SUBJECTS_GROUPS.items() if TARGET_SUBJECT_ID_FOR_JOB in subjects), None)
     if not target_subject_group:
-        logger.critical(f"ERREUR: Sujet '{TARGET_SUBJECT_ID_FOR_JOB}' non trouvé dans ALL_SUBJECT_GROUPS. Arrêt.")
+        logger.critical(f"ERREUR: Sujet '{TARGET_SUBJECT_ID_FOR_JOB}' non trouvé dans ALL_SUBJECTS_GROUPS. Arrêt.")
         sys.exit(1)
     
     if target_subject_group in ["DELIRIUM+", "DELIRIUM-", "CONTROLS_DELIRIUM"]:
         protocol_type = "PP"
-    elif target_subject_group in ["COMA", "VS", "MCS+", "MCS-", "CONTROLS_COMA"]:
+    elif target_subject_group in ["COMA", "VS", "MCS", "CONTROLS_COMA"]:  # Unified MCS group
         protocol_type = "PP"  # PP étendu ou Battery
     elif target_subject_group in ["DEL", "NODEL"]:
         protocol_type = "LG"

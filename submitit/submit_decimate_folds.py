@@ -24,7 +24,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 # PARAMÈTRES À MODIFIER ICI
-SUBJECT_FILE = "/mnt/data/tom.balay/data/Baking_EEG_data/PP_PATIENTS_DELIRIUM+_0.5/TpSM49_PP_preproc_noICA_PP-epo_ar.fif"
+SUBJECT_FILE = "/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/Battery/YG72_preproc_ICA_PPAP-epo_ar.fif"
 
 QUICK_TEST = False  # Mettre False pour analyse complète
 
@@ -32,7 +32,7 @@ QUICK_TEST = False  # Mettre False pour analyse complète
 PARTITION = "CPU"
 MEM = "60G"
 CPUS = 40
-TIMEOUT_MIN = 720  # 12 heures en minutes
+TIMEOUT_MIN = 7200  # 12 heures en minutes
 ACCOUNT = "tom.balay"
 
 def create_job_function():

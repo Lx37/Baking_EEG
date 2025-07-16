@@ -1,4 +1,3 @@
-
 import os
 import sys
 import logging
@@ -9,7 +8,17 @@ import numpy as np
 import pandas as pd
 import submitit
 from submitit.core.utils import FailedJobError
-
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from utils.utils import configure_project_paths
+from config.config import ALL_SUBJECTS_GROUPS
+from config.decoding_config import (
+    CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
+    USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES, PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
+    FIXED_CLASSIFIER_PARAMS_CONFIG, COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
+    N_PERMUTATIONS_INTRA_SUBJECT, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
+    CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT, SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS,
+ )
+ 
 try:
     CURRENT_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 except NameError:
@@ -38,8 +47,8 @@ else:
             break
     if not found_path:
         print(f"ERREUR CRITIQUE: Impossible de localiser le dossier racine du projet.")
-        print(f"                 CURRENT_SCRIPT_DIR: {CURRENT_SCRIPT_DIR}")
-        print(f"                 Chemins testés : {[project_root_tentative] + potential_paths}")
+        print(f"CURRENT_SCRIPT_DIR: {CURRENT_SCRIPT_DIR}")
+        print(f"Chemins testés : {[project_root_tentative] + potential_paths}")
         sys.exit(1)
 
 
@@ -76,21 +85,6 @@ logger.info(f"CURRENT_SCRIPT_DIR (où ce script est exécuté) : {CURRENT_SCRIPT
 logger.info(f"PROJECT_ROOT_FOR_PYTHONPATH (ajouté à sys.path) : {PROJECT_ROOT_FOR_PYTHONPATH}")
 
 
-try:
-    from utils.utils import configure_project_paths
-    from config.config import ALL_SUBJECT_GROUPS
-    from config.decoding_config import (
-        CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
-        USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES, PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
-        FIXED_CLASSIFIER_PARAMS_CONFIG, COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
-        N_PERMUTATIONS_INTRA_SUBJECT, INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
-        CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT, SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS,
-    )
-    logger.info("Importations depuis 'config' et 'utils' réussies.")
-except (ModuleNotFoundError, ImportError) as e:
-    logger.critical(f"ERREUR CRITIQUE lors de l'importation de modules projet : {e}", exc_info=True)
-    logger.critical(f"Vérifiez PROJECT_ROOT_FOR_PYTHONPATH ('{PROJECT_ROOT_FOR_PYTHONPATH}') et sys.path.")
-    sys.exit(1)
 
 
 PATH_TO_VENV_ACTIVATE_ON_CLUSTER = "/home/tom.balay/.venvs/py3.11_cluster/bin/activate"
@@ -163,7 +157,7 @@ def main_submission_logic():
     logger.info(f"Chemin de base des résultats de sortie : {base_output_path}")
 
 
-    GROUPS_TO_PROCESS = list(ALL_SUBJECT_GROUPS.keys())
+    GROUPS_TO_PROCESS = list(ALL_SUBJECTS_GROUPS.keys())
     logger.info(f"Groupes ciblés pour l'analyse : {GROUPS_TO_PROCESS}")
     logger.info(f"Nombre total de groupes à traiter : {len(GROUPS_TO_PROCESS)}")
 
@@ -205,11 +199,11 @@ def main_submission_logic():
     try:
         with executor.batch():
             for group_name_to_analyze in GROUPS_TO_PROCESS:
-                if group_name_to_analyze not in ALL_SUBJECT_GROUPS:
+                if group_name_to_analyze not in ALL_SUBJECTS_GROUPS:
                     logger.warning(f"Groupe '{group_name_to_analyze}' non trouvé dans la configuration. Ignoré.")
                     continue
 
-                subjects_for_this_group = ALL_SUBJECT_GROUPS[group_name_to_analyze]
+                subjects_for_this_group = ALL_SUBJECTS_GROUPS[group_name_to_analyze]
                 if not subjects_for_this_group:
                     logger.warning(f"Aucun sujet défini pour le groupe '{group_name_to_analyze}'. Ignoré.")
                     continue

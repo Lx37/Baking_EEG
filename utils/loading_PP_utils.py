@@ -5,7 +5,7 @@ import time
 import logging
 import numpy as np
 import mne
-from config.config import ALL_SUBJECT_GROUPS
+from config.config import ALL_SUBJECTS_GROUPS
 from config.decoding_config import CONFIG_LOAD_MAIN_DECODING
 logger_data_loading = logging.getLogger(__name__)
 from config.decoding_config import CONFIG_LOAD_BATTERY_PROTOCOL
@@ -168,9 +168,9 @@ def load_epochs_data_for_decoding_delirium(
 
     start_time = time.time()
     
-    # First, try to find the subject in ALL_SUBJECT_GROUPS to get the exact group name
+    # First, try to find the subject in ALL_SUBJECTS_GROUPS to get the exact group name
     detected_group = next(
-        (grp for grp, s_list in ALL_SUBJECT_GROUPS.items()
+        (grp for grp, s_list in ALL_SUBJECTS_GROUPS.items()
          if subject_identifier in s_list), None,
     )
     
@@ -183,52 +183,29 @@ def load_epochs_data_for_decoding_delirium(
         if os.path.isdir(potential_path):
             data_root_path = potential_path
     elif group_to_use == "COMA":
-        # Try both 1HZ and 01HZ variants (prioritize _1HZ based on actual data structure)
-        for freq_suffix in ["_1HZ", "_01HZ"]:
-            potential_path = os.path.join(base_input_data_path, f"PP_COMA{freq_suffix}")
-            if verbose_logging:
-                logger_data_loading.debug("Trying COMA path: %s (exists: %s)", 
-                                        potential_path, os.path.isdir(potential_path))
-            if os.path.isdir(potential_path):
-                data_root_path = potential_path
-                break
-    elif group_to_use == "MCS+":
-        # Try both 1HZ and 01HZ variants (prioritize _1HZ based on actual data structure)
-        for freq_suffix in ["_1HZ", "_01HZ"]:
-            potential_path = os.path.join(base_input_data_path, f"PP_MCS+{freq_suffix}")
-            if verbose_logging:
-                logger_data_loading.debug("Trying MCS+ path: %s (exists: %s)", 
-                                        potential_path, os.path.isdir(potential_path))
-            if os.path.isdir(potential_path):
-                data_root_path = potential_path
-                break
-    elif group_to_use == "MCS-":
-        # Try both 1HZ and 01HZ variants (prioritize _1HZ based on actual data structure)
-        for freq_suffix in ["_1HZ", "_01HZ"]:
-            potential_path = os.path.join(base_input_data_path, f"PP_MCS-{freq_suffix}")
-            if verbose_logging:
-                logger_data_loading.debug("Trying MCS- path: %s (exists: %s)", 
-                                        potential_path, os.path.isdir(potential_path))
-            if os.path.isdir(potential_path):
-                data_root_path = potential_path
-                break
+
+        potential_path = os.path.join(base_input_data_path, "PP_COMA_01HZ")
+        if verbose_logging:
+            logger_data_loading.debug("Trying COMA path: %s (exists: %s)", 
+                                    potential_path, os.path.isdir(potential_path))
+        if os.path.isdir(potential_path):
+            data_root_path = potential_path
+    elif group_to_use == "MCS":
+
+        potential_path = os.path.join(base_input_data_path, f"PP_MCS_01HZ")
+        if verbose_logging:
+                logger_data_loading.debug("Trying MCS path: %s (exists: %s)", 
+                                     potential_path, os.path.isdir(potential_path))
+        if os.path.isdir(potential_path):
+            data_root_path = potential_path
     elif group_to_use == "VS":
-        # Try both 1HZ and 01HZ variants (prioritize _1HZ based on actual data structure)
-        for freq_suffix in ["_1HZ", "_01HZ"]:
-            potential_path = os.path.join(base_input_data_path, f"PP_VS{freq_suffix}")
-            if verbose_logging:
-                logger_data_loading.debug("Trying VS path: %s (exists: %s)", 
-                                        potential_path, os.path.isdir(potential_path))
-            if os.path.isdir(potential_path):
-                data_root_path = potential_path
-                break
-    elif group_to_use == "VS":
-        # Try both 1HZ and 01HZ variants (prioritize _1HZ based on actual data structure)
-        for freq_suffix in ["_1HZ", "_01HZ"]:
-            potential_path = os.path.join(base_input_data_path, f"PP_VS{freq_suffix}")
-            if os.path.isdir(potential_path):
-                data_root_path = potential_path
-                break
+
+        potential_path = os.path.join(base_input_data_path, "PP_VS_01HZ")
+        if verbose_logging:
+            logger_data_loading.debug("Trying VS path: %s (exists: %s)", 
+                                    potential_path, os.path.isdir(potential_path))
+        if os.path.isdir(potential_path):
+            data_root_path = potential_path
     elif group_to_use == "DELIRIUM+":
         potential_path = os.path.join(
             base_input_data_path,
@@ -244,7 +221,7 @@ def load_epochs_data_for_decoding_delirium(
         if os.path.isdir(potential_path):
             data_root_path = potential_path
     
-    # Fallback for special cases or legacy group names
+
     if not data_root_path:
         group_affiliation_lower = group_affiliation.lower()
         if group_affiliation_lower == "controls_coma" or group_to_use == "CONTROLS_COMA":
@@ -259,9 +236,9 @@ def load_epochs_data_for_decoding_delirium(
             subject_identifier, group_affiliation, data_root_path,
             base_input_data_path
         )
-        return None, {}  # Or raise FileNotFoundError
+        return None, {} 
 
-    # Use new file detection function for multiple protocols/structures
+   
     epochs_fif_filename, file_protocol_type = (
         find_epochs_file_with_protocol_detection(
             data_root_path, subject_identifier, verbose_logging
@@ -805,9 +782,9 @@ def load_epochs_data_auto_protocol(
     file_protocol_hint = None
 
     # Reconstruct the data path to get file protocol hint
-    # First, try to find the subject in ALL_SUBJECT_GROUPS to get the exact group name
+    # First, try to find the subject in ALL_SUBJECTS_GROUPS to get the exact group name
     detected_group = next(
-        (grp for grp, s_list in ALL_SUBJECT_GROUPS.items()
+        (grp for grp, s_list in ALL_SUBJECTS_GROUPS.items()
          if subject_identifier in s_list), None,
     )
     
@@ -817,33 +794,23 @@ def load_epochs_data_auto_protocol(
     if group_to_use == "CONTROLS_DELIRIUM":
         data_root_path = os.path.join(base_input_data_path, "PP_CONTROLS_0.5")
     elif group_to_use == "COMA":
-        # Try both 1HZ and 01HZ variants (prioritize _1HZ based on actual data structure)
-        for freq_suffix in ["_1HZ", "_01HZ"]:
-            potential_path = os.path.join(base_input_data_path, f"PP_COMA{freq_suffix}")
-            if os.path.isdir(potential_path):
-                data_root_path = potential_path
-                break
-    elif group_to_use == "MCS+":
-        # Try both 01HZ and 1HZ variants
-        for freq_suffix in ["_01HZ", "_1HZ"]:
-            potential_path = os.path.join(base_input_data_path, f"PP_MCS+{freq_suffix}")
-            if os.path.isdir(potential_path):
-                data_root_path = potential_path
-                break
-    elif group_to_use == "MCS-":
-        # Try both 1HZ and 01HZ variants (prioritize _1HZ based on actual data structure)
-        for freq_suffix in ["_1HZ", "_01HZ"]:
-            potential_path = os.path.join(base_input_data_path, f"PP_MCS-{freq_suffix}")
-            if os.path.isdir(potential_path):
-                data_root_path = potential_path
-                break
+     
+        potential_path = os.path.join(base_input_data_path, "PP_COMA_01HZ")
+        if os.path.isdir(potential_path):
+            data_root_path = potential_path
+    elif group_to_use == "MCS":
+        
+        potential_path = os.path.join(base_input_data_path, f"PP_MCS_01HZ")
+        if verbose_logging:
+                logger_data_loading.debug("Trying MCS path: %s (exists: %s)", 
+                                     potential_path, os.path.isdir(potential_path))
+        if os.path.isdir(potential_path):
+            data_root_path = potential_path
     elif group_to_use == "VS":
-        # Try both 1HZ and 01HZ variants (prioritize _1HZ based on actual data structure)
-        for freq_suffix in ["_1HZ", "_01HZ"]:
-            potential_path = os.path.join(base_input_data_path, f"PP_VS{freq_suffix}")
-            if os.path.isdir(potential_path):
-                data_root_path = potential_path
-                break
+        
+        potential_path = os.path.join(base_input_data_path, "PP_VS_01HZ")
+        if os.path.isdir(potential_path):
+            data_root_path = potential_path
     elif group_to_use == "DELIRIUM+":
         data_root_path = os.path.join(
             base_input_data_path,
@@ -855,7 +822,7 @@ def load_epochs_data_auto_protocol(
             "PP_PATIENTS_DELIRIUM-_0.5"
         )
     
-    # Fallback for special cases
+
     if not data_root_path or not os.path.isdir(data_root_path):
         group_affiliation_lower = group_affiliation.lower()
         if group_affiliation_lower == "controls_coma" or group_to_use == "CONTROLS_COMA":

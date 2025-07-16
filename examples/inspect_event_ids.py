@@ -27,7 +27,7 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from config.config import ALL_SUBJECT_GROUPS
+from config.config import ALL_SUBJECTS_GROUPS
 from config.decoding_config import EVENT_ID_LG
 from utils.utils import configure_project_paths
 
@@ -304,7 +304,7 @@ def main():
     if args.list_subjects:
         print("\nSUJETS DISPONIBLES PAR GROUPE:")
         print("="*50)
-        for group, subjects in ALL_SUBJECT_GROUPS.items():
+        for group, subjects in ALL_SUBJECTS_GROUPS.items():
             print(f"\n{group.upper()} ({len(subjects)} sujets):")
             for i, subject in enumerate(subjects, 1):
                 print(f"  {i:2d}. {subject}")

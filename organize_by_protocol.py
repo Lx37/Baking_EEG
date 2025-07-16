@@ -22,12 +22,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 try:
-    from config.config import ALL_SUBJECT_GROUPS
+    from config.config import ALL_SUBJECTS_GROUPS
     logger.info("Configuration importée avec succès")
 except ImportError as e:
     logger.error(f"Erreur d'import de la configuration: {e}")
     # Fallback avec configuration basique
-    ALL_SUBJECT_GROUPS = {
+    ALL_SUBJECTS_GROUPS = {
         'DELIRIUM+': [],
         'DELIRIUM-': [],
         'CONTROLS_DELIRIUM': [],
@@ -54,21 +54,21 @@ def determine_subject_group(subject_id):
     """Détermine le groupe d'un sujet à partir de son ID avec logique améliorée."""
     
     # 1. Recherche directe
-    for group_name, subjects in ALL_SUBJECT_GROUPS.items():
+    for group_name, subjects in ALL_SUBJECTS_GROUPS.items():
         if subject_id in subjects:
             return group_name
     
     # 2. Si pas trouvé, essayer avec préfixe "Tp"
     if not subject_id.startswith('Tp'):
         tp_subject_id = f"Tp{subject_id}"
-        for group_name, subjects in ALL_SUBJECT_GROUPS.items():
+        for group_name, subjects in ALL_SUBJECTS_GROUPS.items():
             if tp_subject_id in subjects:
                 return group_name
     
     # 3. Si pas trouvé, essayer sans préfixe "Tp"
     if subject_id.startswith('Tp'):
         no_tp_subject_id = subject_id[2:]  # Enlever "Tp"
-        for group_name, subjects in ALL_SUBJECT_GROUPS.items():
+        for group_name, subjects in ALL_SUBJECTS_GROUPS.items():
             if no_tp_subject_id in subjects:
                 return group_name
     
@@ -95,12 +95,12 @@ def determine_subject_group(subject_id):
         ]
     
     for pattern in base_patterns:
-        for group_name, subjects in ALL_SUBJECT_GROUPS.items():
+        for group_name, subjects in ALL_SUBJECTS_GROUPS.items():
             if pattern in subjects:
                 return group_name
     
     # 5. Recherche avec sous-chaines (au cas où il y aurait des caractères supplémentaires)
-    for group_name, subjects in ALL_SUBJECT_GROUPS.items():
+    for group_name, subjects in ALL_SUBJECTS_GROUPS.items():
         for config_subject in subjects:
             # Vérifier si l'ID extrait est une sous-partie de l'ID de la config
             if subject_id in config_subject or config_subject in subject_id:
@@ -455,13 +455,13 @@ def create_summary_report(organized_data, output_base_dir):
             for subject in sorted(set(unknown_subjects)):
                 f.write(f"  - {subject}\n")
             f.write(f"\nCes {len(set(unknown_subjects))} sujets ont été classés dans le groupe 'UNKNOWN'.\n")
-            f.write("Ils doivent être ajoutés à la configuration ALL_SUBJECT_GROUPS si nécessaire.\n")
+            f.write("Ils doivent être ajoutés à la configuration ALL_SUBJECTS_GROUPS si nécessaire.\n")
     
     # Créer aussi un fichier séparé avec la liste des sujets inconnus
     if unknown_subjects:
         unknown_path = os.path.join(output_base_dir, "unknown_subjects.txt")
         with open(unknown_path, 'w') as f:
-            f.write("# Sujets non trouvés dans la configuration ALL_SUBJECT_GROUPS\n")
+            f.write("# Sujets non trouvés dans la configuration ALL_SUBJECTS_GROUPS\n")
             f.write("# À ajouter manuellement aux groupes appropriés\n\n")
             for subject in sorted(set(unknown_subjects)):
                 f.write(f"{subject}\n")

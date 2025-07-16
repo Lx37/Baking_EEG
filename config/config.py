@@ -1,4 +1,3 @@
-
 ###################################################
 ###### File names organisation and prefixes ######
 
@@ -313,10 +312,10 @@ EGI_con_chan = [x for x in EGI_chan_names if x not in EGI_misc_dict.keys()]
 # All chan - those declared as misc
 EGI_con_chan_BRU = [
     x for x in EGI_chan_names_BRU if x not in EGI_misc_dict_BRU.keys()]
-
+'''
 #################################
 ######### ID of SUBJECT  ########
-ALL_SUBJECT_GROUPS = {
+ALL_SUBJECTS_GROUPS = {
     "CONTROLS_DELIRIUM": [
         "TPC2",
         "TPLV4",
@@ -452,16 +451,8 @@ ALL_SUBJECT_GROUPS = {
         "VS91",
     ],
 
-    "MCS-": [
-        "BT25",
-        "CB34",
-        "CG29",
-        "CR26",
-        "MC40",
-        "ML33",
-    ],
-
     "MCS": [
+        # Former MCS+ subjects
         "AE93",
         "AG42",
         "CW41",
@@ -481,6 +472,13 @@ ALL_SUBJECT_GROUPS = {
         "YG66",
         "IR27",
         "NF35",
+        # Former MCS- subjects
+        "BT25",
+        "CB34",
+        "CG29",
+        "CR26",
+        "MC40",
+        "ML33",
     ],
 
     "DELIRIUM+": [
@@ -538,3 +536,31 @@ ALL_SUBJECT_GROUPS = {
         "TpYB41",
     ],
 }
+
+'''
+
+# FOR SUBGROUPS
+ALL_SUBJECTS_GROUPS = {
+    "COMA": [
+        "TF53", "CA55", "JA61", "ME64", "MP68", "SV62",
+        "TpAT19J1", "TpCF24J1", "TpEM13J1", "TpEP16J1", "TT45", "YG72"
+    ],
+    "VS": [
+        "FM60", "KA70", "MH74", "OD69", "SR57", "AG42", "SM51",
+        "TpAB15J8", "TpAT19J8", "TpDC22J8", "TpFM25J8"
+    ],
+    "MCS": [
+        "AE93", "CW41", "DA75", "GT50", "HM52", "JA71", "KN49", "LP54", "MC58", "TB56", "VT47", "YG66"
+    ],
+    "DELIRIUM+": [
+        "TpAK24", "TpAK27", "TpCB15", "TpDRL3", "TpJB25", "TpJLR17", "TpMB45", "TpMN42", "TpPC21", "TpPM14", "TpRD38"
+    ],
+    "CONTROL": [
+        "TWB1", "TPC2", "LAB1", "LCM2", "LAT3", "LBM4", "LPO5", "LAG6", "MB103", "FP102", "FG104"
+    ],
+    "DELIRIUM-": [
+        "TpAC23", "TpAG51", "TpAM43", "TpBD16", "TpDD2", "TpFB18", "TpFL53", "TpGT32", "TpJPG7", "TpJPL10", "TpKS6", "TpLP11", "TpMA9", "TpMD13",
+        "TpMD52", "TpME22", "TpPA35", "TpPI46", "TpPL48", "TpRB50", "TpRK39", "TpSD30", "TpYB41"
+    ]
+}
+

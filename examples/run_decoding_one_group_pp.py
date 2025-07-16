@@ -17,7 +17,7 @@ if PROJECT_ROOT not in sys.path:
     
 from config.decoding_config import (
     CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
-    USE_CSP_FOR_TEMPORAL_PIPELINES, USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
+    USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
     PARAM_GRID_CONFIG_EXTENDED, CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
     FIXED_CLASSIFIER_PARAMS_CONFIG, N_PERMUTATIONS_INTRA_SUBJECT,
     INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
@@ -25,7 +25,7 @@ from config.decoding_config import (
     SAVE_ANALYSIS_RESULTS, GENERATE_PLOTS, N_JOBS_PROCESSING,
     COMPUTE_TGM_FOR_MAIN_COMPARISON
 )
-from config.config import ALL_SUBJECT_GROUPS
+from config.config import ALL_SUBJECTS_GROUPS
 from utils.utils import configure_project_paths
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
@@ -94,7 +94,6 @@ def execute_group_intra_subject_decoding_analysis(
     compute_intra_subject_stats_for_group_runs_flag=True,
     cluster_threshold_config_intra_fold_group=INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
     use_grid_search_for_group=USE_GRID_SEARCH_OPTIMIZATION,
-    use_csp_for_temporal_group=USE_CSP_FOR_TEMPORAL_PIPELINES,
     use_anova_fs_for_temporal_group=USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
     param_grid_config_for_group=PARAM_GRID_CONFIG_EXTENDED if USE_GRID_SEARCH_OPTIMIZATION else None,
     cv_folds_for_gs_group=CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
@@ -115,8 +114,8 @@ def execute_group_intra_subject_decoding_analysis(
                                              str) and n_jobs_for_each_subject.lower() == "auto" else int(n_jobs_for_each_subject)
 
     logger_run_group.info(
-        "Starting intra-subject decoding loop for GROUP: %s. GS: %s, CSP: %s, ANOVA FS: %s. n_jobs_subj: %s.",
-        group_identifier, use_grid_search_for_group, use_csp_for_temporal_group,
+        "Starting intra-subject decoding loop for GROUP: %s. GS: %s, ANOVA FS: %s. n_jobs_subj: %s.",
+        group_identifier, use_grid_search_for_group,
         use_anova_fs_for_temporal_group, actual_n_jobs_subject
     )
 
@@ -139,7 +138,6 @@ def execute_group_intra_subject_decoding_analysis(
             n_jobs_for_processing=actual_n_jobs_subject,
             classifier_type=classifier_type_for_group_runs,
             use_grid_search_for_subject=use_grid_search_for_group,
-            use_csp_for_temporal_subject=use_csp_for_temporal_group,
             use_anova_fs_for_temporal_subject=use_anova_fs_for_temporal_group,
             param_grid_config_for_subject=param_grid_config_for_group,
             cv_folds_for_gs_subject=cv_folds_for_gs_group,
@@ -175,7 +173,7 @@ if __name__ == "__main__":
     cli_parser = argparse.ArgumentParser(description="EEG Group Intra-Subject Decoding Analysis Script",
                                          formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     cli_parser.add_argument("--group_name", type=str, required=True,
-                            choices=ALL_SUBJECT_GROUPS.keys(), help="Name of the group to process.")
+                            choices=ALL_SUBJECTS_GROUPS.keys(), help="Name of the group to process.")
     cli_parser.add_argument("--clf_type_override", type=str, default=None, choices=["svc", "logreg", "rf"],
                             help="Override default classifier type from config.")
     cli_parser.add_argument("--n_jobs_override", type=str, default=None,
@@ -208,7 +206,7 @@ if __name__ == "__main__":
                           classifier_type_to_use_main, n_jobs_to_use_main)
 
     execute_group_intra_subject_decoding_analysis(
-        subject_ids_in_group=ALL_SUBJECT_GROUPS[command_line_args.group_name],
+        subject_ids_in_group=ALL_SUBJECTS_GROUPS[command_line_args.group_name],
         group_identifier=command_line_args.group_name,
         base_input_data_path=main_input_path_main,
         base_output_results_path=main_output_path_main,

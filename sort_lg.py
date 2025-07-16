@@ -9,7 +9,7 @@ import re
 from pathlib import Path
 
 # Définition des groupes
-ALL_SUBJECT_GROUPS = {
+ALL_SUBJECTS_GROUPS = {
     "CONTROLS_DELIRIUM": [
         "TPC2",
         "TPLV4",
@@ -241,7 +241,7 @@ def find_group_for_subject(subject_id):
     """
     Trouve le groupe correspondant à un ID de sujet
     """
-    for group_name, subjects in ALL_SUBJECT_GROUPS.items():
+    for group_name, subjects in ALL_SUBJECTS_GROUPS.items():
         if subject_id in subjects:
             return group_name
     return None

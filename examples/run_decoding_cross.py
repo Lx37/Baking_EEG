@@ -54,9 +54,9 @@ def execute_group_cross_subject_decoding_analysis(
     # Pre-load data for all subjects in the set
     for subj_id_cs in subject_ids_for_cs_set:
         try:
-            # Determine actual group for loading based on ALL_SUBJECT_GROUPS mapping
+            # Determine actual group for loading based on ALL_SUBJECTS_GROUPS mapping
             actual_group_for_loading = cross_subject_set_identifier  # Default
-            for grp_name, s_list in ALL_SUBJECT_GROUPS.items():
+            for grp_name, s_list in ALL_SUBJECTS_GROUPS.items():
                 if subj_id_cs in s_list:
                     actual_group_for_loading = grp_name
                     break

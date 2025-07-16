@@ -1,6 +1,3 @@
-
-
-
 import sys
 import os
 import logging
@@ -32,7 +29,7 @@ from utils.loading_LG_utils import (
    
 )
 from utils import stats_utils as bEEG_stats
-from config.config import ALL_SUBJECT_GROUPS
+from config.config import ALL_SUBJECTS_GROUPS
 from config.decoding_config import (
     CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION,
     USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
@@ -95,7 +92,7 @@ def execute_single_subject_lg_decoding(
     loading_conditions_config=None,
     cluster_threshold_config_intra_fold=None
 ):
-$
+
     if save_results_flag is None:
         save_results_flag = SAVE_ANALYSIS_RESULTS
     if generate_plots_flag is None:
@@ -127,9 +124,12 @@ $
     if n_perms_for_intra_subject_clusters is None:
         n_perms_for_intra_subject_clusters = N_PERMUTATIONS_INTRA_SUBJECT
     if compute_tgm_flag is None:
-        compute_tgm_flag = COMPUTE_TGM_FOR_MAIN_COMPARISON  
+       compute_tgm_flag  = COMPUTE_TGM_FOR_MAIN_COMPARISON  
     if loading_conditions_config is None:
         loading_conditions_config = CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG
+    
+    # Separate TGM flag for specific comparisons
+    compute_tgm_for_specific_comparisons = COMPUTE_TGM_FOR_SPECIFIC_COMPARISONS
     if cluster_threshold_config_intra_fold is None:
         cluster_threshold_config_intra_fold = (
             INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG
@@ -276,6 +276,8 @@ $
                     "defaults will be used.",
                     subject_identifier, classifier_type)
 
+        logger.info("TGM Configuration: Main comparisons=%s, Specific comparisons=%s",
+                    compute_tgm_flag, compute_tgm_for_specific_comparisons)
 
         logger.info("--- Starting Main LG Protocol Decoding for %s ---",
                     subject_identifier)
@@ -315,10 +317,10 @@ $
                         "Subj %s: Not enough samples for CV in main LG "
                         "decoding (%d splits). Skipping.",
                         subject_identifier, num_cv_splits_main)
-                    return subject_results
+          
                 else:
                     cv_splitter_main = RepeatedStratifiedKFold(
-                        n_splits=num_cv_splits_main, n_repeats=3,
+                        n_splits=num_cv_splits_main, n_repeats=5,
                         random_state=42)
 
                     ls_ld_decoding_output = run_temporal_decoding_analysis(
@@ -412,7 +414,7 @@ $
                         subject_identifier, num_cv_splits_gs_gd)
                 else:
                     cv_splitter_gs_gd = RepeatedStratifiedKFold(
-                        n_splits=num_cv_splits_gs_gd, n_repeats=3,
+                        n_splits=num_cv_splits_gs_gd, n_repeats=5,
                         random_state=42)
 
                     gs_gd_decoding_output = run_temporal_decoding_analysis(
@@ -480,6 +482,7 @@ $
                 "specific LG tasks.", subject_identifier)
         else:
             # Define specific LG comparisons
+            # These comparisons will use COMPUTE_TGM_FOR_SPECIFIC_COMPARISONS flag
             lg_specific_comparisons = [
                 ("LSGS", "LSGD",
                  "Local Standard: Global Standard vs Global Deviant",
@@ -544,7 +547,7 @@ $
                                 num_cv_task_spec)
                         else:
                             cv_splitter_task_spec = RepeatedStratifiedKFold(
-                                n_splits=num_cv_task_spec, n_repeats=3,
+                                n_splits=num_cv_task_spec, n_repeats=5,
                                 random_state=42)
 
                             specific_task_output = (
@@ -563,7 +566,8 @@ $
                                         compute_intra_subject_stats_flag),
                                     n_permutations_for_intra_fold_clusters=(
                                         n_perms_for_intra_subject_clusters),
-                                    compute_temporal_generalization_matrix=compute_tgm_flag,
+                                    # Use separate TGM flag for specific comparisons
+                                    compute_temporal_generalization_matrix=compute_tgm_for_specific_comparisons,
                                     chance_level=CHANCE_LEVEL_AUC,
                                     cluster_threshold_config_intra_fold=(
                                         cluster_threshold_config_intra_fold)
@@ -607,7 +611,7 @@ $
         logger.info("  --- Specific LG Comparisons for %s DONE ---",
                     subject_identifier)
 
-        # Calculate stats on stack of specific LG curves
+    
         if (compute_intra_subject_stats_flag and
                 subject_results.get("lg_specific_comparison_results")):
 
@@ -684,23 +688,22 @@ $
                     "for stack statistics.",
                     subject_identifier, len(valid_mean_scores_for_stack))
 
-        # Save results and generate plots
+
         if save_results_flag or generate_plots_flag:
             try:
                 dec_prot_id_str = str(
-                    decoding_protocol_identifier
-                    if decoding_protocol_identifier else "UnknownProtocolID")
+                    decoding_protocol_identifier if decoding_protocol_identifier else "UnknownProtocolID")
                 subfolder_name_components = [
                     subject_identifier,
                     dec_prot_id_str.replace(" ", "_").replace("/", "-"),
-                    classifier_type]
-                valid_subfolder_components = [
-                    comp for comp in subfolder_name_components if comp]
+                    classifier_type if classifier_type else "UnknownClassifier"
+                ]
+                valid_subfolder_components = [comp for comp in subfolder_name_components if comp]
                 subfolder_name_for_setup = "_".join(valid_subfolder_components)
 
-                # Create group_protocol path for better organization
                 detected_protocol = subject_results.get("detected_protocol", "unknown")
-                group_protocol_path = f"{group_affiliation}_{detected_protocol}"
+                # Only use subject ID for the group_protocol_path (no group, no protocol)
+                group_protocol_path = subject_identifier
 
                 subject_results_dir = setup_analysis_results_directory(
                     base_output_results_path, "intra_subject_lg_results",
@@ -788,108 +791,18 @@ $
                 subject_results.get("epochs_time_points") is not None):
             if subject_results_dir:
                 try:
-                    dashboard_plot_args_lg = {
-                        "main_epochs_time_points": (
-                            subject_results.get("epochs_time_points")),
-                        "classifier_name_for_title": classifier_type,
-                        "subject_identifier": subject_identifier,
-                        "group_identifier": group_affiliation,
-                        "output_directory_path": subject_results_dir,
-                        "CHANCE_LEVEL_AUC": CHANCE_LEVEL_AUC,
-                        "protocol_type": "LG",
-
-                        "lg_ls_ld_original_labels_array": (
-                            subject_results.get("lg_ls_ld_original_labels")),
-                        "lg_ls_ld_predicted_probabilities_global": (
-                            subject_results.get("lg_ls_ld_pred_probas_global")),
-                        "lg_ls_ld_predicted_labels_global": (
-                            subject_results.get("lg_ls_ld_pred_labels_global")),
-                        "lg_ls_ld_cross_validation_global_scores": (
-                            subject_results.get("lg_ls_ld_cv_global_scores")),
-                        "lg_ls_ld_temporal_scores_1d_all_folds": (
-                            subject_results.get("lg_ls_ld_scores_1d_all_folds")),
-                        "lg_ls_ld_mean_temporal_decoding_scores_1d": (
-                            subject_results.get("lg_ls_ld_scores_1d_mean")),
-                        "lg_ls_ld_temporal_1d_fdr_sig_data": (
-                            subject_results.get("lg_ls_ld_temporal_1d_fdr")),
-                        "lg_ls_ld_temporal_1d_cluster_sig_data": (
-                            subject_results.get("lg_ls_ld_temporal_1d_cluster")),
-                        "lg_ls_ld_mean_temporal_generalization_matrix_scores": (
-                            subject_results.get("lg_ls_ld_tgm_mean")),
-                        "lg_ls_ld_tgm_fdr_sig_data": (
-                            subject_results.get("lg_ls_ld_tgm_fdr")),
-                        "lg_ls_ld_decoding_global_metrics_for_plot": (
-                            subject_results.get("lg_ls_ld_global_metrics", {})),
-
-                        # GS vs GD decoding results
-                        "lg_gs_gd_original_labels_array": (
-                            subject_results.get("lg_gs_gd_original_labels")),
-                        "lg_gs_gd_predicted_probabilities_global": (
-                            subject_results.get("lg_gs_gd_pred_probas_global")),
-                        "lg_gs_gd_predicted_labels_global": (
-                            subject_results.get("lg_gs_gd_pred_labels_global")),
-                        "lg_gs_gd_cross_validation_global_scores": (
-                            subject_results.get("lg_gs_gd_cv_global_scores")),
-                        "lg_gs_gd_temporal_scores_1d_all_folds": (
-                            subject_results.get("lg_gs_gd_scores_1d_all_folds")),
-                        "lg_gs_gd_mean_temporal_decoding_scores_1d": (
-                            subject_results.get("lg_gs_gd_scores_1d_mean")),
-                        "lg_gs_gd_temporal_1d_fdr_sig_data": (
-                            subject_results.get("lg_gs_gd_temporal_1d_fdr")),
-                        "lg_gs_gd_temporal_1d_cluster_sig_data": (
-                            subject_results.get("lg_gs_gd_temporal_1d_cluster")),
-                        "lg_gs_gd_mean_temporal_generalization_matrix_scores": (
-                            subject_results.get("lg_gs_gd_tgm_mean")),
-                        "lg_gs_gd_tgm_fdr_sig_data": (
-                            subject_results.get("lg_gs_gd_tgm_fdr")),
-                        "lg_gs_gd_decoding_global_metrics_for_plot": (
-                            subject_results.get("lg_gs_gd_global_metrics", {})),
-
-                        # Individual comparison results
-                        "lg_lsgs_vs_lsgd_scores_1d_mean": (
-                            subject_results.get("lg_lsgs_vs_lsgd_scores_1d_mean")),
-                        "lg_lsgs_vs_lsgd_temporal_1d_fdr": (
-                            subject_results.get("lg_lsgs_vs_lsgd_temporal_1d_fdr")),
-                        "lg_lsgs_vs_lsgd_temporal_1d_cluster": (
-                            subject_results.get("lg_lsgs_vs_lsgd_temporal_1d_cluster")),
-                        "lg_ldgs_vs_ldgd_scores_1d_mean": (
-                            subject_results.get("lg_ldgs_vs_ldgd_scores_1d_mean")),
-                        "lg_ldgs_vs_ldgd_temporal_1d_fdr": (
-                            subject_results.get("lg_ldgs_vs_ldgd_temporal_1d_fdr")),
-                        "lg_ldgs_vs_ldgd_temporal_1d_cluster": (
-                            subject_results.get("lg_ldgs_vs_ldgd_temporal_1d_cluster")),
-                        "lg_lsgs_vs_ldgs_scores_1d_mean": (
-                            subject_results.get("lg_lsgs_vs_ldgs_scores_1d_mean")),
-                        "lg_lsgs_vs_ldgs_temporal_1d_fdr": (
-                            subject_results.get("lg_lsgs_vs_ldgs_temporal_1d_fdr")),
-                        "lg_lsgs_vs_ldgs_temporal_1d_cluster": (
-                            subject_results.get("lg_lsgs_vs_ldgs_temporal_1d_cluster")),
-                        "lg_lsgd_vs_ldgd_scores_1d_mean": (
-                            subject_results.get("lg_lsgd_vs_ldgd_scores_1d_mean")),
-                        "lg_lsgd_vs_ldgd_temporal_1d_fdr": (
-                            subject_results.get("lg_lsgd_vs_ldgd_temporal_1d_fdr")),
-                        "lg_lsgd_vs_ldgd_temporal_1d_cluster": (
-                            subject_results.get("lg_lsgd_vs_ldgd_temporal_1d_cluster")),
-
-                        "lg_specific_comparison_results": (
-                            subject_results.get("lg_specific_comparison_results")),
-                        "lg_mean_of_specific_scores_1d": (
-                            subject_results.get("lg_mean_of_specific_scores_1d")),
-                        "lg_sem_of_specific_scores_1d": (
-                            subject_results.get("lg_sem_of_specific_scores_1d")),
-                        "lg_mean_specific_fdr_sig_data": (
-                            subject_results.get("lg_mean_specific_fdr")),
-                        "lg_mean_specific_cluster_sig_data": (
-                            subject_results.get("lg_mean_specific_cluster")),
-                        "lg_global_effect_results": (
-                            subject_results.get("lg_global_effect_results")),
-                        "lg_local_effect_centric_average_results_list": (
-                            subject_results.get(
-                                "lg_local_effect_centric_avg_results")),
-                    }
-
+                   
                     create_subject_decoding_dashboard_plots_lg(
-                        **dashboard_plot_args_lg)
+                        main_epochs_time_points=subject_results.get("epochs_time_points"),
+                        classifier_name_for_title=classifier_type,
+                        subject_identifier=subject_identifier,
+                        group_identifier=group_affiliation,
+                        output_directory_path=subject_results_dir,
+                        results_data=subject_results,  
+                        chance_level=CHANCE_LEVEL_AUC
+                    )
+
+              
 
                     logger.info(
                         "LG Dashboard plots generated for subject %s in %s",
@@ -975,7 +888,7 @@ if __name__ == "__main__":
             "Invalid n_jobs_override ('%s'). Using default from config: "
             "%s (becomes -1 if 'auto').",
             n_jobs_arg_str, N_JOBS_PROCESSING)
-        n_jobs_to_use = (-1 if N_JOBS_PROCESSING.lower() == "auto"
+        n_jobs_to_use = (-1 if str(N_JOBS_PROCESSING).lower() == "auto"
                          else int(N_JOBS_PROCESSING))
 
     classifier_type_to_use = (command_line_args.clf_type_override
@@ -994,7 +907,6 @@ if __name__ == "__main__":
                 classifier_type_to_use, n_jobs_to_use)
     logger.info("  GridSearch Optimization (from config): %s",
                 USE_GRID_SEARCH_OPTIMIZATION)
-    # CSP functionality has been removed from the pipeline
     logger.info("  ANOVA FS for Temporal Pipelines (from config): %s",
                 USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES)
 
@@ -1002,7 +914,7 @@ if __name__ == "__main__":
     resolved_group_affiliation = command_line_args.group
     if not resolved_group_affiliation:
         resolved_group_affiliation = "unknown"  # Default
-        for grp, s_list in ALL_SUBJECT_GROUPS.items():
+        for grp, s_list in ALL_SUBJECTS_GROUPS.items():
             if command_line_args.subject_id in s_list:
                 resolved_group_affiliation = grp
                 logger.info(

@@ -9,7 +9,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
-# from mne.decoding import CSP  # Removed CSP functionality
+
 
 # Configuration du logging
 logger_base_decoding = logging.getLogger(__name__)
@@ -22,9 +22,13 @@ def _build_standard_classifier_pipeline(
     random_seed_state=42,
     use_grid_search=False,
     add_anova_fs_step=False,
-    svc_c=1.0, svc_kernel='linear', svc_gamma='scale',
-    logreg_c=1.0, logreg_penalty='l2',
-    rf_n_estimators=100, rf_max_depth=None,
+    svc_c=1.0, 
+    svc_kernel='linear',
+    svc_gamma='scale',
+    logreg_c=1.0, 
+    logreg_penalty='l2',
+    rf_n_estimators=100, 
+    rf_max_depth=None,
     fs_percentile=15
 ):
     """
@@ -47,7 +51,7 @@ def _build_standard_classifier_pipeline(
 
     Returns:
         tuple: (pipeline, nom_étape_classifier, nom_étape_anova_fs,
-                nom_étape_csp_unused)
+              
     """
     log_prefix = ("Pipeline de base pour GridSearchCV" if use_grid_search
                   else "Pipeline à hyperparamètres fixes")
@@ -59,9 +63,9 @@ def _build_standard_classifier_pipeline(
     steps = [("scaler", StandardScaler())]
     pipeline_clf_name = ""
     anova_fs_name = None
-    csp_name = None  # Unused, kept for compatibility
+   
 
-    # CSP functionality removed - no longer supported
+
 
     if add_anova_fs_step:
         anova_fs_name = "anova_feature_selection"
@@ -104,7 +108,7 @@ def _build_standard_classifier_pipeline(
     steps.append((pipeline_clf_name, classifier))
     logger_base_decoding.info("Structure finale du pipeline: %s", [
                            s[0] for s in steps])
-    return Pipeline(steps), pipeline_clf_name, anova_fs_name, csp_name
+    return Pipeline(steps), pipeline_clf_name, anova_fs_name, None
 
 # === FONCTIONS D'EXÉCUTION DU DÉCODAGE GLOBAL ===
 

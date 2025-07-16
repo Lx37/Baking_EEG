@@ -72,7 +72,7 @@ try:
         GENERATE_PLOTS,
 
     )
-    from config.config import ALL_SUBJECT_GROUPS
+    from config.config import ALL_SUBJECTS_GROUPS
     logger.info(
         "Importations depuis 'examples.run_decoding_one_group_pp' réussies.")
 except ModuleNotFoundError as e:
@@ -179,11 +179,11 @@ def main():
     try:
         with executor.batch():
             for group_name_to_analyze in GROUPS_TO_PROCESS:  
-                if group_name_to_analyze not in ALL_SUBJECT_GROUPS:
+                if group_name_to_analyze not in ALL_SUBJECTS_GROUPS:
                     logger.warning(
-                        f"Groupe '{group_name_to_analyze}' non trouvé dans ALL_SUBJECT_GROUPS. Ignoré.")
+                        f"Groupe '{group_name_to_analyze}' non trouvé dans ALL_SUBJECTS_GROUPS. Ignoré.")
                     continue
-                subjects_for_this_group_job = ALL_SUBJECT_GROUPS[group_name_to_analyze]
+                subjects_for_this_group_job = ALL_SUBJECTS_GROUPS[group_name_to_analyze]
                 if not subjects_for_this_group_job:
                     logger.warning(
                         f"Aucun sujet pour le groupe '{group_name_to_analyze}'. Ignoré.")

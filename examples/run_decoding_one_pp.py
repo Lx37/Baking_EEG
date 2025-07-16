@@ -17,7 +17,7 @@ from config.decoding_config import (
     # Protocol-specific functions
     get_protocol_config,get_protocol_ap_families, get_protocol_pp_comparison_events
 )
-from config.config import ALL_SUBJECT_GROUPS
+from config.config import ALL_SUBJECTS_GROUPS
 from utils import stats_utils as bEEG_stats
 from utils.loading_PP_utils import (
     load_epochs_data_for_decoding_delirium,
@@ -108,28 +108,6 @@ def get_protocol_cv_folds(detected_protocol):
 
 
 
-
-def extract_frequency_info_from_path(base_input_data_path, group_affiliation):
-    """Extract frequency information (01Hz or 1Hz) from data path.
-    
-    Args:
-        base_input_data_path (str): Base path to data
-        group_affiliation (str): Group name
-        
-    Returns:
-        str: Frequency suffix ("01Hz", "1Hz", or "")
-    """
-    # Check for frequency-specific directories for certain groups
-    freq_sensitive_groups = ["COMA", "MCS+", "MCS-", "VS"]
-    
-    if group_affiliation.upper() in freq_sensitive_groups:
-        # Try to detect frequency from existing directories
-        for freq_suffix in ["_01HZ", "_1HZ"]:
-            potential_path = os.path.join(base_input_data_path, f"PP_{group_affiliation.upper()}{freq_suffix}")
-            if os.path.isdir(potential_path):
-                return freq_suffix.replace("_", "").replace("HZ", "Hz")  # Return "01Hz" or "1Hz"
-    
-    return ""  # No frequency info
 
 
 
@@ -355,7 +333,7 @@ def execute_single_subject_decoding(
                     "No GS for %s, no fixed params for '%s' in fixed_params_for_subject. Core decoding defaults will be used.",
                     subject_identifier, classifier_type)
 
-        # --- Start of the single protocol's decoding logic (formerly PP_AP logic) ---
+       
         logger_run_one.info(
             "--- Starting Main Protocol Decoding for %s ---", subject_identifier)
 
@@ -366,7 +344,7 @@ def execute_single_subject_decoding(
 
         if xpp_main_data is not None and xap_main_data is not None and \
            xpp_main_data.size > 0 and xap_main_data.size > 0:
-            # STANDARDIZED: PP=1 (positive class), AP=0 (negative class)
+     
             main_protocol_data = np.concatenate(
                 [xpp_main_data, xap_main_data], axis=0)
             main_protocol_labels_orig = np.concatenate(
@@ -536,7 +514,7 @@ def execute_single_subject_decoding(
 
                 _, fdr_mask_stack, fdr_pval_stack, fdr_test_info_stack = bEEG_stats.perform_pointwise_fdr_correction_on_scores(
                     stacked_specific_curves, CHANCE_LEVEL_AUC, alternative_hypothesis="greater",
-                    statistical_test_type="wilcoxon"  # Force Wilcoxon test
+                    statistical_test_type="wilcoxon"  
                 )
                 subject_results["pp_ap_mean_specific_fdr"] = {
                     "mask": fdr_mask_stack, "p_values": fdr_pval_stack, 
@@ -763,27 +741,22 @@ def execute_single_subject_decoding(
             # Get the detected protocol for folder organization
             detected_protocol = subject_results.get("detected_protocol", "unknown")
             
-            # Extract frequency information from data path
-            frequency_info = extract_frequency_info_from_path(base_input_data_path, group_affiliation)
+        
             
             # Create hierarchical folder structure: Group / Protocol / Subject_details
-            dec_prot_id_str = str(
-                decoding_protocol_identifier if decoding_protocol_identifier else "UnknownProtocolID")
-            subfolder_name_components = [subject_identifier, dec_prot_id_str.replace(
-                " ", "_").replace("/", "-"), classifier_type]
-            valid_subfolder_components = [
-                comp for comp in subfolder_name_components if comp]
+            dec_prot_id_str = str(decoding_protocol_identifier) if decoding_protocol_identifier else "UnknownProtocolID"
+            subfolder_name_components = [
+                subject_identifier,
+                dec_prot_id_str.replace(" ", "_").replace("/", "-"),
+                classifier_type if classifier_type else "UnknownClassifier"
+            ]
+            valid_subfolder_components = [comp for comp in subfolder_name_components if comp]
             subfolder_name_for_setup = "_".join(valid_subfolder_components)
-            
-            # Create group_protocol path with frequency info for better organization
-            group_protocol_components = [group_affiliation]
-            if frequency_info:
-                group_protocol_components.append(frequency_info)
-            group_protocol_components.append(detected_protocol)
-            group_protocol_path = "_".join(group_protocol_components)
-            
+            # Build the group/protocol/subject path (without duplicating 'intra_subject_results')
+            group_protocol_path = os.path.join(group_affiliation, detected_protocol, subject_identifier)
+
             logger_run_one.info(
-                "Results will be saved in: %s/%s", 
+                "Results will be saved in: intra_subject_results/%s/%s",
                 group_protocol_path, subfolder_name_for_setup
             )
             
@@ -921,7 +894,7 @@ if __name__ == "__main__":
     resolved_group_affiliation = command_line_args.group
     if not resolved_group_affiliation:
         resolved_group_affiliation = "unknown"  
-        for grp, s_list in ALL_SUBJECT_GROUPS.items():
+        for grp, s_list in ALL_SUBJECTS_GROUPS.items():
             if command_line_args.subject_id in s_list:
                 resolved_group_affiliation = grp
                 logger_run_one.info(

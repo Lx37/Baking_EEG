@@ -4,7 +4,7 @@ import time
 import logging
 import numpy as np
 import mne
-from config.config import ALL_SUBJECT_GROUPS
+from config.config import ALL_SUBJECTS_GROUPS
 from config.decoding_config import CONFIG_LOAD_MAIN_LG_DECODING, CONFIG_LOAD_LG_COMPARISONS, EVENT_ID_LG
 logger_data_loading = logging.getLogger(__name__)
 
@@ -68,68 +68,78 @@ def load_epochs_data_for_lg_decoding(
     data_root_path = None
 
     # --- Path determination logic for LG protocol ---
-    # Only 3 real LG directories exist: LG_CONTROLS_0.5, LG_PATIENTS_DELIRIUM+_0.5, LG_PATIENTS_DELIRIUM-_0.5
-    if group_affiliation_lower == "controls":
-        potential_path = os.path.join(base_input_data_path, "LG_CONTROLS_0.5")
-        if os.path.isdir(potential_path):
-            data_root_path = potential_path
-    elif group_affiliation_lower in ["delirium+", "delirium +", "patients_delirium+"]:
-        potential_path = os.path.join(
-            base_input_data_path, "LG_PATIENTS_DELIRIUM+_0.5"
-        )
-        if os.path.isdir(potential_path):
-            data_root_path = potential_path
-    elif group_affiliation_lower in ["delirium-", "delirium -", "patients_delirium-"]:
-        potential_path = os.path.join(
-            base_input_data_path, "LG_PATIENTS_DELIRIUM-_0.5"
-        )
-        if os.path.isdir(potential_path):
-            data_root_path = potential_path
+    # First, try to detect the group automatically from ALL_SUBJECTS_GROUPS
+    detected_group = next(
+        (grp for grp, s_list in ALL_SUBJECTS_GROUPS.items()
+         if subject_identifier in s_list), None
+    )
+    
+    # Group-to-directory mapping
+    group_to_directory = {
+        "CONTROLS_DELIRIUM": "LG_CONTROLS_0.5",
+        "CONTROLS_COMA": "LG_CONTROLS_0.5", 
+        "DELIRIUM+": "LG_PATIENTS_DELIRIUM+_0.5",
+        "DELIRIUM-": "LG_PATIENTS_DELIRIUM-_0.5",
+        "COMA": "LG_COMA",
+        "MCS": "LG_MCS",
+        "VS": "LG_VS"
+    }
+    
 
-    # Fallback path logic if primary path fails
+    if detected_group and detected_group in group_to_directory:
+        potential_path = os.path.join(base_input_data_path, group_to_directory[detected_group])
+        if os.path.isdir(potential_path):
+            data_root_path = potential_path
+            if verbose_logging:
+                logger_data_loading.info(
+                    "Subject '%s' automatically detected in group '%s', using directory: %s",
+                    subject_identifier, detected_group, group_to_directory[detected_group]
+                )
+ 
     if not data_root_path:
-        detected_group = next(
-            (grp for grp, s_list in ALL_SUBJECT_GROUPS.items()
-             if subject_identifier in s_list), None,
-        )
-        if detected_group:
+        if verbose_logging:
             logger_data_loading.warning(
-                "Original group path for '%s' not found for subject '%s'. "
-                "Subject found in group '%s'. Using its path convention.",
-                group_affiliation, subject_identifier, detected_group
+                "No automatic group detection for subject '%s'. "
+                "Attempting generic string matching in group affiliation '%s'.",
+                subject_identifier, group_affiliation
             )
-            detected_group_lower = detected_group.lower()
-            # Map to one of the 3 real LG directories only
-            if detected_group_lower == "controls_delirium" or detected_group_lower == "controls_coma":
-                data_root_path = os.path.join(
-                    base_input_data_path, "LG_CONTROLS_0.5")
-            elif detected_group_lower == "delirium+":
-                data_root_path = os.path.join(
-                    base_input_data_path, "LG_PATIENTS_DELIRIUM+_0.5"
-                )
-            elif detected_group_lower == "delirium-":
-                data_root_path = os.path.join(
-                    base_input_data_path, "LG_PATIENTS_DELIRIUM-_0.5"
-                )
-        else:  # Generic fallback - try to map to one of the 3 real directories
-            if "control" in group_affiliation.lower():
-                potential_path_generic = os.path.join(
-                    base_input_data_path, "LG_CONTROLS_0.5"
-                )
-                if os.path.isdir(potential_path_generic):
-                    data_root_path = potential_path_generic
-            elif "delirium" in group_affiliation.lower():
-                if "+" in group_affiliation or "delirium+" in group_affiliation.lower():
-                    alt_path = os.path.join(
-                        base_input_data_path, "LG_PATIENTS_DELIRIUM+_0.5")
-                elif "-" in group_affiliation or "delirium-" in group_affiliation.lower():
-                    alt_path = os.path.join(
-                        base_input_data_path, "LG_PATIENTS_DELIRIUM-_0.5")
-                else:
-                    alt_path = None
-
-                if alt_path and os.path.isdir(alt_path):
-                    data_root_path = alt_path
+        
+     
+        if "control" in group_affiliation.lower():
+            potential_path_generic = os.path.join(
+                base_input_data_path, "LG_CONTROLS_0.5"
+            )
+            if os.path.isdir(potential_path_generic):
+                data_root_path = potential_path_generic
+        elif "delirium" in group_affiliation.lower():
+            if "+" in group_affiliation or "delirium+" in group_affiliation.lower():
+                alt_path = os.path.join(
+                    base_input_data_path, "LG_PATIENTS_DELIRIUM+_0.5")
+            elif "-" in group_affiliation or "delirium-" in group_affiliation.lower():
+                alt_path = os.path.join(
+                    base_input_data_path, "LG_PATIENTS_DELIRIUM-_0.5")
+            else:
+                alt_path = None
+            if alt_path and os.path.isdir(alt_path):
+                data_root_path = alt_path
+        elif "coma" in group_affiliation.lower():
+            potential_path_coma = os.path.join(
+                base_input_data_path, "LG_COMA"
+            )
+            if os.path.isdir(potential_path_coma):
+                data_root_path = potential_path_coma
+        elif "mcs" in group_affiliation.lower():
+            potential_path_mcs = os.path.join(
+                base_input_data_path, "LG_MCS"
+            )
+            if os.path.isdir(potential_path_mcs):
+                data_root_path = potential_path_mcs
+        elif "vs" in group_affiliation.lower():
+            potential_path_vs = os.path.join(
+                base_input_data_path, "LG_VS"
+            )
+            if os.path.isdir(potential_path_vs):
+                data_root_path = potential_path_vs
 
     if not data_root_path or not os.path.isdir(data_root_path):
         logger_data_loading.error(
@@ -306,14 +316,36 @@ def load_epochs_data_for_lg_decoding(
             subject_identifier, shapes_log, time.time() - start_time
         )
     
-    # Determine detected protocol based on the data path
+    # Determine detected protocol based on the detected group or data path
     detected_protocol = "LG"  # Default for Local-Global protocol
-    if data_root_path:
+    
+    # First try to use the detected group from config
+    if detected_group:
+        if detected_group in ["CONTROLS_DELIRIUM", "CONTROLS_COMA"]:
+            detected_protocol = "LG_CONTROLS"
+        elif detected_group == "DELIRIUM+":
+            detected_protocol = "LG_PATIENTS_DELIRIUM+"
+        elif detected_group == "DELIRIUM-":
+            detected_protocol = "LG_PATIENTS_DELIRIUM-"
+        elif detected_group == "COMA":
+            detected_protocol = "LG_COMA"
+        elif detected_group == "MCS":
+            detected_protocol = "LG_MCS"
+        elif detected_group == "VS":
+            detected_protocol = "LG_VS"
+    # Fallback to path-based detection
+    elif data_root_path:
         if "CONTROLS" in data_root_path:
             detected_protocol = "LG_CONTROLS"
         elif "PATIENTS_DELIRIUM+" in data_root_path:
-            detected_protocol = "LG_PATIENTS_DELIRIUMM+"
+            detected_protocol = "LG_PATIENTS_DELIRIUM+"
         elif "PATIENTS_DELIRIUM-" in data_root_path:
             detected_protocol = "LG_PATIENTS_DELIRIUM-"
+        elif "LG_COMA" in data_root_path:
+            detected_protocol = "LG_COMA"
+        elif "LG_MCS" in data_root_path:
+            detected_protocol = "LG_MCS"
+        elif "LG_VS" in data_root_path:
+            detected_protocol = "LG_VS"
     
     return epochs_object, extracted_data, detected_protocol

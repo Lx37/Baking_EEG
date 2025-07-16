@@ -139,9 +139,9 @@ def import_configurations():
     log_info("Import des configurations...", logger)
 
     try:
-        from config.config import ALL_SUBJECT_GROUPS
+        from config.config import ALL_SUBJECTS_GROUPS
         log_info(
-            f"✓ ALL_SUBJECT_GROUPS importé ({len(ALL_SUBJECT_GROUPS)} groupes)", logger)
+            f"✓ ALL_SUBJECTS_GROUPS importé ({len(ALL_SUBJECTS_GROUPS)} groupes)", logger)
 
         from utils.utils import configure_project_paths
         log_info("✓ configure_project_paths importé", logger)
@@ -159,7 +159,7 @@ def import_configurations():
             f"✓ decoding_config importé (CLASSIFIER: {CLASSIFIER_MODEL_TYPE})", logger)
 
         return {
-            'ALL_SUBJECT_GROUPS': ALL_SUBJECT_GROUPS,
+            'ALL_SUBJECTS_GROUPS': ALL_SUBJECTS_GROUPS,
             'configure_project_paths': configure_project_paths,
             'decoding_config': {
                 'CLASSIFIER_MODEL_TYPE': CLASSIFIER_MODEL_TYPE,
@@ -406,7 +406,7 @@ def main():
 
 
     log_info("=== RÉSOLUTION GROUPE SUJET ===", logger)
-    all_groups = configs['ALL_SUBJECT_GROUPS']
+    all_groups = configs['ALL_SUBJECTS_GROUPS']
     log_debug(f"Groupes disponibles: {list(all_groups.keys())}", logger)
 
     subject_group = None

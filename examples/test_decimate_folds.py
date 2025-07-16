@@ -1458,10 +1458,6 @@ def print_usage_info():
 if __name__ == "__main__":
   
     print_usage_info()
-    
-
     if not validate_installation():
         sys.exit(1)
-    
-
     main()

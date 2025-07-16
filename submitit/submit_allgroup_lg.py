@@ -1,7 +1,6 @@
-
-
 import os
 import sys
+import signal
 import logging
 from datetime import datetime
 import getpass
@@ -30,17 +29,27 @@ echo "--- Configuration de l'environnement pour le job Slurm LG (PID: $$) ---"
 echo "Date et heure: $(date)"
 echo "Hostname: $(hostname)"
 echo "Job ID Slurm: $SLURM_JOB_ID"
+
+# Configuration des signaux pour éviter les warnings
+trap 'echo "Signal reçu, poursuite de l execution..." ; exit 0' SIGCONT SIGTERM SIGINT
+
 module purge
 echo "Activation de l'environnement virtuel: {PATH_TO_VENV_ACTIVATE_ON_CLUSTER}"
 source {PATH_TO_VENV_ACTIVATE_ON_CLUSTER}
 if [ $? -ne 0 ]; then echo "ERREUR: Échec de l'activation de l'environnement virtuel."; exit 1; fi
+
 export PYTHONPATH="{PROJECT_ROOT_ON_CLUSTER_FOR_JOB}:${{PYTHONPATH}}"
+export PYTHONUNBUFFERED=1
+
+# Configuration pour éviter les warnings submitit
+export SUBMITIT_BYPASS_SIGNALS=1
+
 echo "PYTHONPATH: $PYTHONPATH"
 echo "--- Environnement LG configuré ---"
 """
 
 
-from config.config import ALL_SUBJECT_GROUPS
+from config.config import ALL_SUBJECTS_GROUPS
 from utils.utils import configure_project_paths
 from config.decoding_config import (
     CLASSIFIER_MODEL_TYPE, USE_GRID_SEARCH_OPTIMIZATION, SAVE_ANALYSIS_RESULTS,
@@ -59,6 +68,17 @@ def group_decoding_task_wrapper(**kwargs):
     """
     import sys
     import os
+    import signal
+    
+    # Gestionnaire de signaux pour éviter les warnings de bypassing
+    def signal_handler(signum, frame):
+        print(f"Received signal {signum}, continuing execution...")
+        return
+    
+    # Configurer les gestionnaires de signaux
+    signal.signal(signal.SIGCONT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+    signal.signal(signal.SIGINT, signal_handler)
 
     project_root = "/home/tom.balay/Baking_EEG" 
     
@@ -87,7 +107,7 @@ def main():
     # Configuration Slurm pour les jobs de groupe
     SLURM_CPUS_PER_GROUP_JOB = 40  # CPUs par groupe
     SLURM_MEMORY_PER_JOB = "75G"   # Mémoire par groupe
-    SLURM_TIMEOUT_MINUTES = 1200000 * 60  # Timeout en minutes
+    SLURM_TIMEOUT_MINUTES = 130000 * 60  # 8 heures en minutes
     SLURM_PARTITION = "CPU"
     SLURM_ACCOUNT = "tom.balay"
 
@@ -98,7 +118,7 @@ def main():
     logger.info(f"  Partition: {SLURM_PARTITION}")
 
     # Groupes à traiter
-    GROUPS_TO_PROCESS = list(ALL_SUBJECT_GROUPS.keys())
+    GROUPS_TO_PROCESS = list(ALL_SUBJECTS_GROUPS.keys())
     logger.info(f"Groupes à traiter: {GROUPS_TO_PROCESS}")
     logger.info(f"Nombre total de groupes: {len(GROUPS_TO_PROCESS)}")
 
@@ -106,11 +126,11 @@ def main():
     failed_submissions = []
 
     for group_name in GROUPS_TO_PROCESS:
-        if group_name not in ALL_SUBJECT_GROUPS:
+        if group_name not in ALL_SUBJECTS_GROUPS:
             logger.warning(f"Groupe '{group_name}' non trouvé dans la configuration. Ignoré.")
             continue
 
-        subjects_for_this_group = ALL_SUBJECT_GROUPS[group_name]
+        subjects_for_this_group = ALL_SUBJECTS_GROUPS[group_name]
         if not subjects_for_this_group:
             logger.warning(f"Aucun sujet défini pour le groupe '{group_name}'. Ignoré.")
             continue
@@ -135,7 +155,8 @@ def main():
             slurm_additional_parameters={
                 "account": SLURM_ACCOUNT,
                 "nodes": 1,  # Un nœud par groupe
-                "exclusive": True  # Utilisation exclusive du nœud
+                "signal": "USR1@180",  # Signal d'avertissement 3 min avant timeout
+                "requeue": True,  # Permettre la remise en file
             }
         )
 
