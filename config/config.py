@@ -555,7 +555,7 @@ ALL_SUBJECTS_GROUPS = {
     "DELIRIUM+": [
         "TpAK24", "TpAK27", "TpCB15", "TpDRL3", "TpJB25", "TpJLR17", "TpMB45", "TpMN42", "TpPC21", "TpPM14", "TpRD38"
     ],
-    "CONTROL": [
+    "CONTROLS_DELIRIUM": [
         "TWB1", "TPC2", "LAB1", "LCM2", "LAT3", "LBM4", "LPO5", "LAG6", "MB103", "FP102", "FG104"
     ],
     "DELIRIUM-": [
