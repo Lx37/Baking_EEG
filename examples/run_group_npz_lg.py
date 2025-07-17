@@ -25,28 +25,6 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 baking_eeg_dir = os.path.join(current_dir, '..')
 if baking_eeg_dir not in sys.path:
     sys.path.insert(0, baking_eeg_dir)
-
-
-def extract_subject_id_from_path(file_path):
-
-    try:
-        from config.config import ALL_SUBJECTS_GROUPS
-        all_ids = set()
-        for group, ids in ALL_SUBJECTS_GROUPS.items():
-            all_ids.update(ids)
-        # Check if any known subject ID is in the path
-        for sid in all_ids:
-            if sid in file_path:
-                return sid
-    except Exception:
-        pass
-    # Fallback: use the parent directory name (should be subject folder)
-    return os.path.basename(os.path.dirname(file_path))
-
-
-
-
-
 try:
     from utils.stats_utils import (
         perform_pointwise_fdr_correction_on_scores,
@@ -69,18 +47,20 @@ warnings.filterwarnings('ignore', category=RuntimeWarning)
 
 
 
-BASE_RESULTS_DIR = "/home/tom.balay/results/Baking_EEG_results_V16"
+BASE_RESULTS_DIR = "/home/tom.balay/results/Baking_EEG_results_V16/intra_subject_lg_results"
 
 GROUP_NAME_MAPPING = {
-    'group_COMA': 'Coma', 'group_CONTROLS_COMA': 'Controls (Coma)',  
-    'group_VS': 'VS/UWS', 'group_DELIRIUM+': 'Delirium +', 'group_DELIRIUM-': 'Delirium -',
-    'group_CONTROLS_DELIRIUM': 'Controls (Delirium)', 'group_MCS': 'MCS',
-   
+    'COMA': 'Coma', 'CONTROLS_COMA': 'Controls (Coma)',
+    'VS': 'VS/UWS', 'DELIRIUM+': 'Delirium +', 'DELIRIUM-': 'Delirium -',
+    'CONTROLS_DELIRIUM': 'Controls (Delirium)', 'MCS': 'MCS',
+    'CONTROLS': 'Controls' # Fallback
 }
+
 GROUP_COLORS = {
     'Controls (Delirium)': '#2ca02c', 'Delirium -': '#ff7f0e', 'Delirium +': '#d62728',
-    'Controls (Coma)': '#2ca02c', 'MCS': '#1f77b4',  
-    'Coma': '#9467bd', 'VS/UWS': '#8c564b', 'CONTROLS': '#2ca02c', 'DELIRIUM+': '#d62728', 'DELIRIUM-': '#ff7f0e',
+    'Controls (Coma)': '#17becf', 'MCS': '#1f77b4',
+    'Coma': '#9467bd', 'VS/UWS': '#8c564b',
+    'Controls': '#2ca02c' # Fallback
 }
 
 KEY_SUFFIXES = {
@@ -105,75 +85,81 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 
-# === FONCTIONS DE TRAITEMENT ===
+
+def extract_subject_id_from_path(file_path):
+    """
+    
+    Tente d'abord de trouver un ID connu depuis la configuration, puis utilise des méthodes de secours.
+    """
+    try:
+        from config.config import ALL_SUBJECTS_GROUPS
+        all_ids = set()
+        for group, ids in ALL_SUBJECTS_GROUPS.items():
+            all_ids.update(ids)
+     
+        for sid in sorted(list(all_ids), key=len, reverse=True): 
+            if sid in file_path:
+                return sid
+    except Exception:
+        pass 
+
+    # Méthodes de secours basées sur des patterns dans le chemin
+    path_parts = file_path.split(os.sep)
+    for part in path_parts:
+        if '_Subj_' in part:
+            return part.split('_Subj_')[1].split('_')[0]
+        if 'Subject_' in part:
+            return part.split('Subject_')[1].split('_')[0]
+
+
+    return os.path.basename(os.path.dirname(file_path))
+
 
 def find_npz_files(base_path):
-    """Trouve et organise les fichiers NPZ par protocole et groupe clinique."""
+    """
+
+    Trouve et organise les fichiers NPZ par protocole et groupe clinique.
+    """
     logger.info("Recherche des fichiers NPZ dans: %s", base_path)
     organized_data = {}
     
-    # Chercher les fichiers de résultats standard
-    standard_pattern = os.path.join(base_path, '**', 'decoding_results_full.npz')
-    standard_files = glob.glob(standard_pattern, recursive=True)
-    
-    # Chercher les fichiers LG spécifiques
-    lg_pattern = os.path.join(base_path, '**', 'lg_decoding_results_full.npz')
-    lg_files = glob.glob(lg_pattern, recursive=True)
-    
-    all_files = standard_files + lg_files
+   
+    all_files = glob.glob(os.path.join(base_path, '**', '*decoding_results_full.npz'), recursive=True)
 
     if not all_files:
         logger.warning("Aucun fichier de résultats NPZ trouvé.")
         return {}
     logger.info("%d fichiers de résultats potentiels trouvés.", len(all_files))
 
+  
+    try:
+        from config.config import ALL_SUBJECTS_GROUPS
+        known_groups = sorted(list(ALL_SUBJECTS_GROUPS.keys()), key=len, reverse=True)
+    except ImportError:
+        known_groups = ['DELIRIUM+', 'DELIRIUM-', 'CONTROLS_DELIRIUM', 'CONTROLS_COMA', 'MCS', 'VS', 'COMA', 'CONTROLS']
+
     for file_path in all_files:
         try:
-            parts = file_path.split(os.sep)
+            path_parts = file_path.split(os.sep)
             
-
-            
-            protocol_name = None
             group_name = None
-            
-          
-            for part in parts:
-                if 'LG' in part and any(keyword in part for keyword in ['COMA', 'DELIRIUM', 'VS', 'MCS', 'CONTROLS']):
-                    protocol_name = part
-                    
-                    if 'COMA' in part:
-                        group_name = 'COMA'
-                    elif 'DELIRIUM+' in part:
-                        group_name = 'DELIRIUM+'
-                    elif 'DELIRIUM-' in part:
-                        group_name = 'DELIRIUM-'
-                    elif 'VS' in part:
-                        group_name = 'VS'
-                    elif 'MCS' in part:
-                        group_name = 'MCS'
-                    elif 'CONTROLS' in part:
-                        group_name = 'CONTROLS'
-                    break
-                elif 'delirium' in part.lower() and 'lg' not in part.lower():
-                    
-                    protocol_name = part
-                    group_name = 'DELIRIUM+'
-                    break
-            
-            
-            if protocol_name is None:
-            
-                for i, part in enumerate(parts):
-                    if any(keyword in part.upper() for keyword in ['DELIRIUM', 'COMA', 'VS', 'MCS', 'CONTROLS']):
-                        protocol_name = part
-                        group_name = 'Unknown'
+            protocol_name = "UnknownProtocol"
+
+            # Itérer sur les parties du chemin pour trouver le nom du groupe et le protocole
+            for part in path_parts:
+                # Chercher le nom de groupe le plus spécifique en premier
+                for known_group in known_groups:
+                    if known_group in part:
+                        group_name = known_group
+                        protocol_name = part # Le nom du dossier est le nom du protocole
                         break
+                if group_name:
+                    break
             
-            if protocol_name is None:
-                logger.warning(f"Impossible d'identifier le protocole pour: {file_path}")
+            if not group_name:
+                logger.warning(f"Impossible d'identifier un groupe connu pour le fichier : {file_path}")
                 continue
-            
-   
+
             if protocol_name not in organized_data:
                 organized_data[protocol_name] = {}
             if group_name not in organized_data[protocol_name]:
@@ -182,7 +168,7 @@ def find_npz_files(base_path):
             organized_data[protocol_name][group_name].append(file_path)
             
         except Exception as e:
-            logger.warning(f"Erreur lors du traitement de {file_path}: {e}")
+            logger.warning(f"Erreur lors du traitement du chemin {file_path}: {e}")
             continue
 
     return organized_data
@@ -190,323 +176,62 @@ def find_npz_files(base_path):
 
 def load_npz_data(file_path):
     """
-    Load and validate NPZ file data, extracting both local and global effects for LG protocol.
+   
+    Charge et valide les données du fichier NPZ, extrayant les effets locaux et globaux.
     """
     try:
         with np.load(file_path, allow_pickle=True) as data:
             data_keys = list(data.keys())
             
-            # Détecter le protocole en fonction des clés disponibles
+            # Détecter si c'est un protocole LG en se basant sur la présence des clés spécifiques
             is_lg_protocol = any(key.startswith('lg_') for key in data_keys)
-            
-            if is_lg_protocol:
-                # Pour le protocole LG, extraire les deux effets
-                local_effect_data = {}
-                global_effect_data = {}
-                
-                # Effet local (LS vs LD)
-                if 'lg_ls_ld_scores_1d_mean' in data_keys:
-                    local_effect_data = {
-                        'scores': data['lg_ls_ld_scores_1d_mean'],
-                        'fdr_key': 'lg_ls_ld_temporal_1d_fdr',
-                        'cluster_key': 'lg_ls_ld_temporal_1d_cluster',
-                        'analysis_type': 'lg_local_effect'
-                    }
-                
-                # Effet global (GS vs GD)
-                if 'lg_gs_gd_scores_1d_mean' in data_keys:
-                    global_effect_data = {
-                        'scores': data['lg_gs_gd_scores_1d_mean'],
-                        'fdr_key': 'lg_gs_gd_temporal_1d_fdr',
-                        'cluster_key': 'lg_gs_gd_temporal_1d_cluster',
-                        'analysis_type': 'lg_global_effect'
-                    }
-                
-                # Vérifier qu'on a au moins un effet
-                if not local_effect_data and not global_effect_data:
-                    logger.warning("No LG effect data found in %s", file_path)
-                    return None
-                
-                # Utiliser l'effet local comme référence principale (comme avant)
-                if local_effect_data:
-                    actual_score_key = 'lg_ls_ld_scores_1d_mean'
-                    actual_fdr_key = 'lg_ls_ld_temporal_1d_fdr'
-                    actual_cluster_key = 'lg_ls_ld_temporal_1d_cluster'
-                    analysis_type = 'lg_local_effect'
-                else:
-                    actual_score_key = 'lg_gs_gd_scores_1d_mean'
-                    actual_fdr_key = 'lg_gs_gd_temporal_1d_fdr'
-                    actual_cluster_key = 'lg_gs_gd_temporal_1d_cluster'
-                    analysis_type = 'lg_global_effect'
-                
-                actual_time_key = 'epochs_time_points'
-                
-            else:
-                # Protocoles classiques (PP, PPext3, Battery)
-                actual_score_key = 'pp_ap_main_scores_1d_mean'
-                actual_time_key = 'epochs_time_points'
-                # Clés réelles pour FDR et Cluster selon la documentation
-                actual_fdr_key = 'pp_ap_main_tgm_fdr'
-                actual_cluster_key = 'pp_ap_main_temporal_1d_cluster'
-                analysis_type = 'pp_main'
-                # Clés TGM si disponibles
-                tgm_fdr_key = 'pp_ap_main_tgm_fdr'
 
-            required_keys = [actual_score_key, actual_time_key]
+            if not is_lg_protocol:
+                # Si ce n'est pas un fichier LG, on l'ignore pour cette analyse
+                return None
 
-            for key in required_keys:
-                if key not in data_keys:
-                    logger.warning(
-                        "Missing required field '%s' in %s. "
-                        "Available keys: %s", key, file_path, data_keys)
-                    return None
+            # Vérifier la présence de la clé temporelle, essentielle pour toute analyse
+            if 'epochs_time_points' not in data_keys:
+                logger.warning(f"Champ temporel requis 'epochs_time_points' manquant dans {file_path}.")
+                return None
+                
+            subject_id = extract_subject_id_from_path(file_path)
 
-          
-            path_parts = file_path.split(os.sep)
-            subject_id = "Unknown"
-           
-            for part in path_parts:
-                # Méthode 1: _Subj_
-                if '_Subj_' in part:
-                    subject_id = part.split('_Subj_')[1].split('_')[0]
-                    break
-                # Méthode 2: Subject_
-                elif 'Subject_' in part:
-                    subject_id = part.split('Subject_')[1].split('_')[0]
-                    break
-                # Méthode 3: Subj_
-                elif 'Subj_' in part and not part.startswith('_Subj_'):
-                    subject_id = part.split('Subj_')[1].split('_')[0]
-                    break
-                # Méthode 4: Pattern avec chiffres
-                elif part.startswith('sub') and any(c.isdigit() for c in part):
-                    subject_id = part
-                    break
-            
-            # Si toujours "Unknown", utiliser le nom du dossier parent
-            if subject_id == "Unknown":
-                for part in reversed(path_parts[:-1]):  # Exclure le fichier lui-même
-                    if any(c.isdigit() for c in part):
-                        subject_id = part
-                        break
-            
-            # Nettoyer l'ID en enlevant les préfixes communs
-            if subject_id.startswith('Subject_'):
-                subject_id = subject_id.replace('Subject_', '')
-            elif subject_id.startswith('Subj_'):
-                subject_id = subject_id.replace('Subj_', '')
-            elif subject_id.startswith('sub'):
-                subject_id = subject_id.replace('sub', '', 1)
-            
-            if subject_id.startswith('_'):
-                subject_id = subject_id[1:]
-            
-            # S'assurer qu'on a un ID valide
-            if not subject_id or subject_id.lower() in ['unknown', 'id']:
-                subject_id = os.path.basename(os.path.dirname(file_path))
-
+            # Initialiser le dictionnaire de résultats
             result = {
-                'scores': data[actual_score_key],
-                'times': data[actual_time_key],
                 'subject_id': subject_id,
                 'file_path': file_path,
-                'analysis_type': analysis_type
+                'times': data['epochs_time_points'],
+                'analysis_type': 'lg_protocol'
             }
 
-            # Pour le protocole LG, ajouter les données des deux effets
-            if is_lg_protocol:
-                if local_effect_data:
-                    result['local_effect_scores'] = local_effect_data['scores']
-                    # Ajouter les données FDR/cluster pour l'effet local
-                    if local_effect_data['fdr_key'] in data_keys:
-                        fdr_data = data[local_effect_data['fdr_key']]
-                        result['local_effect_fdr'] = extract_fdr_data(fdr_data, data[actual_score_key])
-                    if local_effect_data['cluster_key'] in data_keys:
-                        cluster_data = data[local_effect_data['cluster_key']]
-                        result['local_effect_cluster'] = extract_cluster_data(cluster_data, data[actual_score_key])
-                    
-                    # Ajouter les données TGM pour l'effet local
-                    lg_local_tgm_key = 'lg_ls_ld_tgm_mean'
-                    if lg_local_tgm_key in data_keys:
-                        result['local_effect_tgm'] = data[lg_local_tgm_key]
-                
-                if global_effect_data:
-                    result['global_effect_scores'] = global_effect_data['scores']
-                    # Ajouter les données FDR/cluster pour l'effet global
-                    if global_effect_data['fdr_key'] in data_keys:
-                        fdr_data = data[global_effect_data['fdr_key']]
-                        result['global_effect_fdr'] = extract_fdr_data(fdr_data, data[actual_score_key])
-                    if global_effect_data['cluster_key'] in data_keys:
-                        cluster_data = data[global_effect_data['cluster_key']]
-                        result['global_effect_cluster'] = extract_cluster_data(cluster_data, data[actual_score_key])
-                    
-                    # Ajouter les données TGM pour l'effet global
-                    lg_global_tgm_key = 'lg_gs_gd_tgm_mean'
-                    if lg_global_tgm_key in data_keys:
-                        result['global_effect_tgm'] = data[lg_global_tgm_key]
-                
-                # Ajouter les métriques globales de performance
+            # --- Traitement de l'Effet Local (LS vs LD) ---
+            if 'lg_ls_ld_scores_1d_mean' in data_keys:
+                result['local_effect_scores'] = data['lg_ls_ld_scores_1d_mean']
+                if 'lg_ls_ld_tgm_mean' in data_keys:
+                    result['local_effect_tgm'] = data['lg_ls_ld_tgm_mean']
                 if 'lg_ls_ld_mean_auc_global' in data_keys:
                     result['local_effect_auc_global'] = data['lg_ls_ld_mean_auc_global']
+                # On pourrait aussi extraire les données FDR/cluster ici si nécessaire
+
+            # --- Traitement de l'Effet Global (GS vs GD) ---
+            if 'lg_gs_gd_scores_1d_mean' in data_keys:
+                result['global_effect_scores'] = data['lg_gs_gd_scores_1d_mean']
+                if 'lg_gs_gd_tgm_mean' in data_keys:
+                    result['global_effect_tgm'] = data['lg_gs_gd_tgm_mean']
                 if 'lg_gs_gd_mean_auc_global' in data_keys:
                     result['global_effect_auc_global'] = data['lg_gs_gd_mean_auc_global']
             
-            else:
-                # Pour les protocoles classiques, ajouter les TGM si disponibles
-                tgm_key = 'pp_ap_main_tgm_mean'
-                if tgm_key in data_keys:
-                    result['tgm'] = data[tgm_key]
-                
-                # Ajouter les métriques globales de performance
-                if 'pp_ap_main_mean_auc_global' in data_keys:
-                    result['auc_global'] = data['pp_ap_main_mean_auc_global']
-
-            # Clés TGM si disponibles
-            tgm_fdr_key = 'pp_ap_main_tgm_fdr'
-
-            # Extraire les données FDR et Cluster avec des méthodes séparées
-            if actual_fdr_key in data_keys:
-                fdr_data = data[actual_fdr_key]
-                fdr_result = extract_fdr_data(fdr_data, data[actual_score_key])
-                result.update(fdr_result)
-            else:
-                result['fdr_mask'] = np.zeros_like(data[actual_score_key], dtype=bool)
-                result['fdr_pvalues'] = np.ones_like(data[actual_score_key])
-
-            if actual_cluster_key in data_keys:
-                cluster_data = data[actual_cluster_key]
-                cluster_result = extract_cluster_data(cluster_data, data[actual_score_key])
-                result.update(cluster_result)
-            else:
-                result['cluster_mask'] = np.zeros_like(data[actual_score_key], dtype=bool)
-                result['cluster_pvalues'] = np.ones_like(data[actual_score_key])
-
-            if result['scores'] is None or result['times'] is None:
-                logger.warning("Data for scores or times is None in %s", file_path)
-                return None
-            if len(result['scores']) == 0 or len(result['times']) == 0:
-                logger.warning("Data for scores or times is empty in %s", file_path)
+            # Vérifier qu'au moins un des deux effets a été trouvé
+            if 'local_effect_scores' not in result and 'global_effect_scores' not in result:
+                logger.warning(f"Aucune donnée d'effet local ou global trouvée dans le fichier LG : {file_path}")
                 return None
 
             return result
 
     except Exception as e:
-        logger.error("Error loading NPZ file %s: %s", file_path, e)
+        logger.error("Erreur lors du chargement du fichier NPZ %s: %s", file_path, e)
         return None
-
-
-def extract_fdr_data(fdr_data, reference_scores):
-    """Helper function to extract FDR data"""
-    if isinstance(fdr_data, np.ndarray) and fdr_data.dtype == object:
-        try:
-            fdr_dict = fdr_data.item()
-            if isinstance(fdr_dict, dict):
-                return {
-                    'fdr_mask': fdr_dict.get('mask', np.zeros_like(reference_scores, dtype=bool)),
-                    'fdr_pvalues': fdr_dict.get('p_values', np.ones_like(reference_scores)),
-                    'fdr_pvalues_raw': fdr_dict.get('p_values_raw', np.ones_like(reference_scores)),
-                    'fdr_method': fdr_dict.get('method', 'Unknown')
-                }
-        except Exception as e:
-            logger.warning("Error extracting FDR data: %s", e)
-    
-    return {
-        'fdr_mask': np.zeros_like(reference_scores, dtype=bool),
-        'fdr_pvalues': np.ones_like(reference_scores)
-    }
-
-
-def extract_cluster_data(cluster_data, reference_scores):
-    """Helper function to extract cluster data"""
-    if isinstance(cluster_data, np.ndarray) and cluster_data.dtype == object:
-        try:
-            cluster_dict = cluster_data.item()
-            if isinstance(cluster_dict, dict):
-                return {
-                    'cluster_mask': cluster_dict.get('mask', np.zeros_like(reference_scores, dtype=bool)),
-                    'cluster_pvalues': cluster_dict.get('p_values_all_clusters', np.ones_like(reference_scores)),
-                    'cluster_objects': cluster_dict.get('cluster_objects', []),
-                    'cluster_method': cluster_dict.get('method', 'Unknown')
-                }
-        except Exception as e:
-            logger.warning("Error extracting cluster data: %s", e)
-    
-    return {
-        'cluster_mask': np.zeros_like(reference_scores, dtype=bool),
-        'cluster_pvalues': np.ones_like(reference_scores)
-    }
-
-
-def analyze_group_data(group_files, group_name):
-    """
-    Analyser les données d'un groupe spécifique et extraire les statistiques.
-    Exclut tout sujet ayant moins de 801 points temporels.
-    """
-    logger.info(f"Analyse du groupe {group_name} avec {len(group_files)} sujets")
-
-    group_data = []
-    subject_ids = []
-    fdr_masks = []
-    cluster_masks = []
-    fdr_pvalues = []
-    cluster_pvalues = []
-
-    for file_path in group_files:
-        data = load_npz_data(file_path)
-        if data is not None:
-            n_timepoints = len(data['scores']) if 'scores' in data else 0
-            if n_timepoints < 801:
-                logger.warning(f"Subject {data['subject_id']} excluded: only {n_timepoints} timepoints (required: 801)")
-                continue
-            group_data.append(data)
-            subject_ids.append(data['subject_id'])
-            fdr_masks.append(data.get('fdr_mask', np.array([])))
-            cluster_masks.append(data.get('cluster_mask', np.array([])))
-            fdr_pvalues.append(data.get('fdr_pvalues', np.array([])))
-            cluster_pvalues.append(data.get('cluster_pvalues', np.array([])))
-
-    if not group_data:
-        logger.warning(f"Aucune donnée valide trouvée pour le groupe {group_name}")
-        return {}
-
-    # Toutes les données sont déjà à 801 points temporels, pas besoin de standardisation
-    scores_matrix = np.array([d['scores'] for d in group_data])
-    times = group_data[0]['times'] if group_data[0]['times'] is not None else None
-
-    # Calculs statistiques simples
-    group_mean = np.nanmean(scores_matrix, axis=0)
-    group_std = np.nanstd(scores_matrix, axis=0)
-    group_sem = group_std / np.sqrt(len(group_data))
-
-    # Compter les sujets significatifs à chaque point temporel
-    fdr_count = np.zeros(801)
-    cluster_count = np.zeros(801)
-    for mask in fdr_masks:
-        if len(mask) == 801:
-            fdr_count += mask.astype(int)
-    for mask in cluster_masks:
-        if len(mask) == 801:
-            cluster_count += mask.astype(int)
-
-    return {
-        'group_name': group_name,
-        'n_subjects': len(group_data),
-        'subject_ids': subject_ids,
-        'scores_matrix': scores_matrix,
-        'group_mean': group_mean,
-        'group_std': group_std,
-        'group_sem': group_sem,
-        'times': times,
-        'fdr_masks': fdr_masks,
-        'cluster_masks': cluster_masks,
-        'fdr_pvalues': fdr_pvalues,
-        'cluster_pvalues': cluster_pvalues,
-        'fdr_count': fdr_count,
-        'cluster_count': cluster_count,
-        'subject_means': np.nanmean(scores_matrix, axis=1),
-        'group_data': group_data
-    }
-
 
 def analyze_group_data_lg(group_files, group_name):
     """
@@ -514,7 +239,7 @@ def analyze_group_data_lg(group_files, group_name):
     """
     logger.info(f"Analyse LG du groupe {group_name} avec {len(group_files)} sujets")
     
-    group_data = []
+    group_data_list = []
     subject_ids = []
     local_scores_list = []
     global_scores_list = []
@@ -526,121 +251,82 @@ def analyze_group_data_lg(group_files, group_name):
     for file_path in group_files:
         data = load_npz_data(file_path)
         if data is not None:
-            group_data.append(data)
+            group_data_list.append(data)
             subject_ids.append(data['subject_id'])
             
-            # Extraire les scores pour les effets local et global
-            if 'local_effect_scores' in data:
+            if 'local_effect_scores' in data and data['local_effect_scores'] is not None:
                 local_scores_list.append(data['local_effect_scores'])
-            if 'global_effect_scores' in data:
+                if 'local_effect_tgm' in data and data['local_effect_tgm'] is not None:
+                    local_tgm_list.append(data['local_effect_tgm'])
+                if 'local_effect_auc_global' in data:
+                    local_auc_global_list.append(data['local_effect_auc_global'])
+                    
+            if 'global_effect_scores' in data and data['global_effect_scores'] is not None:
                 global_scores_list.append(data['global_effect_scores'])
-            
-            # Extraire les données TGM
-            if 'local_effect_tgm' in data:
-                local_tgm_list.append(data['local_effect_tgm'])
-            if 'global_effect_tgm' in data:
-                global_tgm_list.append(data['global_effect_tgm'])
-            
-            # Extraire les métriques globales AUC
-            if 'local_effect_auc_global' in data:
-                local_auc_global_list.append(data['local_effect_auc_global'])
-            if 'global_effect_auc_global' in data:
-                global_auc_global_list.append(data['global_effect_auc_global'])
+                if 'global_effect_tgm' in data and data['global_effect_tgm'] is not None:
+                    global_tgm_list.append(data['global_effect_tgm'])
+                if 'global_effect_auc_global' in data:
+                    global_auc_global_list.append(data['global_effect_auc_global'])
     
-    if not group_data:
+    if not group_data_list:
         logger.warning(f"Aucune donnée valide trouvée pour le groupe {group_name}")
         return {}
     
-    # Déterminer la longueur de référence pour le protocole LG
-    reference_length = 801  # Protocole LG utilise 801 points temporels
-    times = group_data[0]['times'][:reference_length] if group_data[0]['times'] is not None else None
+    reference_length = 801
+    times = group_data_list[0]['times'][:reference_length] if group_data_list[0]['times'] is not None else None
     
     result = {
         'group_name': group_name,
-        'n_subjects': len(group_data),
+        'n_subjects': len(group_data_list),
         'subject_ids': subject_ids,
         'times': times,
-        'group_data': group_data
+        'group_data': group_data_list
     }
     
-    # Traiter l'effet local si disponible
+
     if local_scores_list:
-        # Standardiser les scores locaux
         local_standardized = []
         for scores in local_scores_list:
-            if np.any(np.isnan(scores)):
-                scores = np.where(np.isnan(scores), CHANCE_LEVEL, scores)
-            local_standardized.append(scores[:reference_length])
+            if scores is not None and len(scores) >= reference_length:
+                scores_clean = np.nan_to_num(scores[:reference_length], nan=CHANCE_LEVEL)
+                local_standardized.append(scores_clean)
         
-        local_matrix = np.array(local_standardized)
-        result['local_effect'] = {
-            'scores_matrix': local_matrix,
-            'group_mean': np.nanmean(local_matrix, axis=0),
-            'group_std': np.nanstd(local_matrix, axis=0),
-            'group_sem': np.nanstd(local_matrix, axis=0) / np.sqrt(len(local_standardized))
-        }
-        
-        # Traiter les TGM locaux si disponibles
-        if local_tgm_list:
-            local_tgm_standardized = []
-            for tgm in local_tgm_list:
-                if np.any(np.isnan(tgm)):
-                    tgm = np.where(np.isnan(tgm), CHANCE_LEVEL, tgm)
-                # Assurer que les TGM ont la bonne taille
-                if tgm.shape[0] >= reference_length and tgm.shape[1] >= reference_length:
-                    local_tgm_standardized.append(tgm[:reference_length, :reference_length])
-            
-            if local_tgm_standardized:
-                local_tgm_matrix = np.array(local_tgm_standardized)
-                result['local_effect']['tgm_matrix'] = local_tgm_matrix
-                result['local_effect']['tgm_mean'] = np.nanmean(local_tgm_matrix, axis=0)
-                result['local_effect']['tgm_std'] = np.nanstd(local_tgm_matrix, axis=0)
-        
-        # Traiter les AUC globaux locaux si disponibles
-        if local_auc_global_list:
-            result['local_effect']['auc_global_values'] = np.array(local_auc_global_list)
-            result['local_effect']['auc_global_mean'] = np.nanmean(local_auc_global_list)
-            result['local_effect']['auc_global_std'] = np.nanstd(local_auc_global_list)
-    
-    # Traiter l'effet global si disponible
+        if local_standardized:
+            local_matrix = np.array(local_standardized)
+            result['local_effect'] = {
+                'scores_matrix': local_matrix,
+                'group_mean': np.nanmean(local_matrix, axis=0),
+                'group_std': np.nanstd(local_matrix, axis=0),
+                'group_sem': np.nanstd(local_matrix, axis=0) / np.sqrt(len(local_standardized))
+            }
+            if local_tgm_list:
+               
+                result['local_effect']['tgm_mean'] = np.nanmean(np.array(local_tgm_list), axis=0)
+            if local_auc_global_list:
+                result['local_effect']['auc_global_values'] = np.array(local_auc_global_list)
+
+  
     if global_scores_list:
-        # Standardiser les scores globaux
         global_standardized = []
         for scores in global_scores_list:
-            if np.any(np.isnan(scores)):
-                scores = np.where(np.isnan(scores), CHANCE_LEVEL, scores)
-            global_standardized.append(scores[:reference_length])
-        
-        global_matrix = np.array(global_standardized)
-        result['global_effect'] = {
-            'scores_matrix': global_matrix,
-            'group_mean': np.nanmean(global_matrix, axis=0),
-            'group_std': np.nanstd(global_matrix, axis=0),
-            'group_sem': np.nanstd(global_matrix, axis=0) / np.sqrt(len(global_standardized))
-        }
-        
-        # Traiter les TGM globaux si disponibles
-        if global_tgm_list:
-            global_tgm_standardized = []
-            for tgm in global_tgm_list:
-                if np.any(np.isnan(tgm)):
-                    tgm = np.where(np.isnan(tgm), CHANCE_LEVEL, tgm)
-                # Assurer que les TGM ont la bonne taille
-                if tgm.shape[0] >= reference_length and tgm.shape[1] >= reference_length:
-                    global_tgm_standardized.append(tgm[:reference_length, :reference_length])
-            
-            if global_tgm_standardized:
-                global_tgm_matrix = np.array(global_tgm_standardized)
-                result['global_effect']['tgm_matrix'] = global_tgm_matrix
-                result['global_effect']['tgm_mean'] = np.nanmean(global_tgm_matrix, axis=0)
-                result['global_effect']['tgm_std'] = np.nanstd(global_tgm_matrix, axis=0)
-        
-        # Traiter les AUC globaux si disponibles
-        if global_auc_global_list:
-            result['global_effect']['auc_global_values'] = np.array(global_auc_global_list)
-            result['global_effect']['auc_global_mean'] = np.nanmean(global_auc_global_list)
-            result['global_effect']['auc_global_std'] = np.nanstd(global_auc_global_list)
-    
+            if scores is not None and len(scores) >= reference_length:
+                scores_clean = np.nan_to_num(scores[:reference_length], nan=CHANCE_LEVEL)
+                global_standardized.append(scores_clean)
+
+        if global_standardized:
+            global_matrix = np.array(global_standardized)
+            result['global_effect'] = {
+                'scores_matrix': global_matrix,
+                'group_mean': np.nanmean(global_matrix, axis=0),
+                'group_std': np.nanstd(global_matrix, axis=0),
+                'group_sem': np.nanstd(global_matrix, axis=0) / np.sqrt(len(global_standardized))
+            }
+            if global_tgm_list:
+               
+                result['global_effect']['tgm_mean'] = np.nanmean(np.array(global_tgm_list), axis=0)
+            if global_auc_global_list:
+                result['global_effect']['auc_global_values'] = np.array(global_auc_global_list)
+
     logger.info(f"Groupe {group_name} analysé - Effet local: {len(local_scores_list)} sujets, Effet global: {len(global_scores_list)} sujets")
     
     return result
@@ -669,10 +355,10 @@ def plot_group_individual_curves(group_data, save_dir, show_plots=True):
     individual_alpha = 0.2
     mean_alpha = 0.8
     
-    fig, axes = plt.subplots(1, 2, figsize=(20, 8))
+    fig, axes = plt.subplots(1, 2, figsize=(20, 8), sharey=True) # Ajout de sharey pour une meilleure comparaison
     
     # Plot 1: Effet Local (LS vs LD)
-    if 'local_effect' in group_data:
+    if 'local_effect' in group_data and group_data['local_effect']:
         ax1 = axes[0]
         local_data = group_data['local_effect']
         
@@ -700,10 +386,8 @@ def plot_group_individual_curves(group_data, save_dir, show_plots=True):
                         group_mean_truncated + group_sem_truncated,
                         color=group_color, alpha=0.3)
         
-        # Ligne de chance
         ax1.axhline(y=CHANCE_LEVEL, color='black', linestyle='--', alpha=0.5, label='Chance level')
         ax1.axvline(x=0, color='black', linestyle='-', alpha=0.3)
-        
         ax1.set_xlabel('Time (ms)', fontsize=14)
         ax1.set_ylabel('Score AUC', fontsize=14)
         ax1.set_title(f'Local Effect (LS vs LD) - {GROUP_NAME_MAPPING.get(group_name, group_name)}', fontsize=16)
@@ -716,21 +400,18 @@ def plot_group_individual_curves(group_data, save_dir, show_plots=True):
         axes[0].set_title(f'Local Effect (LS vs LD) - {GROUP_NAME_MAPPING.get(group_name, group_name)}', fontsize=16)
     
     # Plot 2: Effet Global (GS vs GD)
-    if 'global_effect' in group_data:
+    if 'global_effect' in group_data and group_data['global_effect']:
         ax2 = axes[1]
         global_data = group_data['global_effect']
         
-        # Assurer que les dimensions correspondent
         min_length = min(len(times_ms), global_data['scores_matrix'].shape[1])
         times_ms_truncated = times_ms[:min_length]
         
-        # Courbes individuelles en arrière-plan
         for i in range(global_data['scores_matrix'].shape[0]):
             scores_truncated = global_data['scores_matrix'][i, :min_length]
             ax2.plot(times_ms_truncated, scores_truncated, 
                     color=group_color, alpha=individual_alpha, linewidth=1)
         
-        # Moyenne du groupe en avant-plan
         group_mean_truncated = global_data['group_mean'][:min_length]
         group_sem_truncated = global_data['group_sem'][:min_length]
         
@@ -738,22 +419,17 @@ def plot_group_individual_curves(group_data, save_dir, show_plots=True):
                 color=group_color, alpha=mean_alpha, linewidth=3, 
                 label=f'{GROUP_NAME_MAPPING.get(group_name, group_name)} (n={group_data["n_subjects"]})')
         
-        # Bande d'erreur (SEM)
         ax2.fill_between(times_ms_truncated, 
                         group_mean_truncated - group_sem_truncated,
                         group_mean_truncated + group_sem_truncated,
                         color=group_color, alpha=0.3)
         
-        # Ligne de chance
         ax2.axhline(y=CHANCE_LEVEL, color='black', linestyle='--', alpha=0.5, label='Chance level')
         ax2.axvline(x=0, color='black', linestyle='-', alpha=0.3)
-        
         ax2.set_xlabel('Time (ms)', fontsize=14)
-        ax2.set_ylabel('Score AUC', fontsize=14)
         ax2.set_title(f'Global Effect (GS vs GD) - {GROUP_NAME_MAPPING.get(group_name, group_name)}', fontsize=16)
         ax2.legend(fontsize=12)
         ax2.grid(True, alpha=0.3)
-        ax2.set_ylim([0.4, 0.8])
     else:
         axes[1].text(0.5, 0.5, 'No Global Effect Data', 
                     transform=axes[1].transAxes, ha='center', va='center', fontsize=16)
@@ -761,10 +437,9 @@ def plot_group_individual_curves(group_data, save_dir, show_plots=True):
     
     plt.tight_layout()
     
-    # Sauvegarder
     if save_dir:
         os.makedirs(save_dir, exist_ok=True)
-        filename = f"group_{group_name}_individual_curves.png"
+        filename = f"group_{group_name.replace('/', '_')}_individual_curves.png"
         filepath = os.path.join(save_dir, filename)
         plt.savefig(filepath, dpi=300, bbox_inches='tight')
         logger.info(f"Graphique sauvegardé: {filepath}")
@@ -1000,7 +675,7 @@ def add_significance_bars(ax, groups_data, stats_results, y_positions, bar_heigh
         elif p_value < 0.05:
             significance = "*"
         else:
-            significance = ""
+            continue  # Ne pas afficher de barre si non significatif
         
         # Extraire les noms des groupes
         group1, group2 = comparison_key.split('_vs_')
@@ -1209,7 +884,7 @@ def plot_group_tgm_individual(all_groups_data, save_dir, show_plots=True):
                             fdr_mask = None
                     else:
                         logger.info(f"Groupe {group_name} - {effect_type}: un seul sujet, TGM exclue de l'analyse")
-                        # Passer ce groupe car il n'y a qu'un seul sujet
+             
                         continue
                 
                 # Créer la figure
@@ -1270,175 +945,6 @@ def plot_group_tgm_individual(all_groups_data, save_dir, show_plots=True):
                 else:
                     plt.close()
 
-
-def analyze_temporal_windows(all_groups_data, save_dir, show_plots=True):
-    """
-    Analyser les fenêtres temporelles spécifiques (T100, T200, T_all) et créer des graphiques
-    avec les moyennes des fenêtres pour chaque participant (style graphique de référence).
-    
-    Args:
-        all_groups_data: Liste des données de tous les groupes
-        save_dir: Répertoire pour sauvegarder les graphiques
-        show_plots: Afficher les graphiques
-    """
-    # Définir les fenêtres temporelles d'intérêt (en ms)
-    windows = {
-        'T100': (80, 120),    # Fenêtre autour de 100ms  
-        'T200': (180, 220),   # Fenêtre autour de 200ms
-        'T_all': (0, 600)     # Fenêtre complète
-    }
-    
-    for effect_type in ['local', 'global']:
-        logger.info(f"Analyse des fenêtres temporelles pour l'effet {effect_type}")
-        
-        # Créer une figure pour chaque groupe
-        for group_data in all_groups_data:
-            group_name = group_data['group_name']
-            effect_key = f'{effect_type}_effect'
-            
-            if effect_key not in group_data:
-                logger.warning(f"Pas de données pour l'effet {effect_type} dans le groupe {group_name}")
-                continue
-            
-            effect_data = group_data[effect_key]
-            if 'scores_matrix' not in effect_data:
-                logger.warning(f"Pas de matrice de scores pour l'effet {effect_type} dans le groupe {group_name}")
-                continue
-            
-            scores_matrix = effect_data['scores_matrix']
-            times = group_data.get('times')
-            n_subjects = scores_matrix.shape[0]
-            
-            if times is None:
-                logger.warning(f"Pas de données temporelles pour le groupe {group_name}")
-                continue
-            
-            # Convertir les temps en millisecondes si nécessaire
-            if np.max(times) <= 2:
-                times_ms = times * 1000
-            else:
-                times_ms = times
-            
-            # Couleur du groupe
-            group_color = GROUP_COLORS.get(GROUP_NAME_MAPPING.get(group_name, group_name), '#1f77b4')
-            
-            # Créer une figure avec 3 colonnes pour les 3 fenêtres
-            fig, axes = plt.subplots(1, 3, figsize=(15, 6))
-            
-            # Calculer les moyennes des fenêtres pour chaque participant
-            subjects_window_means = {window: [] for window in windows.keys()}
-            
-            for subj_idx in range(n_subjects):
-                subject_scores = scores_matrix[subj_idx, :]
-                
-                # Ajuster les dimensions si nécessaire
-                min_length = min(len(times_ms), len(subject_scores))
-                times_ms_truncated = times_ms[:min_length]
-                subject_scores_truncated = subject_scores[:min_length]
-                
-                # Calculer la moyenne pour chaque fenêtre
-                for window_name, (start_ms, end_ms) in windows.items():
-                    # Trouver les indices correspondant aux fenêtres temporelles
-                    start_idx = np.argmin(np.abs(times_ms_truncated - start_ms))
-                    end_idx = np.argmin(np.abs(times_ms_truncated - end_ms))
-                    
-                    if start_idx < end_idx and end_idx <= len(subject_scores_truncated):
-                        window_scores = subject_scores_truncated[start_idx:end_idx]
-                        window_mean = np.mean(window_scores)
-                        subjects_window_means[window_name].append(window_mean)
-                    else:
-                        subjects_window_means[window_name].append(np.nan)
-            
-            # Créer les graphiques pour chaque fenêtre
-            window_names = list(windows.keys())
-            for i, window_name in enumerate(window_names):
-                ax = axes[i]
-                window_means = subjects_window_means[window_name]
-                
-                # Supprimer les NaN
-                valid_means = [m for m in window_means if not np.isnan(m)]
-                
-                if len(valid_means) > 0:
-                    # Positions x pour les points (jittering léger pour éviter la superposition)
-                    x_positions = np.random.normal(0, 0.03, len(valid_means))
-                    
-                    # Tracer les points individuels
-                    ax.scatter(x_positions, valid_means, color=group_color, alpha=0.7, s=50)
-                    
-                    # Ajouter une ligne horizontale pour la moyenne du groupe
-                    group_mean = np.mean(valid_means)
-                    ax.axhline(y=group_mean, color=group_color, linewidth=3, alpha=0.8)
-                    
-                    # Ajouter des lignes connectant les points pour chaque participant
-                    if i > 0:  # Connecter avec la fenêtre précédente
-                        prev_window = window_names[i-1]
-                        prev_means = subjects_window_means[prev_window]
-                        
-                        for j, (prev_mean, curr_mean) in enumerate(zip(prev_means, window_means)):
-                            if not np.isnan(prev_mean) and not np.isnan(curr_mean):
-                                # Ligne de connexion entre les fenêtres
-                                ax.plot([-1, 0], [prev_mean, curr_mean], 
-                                       color=group_color, alpha=0.5, linewidth=1)
-                
-                # Ligne de chance
-                ax.axhline(y=CHANCE_LEVEL, color='black', linestyle='--', alpha=0.5, linewidth=1)
-                
-                # Personnaliser le graphique
-                ax.set_xlim(-0.5, 0.5)
-                ax.set_ylim(0.4, 1.0)
-                ax.set_ylabel('Score AUC', fontsize=12)
-                ax.set_title(f'{window_name}', fontsize=14, fontweight='bold')
-                ax.grid(True, alpha=0.3)
-                
-                # Supprimer les ticks x
-                ax.set_xticks([])
-                
-                # Ajouter le test statistique contre le niveau de chance
-                if len(valid_means) > 1:
-                    from scipy.stats import wilcoxon
-                    try:
-                        # Test contre le niveau de chance
-                        diff_from_chance = np.array(valid_means) - CHANCE_LEVEL
-                        stat, p_value = wilcoxon(diff_from_chance, alternative='two-sided')
-                        
-                        # Ajouter l'annotation de significativité
-                        if p_value < 0.001:
-                            significance = "***"
-                        elif p_value < 0.01:
-                            significance = "**"
-                        elif p_value < 0.05:
-                            significance = "*"
-                        else:
-                            significance = "ns"
-                        
-                        # Placer l'annotation en bas du graphique
-                        ax.text(0, 0.42, significance, ha='center', va='center', 
-                               fontsize=16, fontweight='bold')
-                        
-                    except Exception as e:
-                        logger.warning(f"Erreur dans le test statistique pour {window_name}: {e}")
-            
-            # Titre général
-            mapped_name = GROUP_NAME_MAPPING.get(group_name, group_name)
-            fig.suptitle(f'{mapped_name} - {effect_type.capitalize()} Effect - Temporal Windows\n(n={n_subjects})', 
-                        fontsize=16, fontweight='bold')
-            
-            plt.tight_layout()
-            
-            # Sauvegarder
-            if save_dir:
-                os.makedirs(save_dir, exist_ok=True)
-                filename = f"temporal_windows_{effect_type}_group_{group_name}.png"
-                filepath = os.path.join(save_dir, filename)
-                plt.savefig(filepath, dpi=300, bbox_inches='tight')
-                logger.info(f"Graphique des fenêtres temporelles sauvegardé: {filepath}")
-            
-            if show_plots:
-                plt.show()
-            else:
-                plt.close()
-
-
 def create_temporal_windows_comparison_boxplots(all_groups_data, save_dir, show_plots=True):
     """
     Créer des boxplots pour comparer les différences entre les fenêtres temporelles
@@ -1451,9 +957,9 @@ def create_temporal_windows_comparison_boxplots(all_groups_data, save_dir, show_
     """
     # Définir les fenêtres temporelles d'intérêt (en ms)
     windows = {
-        'T100': (80, 120),    # Fenêtre autour de 100ms
-        'T200': (180, 220),   # Fenêtre autour de 200ms
-        'T_all': (0, 600)     # Fenêtre complète
+        'T100': (90, 110),    # Fenêtre autour de 100ms
+        'T200': (190, 210),   # Fenêtre autour de 200ms
+        'T_all': (0, 800)     # Fenêtre complète
     }
     
     for effect_type in ['local', 'global']:
@@ -1582,7 +1088,7 @@ def create_temporal_windows_comparison_boxplots(all_groups_data, save_dir, show_
                             y_coords = subject_data_sorted['AUC'].values
                             ax.plot(x_coords, y_coords, 'k-', alpha=0.3, linewidth=0.5)
             
-            # Personnaliser le graphique
+
             ax.set_xticks(range(len(windows_to_plot)))
             ax.set_xticklabels(windows_to_plot)
             ax.set_ylabel('AUC', fontsize=12)
@@ -1591,7 +1097,7 @@ def create_temporal_windows_comparison_boxplots(all_groups_data, save_dir, show_
             ax.grid(True, alpha=0.3)
             ax.set_ylim(0.4, 0.8)
             
-            # Effectuer des tests statistiques si il y a assez de données
+           
             if len(group_data_df) >= 6:  # Au moins 2 sujets avec 3 fenêtres
                 # Test de Wilcoxon pour comparer T100 vs T_all et T200 vs T_all
                 try:
@@ -1629,7 +1135,7 @@ def create_temporal_windows_comparison_boxplots(all_groups_data, save_dir, show_
         
         plt.tight_layout()
         
-        # Sauvegarder
+
         if save_dir:
             os.makedirs(save_dir, exist_ok=True)
             filename = f"temporal_windows_comparison_boxplots_{effect_type}.png"
@@ -1787,7 +1293,7 @@ def create_temporal_windows_connected_plots(all_groups_data, save_dir, show_plot
                         elif p_value < 0.05:
                             significance = "*"
                         else:
-                            significance = "ns"
+                            continue  # Ne pas afficher de barre si non significatif
                         
                         # Placer l'annotation en bas du graphique
                         ax.text(window_idx, 0.42, significance, ha='center', va='center', 
@@ -1818,7 +1324,7 @@ def create_temporal_windows_connected_plots(all_groups_data, save_dir, show_plot
             # Sauvegarder
             if save_dir:
                 os.makedirs(save_dir, exist_ok=True)
-                filename = f"temporal_windows_connected_{effect_type}_group_{group_name}.png"
+                filename = f"temporal_windows_connected_{effect_type}_group_{group_name.replace('/', '_')}.png"
                 filepath = os.path.join(save_dir, filename)
                 plt.savefig(filepath, dpi=300, bbox_inches='tight')
                 logger.info(f"Graphique connecté des fenêtres temporelles sauvegardé: {filepath}")
@@ -1840,101 +1346,32 @@ def analyze_individual_significance_proportions(all_groups_data, save_dir, show_
         show_plots: Afficher les graphiques
     """
     from scipy.stats import wilcoxon
-    import matplotlib.patches as mpatches
-    
     for effect_type in ['local', 'global']:
         logger.info(f"Analyse des proportions de significativité pour l'effet {effect_type}")
-        
-        # Préparer les données pour tous les groupes
         groups_analysis = []
-        
         for group_data in all_groups_data:
             group_name = group_data['group_name']
             effect_key = f'{effect_type}_effect'
-            
             if effect_key not in group_data:
                 logger.warning(f"Pas de données pour l'effet {effect_type} dans le groupe {group_name}")
                 continue
-            
             effect_data = group_data[effect_key]
             if 'auc_global_values' not in effect_data:
                 logger.warning(f"Pas de valeurs AUC globales pour l'effet {effect_type} dans le groupe {group_name}")
                 continue
-            
             auc_values = effect_data['auc_global_values']
-            # Supprimer les NaN
             valid_auc_values = auc_values[~np.isnan(auc_values)]
-            
             if len(valid_auc_values) == 0:
                 logger.warning(f"Aucune valeur AUC valide pour le groupe {group_name}")
                 continue
-            
-            # Tester chaque participant individuellement contre la chance
             individual_results = []
             significant_count = 0
-            
+            # Correction : chaque sujet n'est ajouté qu'une seule fois dans individual_results
             for subj_idx, auc_value in enumerate(valid_auc_values):
-                # Pour un seul participant, on ne peut pas faire de test statistique
-                # On utilise une heuristique: si l'AUC est suffisamment éloignée de la chance
-                # Alternative: utiliser les scores temporels pour faire un test de Wilcoxon
-                
-                # Récupérer l'AUC global du participant
-                # Test direct sur l'AUC global individuel contre la chance
-                try:
-                    # Test binomial ou test t à un échantillon sur l'AUC global
-                    # Comme on n'a qu'une seule valeur AUC par participant, on utilise un seuil statistique
-                    # basé sur la distribution binomiale ou on groupe les AUC pour le test
-                    
-                    # Pour un test individuel sur l'AUC, on peut utiliser la significativité statistique
-                    # basée sur la distribution de l'AUC ou un seuil conservateur
-                    
-                    # Critère simple mais robuste : AUC significativement > chance
-                    # On peut calculer un intervalle de confiance ou utiliser un seuil statistique
-                    
-                    # Méthode 1: Seuil statistique basé sur la distribution binomiale
-                    # Pour un test binomial, AUC > 0.5 avec un seuil de confiance
-                    
-                    # Méthode 2: Test sur l'AUC directement
-                    is_auc_above_chance = auc_value > CHANCE_LEVEL
-                    
-                    # Seuil statistique pour considérer l'AUC comme significativement différent
-                    # Utilisons un seuil conservateur basé sur l'écart-type attendu
-                    statistical_threshold = CHANCE_LEVEL + 0.025  # Seuil conservateur
-                    is_statistically_significant = auc_value > statistical_threshold
-                    
-                    # Double critère : AUC > chance ET au-dessus du seuil statistique
-                    is_significant = is_auc_above_chance and is_statistically_significant
-                    
-                    individual_results.append({
-                        'subject_idx': subj_idx,
-                        'auc_value': auc_value,
-                        'p_value': np.nan,  # Pas de p-value pour test individuel sur AUC
-                        'is_significant': is_significant,
-                        'is_statistically_significant': is_statistically_significant,
-                        'is_auc_above_chance': is_auc_above_chance,
-                        'statistical_threshold': statistical_threshold
-                    })
-                    
-                    if is_significant:
-                        significant_count += 1
-                        
-                except Exception as e:
-                    logger.warning(f"Erreur test significativité AUC sujet {subj_idx} groupe {group_name}: {e}")
-                    individual_results.append({
-                        'subject_idx': subj_idx,
-                        'auc_value': auc_value,
-                        'p_value': np.nan,
-                        'is_significant': False,
-                        'is_statistically_significant': False,
-                        'is_auc_above_chance': auc_value > CHANCE_LEVEL,
-                        'statistical_threshold': CHANCE_LEVEL + 0.025
-                    })
-                # Fallback: Test direct sur l'AUC global (cohérent avec l'approche principale)
                 is_auc_above_chance = auc_value > CHANCE_LEVEL
                 statistical_threshold = CHANCE_LEVEL + 0.025  # Seuil conservateur
                 is_statistically_significant = auc_value > statistical_threshold
                 is_significant = is_auc_above_chance and is_statistically_significant
-                
                 individual_results.append({
                     'subject_idx': subj_idx,
                     'auc_value': auc_value,
@@ -1944,24 +1381,17 @@ def analyze_individual_significance_proportions(all_groups_data, save_dir, show_
                     'is_auc_above_chance': is_auc_above_chance,
                     'statistical_threshold': statistical_threshold
                 })
-                
                 if is_significant:
                     significant_count += 1
-            
-            # Calculer le pourcentage de patients significatifs
             total_patients = len(individual_results)
             percentage_significant = (significant_count / total_patients) * 100 if total_patients > 0 else 0
-            
-            # Test de groupe contre la chance
             group_p_value = np.nan
             if len(valid_auc_values) > 1:
                 try:
-                    # Test de Wilcoxon sur les AUC du groupe (unilatéral supérieur)
                     diff_from_chance = valid_auc_values - CHANCE_LEVEL
                     stat, group_p_value = wilcoxon(diff_from_chance, alternative='greater')
                 except Exception as e:
                     logger.warning(f"Erreur test groupe {group_name}: {e}")
-            
             groups_analysis.append({
                 'group_name': group_name,
                 'n_subjects': total_patients,
@@ -1973,130 +1403,77 @@ def analyze_individual_significance_proportions(all_groups_data, save_dir, show_
                 'individual_results': individual_results,
                 'auc_values': valid_auc_values
             })
-        
         if not groups_analysis:
             logger.warning(f"Aucune analyse valide pour l'effet {effect_type}")
             continue
-        
-        # Créer la figure
+        colors_pie = ['#ff6b6b', '#4ecdc4']
         n_groups = len(groups_analysis)
-        fig, axes = plt.subplots(2, n_groups, figsize=(4 * n_groups, 8))
-        
+        fig_pie, axes_pie = plt.subplots(1, n_groups, figsize=(4 * n_groups, 5))
         if n_groups == 1:
-            axes = axes.reshape(2, 1)
-        
-        # Couleurs pour les graphiques en camembert
-        colors_pie = ['#ff6b6b', '#4ecdc4']  # Rouge pour non-significatif, bleu-vert pour significatif
-        
+            axes_pie = [axes_pie]
         for i, group_analysis in enumerate(groups_analysis):
             group_name = group_analysis['group_name']
             mapped_name = GROUP_NAME_MAPPING.get(group_name, group_name)
-            group_color = GROUP_COLORS.get(mapped_name, '#1f77b4')
-            
-            # Graphique en camembert (ligne du haut)
-            ax_pie = axes[0, i]
-            
             n_significant = group_analysis['n_significant']
             n_total = group_analysis['n_subjects']
             n_non_significant = n_total - n_significant
-            
-            # Données pour le camembert
             sizes = [n_non_significant, n_significant]
-            labels = ['Non-sig', 'Significant']
             colors = [colors_pie[0], colors_pie[1]]
-            
-            # Créer le camembert
-            wedges, texts, autotexts = ax_pie.pie(sizes, labels=labels, colors=colors, autopct='%1.0f%%', 
-                                                 startangle=90, textprops={'fontsize': 12})
-            
-            # Titre avec pourcentage
+            wedges, texts, autotexts = axes_pie[i].pie(sizes, labels=None, colors=colors, autopct='%1.0f%%',
+                                                      startangle=90, textprops={'fontsize': 12})
             percentage = group_analysis['percentage_significant']
-            ax_pie.set_title(f'{mapped_name}\n{percentage:.0f}%\nn={n_total}', 
-                           fontsize=14, fontweight='bold')
-            
-            # Ajouter la significativité de groupe
-            group_p = group_analysis['group_p_value']
-            if not np.isnan(group_p) and group_p < 0.05:  # Afficher seulement si significatif
-                if group_p < 0.0001:
-                    sig_text = "****"
-                elif group_p < 0.001:
-                    sig_text = "***"
-                elif group_p < 0.01:
-                    sig_text = "**"
-                elif group_p < 0.05:
-                    sig_text = "*"
-                else:
-                    sig_text = ""  # Pas de texte si non significatif
-                
-                if sig_text:  # Afficher seulement si il y a un texte de significativité
-                    ax_pie.text(0, -1.3, sig_text, ha='center', va='center', 
-                              fontsize=16, fontweight='bold')
-            
-            # Graphique en barres des AUC individuelles (ligne du bas)
-            ax_bar = axes[1, i]
-            
-            auc_values = group_analysis['auc_values']
-            individual_results = group_analysis['individual_results']
-            
-            # Séparer les AUC significatives et non-significatives
-            sig_aucs = [r['auc_value'] for r in individual_results if r['is_significant']]
-            non_sig_aucs = [r['auc_value'] for r in individual_results if not r['is_significant']]
-            
-            # Positions x
-            x_positions = np.arange(len(auc_values))
-            
-            # Tracer les barres
-            for j, result in enumerate(individual_results):
-                color = colors_pie[1] if result['is_significant'] else colors_pie[0]
-                ax_bar.bar(j, result['auc_value'], color=color, alpha=0.7)
-            
-            # Ligne de chance
-            ax_bar.axhline(y=CHANCE_LEVEL, color='black', linestyle='--', linewidth=2, alpha=0.7)
-            
-            # Moyenne du groupe
-            group_mean = group_analysis['group_mean_auc']
-            ax_bar.axhline(y=group_mean, color='red', linestyle='-', linewidth=2, alpha=0.8)
-            
-            # Personnaliser
-            ax_bar.set_xlabel('Subject', fontsize=12)
-            ax_bar.set_ylabel('AUC', fontsize=12)
-            ax_bar.set_title(f'{mapped_name} - Individual AUC', fontsize=12, fontweight='bold')
-            ax_bar.set_ylim(0.4, 0.65)  # Échelle ajustée
-            ax_bar.grid(True, alpha=0.3)
-            
-            # Xticks
-            ax_bar.set_xticks(x_positions)
-            ax_bar.set_xticklabels([f'S{j+1}' for j in range(len(auc_values))], rotation=45)
-        
-        # Titre général
-        fig.suptitle(f'{effect_type.capitalize()} Effect - Individual Significance Analysis', 
-                    fontsize=16, fontweight='bold')
-        
-        # Légende
-        legend_elements = [
-            mpatches.Patch(color=colors_pie[1], label='Significant (p<0.05)'),
-            mpatches.Patch(color=colors_pie[0], label='Non-significant'),
-            mpatches.Patch(color='black', label='Chance level'),
-            mpatches.Patch(color='red', label='Group mean')
-        ]
-        fig.legend(handles=legend_elements, loc='upper right', bbox_to_anchor=(0.98, 0.98))
-        
+            axes_pie[i].set_title(f'{mapped_name}\n{percentage:.0f}%\nn={n_total}', fontsize=14, fontweight='bold')
+        fig_pie.suptitle(f'{effect_type.capitalize()} Effect - Proportion de sujets significatifs', fontsize=16, fontweight='bold')
         plt.tight_layout()
-        plt.subplots_adjust(top=0.85)
-        
-        # Sauvegarder
         if save_dir:
             os.makedirs(save_dir, exist_ok=True)
-            filename = f"individual_significance_proportions_{effect_type}_effect.png"
+            filename = f"individual_significance_proportions_pie_{effect_type}_effect.png"
             filepath = os.path.join(save_dir, filename)
-            plt.savefig(filepath, dpi=300, bbox_inches='tight')
-            logger.info(f"Graphique des proportions de significativité sauvegardé: {filepath}")
-        
-        # Sauvegarder les résultats numériques
+            fig_pie.savefig(filepath, dpi=300, bbox_inches='tight')
+            logger.info(f"Camembert proportions sauvegardé: {filepath}")
+        if show_plots:
+            plt.show()
+        else:
+            plt.close(fig_pie)
+        # 2. Figure barres individuelles avec proportion (corrigée : chaque sujet apparaît une seule fois)
+        fig_bar, axes_bar = plt.subplots(1, n_groups, figsize=(5 * n_groups, 5))
+        if n_groups == 1:
+            axes_bar = [axes_bar]
+        for i, group_analysis in enumerate(groups_analysis):
+            group_name = group_analysis['group_name']
+            mapped_name = GROUP_NAME_MAPPING.get(group_name, group_name)
+            individual_results = group_analysis['individual_results']
+            x_positions = np.arange(len(individual_results))
+            for j, result in enumerate(individual_results):
+                color = colors_pie[1] if result['is_significant'] else colors_pie[0]
+                axes_bar[i].bar(j, result['auc_value'], color=color, alpha=0.7)
+            axes_bar[i].axhline(y=CHANCE_LEVEL, color='black', linestyle='--', linewidth=2, alpha=0.7)
+            group_mean = group_analysis['group_mean_auc']
+            axes_bar[i].axhline(y=group_mean, color='red', linestyle='-', linewidth=2, alpha=0.8)
+            axes_bar[i].set_xlabel('Sujet', fontsize=12)
+            axes_bar[i].set_ylabel('AUC', fontsize=12)
+            axes_bar[i].set_title(f'{mapped_name} - AUC individuels', fontsize=12, fontweight='bold')
+            axes_bar[i].set_ylim(0.4, 0.65)
+            axes_bar[i].grid(True, alpha=0.3)
+            axes_bar[i].set_xticks(x_positions)
+            axes_bar[i].set_xticklabels([f'S{j+1}' for j in range(len(individual_results))], rotation=45)
+            percentage = group_analysis['percentage_significant']
+            axes_bar[i].text(0.5, 0.95, f'Proportion significative: {percentage:.0f}%',
+                             transform=axes_bar[i].transAxes, fontsize=13, color=colors_pie[1], ha='center', va='top', fontweight='bold')
+        fig_bar.suptitle(f'{effect_type.capitalize()} Effect - Barres individuelles et proportion', fontsize=16, fontweight='bold')
+        plt.tight_layout()
+        if save_dir:
+            filename = f"individual_significance_proportions_bar_{effect_type}_effect.png"
+            filepath = os.path.join(save_dir, filename)
+            fig_bar.savefig(filepath, dpi=300, bbox_inches='tight')
+            logger.info(f"Barres individuelles sauvegardées: {filepath}")
+        if show_plots:
+            plt.show()
+        else:
+            plt.close(fig_bar)
         if save_dir:
             results_file = os.path.join(save_dir, f"significance_proportions_{effect_type}_results.json")
             results_to_save = []
-            
             for group_analysis in groups_analysis:
                 group_result = {
                     'group_name': group_analysis['group_name'],
@@ -2110,27 +1487,31 @@ def analyze_individual_significance_proportions(all_groups_data, save_dir, show_
                     'individual_p_values': [float(r['p_value']) if not np.isnan(r['p_value']) else None for r in group_analysis['individual_results']]
                 }
                 results_to_save.append(group_result)
-            
             with open(results_file, 'w') as f:
                 json.dump(results_to_save, f, indent=2)
             logger.info(f"Résultats numériques sauvegardés: {results_file}")
-        
-        if show_plots:
-            plt.show()
-        else:
-            plt.close()
 
 
-def filter_group_files_by_config(group_files, group_name):
+def filter_group_files_by_config(group_files, group_name):          
     """
     Filtre les fichiers NPZ pour ne garder que ceux dont l'ID sujet est dans la config ALL_SUBJECTS_GROUPS.
     """
     try:
         from config.config import ALL_SUBJECTS_GROUPS
     except ImportError:
-        logger.warning("Impossible d'importer ALL_SUBJECTS_GROUPS depuis config.config")
+        logger.warning("Impossible d'importer ALL_SUBJECTS_GROUPS depuis config.config, tous les fichiers sont conservés.")
         return group_files
+
+
+    if group_name not in ALL_SUBJECTS_GROUPS:
+        logger.warning(f"Le nom de groupe '{group_name}' n'a pas été trouvé dans la configuration. Aucun fichier ne sera conservé pour ce groupe.")
+        return []
+
     allowed_ids = set(ALL_SUBJECTS_GROUPS.get(group_name, []))
+    if not allowed_ids:
+        logger.warning(f"Aucun ID sujet n'est défini pour le groupe '{group_name}' dans la configuration.")
+        return []
+
     filtered_files = []
     for file_path in group_files:
         subject_id = extract_subject_id_from_path(file_path)
@@ -2139,6 +1520,50 @@ def filter_group_files_by_config(group_files, group_name):
     logger.info(f"Groupe {group_name}: {len(filtered_files)}/{len(group_files)} fichiers NPZ conservés après filtrage par config.")
     return filtered_files
 
+def plot_temporal_windows_boxplots(all_groups_data, save_dir, show_plots=True):
+    windows = {
+        'T100': (90, 110),
+        'T200': (190,  210),
+        'T_all': (0, 800)
+    }
+    for effect_type in ['local', 'global']:
+        all_data = []
+        for group_data in all_groups_data:
+            group_name = group_data['group_name']
+            effect_key = f'{effect_type}_effect'
+            if effect_key in group_data and 'scores_matrix' in group_data[effect_key]:
+                scores_matrix = group_data[effect_key]['scores_matrix']
+                times = group_data['times']
+                if np.max(times) <= 2:
+                    times_ms = times * 1000
+                else:
+                    times_ms = times
+                for win_name, (tmin, tmax) in windows.items():
+                    idx = np.where((times_ms >= tmin) & (times_ms <= tmax))[0]
+                    for subj, subj_scores in enumerate(scores_matrix):
+                        mean_auc = np.nanmean(subj_scores[idx])
+                        all_data.append({'Group': group_name, 'Window': win_name, 'AUC': mean_auc, 'Subject': subj})
+        if not all_data:
+            logger.warning(f"Aucune donnée pour créer les boxplots des fenêtres temporelles pour l'effet {effect_type}")
+            continue
+        df = pd.DataFrame(all_data)
+        plt.figure(figsize=(14, 8))
+        sns.boxplot(data=df, x='Window', y='AUC', hue='Group')
+        plt.axhline(y=CHANCE_LEVEL, color='red', linestyle='--', alpha=0.7, label=f'Chance level ({CHANCE_LEVEL})')
+        plt.title(f'AUC par fenêtre temporelle et groupe ({effect_type})', fontsize=16)
+        plt.xlabel('Fenêtre temporelle', fontsize=14)
+        plt.ylabel('AUC', fontsize=14)
+        plt.legend()
+        plt.tight_layout()
+        if save_dir:
+            filename = f"boxplot_auc_windows_{effect_type}.png"
+            filepath = os.path.join(save_dir, filename)
+            plt.savefig(filepath, dpi=300, bbox_inches='tight')
+            logger.info(f"Boxplot fenêtres temporelles sauvegardé: {filepath}")
+        if show_plots:
+            plt.show()
+        else:
+            plt.close()
 
 def main():
     """
@@ -2146,58 +1571,61 @@ def main():
     """
     logger.info("Début de l'analyse des données LG")
     
-    # Créer un répertoire pour les résultats
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     results_dir = f"/home/tom.balay/results/LG_analysis_{timestamp}"
     os.makedirs(results_dir, exist_ok=True)
     
-    # Trouver les fichiers NPZ
+
     organized_data = find_npz_files(BASE_RESULTS_DIR)
     all_groups_data = []
+    
+    if not organized_data:
+        logger.error("Aucun fichier NPZ n'a été trouvé ou organisé. Arrêt du script.")
+        return
+
     for protocol_name, groups in organized_data.items():
         for group_name, group_files in groups.items():
-            # Filtrer les fichiers NPZ selon la config
+            
             filtered_files = filter_group_files_by_config(group_files, group_name)
             if not filtered_files:
                 logger.info(f"Aucun fichier NPZ à analyser pour le groupe {group_name} (après filtrage)")
                 continue
-            # Analyse LG ou classique selon le protocole
-            if protocol_name.upper().startswith("LG"):
-                group_data = analyze_group_data_lg(filtered_files, group_name)
-            else:
-                group_data = analyze_group_data(filtered_files, group_name)
-            if group_data:
+            
+
+            group_data = analyze_group_data_lg(filtered_files, group_name)
+
+            if group_data and (group_data.get('local_effect') or group_data.get('global_effect')):
                 all_groups_data.append(group_data)
     
-    # Créer les graphiques de comparaison entre tous les groupes
+    
     if all_groups_data:
-        analyze_temporal_windows(all_groups_data, results_dir, show_plots=False)
-        create_temporal_windows_comparison_boxplots(all_groups_data, results_dir, show_plots=False)
+        # Générer les graphiques pour chaque groupe individuellement
+        for group_data in all_groups_data:
+            plot_group_individual_curves(group_data, results_dir, show_plots=False)
+
+      
         plot_all_groups_comparison(all_groups_data, results_dir, show_plots=False)
         plot_global_auc_boxplots(all_groups_data, results_dir, show_plots=False)
+        plot_temporal_windows_boxplots(all_groups_data, results_dir, show_plots=False)
+       
+        create_temporal_windows_comparison_boxplots(all_groups_data, results_dir, show_plots=False)
         create_temporal_windows_connected_plots(all_groups_data, results_dir, show_plots=False)
-        
-        # Analyse des proportions de significativité individuelle
+
         analyze_individual_significance_proportions(all_groups_data, results_dir, show_plots=False)
         plot_group_tgm_individual(all_groups_data, results_dir, show_plots=False)
-        
-        # Nouvelles analyses des fenêtres temporelles
-       
       
-        # Sauvegarder un résumé des résultats
         summary_file = os.path.join(results_dir, "analysis_summary.json")
         summary_data = {
             'timestamp': timestamp,
-            'n_groups': len(all_groups_data),
+            'n_groups_processed': len(all_groups_data),
             'groups': [
                 {
                     'name': group['group_name'],
                     'n_subjects': group['n_subjects'],
                     'subject_ids': group['subject_ids'],
-                    'has_local_effect': 'local_effect' in group,
-                    'has_global_effect': 'global_effect' in group,
-                    'local_effect_auc_mean': group.get('local_effect', {}).get('auc_global_mean', np.nan),
-                    'global_effect_auc_mean': group.get('global_effect', {}).get('auc_global_mean', np.nan)
+                    'has_local_effect': 'local_effect' in group and group['local_effect'] is not None,
+                    'has_global_effect': 'global_effect' in group and group['global_effect'] is not None,
                 }
                 for group in all_groups_data
             ]
@@ -2206,9 +1634,8 @@ def main():
             json.dump(summary_data, f, indent=2, default=str)
         logger.info(f"Analyse terminée. Résultats sauvegardés dans: {results_dir}")
     else:
-        logger.error("Aucune donnée de groupe valide trouvée")
+        logger.error("Aucune donnée de groupe valide n'a pu être chargée après filtrage. Vérifiez vos chemins et la configuration.")
 
 
 if __name__ == "__main__":
     main()
-

@@ -108,11 +108,6 @@ def get_protocol_cv_folds(detected_protocol):
 
 
 
-
-
-
-
-
 def execute_single_subject_decoding(
     subject_identifier,
     group_affiliation,
