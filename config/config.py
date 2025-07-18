@@ -312,7 +312,7 @@ EGI_con_chan = [x for x in EGI_chan_names if x not in EGI_misc_dict.keys()]
 # All chan - those declared as misc
 EGI_con_chan_BRU = [
     x for x in EGI_chan_names_BRU if x not in EGI_misc_dict_BRU.keys()]
-'''
+
 #################################
 ######### ID of SUBJECT  ########
 ALL_SUBJECTS_GROUPS = {
@@ -563,4 +563,5 @@ ALL_SUBJECTS_GROUPS = {
         "TpMD52", "TpME22", "TpPA35", "TpPI46", "TpPL48", "TpRB50", "TpRK39", "TpSD30", "TpYB41"
     ]
 }
-
+'''
+ #"TpAC23", "TpAM43", "TpBD16", "TpFL53", "TpGT32", "TpJPG7", "TpJPL10", "TpKS6", "TpLP11", 

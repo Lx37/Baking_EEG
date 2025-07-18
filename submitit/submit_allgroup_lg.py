@@ -106,8 +106,8 @@ def main():
 
     # Configuration Slurm pour les jobs de groupe
     SLURM_CPUS_PER_GROUP_JOB = 40  # CPUs par groupe
-    SLURM_MEMORY_PER_JOB = "75G"   # Mémoire par groupe
-    SLURM_TIMEOUT_MINUTES = 130000 * 60  # 8 heures en minutes
+    SLURM_MEMORY_PER_JOB = "77G"   # Mémoire par groupe
+    SLURM_TIMEOUT_MINUTES = 130000 * 60  
     SLURM_PARTITION = "CPU"
     SLURM_ACCOUNT = "tom.balay"
 
@@ -170,11 +170,11 @@ def main():
             "enable_verbose_logging": True,
             "n_jobs_for_each_subject": SLURM_CPUS_PER_GROUP_JOB,
             "save_results_flag": SAVE_ANALYSIS_RESULTS,
-            "generate_plots_flag": False,  # Pas de plots sur le cluster
+            "generate_plots_flag": False, 
             "loading_conditions_config": CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG,
             "classifier_type_for_group_runs": CLASSIFIER_MODEL_TYPE,
             "use_grid_search_for_group": USE_GRID_SEARCH_OPTIMIZATION,
-            # CSP functionality removed - no longer used
+         
             "use_anova_fs_for_temporal_group": USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
             "param_grid_config_for_group": PARAM_GRID_CONFIG_EXTENDED if USE_GRID_SEARCH_OPTIMIZATION else None,
             "cv_folds_for_gs_group": CV_FOLDS_FOR_GRIDSEARCH_INTERNAL,
