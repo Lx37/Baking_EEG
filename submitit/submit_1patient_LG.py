@@ -367,7 +367,7 @@ def enhanced_decoding_task_wrapper(**kwargs):
 
 def main():
 
-    TARGET_SUBJECT_ID = "TJR7"
+    TARGET_SUBJECT_ID = "TpFY57"
 
     log_info("=" * 80, logger)
     log_info(
@@ -441,7 +441,7 @@ def main():
     slurm_params = {
         "timeout_min": 24 * 60, 
         "slurm_partition": "CPU",
-        "slurm_mem": "60G",
+        "slurm_mem": "70G",
         "slurm_cpus_per_task": 40,
         "slurm_additional_parameters": {
             "account": "tom.balay",

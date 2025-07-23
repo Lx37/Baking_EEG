@@ -10,62 +10,55 @@ import seaborn as sns
 from scipy.stats import mannwhitneyu, wilcoxon
 from statsmodels.stats.multitest import fdrcorrection
 import json
+from collections import defaultdict
 
-# --- Configuration du chemin du projet (à ajuster si nécessaire) ---
-try:
-    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-    PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
-    if PROJECT_ROOT not in sys.path:
-        sys.path.insert(0, PROJECT_ROOT)
-    from config.config import ALL_SUBJECTS_GROUPS
-except (NameError, ImportError):
-    print("Attention: Lancement hors d'un environnement de projet standard. 'config.config' non trouvé. Utilisation d'une configuration de secours.")
-    ALL_SUBJECTS_GROUPS = {
-        'MCS': ['CW41', 'ppext3'], 
-        'VS': ['sujet_vs1', 'sujet_vs2'],
-        'CONTROLS': ['sujet_ctrl1', 'sujet_ctrl2'],
-    }
 
-# --- Couleurs et mapping des groupes ---
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+from config.config import ALL_SUBJECTS_GROUPS
+
+
+# Ordre d'affichage des groupes de patients
+GROUP_ORDER = ['CONTROLS', 'DELIRIUM-', 'DELIRIUM+', 'MCS', 'VS', 'COMA']
+
+# Mappage des noms de groupes pour la fusion (ex: CONTROLS_DELIRIUM devient CONTROLS)
+GROUP_NAME_MAPPING = {
+    'COMA': 'COMA',
+    'VS': 'VS',
+    'DELIRIUM+': 'DELIRIUM+',
+    'DELIRIUM-': 'DELIRIUM-',
+    'CONTROLS_DELIRIUM': 'CONTROLS',
+    'MCS': 'MCS',
+    'CONTROLS': 'CONTROLS'
+}
+
+# Couleurs associées aux noms de groupes finaux
 GROUP_COLORS = {
     'COMA': '#e41a1c',
     'VS': '#4daf4a',
     'DELIRIUM+': '#984ea3',
     'DELIRIUM-': '#ff7f00',
-    'CONTROLS_DELIRIUM': '#a65628',
-    'MCS': '#f781bf',
-    'CONTROLS': '#377eb8'
+    'CONTROLS': '#377eb8',
+    'MCS': '#f781bf'
 }
 
-GROUP_NAME_MAPPING = {
-    'group_COMA': 'COMA',
-    'group_VS': 'VS',
-    'group_DELIRIUM+': 'DELIRIUM+',
-    'group_DELIRIUM-': 'DELIRIUM-',
-    'group_CONTROLS_DELIRIUM': 'CONTROLS_DELIRIUM',
-    'group_MCS': 'MCS',
-    'group_CONTROLS': 'CONTROLS'
-}
 
 # --- Paramètres généraux ---
 BASE_RESULTS_DIR = "/home/tom.balay/results/Baking_EEG_results_V17"
 CHANCE_LEVEL = 0.5
 FDR_ALPHA = 0.05
-PUBLICATION_PARAMS = {
-    'figure.figsize': (16, 9), 'font.size': 14, 'axes.labelsize': 16, 'axes.titlesize': 20,
-    'xtick.labelsize': 12, 'ytick.labelsize': 12, 'legend.fontsize': 14, 'lines.linewidth': 2.5,
-    'axes.linewidth': 1.5, 'xtick.major.width': 1.5, 'ytick.major.width': 1.5,
-    'savefig.dpi': 300, 'savefig.bbox': 'tight', 'savefig.pad_inches': 0.1
-}
-plt.rcParams.update(PUBLICATION_PARAMS)
+
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# --- Fonctions utilitaires ---
+
 def extract_subject_id_from_path(file_path):
     import re
-    match = re.search(r'Subj_([A-Za-z0-9]+)_svc', file_path)
+    #Extract subject ID from file path, e.g., "Subj_12345_svc" -> "12345"
+    match = re.search(r'Subj_([A-Za-z0-9]+)', file_path) 
     if match:
         return match.group(1)
     # Fallback: ppext3/CW41 -> prend ppext3
@@ -73,6 +66,7 @@ def extract_subject_id_from_path(file_path):
 
 def find_pp_ap_npz_files(base_path):
     logger.info("Recherche des fichiers NPZ PP/AP dans: %s", base_path)
+    #Organize files by group
     organized_data = {group: [] for group in ALL_SUBJECTS_GROUPS}
     pattern = os.path.join(base_path, 'intra_subject_results', '**', 'decoding_results_full.npz')
     all_npz_files = glob.glob(pattern, recursive=True)
@@ -176,7 +170,8 @@ def analyze_group_data_pp_ap(group_files, group_name):
     }
 
 def plot_group_individual_curves_pp_ap(group_data, save_dir, show_plots=True):
-    group_name, mapped_name = group_data['group_name'], GROUP_NAME_MAPPING.get(group_data['group_name'], group_data['group_name'])
+    group_name = group_data['group_name']
+    mapped_name = GROUP_NAME_MAPPING.get(group_name, group_name)
     times_ms = group_data['times'] * 1000 if np.max(group_data['times']) < 10 else group_data['times']
     group_color = GROUP_COLORS.get(mapped_name, '#1f77b4')
     
@@ -189,7 +184,7 @@ def plot_group_individual_curves_pp_ap(group_data, save_dir, show_plots=True):
     
     ax.axhline(y=CHANCE_LEVEL, color='black', linestyle='--', alpha=0.7, label='Chance level')
     ax.axvline(x=0, color='black', linestyle='-', alpha=0.5)
-    ax.set(xlabel='Time (ms)', ylabel='Score AUC', title=f'PP/AP Decoding Performance - {mapped_name}', ylim=[0.35, 0.85])
+    ax.set(xlabel='Time (ms)', ylabel='Score AUC', title=f'PP/AP Decoding Performance - {mapped_name}', ylim=[0.35, 0.80])
     ax.legend(); ax.grid(True, alpha=0.3)
     plt.tight_layout()
     
@@ -200,53 +195,75 @@ def plot_group_individual_curves_pp_ap(group_data, save_dir, show_plots=True):
 
 def plot_all_groups_comparison_pp_ap(all_groups_data, save_dir, show_plots=True):
     if not all_groups_data: return
-    
     fig, ax = plt.subplots(figsize=(14, 9))
-    for group_data in all_groups_data:
-        mapped_name = GROUP_NAME_MAPPING.get(group_data['group_name'], group_data['group_name'])
-        group_color = GROUP_COLORS.get(mapped_name, '#1f77b4')
-        times_ms = group_data['times'] * 1000 if np.max(group_data['times']) < 10 else group_data['times']
-        
-        ax.plot(times_ms, group_data['group_mean'], color=group_color, linewidth=3, label=f'{mapped_name} (n={group_data["n_subjects"]})')
-        ax.fill_between(times_ms, group_data['group_mean'] - group_data['group_sem'], group_data['group_mean'] + group_data['group_sem'], color=group_color, alpha=0.2)
     
+    # Agréger les données par nom de groupe mappé pour le comptage
+    group_data_aggregated = defaultdict(lambda: {'scores': [], 'times': None, 'n_subjects': 0})
+    for g_data in all_groups_data:
+        mapped_name = GROUP_NAME_MAPPING.get(g_data['group_name'], g_data['group_name'])
+        group_data_aggregated[mapped_name]['scores'].append(g_data['scores_matrix'])
+        group_data_aggregated[mapped_name]['n_subjects'] += g_data['n_subjects']
+        if group_data_aggregated[mapped_name]['times'] is None:
+             group_data_aggregated[mapped_name]['times'] = g_data['times']
+
+    for group_name in GROUP_ORDER:
+        if group_name in group_data_aggregated:
+            group_data = group_data_aggregated[group_name]
+            all_scores = np.vstack(group_data['scores'])
+            group_mean = np.nanmean(all_scores, axis=0)
+            group_sem = np.nanstd(all_scores, axis=0) / np.sqrt(group_data['n_subjects'])
+            
+            group_color = GROUP_COLORS.get(group_name, '#1f77b4')
+            times_ms = group_data['times'] * 1000 if np.max(group_data['times']) < 10 else group_data['times']
+            ax.plot(times_ms, group_mean, color=group_color, linewidth=3, label=f'{group_name} (n={group_data["n_subjects"]})')
+            ax.fill_between(times_ms, group_mean - group_sem, group_mean + group_sem, color=group_color, alpha=0.2)
+            
     ax.axhline(y=CHANCE_LEVEL, color='black', linestyle='--', alpha=0.7, label='Chance level')
     ax.axvline(x=0, color='black', linestyle='-', alpha=0.5)
-    ax.set(xlabel='Time (ms)', ylabel='Score AUC', title='PP/AP Decoding - Group Comparison', ylim=[0.35, 0.85])
+    ax.set(xlabel='Time (ms)', ylabel='Score AUC', title='PP/AP Decoding - Group Comparison', ylim=[0.43, 0.65])
     ax.legend(); ax.grid(True, alpha=0.3)
     plt.tight_layout()
-    
     if save_dir: plt.savefig(os.path.join(save_dir, "pp_ap_all_groups_comparison.png"))
     if show_plots: plt.show()
     else: plt.close()
 
 def plot_global_auc_boxplots_pp_ap(all_groups_data, save_dir, show_plots=True):
     plot_data = []
+    group_subject_counts = defaultdict(int)
+
     for group_data in all_groups_data:
         if group_data['auc_global_values'] is not None and len(group_data['auc_global_values']) > 0:
             mapped_name = GROUP_NAME_MAPPING.get(group_data['group_name'], group_data['group_name'])
+            group_subject_counts[mapped_name] += group_data['n_subjects']
             for value in group_data['auc_global_values']:
                 plot_data.append({'Group': mapped_name, 'AUC': value})
-
+    
     if not plot_data:
         logger.warning("Aucune donnée AUC globale pour les boxplots.")
         return
-
+        
     df = pd.DataFrame(plot_data)
-    order = sorted(df['Group'].unique())
+
+    # Filtrer l'ordre pour n'inclure que les groupes présents dans les données, et trier selon GROUP_ORDER
+    order = [g for g in GROUP_ORDER if g in df['Group'].unique()]
     palette = {g: GROUP_COLORS.get(g, '#cccccc') for g in order}
 
     fig, ax = plt.subplots(figsize=(12, 8))
-    box = sns.boxplot(data=df, x='Group', y='AUC', ax=ax, order=order, palette=palette)
-    sns.stripplot(data=df, x='Group', y='AUC', ax=ax, order=order, color='black', alpha=0.6, size=5)
 
-    # Tests statistiques entre groupes (Mann-Whitney)
+    # Boxplot et points individuels, ordonnés
+    sns.boxplot(data=df, x='Group', y='AUC', ax=ax, order=order, palette=palette)
+    sns.stripplot(data=df, x='Group', y='AUC', ax=ax, order=order, color='black', alpha=0.6, size=5, jitter=True)
+
+    # Etiquettes X avec le nombre de sujets, ordonnées
+    new_labels = [f"{group} (n={group_subject_counts.get(group, 0)})" for group in order]
+    ax.set_xticklabels(new_labels)
+
+    # Tests statistiques et annotations, ordonnées
     from scipy.stats import mannwhitneyu
     y_max = df['AUC'].max() if len(df) > 0 else 0.8
     y_min = df['AUC'].min() if len(df) > 0 else 0.4
     y_offset = (y_max - y_min) * 0.05
     star_pos = y_max + y_offset
-    # Pour chaque paire de groupes, on empile les annotations verticalement
     annotation_idx = 0
     for i, g1 in enumerate(order):
         for j, g2 in enumerate(order):
@@ -258,28 +275,25 @@ def plot_global_auc_boxplots_pp_ap(all_groups_data, save_dir, show_plots=True):
                 stat, p = mannwhitneyu(auc1, auc2, alternative='two-sided')
                 if p < 0.05:
                     x1, x2 = i, j
-                    # Empilement vertical pour chaque annotation
                     y = star_pos + annotation_idx * y_offset * 1.5
-                    # Barre horizontale
                     ax.plot([x1, x1, x2, x2], [y-0.01, y, y, y-0.01], color='black', linewidth=1.5)
-                    # Étoile centrée, plus proche de la barre
                     star = '**' if p < 0.01 else '*'
                     ax.text((x1+x2)/2, y, star, ha='center', va='bottom', color='black', fontsize=18, fontweight='bold')
                     annotation_idx += 1
 
     ax.set(title='PP/AP Global AUC Distribution by Group', xlabel='Clinical Group', ylabel='AUC (Area Under Curve)')
     ax.axhline(y=CHANCE_LEVEL, color='red', linestyle='--', alpha=0.7, label='Chance Level')
-    ax.legend(); plt.xticks(rotation=30, ha='right'); plt.tight_layout()
-
+    ax.legend(); plt.xticks(range(len(order)), new_labels, rotation=30, ha='right'); plt.tight_layout()
     if save_dir: plt.savefig(os.path.join(save_dir, "pp_ap_global_auc_boxplot.png"))
     if show_plots: plt.show()
     else: plt.close()
 
 def plot_group_tgm_pp_ap(group_data, save_dir, show_plots=True):
-    group_name, mapped_name = group_data['group_name'], GROUP_NAME_MAPPING.get(group_data['group_name'], group_data['group_name'])
+    group_name = group_data['group_name']
+    mapped_name = GROUP_NAME_MAPPING.get(group_name, group_name)
     
     if group_data['n_subjects'] < 2 or group_data['tgm_matrix'] is None:
-        logger.info(f"TGM non générée pour {group_name}: n_sujets < 2 ou données TGM manquantes.")
+        logger.info(f"TGM non générée pour {mapped_name}: n_sujets < 2 ou données TGM manquantes.")
         return
 
     tgm_mean, tgm_matrix = group_data['tgm_mean'], group_data['tgm_matrix']
@@ -290,7 +304,7 @@ def plot_group_tgm_pp_ap(group_data, save_dir, show_plots=True):
         for c in range(tgm_matrix.shape[2]):
             scores = tgm_matrix[:, r, c]
             if len(scores[~np.isnan(scores)]) > 1:
-                _, p_values[r, c] = wilcoxon(scores - CHANCE_LEVEL, alternative='greater', zero_method='zsplit')
+                _, p_values[r, c] = wilcoxon(scores - CHANCE_LEVEL, alternative='two-sided', zero_method='zsplit')
 
     significant_mask = fdrcorrection(p_values.flatten(), alpha=FDR_ALPHA)[0].reshape(p_values.shape)
     
@@ -314,7 +328,8 @@ def create_temporal_windows_connected_plots_pp_ap(all_groups_data, save_dir, sho
     windows = {'T100': (90, 110), 'T200': (190, 210), 'T300': (290, 310), 'TALL': (0, 600)}
 
     for group_data in all_groups_data:
-        group_name, mapped_name = group_data['group_name'], GROUP_NAME_MAPPING.get(group_data['group_name'], group_data['group_name'])
+        group_name = group_data['group_name']
+        mapped_name = GROUP_NAME_MAPPING.get(group_name, group_name)
         scores_matrix, times = group_data['scores_matrix'], group_data['times']
         times_ms = times * 1000 if np.max(times) < 10 else times
         
@@ -352,41 +367,45 @@ def create_temporal_windows_connected_plots_pp_ap(all_groups_data, save_dir, sho
 
 def analyze_individual_significance_proportions_pp_ap(all_groups_data, save_dir, show_plots=True):
     groups_analysis = []
-    for group_data in all_groups_data:
-        if group_data['auc_global_values'] is None or len(group_data['auc_global_values']) == 0:
-            continue
-        
-        auc_values = group_data['auc_global_values']
-        # Un test simple: le score est-il numériquement > chance ?
-        significant_count = np.sum(auc_values > CHANCE_LEVEL)
-        total_patients = len(auc_values)
-        percentage_significant = (significant_count / total_patients) * 100 if total_patients > 0 else 0
-        
-        groups_analysis.append({
-            'group_name': group_data['group_name'],
-            'n_subjects': total_patients,
-            'n_significant': significant_count,
-            'percentage_significant': percentage_significant
-        })
+    
+    # Agréger les données par nom de groupe mappé
+    group_data_aggregated = defaultdict(lambda: {'auc_values': [], 'n_subjects': 0})
+    for g_data in all_groups_data:
+        if g_data['auc_global_values'] is not None and len(g_data['auc_global_values']) > 0:
+            mapped_name = GROUP_NAME_MAPPING.get(g_data['group_name'], g_data['group_name'])
+            group_data_aggregated[mapped_name]['auc_values'].extend(g_data['auc_global_values'])
+            group_data_aggregated[mapped_name]['n_subjects'] += g_data['n_subjects']
+            
+    # Réorganiser les données selon GROUP_ORDER
+    for group_name in GROUP_ORDER:
+        if group_name in group_data_aggregated:
+            data = group_data_aggregated[group_name]
+            auc_values = np.array(data['auc_values'])
+            significant_count = np.sum(auc_values > CHANCE_LEVEL)
+            total_patients = len(auc_values)
+            percentage_significant = (significant_count / total_patients) * 100 if total_patients > 0 else 0
+            groups_analysis.append({
+                'group_name': group_name,
+                'n_subjects': total_patients,
+                'n_significant': significant_count,
+                'percentage_significant': percentage_significant
+            })
 
     if not groups_analysis: return
-
-    # Graphique en camembert
     n_groups = len(groups_analysis)
     fig_pie, axes_pie = plt.subplots(1, n_groups, figsize=(4 * n_groups, 5), squeeze=False)
     
     for i, analysis in enumerate(groups_analysis):
-        mapped_name = GROUP_NAME_MAPPING.get(analysis['group_name'], analysis['group_name'])
+        mapped_name = analysis['group_name']
         sizes = [analysis['n_subjects'] - analysis['n_significant'], analysis['n_significant']]
         labels = ['≤ Chance', '> Chance']
         colors = ['#ff6b6b', '#4ecdc4']
         axes_pie[0, i].pie(sizes, autopct='%1.0f%%', startangle=90, colors=colors, textprops={'fontsize': 12, 'fontweight': 'bold'})
         axes_pie[0, i].set_title(f"{mapped_name}\n(n={analysis['n_subjects']})")
-    
+        
     fig_pie.legend(labels, loc='lower center', ncol=2)
     fig_pie.suptitle('Proportion of Subjects with AUC > Chance (PP/AP)', fontsize=16, fontweight='bold')
     plt.tight_layout(rect=[0, 0.1, 1, 0.95])
-
     if save_dir: plt.savefig(os.path.join(save_dir, "individual_significance_proportions_pie_pp_ap.png"))
     if show_plots: plt.show()
     else: plt.close(fig_pie)
@@ -571,13 +590,21 @@ def plot_temporal_windows_boxplots_pp_ap(all_groups_data, save_dir, show_plots=T
         logger.warning("Aucune donnée pour créer les boxplots des fenêtres temporelles PP/AP")
         return
     df = pd.DataFrame(all_data)
+    # Définir l'ordre des groupes selon GROUP_ORDER
+    ordered_groups = [group for group in GROUP_ORDER if group in df['Group'].unique()]
     plt.figure(figsize=(14, 8))
-    sns.boxplot(data=df, x='Window', y='AUC', hue='Group', palette=GROUP_COLORS)
+
+    sns.boxplot(data=df, x='Window', y='AUC', hue='Group', hue_order=ordered_groups, palette=GROUP_COLORS)
+    # Points individuels en noir
+    sns.stripplot(data=df, x='Window', y='AUC', hue='Group', dodge=True, jitter=True, marker='o', alpha=0.7, size=5, hue_order=ordered_groups, color='black')
     plt.axhline(y=CHANCE_LEVEL, color='red', linestyle='--', alpha=0.7, label=f'Chance level ({CHANCE_LEVEL})')
     plt.title('AUC par fenêtre temporelle et groupe (PP/AP)', fontsize=16)
     plt.xlabel('Fenêtre temporelle', fontsize=14)
     plt.ylabel('AUC', fontsize=14)
-    plt.legend()
+    handles, labels = plt.gca().get_legend_handles_labels()
+    # Afficher la légende uniquement pour les groupes
+    if len(ordered_groups) > 0:
+        plt.legend(handles[:len(ordered_groups)], ordered_groups, title='Groupe')
     plt.tight_layout()
     if save_dir:
         filename = "boxplot_auc_windows_ppap.png"
@@ -593,7 +620,7 @@ def main():
     logger.info("Début de l'analyse PP/AP")
     
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    results_dir = os.path.join(os.getcwd(), f"PP_AP_analysis_{timestamp}")
+    results_dir = os.path.join("/home/tom.balay/results", f"PP_AP_analysis_{timestamp}")
     os.makedirs(results_dir, exist_ok=True)
     
     organized_files = find_pp_ap_npz_files(BASE_RESULTS_DIR)
@@ -615,7 +642,7 @@ def main():
     logger.info("Génération des graphiques...")
     for group_data in all_groups_data:
         plot_group_individual_curves_pp_ap(group_data, results_dir, show_plots=False)
-        plot_group_tgm_pp_ap(group_data, results_dir, show_plots=False)
+       # plot_group_tgm_pp_ap(group_data, results_dir, show_plots=False)
 
     plot_all_groups_comparison_pp_ap(all_groups_data, results_dir, show_plots=False)
     plot_global_auc_boxplots_pp_ap(all_groups_data, results_dir, show_plots=False)

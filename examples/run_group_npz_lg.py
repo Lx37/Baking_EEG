@@ -47,14 +47,21 @@ warnings.filterwarnings('ignore', category=RuntimeWarning)
 
 
 
-BASE_RESULTS_DIR = "/home/tom.balay/results/Baking_EEG_results_V16/intra_subject_lg_results"
+BASE_RESULTS_DIR = "/home/tom.balay/results/Baking_EEG_results_V17/intra_subject_lg_results"
 
 GROUP_NAME_MAPPING = {
-    'COMA': 'Coma', 'CONTROLS_COMA': 'Controls (Coma)',
-    'VS': 'VS/UWS', 'DELIRIUM+': 'Delirium +', 'DELIRIUM-': 'Delirium -',
-    'CONTROLS_DELIRIUM': 'Controls (Delirium)', 'MCS': 'MCS',
+    'COMA': 'Coma',
+    'CONTROLS_COMA': 'Controls',
+    'CONTROLS_DELIRIUM': 'Controls',
+    'VS': 'VS/UWS',
+    'DELIRIUM+': 'Delirium +',
+    'DELIRIUM-': 'Delirium -',
+    'MCS': 'MCS',
     'CONTROLS': 'Controls' # Fallback
 }
+
+# Définir l'ordre des patients
+PATIENT_ORDER = ['Controls', 'Delirium -', 'Delirium +', 'MCS', 'VS/UWS', 'Coma']
 
 GROUP_COLORS = {
     'Controls (Delirium)': '#2ca02c', 'Delirium -': '#ff7f0e', 'Delirium +': '#d62728',
@@ -708,68 +715,77 @@ def plot_global_auc_boxplots(all_groups_data, save_dir, show_plots=True):
     if not all_groups_data:
         logger.warning("Aucune donnée de groupe disponible pour les boxplots")
         return
-    
-    # Analyser les effets local et global séparément
+
     for effect_type in ['local', 'global']:
         logger.info(f"Création des boxplots pour l'effet {effect_type}")
         
-        # Préparer les données pour le boxplot
         plot_data = []
-        group_names = []
-        
+        group_subject_counts = {}
+
         for group_data in all_groups_data:
-            group_name = group_data['group_name']
+            group_name = GROUP_NAME_MAPPING.get(group_data['group_name'], group_data['group_name'])
             effect_key = f'{effect_type}_effect'
             
             if effect_key in group_data and 'auc_global_values' in group_data[effect_key]:
                 auc_values = group_data[effect_key]['auc_global_values']
-                # Supprimer les NaN
                 auc_values = auc_values[~np.isnan(auc_values)]
                 
                 if len(auc_values) > 0:
-                    # Ajouter les données pour le boxplot
+                    group_subject_counts[group_name] = len(auc_values)
                     for value in auc_values:
                         plot_data.append({
-                            'Group': GROUP_NAME_MAPPING.get(group_name, group_name),
-                            'AUC': value,
-                            'Original_Group': group_name
+                            'Group': group_name,
+                            'AUC': value
                         })
-                    group_names.append(group_name)
         
-        if len(plot_data) < 2:
+        if not plot_data:
             logger.warning(f"Pas assez de données pour créer le boxplot de l'effet {effect_type}")
             continue
         
-        # Créer le DataFrame pour seaborn
         df = pd.DataFrame(plot_data)
+
+        # Assurer que l'ordre des groupes est respecté
+        ordered_groups = [group for group in PATIENT_ORDER if group in df['Group'].unique()]
+
         stats_results = perform_statistical_tests(all_groups_data, effect_type)
         fig, ax = plt.subplots(figsize=(12, 8))
-        unique_groups = df['Group'].unique()
-        group_colors = [GROUP_COLORS.get(group, '#1f77b4') for group in unique_groups]
-        box_plot = sns.boxplot(data=df, x='Group', y='AUC', ax=ax, palette=group_colors)
-        sns.stripplot(data=df, x='Group', y='AUC', ax=ax, color='black', alpha=0.6, size=4)
+        
+        group_colors = [GROUP_COLORS.get(group, '#1f77b4') for group in ordered_groups]
+        
+        sns.boxplot(data=df, x='Group', y='AUC', order=ordered_groups, ax=ax, palette=group_colors)
+        sns.stripplot(data=df, x='Group', y='AUC', order=ordered_groups, ax=ax, color='black', alpha=0.6, size=4, jitter=True)
+
         ax.set_title(f'Global AUC Distribution - {effect_type.capitalize()} Effect', fontsize=16, fontweight='bold')
         ax.set_xlabel('Clinical Group', fontsize=14)
         ax.set_ylabel('AUC (Area Under Curve)', fontsize=14)
         ax.axhline(y=CHANCE_LEVEL, color='red', linestyle='--', alpha=0.7, label=f'Chance level ({CHANCE_LEVEL})')
+
+  
+        new_labels = [f"{group} (n={group_subject_counts.get(group, 0)})" for group in ordered_groups]
+        ax.set_xticklabels(new_labels)
+
         if stats_results.get('pairwise_results'):
             y_max = df['AUC'].max()
             y_positions = [y_max + 0.05]
             add_significance_bars(ax, df, stats_results, y_positions)
+
         y_min, y_max = ax.get_ylim()
         ax.set_ylim(y_min - 0.02, y_max + 0.15)
         ax.legend(loc='upper right')
         plt.xticks(rotation=45, ha='right')
         plt.tight_layout()
+
         if save_dir:
             filename = f"global_auc_boxplot_{effect_type}_effect.png"
             filepath = os.path.join(save_dir, filename)
             plt.savefig(filepath, dpi=300, bbox_inches='tight')
             logger.info(f"Boxplot sauvegardé: {filepath}")
+
         if show_plots:
             plt.show()
         else:
             plt.close()
+
         if save_dir and stats_results:
             stats_filename = f"statistical_results_{effect_type}_effect.json"
             stats_filepath = os.path.join(save_dir, stats_filename)
@@ -947,8 +963,7 @@ def plot_group_tgm_individual(all_groups_data, save_dir, show_plots=True):
 
 def create_temporal_windows_comparison_boxplots(all_groups_data, save_dir, show_plots=True):
     """
-    Créer des boxplots pour comparer les différences entre les fenêtres temporelles
-    pour chaque groupe, similaires à la partie (b) de la figure de référence.
+
     
     Args:
         all_groups_data: Liste des données de tous les groupes
@@ -1435,7 +1450,7 @@ def analyze_individual_significance_proportions(all_groups_data, save_dir, show_
             plt.show()
         else:
             plt.close(fig_pie)
-        # 2. Figure barres individuelles avec proportion (corrigée : chaque sujet apparaît une seule fois)
+        # 2. Figure barres individuelles avec proportion
         fig_bar, axes_bar = plt.subplots(1, n_groups, figsize=(5 * n_groups, 5))
         if n_groups == 1:
             axes_bar = [axes_bar]
@@ -1530,6 +1545,7 @@ def plot_temporal_windows_boxplots(all_groups_data, save_dir, show_plots=True):
         all_data = []
         for group_data in all_groups_data:
             group_name = group_data['group_name']
+            mapped_group_name = GROUP_NAME_MAPPING.get(group_name, group_name)
             effect_key = f'{effect_type}_effect'
             if effect_key in group_data and 'scores_matrix' in group_data[effect_key]:
                 scores_matrix = group_data[effect_key]['scores_matrix']
@@ -1542,18 +1558,28 @@ def plot_temporal_windows_boxplots(all_groups_data, save_dir, show_plots=True):
                     idx = np.where((times_ms >= tmin) & (times_ms <= tmax))[0]
                     for subj, subj_scores in enumerate(scores_matrix):
                         mean_auc = np.nanmean(subj_scores[idx])
-                        all_data.append({'Group': group_name, 'Window': win_name, 'AUC': mean_auc, 'Subject': subj})
+                        all_data.append({'Group': mapped_group_name, 'Window': win_name, 'AUC': mean_auc, 'Subject': subj})
         if not all_data:
             logger.warning(f"Aucune donnée pour créer les boxplots des fenêtres temporelles pour l'effet {effect_type}")
             continue
         df = pd.DataFrame(all_data)
+        # Définir l'ordre des groupes selon PATIENT_ORDER
+        ordered_groups = [group for group in PATIENT_ORDER if group in df['Group'].unique()]
         plt.figure(figsize=(14, 8))
-        sns.boxplot(data=df, x='Window', y='AUC', hue='Group')
+       
+        group_palette = {group: GROUP_COLORS.get(group, '#1f77b4') for group in ordered_groups}
+       
+        sns.boxplot(data=df, x='Window', y='AUC', hue='Group', hue_order=ordered_groups, palette=group_palette)
+        # Points individuels en noir pour meilleure visibilité
+        sns.stripplot(data=df, x='Window', y='AUC', hue='Group', dodge=True, jitter=True, marker='o', alpha=0.7, size=5, hue_order=ordered_groups, color='black')
         plt.axhline(y=CHANCE_LEVEL, color='red', linestyle='--', alpha=0.7, label=f'Chance level ({CHANCE_LEVEL})')
         plt.title(f'AUC par fenêtre temporelle et groupe ({effect_type})', fontsize=16)
         plt.xlabel('Fenêtre temporelle', fontsize=14)
         plt.ylabel('AUC', fontsize=14)
-        plt.legend()
+        handles, labels = plt.gca().get_legend_handles_labels()
+        # Afficher la légende uniquement pour les groupes
+        if len(ordered_groups) > 0:
+            plt.legend(handles[:len(ordered_groups)], ordered_groups, title='Groupe')
         plt.tight_layout()
         if save_dir:
             filename = f"boxplot_auc_windows_{effect_type}.png"
