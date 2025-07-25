@@ -1,8 +1,11 @@
 #https://mne.tools/1.4/auto_tutorials/time-freq/10_spectrum_class.html
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use("Agg")
 #import seaborn as sns
 import matplotlib.pyplot as plt
+plt.ioff() 
 from mne_connectivity import spectral_connectivity_epochs
 from mne_connectivity.viz import plot_sensors_connectivity
 import os
@@ -10,6 +13,7 @@ import os
 import xarray as xr
 from mne_connectivity.viz import plot_connectivity_circle
 import mne
+
 
 
 ## logging info ###
@@ -49,12 +53,14 @@ def connectivity_overSubs(subs, data_save_dir, selected_chans, proto, cfg, save=
         df_chan = pd.DataFrame(np.nan, index=chans_names, columns=chans_names)
 
     #Get real chan index
-    All_ROI = cfg.con_all_ROI_chan
+    All_ROI = cfg.new_ROI_chan
+    # All_ROI = cfg.con_all_ROI_chan, replace all 'new_ROI_chan' with this 
+
     for kk in All_ROI.keys():
         print('key :', kk)
         index_list = []
-        for cc in cfg.con_all_ROI_chan[kk]:
-            index = chans_names.index(cc)
+        for cc in cfg.new_ROI_chan[kk]:
+            index = chans_names.index(cc)  # CHANGES WERE HERE → cc was mapped via alias dictionary
             index_list.append(index)
         All_ROI[kk] = index_list
 
@@ -89,7 +95,7 @@ def connectivity_overSubs(subs, data_save_dir, selected_chans, proto, cfg, save=
                     selected_epochs = epochs[event_id].pick_channels(selected_chans, ordered=True)
                     chans_names = selected_chans
                 else:
-                    selected_epochs = epochs[event_id]#.pick_types(eeg=True)
+                    selected_epochs = epochs[event_id]  # .pick_types(eeg=True)
                     chans_names = selected_epochs.ch_names
                     
                 print('Chan names : ', chans_names)
@@ -115,10 +121,12 @@ def connectivity_overSubs(subs, data_save_dir, selected_chans, proto, cfg, save=
                     df_Roi_sub_name =  f'{data_save_dir}{cfg.result_con_path}/{sub}/{sub}_{proto}_{cfg.con_method}_{k}_ROI.xlsx'
                     df_ROI_sub.to_excel(df_Roi_sub_name)
                     
-                #plot conn ROI for each subjet
-                ROI_sub_fig, ROI_sub_ax = plot_connectivity_circle(df_ROI_sub.to_numpy(), All_ROI.keys(), title=f'{sub} {proto} Connectivity {k} band', vmin=cfg.con_vmin, vmax=cfg.con_vmax,fontsize_title=12, fontsize_names=10)                
-                fname_sub_fig =  f'{data_save_dir}{cfg.result_con_path}/{sub}/{sub}_{proto}_{cfg.con_method}_{k}_conData_ROI.png'
-                ROI_sub_fig.savefig(fname_sub_fig, facecolor='black') 
+                # #plot conn ROI for each subjet
+                # ROI_sub_fig, ROI_sub_ax = plot_connectivity_circle(df_ROI_sub.to_numpy(), All_ROI.keys(), title=f'{sub} {proto} Connectivity {k} band', vmin=cfg.con_vmin, vmax=cfg.con_vmax,fontsize_title=12, fontsize_names=10, linewidth=4.0)                
+                # fname_sub_fig =  f'{data_save_dir}{cfg.result_con_path}/{sub}/{sub}_{proto}_{cfg.con_method}_{k}_conData_ROI.png'
+                # ROI_sub_fig.savefig(fname_sub_fig, facecolor='black')
+                # ROI_fig.savefig(fname_fig, facecolor='black')
+                # plt.close(ROI_fig) 
                 
                
                 all_conn_aray[:, :, i_event, i_sub] = con_data.get_data(output='dense')[:, :, 0].copy()
@@ -133,6 +141,25 @@ def connectivity_overSubs(subs, data_save_dir, selected_chans, proto, cfg, save=
             all_con_matrix = np.average(all_conn_aray, axis = 3).reshape(all_conn_aray.shape[0],all_conn_aray.shape[1])
             # ROI of averaged con data
             Result_ROI, df_ROI = get_ROI(all_con_matrix, All_ROI)
+
+
+            # NEW
+
+             # NEW BLOCK: Save each subject's ROI data to the same dir as the group average
+            for i_sub, sub in enumerate(subs):
+                fif_fname = f'{data_save_dir}{cfg.data_con_path}{sub}_{proto}{cfg.prefix_epo_conn}'
+                epochs = mne.read_epochs(fif_fname, proj=False, verbose=False, preload=True)
+                selected_epochs = epochs[event_ids[0]]
+                con_data = spectral_connectivity_epochs(
+                    selected_epochs, method=cfg.con_method, mode='multitaper',
+                    sfreq=epochs.info['sfreq'], fmin=fmin, fmax=fmax,
+                    faverage=True, tmin=tmin, mt_adaptive=False, n_jobs=1)
+                con_matrix = con_data.get_data(output="dense")[:, :, 0].copy()
+                _, df_ROI_sub = get_ROI(con_matrix, All_ROI)
+                roi_out_path = f'{data_save_dir}{cfg.result_con_path}/{sub}_{proto}_{cfg.con_method}_{k}_ROI_inGroupFolder.xlsx'
+                df_ROI_sub.to_excel(roi_out_path)
+
+
             df_ROI_name = f'{data_save_dir}{cfg.result_con_path}/{proto}_{cfg.con_method}_{k}_allSub_ROI.xlsx'
             df_ROI.to_excel(df_ROI_name)
             
@@ -147,7 +174,7 @@ def connectivity_overSubs(subs, data_save_dir, selected_chans, proto, cfg, save=
             df_chan.to_excel(df_chan_name)
             
             print(df_ROI.to_numpy().shape)
-            ROI_fig, ROI_ax = plot_connectivity_circle(df_ROI.to_numpy(), All_ROI.keys(), title=f'{proto} AllSub Connectivity {k} band', vmin=cfg.con_vmin, vmax=cfg.con_vmax, fontsize_title=12, fontsize_names=10)
+            ROI_fig, ROI_ax = plot_connectivity_circle(df_ROI.to_numpy(), All_ROI.keys(), title=f'{proto} AllSub Connectivity {k} band', vmin=cfg.con_vmin, vmax=cfg.con_vmax, fontsize_title=12, fontsize_names=10, linewidth=4.0)
             fname_fig = f'{data_save_dir}{cfg.result_con_path}/{proto}_{cfg.con_method}_{k}_allSub_ROI.png'
             ROI_fig.savefig(fname_fig, facecolor='black') 
         
@@ -311,11 +338,11 @@ def connectivity_1sub(data_name, patient_info, cfg, save=True, verbose=True, plo
         
         con_epochs_matrix = con_data.get_data(output="dense")[:, :, 0]
         fig = plt.figure()
-        im = plt.imshow(con_epochs_matrix)
+        #im = plt.imshow(con_epochs_matrix)
         fig.colorbar(im, label="Connectivity")
         plt.ylabel("Channels")
         plt.xlabel("Channels")
-        plt.show()
+        #plt.show()
 
     return con_data
 
@@ -375,4 +402,4 @@ def print_infos(con_data):
     plot_sensors_connectivity(selected_epochs.info, con_data.get_data(output='dense')[:, :, 0])
     plot_connectivity_circle(con_data.get_data(output='dense')[:, :, 0], chans_names)
     con_data.plot_circle()
-    plt.show()
+    #plt.show()

@@ -3,18 +3,16 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
-import mne
 
 
-## logging info ###
-import logging
-from datetime import datetime
+# ## logging info ###
+# import logging
+# from datetime import datetime
 
 
-logname = './logs/' + datetime.now().strftime('log_%Y-%m-%d.log')
-logging.basicConfig(filename=logname, level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s')
-logger = logging.getLogger(__name__)
+# logname = './logs/'+ datetime.now().strftime('log_%Y-%m-%d.log')
+# logging.basicConfig(filename=logname,level=logging.INFO, format='%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+# logger = logging.getLogger(__name__)
 
 
 # Correspond to protocol "Battery" in old scripts
@@ -33,40 +31,37 @@ def redefine_event_PP(new_events, cfg, verbose=True, plot=True):
     events_redef_equal = events_redef.copy()
     add_trig_AP = 2000
     for idx, val in enumerate(events_redef_equal):
-        if (val[2] in cfg.Pp.values()):
-            if (events_redef_equal[idx-1][2] in cfg.Ap.values()):
+        if (val[2] in cfg.Pp.values() ):
+            if (events_redef_equal[idx-1][2] in cfg.Ap.values() ):
                 events_redef_equal[idx-1][2] += add_trig_AP
-            elif not (events_redef_equal[idx-1][2] in cfg.Ap.values()):
+            elif not (events_redef_equal[idx-1][2] in cfg.Ap.values() ):
                 if (events_redef_equal[idx+1][2] in cfg.Ap.values()):
                     events_redef_equal[idx+1][2] += add_trig_AP
-                else:
-                    print('Error no AP before or after PP ??')
+                else :
+                     print ('Error no AP before or after PP ??')
     if verbose:
         print('Events AFTER changes : ', events_redef_equal)
 
     return events_redef_equal
 
-
 def redefine_event_LG(data, patient_info, cfg, verbose=True, plot=True):
     ########### Renaming of triggers  ###########
-    # Loading csv
-    # csvname = cfg.csvpath + patient_info['ID_patient'] + '.csv'
-    csvname = patient_info['raw_data_dir'] + patient_info['ID_patient'] + \
-        '/Stimulations/local-global/playframe.csv'
+    ### Loading csv
+    #csvname = cfg.csvpath + patient_info['ID_patient'] + '.csv'
+    csvname = patient_info['raw_data_dir'] + patient_info['ID_patient'] + '/Stimulations/local-global/playframe.csv'
     try:
         ord = pd.read_csv(csvname, sep=",")
     except:
-        print("Can't find playframe excel file Local Global protocol for patient : ",
-              patient_info['ID_patient'])
+        print("Can't find playframe excel file Local Global protocol for patient : ", patient_info['ID_patient'])
         print('CSV file : ', csvname)
-        exit()
-
+        exit() 
+        
     number = 0
     ord["block"] = 0
     ord["LS"] = 0
 
     for count, x in enumerate(ord["Unnamed: 0"]):
-        # ord["block"][count] = str(number)
+        #ord["block"][count] = str(number)
         if x == 1:
             print(x)
             print(count)
@@ -74,40 +69,39 @@ def redefine_event_LG(data, patient_info, cfg, verbose=True, plot=True):
             number = number + 1
         ord["block"][count] = str(number)
 
-    GS = 0
+    GS=0
 
     for i in range(4, len(ord), 5):
-        # print(ord["ISI"][i])
-        # print(ord["Trigger"][i])
+        #print(ord["ISI"][i])
+        #print(ord["Trigger"][i])
         if ord["Trigger"][i-1] == ord["Trigger"][i]:
-            ord.at[i, "LS"] = 10
-        else:
-            ord.at[i, "LS"] = 20
+            ord.at[i,"LS"] = 10
+        else :
+            ord.at[i,"LS"] = 20
         BLnr = ord["block"][i]
         print(BLnr)
-        # print(ord["Unnamed: 0"]==4)
-        # print(ord["block"]==BLnr)
-        GS = ord[(ord["Unnamed: 0"] == 5) & (
-            ord["block"] == BLnr)]["Trigger"].item()
+        #print(ord["Unnamed: 0"]==4)
+        #print(ord["block"]==BLnr)
+        GS = ord[(ord["Unnamed: 0"]==5) & (ord["block"]==BLnr)]["Trigger"].item()
         print(GS)
-        # ord["Trigger"][i]=ord["Trigger"][i]+"_GS"
+        #ord["Trigger"][i]=ord["Trigger"][i]+"_GS"
         if GS == ord["Trigger"][i]:
-            ord["LS"][i] = ord["LS"][i]+1
+            ord["LS"][i]= ord["LS"][i]+1
         else:
-            ord["LS"][i] = ord["LS"][i]+2
+            ord["LS"][i]= ord["LS"][i]+2
 
     string = ord["LS"]
 
-    # Finding events
+    #### Finding events
     events = mne.find_events(data, stim_channel='STI 014')
 
     new_events = events.copy()
-    for (x, y), value in np.ndenumerate(events):
-        if y == 2:
+    for (x,y), value in np.ndenumerate(events):
+        if y==2:
             new_value = string[x]
             print(new_value)
-            if new_value != '':
-                new_events[x, y] = new_value
+            if new_value  != '':
+              new_events[x,y] = new_value
 
     if plot:
         eventplot = mne.viz.plot_events(new_events, data.info['sfreq'])
@@ -126,116 +120,116 @@ def get_ERP_epochs(data, patient_info, cfg, save=True, verbose=True, plot=True):
     SubName = patient_info['ID_patient']
 
     ########### Renaming of EGI-loaded triggers  ###########
-
-    if patient_info['EEG_system'] == 'EGI' and patient_info['protocol'] == 'PP':
-
-        StimNpy = patient_info['data_save_dir'] + cfg.stimDict_path + \
-            SubName + '_' + patient_info['protocol'] + cfg.prefix_stimDict
+    
+    if patient_info['EEG_system'] == 'EGI' and  patient_info['protocol'] == 'PP':
+        
+        StimNpy = patient_info['data_save_dir'] + cfg.stimDict_path + SubName + '_' + patient_info['protocol'] + cfg.prefix_stimDict
         print(StimNpy)
         translate_dict = np.load(StimNpy, allow_pickle=True).item()
 
         events = mne.find_events(data, stim_channel='STI 014')
         print('Events BEFORE first changes : ', events)
         print('translate_dict : ', translate_dict)
-        # eventplot = mne.viz.plot_events(events, data.info['sfreq'])
+        #eventplot = mne.viz.plot_events(events, data.info['sfreq'])
 
         new_dict = {}
         new_events = events.copy()
         for key, value in translate_dict.items():
             if key != 'Rest' and key != 'Code' and key != 'rest' and key != 'star' and key != 'IEND':
                 new_key = ''.join(x for x in key if x.isdigit())
-                # new_key = int(new_key) # retire or ...
+                #new_key = int(new_key) # retire or ...
             else:
                 new_key = key
             new_dict[new_key] = value
         print('new_dict : ', new_dict)
 
-        for (x, y), value in np.ndenumerate(events):
-            if y == 2:
-                # corect here because one key is associated to one value. better to use inverse dict ?
-                new_value = [k for k, v in new_dict.items() if v == value][0]
-                if new_value != 'IEND' and new_value != 'rest' and new_value != 'Code' and new_value != 'Rest' and new_value != 'star':
-                    new_events[x, y] = new_value
+        for (x,y), value in np.ndenumerate(events):
+            if y==2:
+                new_value = [k for k,v in new_dict.items() if v==value][0] #corect here because one key is associated to one value. better to use inverse dict ?
+                if new_value != 'IEND' and new_value  != 'rest' and new_value != 'Code' and new_value != 'Rest' and new_value != 'star':
+                    new_events[x,y] = new_value
 
-        events_redef = redefine_event_PP(
-            new_events, cfg, verbose=True, plot=True)
-
+        
+        events_redef = redefine_event_PP(new_events, cfg, verbose=True, plot=True)
+        
         if plot:
             eventplot = mne.viz.plot_events(events_redef, data.info['sfreq'])
-
+        
         events_id = cfg.events_id_PP
-        epochs_reject = None  # cfg.epochs_reject_PP
-
+        epochs_reject = None #cfg.epochs_reject_PP
+    
     elif patient_info['protocol'] == 'LG':
-        events_redef = redefine_event_LG(
-            data, patient_info, cfg, verbose=True, plot=True)
+        events_redef = redefine_event_LG(data, patient_info, cfg, verbose=True, plot=True)
         events_id = cfg.events_id_LG
         epochs_reject = cfg.epochs_reject_LG
+
 
     ########### Segmetation and rejection ###########
     tmin, tmax = cfg.erp_window_tmin, cfg.erp_window_tmax
     baseline = cfg.erp_baseline
-    # Either 0 or 1, the order of the detrending. 0 is a constant (DC) detrend, 1 is a linear detrend.
-    detrend = cfg.erp_detrend
+    detrend = cfg.erp_detrend # Either 0 or 1, the order of the detrending. 0 is a constant (DC) detrend, 1 is a linear detrend.
 
-    # eeg and eog chan for rejection
-    picks_eeg_eog = mne.pick_types(data.info, eeg=True, eog=True, exclude=[])
-    # picks_eeg_eog = mne.pick_types(data.info, eeg=True, eog=True, selection =['Cz', 'E55', 'E62', 'E106', 'E7', 'E80', 'E31', 'E79', 'E54', 'E61', 'E78']) #FOR PATIENT TpTP
+
+    picks_eeg_eog = mne.pick_types(data.info, eeg=True, eog=True, exclude=[]) #eeg and eog chan for rejection
+    #picks_eeg_eog = mne.pick_types(data.info, eeg=True, eog=True, selection =['Cz', 'E55', 'E62', 'E106', 'E7', 'E80', 'E31', 'E79', 'E54', 'E61', 'E78']) #FOR PATIENT TpTP
     epochs = mne.Epochs(data, events=events_redef, event_id=events_id, tmin=tmin, tmax=tmax,
                         baseline=baseline, detrend=detrend, picks=picks_eeg_eog, on_missing='warn',
                         reject=epochs_reject, preload=True)
     if verbose:
         print('epochs : ', epochs.info)
         print('Number of events :', events_redef.size/3)
-        # print('Number of redefined events :', events_redef_equal.size)
+        #print('Number of redefined events :', events_redef_equal.size)
         print('Number of epochs :', len(epochs))
+
 
     if plot:
         epochs.plot_drop_log(subject=SubName)
-        epochs.plot(title=SubName, show=True, block=True, scalings=dict(
-            eeg=50e-6, eog=100e-6))  # Here it's possible to click on event to reject
-        # epochs["TW/Congurent"].average().plot()
-        # epochs["TW/Incongruent"].average().plot()
-        # epochs["TPW"].average().plot()
+        epochs.plot(title=SubName, show=True, block=True, scalings=dict(eeg=50e-6, eog=100e-6))  # Here it's possible to click on event to reject
+        #epochs["TW/Congurent"].average().plot()
+        #epochs["TW/Incongruent"].average().plot()
+        #epochs["TPW"].average().plot()
 
-    logger.info('Number of events : ,%s', events.size)
-    logger.info('Number of events : ,%s', events.size)
-    # gger.info('Number of redefined events :,%s', events_redef_equal.size)
-    logger.info('Number of epochs :,%s', len(epochs))
 
+    # logger.info('Number of events : ,%s', events.size)
+    # logger.info('Number of events : ,%s', events.size)
+    # #gger.info('Number of redefined events :,%s', events_redef_equal.size)
+    # logger.info('Number of epochs :,%s', len(epochs))
+    
     if save:
         if patient_info['protocol'] == 'PP':
-            epochs_name = patient_info['data_save_dir'] + \
-                cfg.all_folders_PP['data_epochs_path']
+            epochs_name = patient_info['data_save_dir'] + cfg.all_folders_PP['data_epochs_path']
         elif patient_info['protocol'] == 'LG':
-            epochs_name = patient_info['data_save_dir'] + \
-                cfg.all_folders_LG['data_epochs_path']
+            epochs_name = patient_info['data_save_dir'] + cfg.all_folders_LG['data_epochs_path']
         elif patient_info['protocol'] == 'Resting':
-            epochs_name = patient_info['data_save_dir'] + \
-                cfg.all_folders_Resting['data_epochs_path']
-        epochs_name = epochs_name + \
-            patient_info['ID_patient'] + '_' + \
-            patient_info['protocol'] + cfg.prefix_epochs_PPAP
+            epochs_name = patient_info['data_save_dir'] + cfg.all_folders_Resting['data_epochs_path']
+        epochs_name = epochs_name + patient_info['ID_patient'] + '_' + patient_info['protocol'] + cfg.prefix_epochs_PPAP
         print("Saving data : " + epochs_name)
-
-        # epochs_name = cfg.data_epochs_path + data.info['subject_info']['his_id'] + '_' + proto + cfg.prefix_epoched
-        # print("Saving data : " + epochs_name)
+        
+        #epochs_name = cfg.data_epochs_path + data.info['subject_info']['his_id'] + '_' + proto + cfg.prefix_epoched
+        #print("Saving data : " + epochs_name)
         epochs.save(epochs_name, overwrite=True)
 
     return epochs
 
 
+
 # From Riham epoching code -> connectivity epochs
 def get_epochs_connectivity(data, sub, proto, data_save_dir, cfg, save=True, verbose=True, plot=True):
+    
+    #SubName = patient_info['ID_patient']
+    #proto = patient_info['protocol']
 
-    # SubName = patient_info['ID_patient']
-    # proto = patient_info['protocol']
+    duration_sec = data.times[-1]
+    print(f"Duration of the raw data: {duration_sec:.2f} seconds")
+
+    print(f"Actual sfreq: {data.info['sfreq']}")
+    print(f"Expected sfreq from cfg: {cfg.sfreq}")
 
     assert data.info['sfreq'] == cfg.sfreq, 'Pbl Fréquences d"echantillonnage !!'
 
     # Define new trigs: 60 event of 10s = 10 min, from first trig or first 1min
     event_id = 303
-    nb_event = 60
+    nb_event =  60  #pour les patients avec moins de temps
     size_epoch_s = 10
 
     if proto == 'PP' or proto == 'LG':
@@ -246,46 +240,65 @@ def get_epochs_connectivity(data, sub, proto, data_save_dir, cfg, save=True, ver
     else:
         print('Error on the protocol name - can"t find it')
         return
-    onsets = np.arange(start=onset_init, stop=onset_init+(nb_event *
-                       cfg.sfreq*size_epoch_s), step=cfg.sfreq*size_epoch_s, dtype='int64')
-    events = np.vstack((onsets, np.ones(nb_event, int), event_id *
-                       np.ones(nb_event, int))).T   # event : (times, durations, codes)
+    onsets = np.arange(start=onset_init, stop=onset_init+(nb_event*cfg.sfreq*size_epoch_s), step=cfg.sfreq*size_epoch_s, dtype='int64') 
+    events = np.vstack((onsets, np.ones(nb_event, int), event_id * np.ones(nb_event, int))).T   # event : (times, durations, codes)
 
     print('New Events: ', events)
     print(data)
-    # eventplot = mne.viz.plot_events(events, data.info['sfreq'])
-    # plt.show()
+    #eventplot = mne.viz.plot_events(events, data.info['sfreq'])
+    #plt.show()
+
 
     ########### Segmetation and rejection ###########
-
+   
     tmin, tmax = 0, size_epoch_s
 
-    # eeg and eog chan for rejection
-    picks_eeg = mne.pick_types(data.info, eeg=True, exclude=[])
-    epochs = mne.Epochs(data, events=events, event_id=event_id, tmin=tmin, tmax=tmax,  # new_events
-                        baseline=(None, None), picks=picks_eeg, reject=cfg.epochs_reject_con, preload=True,
+    picks_eeg = mne.pick_types(data.info, eeg=True, exclude=[]) #eeg and eog chan for rejection
+    epochs = mne.Epochs(data, events=events, event_id=event_id, tmin=tmin, tmax=tmax, #new_events
+                        baseline = (None, None), picks=picks_eeg, reject=cfg.epochs_reject_con, preload=True,
                         detrend=1, reject_by_annotation=False)
     if verbose:
         print('epochs : ', epochs.info)
-        # print('Number of events :', new_events.size)
+        #print('Number of events :', new_events.size)
         print('Number of epochs :', len(epochs))
 
-    if plot:
-        # epochs.plot_drop_log(subject=SubName)
-        epochs.plot(title=sub + " " + proto + ' - Click to manually reject event if needed', show=True,
-                    block=True, scalings=dict(eeg=200e-6, eog=100e-6))  # Here it's possible to click on event to reject
+    if len(epochs) == 0:
+        print("⚠️ No epochs were created.")
+        print("Drop log summary:")
+        print(epochs.drop_log_stats())
+        print("Drop log details:")
+        for i, reason in enumerate(epochs.drop_log):
+            print(f"  Epoch {i}: {reason}")
+        return None
 
-    logger.info('Number of events : ,%s', events.size)
-    logger.info('Number of events : ,%s', events.size)
-    logger.info('Number of epochs :,%s', len(epochs))
+    if plot:
+        #epochs.plot_drop_log(subject=SubName)
+        epochs.plot(title= sub + " " + proto + ' - Click to manually reject event if needed', show=True, block=True, scalings=dict(eeg=200e-6, eog=100e-6))  # Here it's possible to click on event to reject
+
+    # logger.info('Number of events : ,%s', events.size)
+    # logger.info('Number of events : ,%s', events.size)
+    # logger.info('Number of epochs :,%s', len(epochs))
 
     if save:
-        epochs_name = data_save_dir + cfg.data_con_path
-        epochs_name = epochs_name + sub + '_' + proto + cfg.prefix_epo_conn
+        # Ensure the target directory exists
+        epochs_dir = os.path.join(data_save_dir, cfg.data_con_path)
+        os.makedirs(epochs_dir, exist_ok=True)
+
+        # Construct full save path
+        epochs_name = os.path.join(epochs_dir, sub + '_' + proto + cfg.prefix_epo_conn)
         print("Saving data : " + epochs_name)
 
-        # epochs_name = cfg.data_epochs_path + data.info['subject_info']['his_id'] + '_' + proto + cfg.prefix_epoched
-        # print("Saving data : " + epochs_name)
+        # Save epochs
         epochs.save(epochs_name, overwrite=True)
+    
+    # if save:
+    #     epochs_name = data_save_dir + cfg.data_con_path
+    #     epochs_name = epochs_name + sub + '_' + proto + cfg.prefix_epo_conn
+    #     print("Saving data : " + epochs_name)
+        
+    #     #epochs_name = cfg.data_epochs_path + data.info['subject_info']['his_id'] + '_' + proto + cfg.prefix_epoched
+    #     #print("Saving data : " + epochs_name)
+    #     epochs.save(epochs_name, overwrite=True)
 
     return epochs
+    

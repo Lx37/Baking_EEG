@@ -4,17 +4,18 @@ import matplotlib.pyplot as plt
 import os
 
 from mne.preprocessing import ICA
-from autoreject import get_rejection_threshold
-from autoreject import (AutoReject, set_matplotlib_defaults)
+# from autoreject import get_rejection_threshold
+# from autoreject import (AutoReject, set_matplotlib_defaults)
 
-## logging info ###
-import logging
-from datetime import datetime
 
-#logname = '/home/lizette/Projets/GIT_LAB/coma_stuff/logs/' + datetime.now().strftime('log_%Y-%m-%d.log')
-logname = './logs/' + datetime.now().strftime('log_%Y-%m-%d.log')
-logging.basicConfig(filename=logname,level=logging.INFO, format='%(asctime)s - %(levelname)s - %(name)s - %(message)s')
-logger = logging.getLogger(__name__)
+# ## logging info ###
+# import logging
+# from datetime import datetime
+
+# #logname = '/home/lizette/Projets/GIT_LAB/coma_stuff/logs/' + datetime.now().strftime('log_%Y-%m-%d.log')
+# logname = './logs/' + datetime.now().strftime('log_%Y-%m-%d.log')
+# logging.basicConfig(filename=logname,level=logging.INFO, format='%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+# logger = logging.getLogger(__name__)
 
 
 def correct_blink_ICA(data, patient_info, cfg, save=False, verbose=True, plot=True):
@@ -35,7 +36,7 @@ def correct_blink_ICA(data, patient_info, cfg, save=False, verbose=True, plot=Tr
         data.plot(events=eog_epoch.events, title='Show EOG artifacts detection')
         eog_evoked.plot_joint(title='Show averaged EOG artifacts')
 
-    logger.info('Nb blink found : ,%s', n_blinks)
+    # logger.info('Nb blink found : ,%s', n_blinks)
     
     
     ################ ICA correction ##################
@@ -87,7 +88,7 @@ def correct_blink_ICA(data, patient_info, cfg, save=False, verbose=True, plot=Tr
         #Apply ICA
         #ica.exclude.extend(eog_comp_indices)
         ica.apply(data)#, exclude=eog_comp_indices)
-        logger.info('components excluded = %s',  ica.exclude)
+        # logger.info('components excluded = %s',  ica.exclude)
         
         if plot:
             data.plot(events=eog_epoch.events, block=True, title="EEG signal after ICA correction")
@@ -98,7 +99,7 @@ def correct_blink_ICA(data, patient_info, cfg, save=False, verbose=True, plot=Tr
 
             #data_name = cfg.data_preproc_path + data.info['subject_info']['his_id'] + cfg.prefix_processed.strip('.fif') + cfg.prefix_ICA
             data.save(data_name, overwrite=True)
-            logger.info('saved ICA data', data_name)
+            # logger.info('saved ICA data', data_name)
             return data
         else:
             print('ICA not saved as no components were excluded')
@@ -156,14 +157,14 @@ def autorejection_epochs(cfg, epochs,fif_fname, protocol, save=False, verbose=Tr
 
     #logger.info('The instances of _AutoReject for each channel type. %s', ar.local_reject)
     #logger.info('Percentage dropped epochs, %s', epochs_clean.drop_log_stats)
-    logger.info('Nb epochs uncleaned, %s',len(epochs))
-    logger.info('Nb epochs cleaned, %s',len(epochs_clean))
-    logger.info('Nb epochs deleted, %s',(len(epochs)-len(epochs_clean)))
+    # logger.info('Nb epochs uncleaned, %s',len(epochs))
+    # logger.info('Nb epochs cleaned, %s',len(epochs_clean))
+    # logger.info('Nb epochs deleted, %s',(len(epochs)-len(epochs_clean)))
 
     if save:
         data_name = fif_fname.strip('.fif') + cfg.prefix_autoreject
         epochs_clean.save(data_name, overwrite=True)
-        logger.info('saved cleaned data', data_name)
+        # logger.info('saved cleaned data', data_name)
 
     return epochs
 

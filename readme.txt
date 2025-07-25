@@ -34,19 +34,6 @@ different levels, including individual and group analyses.
     ```bash
     pip install -r requirements.txt
     ```
-    We recomand to create a specific python environment with **uv**
-        1. On macOS and Linux. Open a terminal and do
-           `$ curl -LsSf https://astral.sh/uv/install.sh | sh`
-        1. On windows. Open a terminal using **CMD** in the windows menu and do
-         `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
-        2. Exit the terminal and open it again.
-        3. Download with right click and save this file corresponding in "Documents" folder:
-        * [`requirements.txt`](https://github.com/Lx37/Baking_EEG/blob/main/requirements.txt)
-        4. open terminal or **CMD**
-        5. `uv venv backingEEG --python 3.12`
-        6. For Mac/Linux `source backingEEG/bin/activate` (you should have `(backingEEG)` 
-        in your terminal) or for Powershell `backingEEG\Scripts\activate`
-        7. `uv pip install -r Documents/requirements.txt`
 
 ## Usage
 

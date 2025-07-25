@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
+#import seaborn as sns
 import scipy.stats as stats
 from itertools import combinations
 
@@ -79,55 +79,55 @@ check_normality(dwpli_values)
 
 '''
 
-#écraser la dimension des epochs
+# #écraser la dimension des epochs
 
-import os
-import numpy as np
+# import os
+# import numpy as np
 
-def process_connectivity_files(input_dir, output_dir):
-    """Processes EEG connectivity .npy files by averaging over the event dimension (i_event)
-    so that the resulting array has shape (channels, channels, subjects)."""
+# def process_connectivity_files(input_dir, output_dir):
+#     """Processes EEG connectivity .npy files by averaging over the event dimension (i_event)
+#     so that the resulting array has shape (channels, channels, subjects)."""
     
-    # Ensure output directory exists
-    os.makedirs(output_dir, exist_ok=True)
+#     # Ensure output directory exists
+#     os.makedirs(output_dir, exist_ok=True)
     
-    # List all .npy files in the input directory
-    files = [f for f in os.listdir(input_dir) if f.endswith(".npy")]
+#     # List all .npy files in the input directory
+#     files = [f for f in os.listdir(input_dir) if f.endswith(".npy")]
     
-    for file in files:
-        file_path = os.path.join(input_dir, file)
-        print(f"Processing file: {file_path}")
+#     for file in files:
+#         file_path = os.path.join(input_dir, file)
+#         print(f"Processing file: {file_path}")
         
-        # Load the 4D connectivity array (channels * channels * event * subject)
-        data = np.load(file_path)
+#         # Load the 4D connectivity array (channels * channels * event * subject)
+#         data = np.load(file_path)
         
-        if data.ndim != 4:
-            print(f"Skipping {file} - Expected 4D array but got {data.ndim}D array")
-            continue
+#         if data.ndim != 4:
+#             print(f"Skipping {file} - Expected 4D array but got {data.ndim}D array")
+#             continue
         
-        # Average over the event dimension (axis=2)
-        averaged_data = np.mean(data, axis=2, keepdims=False)
-        print("Shape after averaging:", averaged_data.shape)
+#         # Average over the event dimension (axis=2)
+#         averaged_data = np.mean(data, axis=2, keepdims=False)
+#         print("Shape after averaging:", averaged_data.shape)
         
-        # If a singleton dimension still remains (for example, if shape is (124, 124, 1, 21)),
-        # remove it using squeeze. This should yield a shape of (124, 124, 21).
-        averaged_data = np.squeeze(averaged_data)
-        print("Shape after squeeze:", averaged_data.shape)
+#         # If a singleton dimension still remains (for example, if shape is (124, 124, 1, 21)),
+#         # remove it using squeeze. This should yield a shape of (124, 124, 21).
+#         averaged_data = np.squeeze(averaged_data)
+#         print("Shape after squeeze:", averaged_data.shape)
         
-        # Generate new file name
-        new_filename = "3D_" + file.replace("_wpli2_debiased_", "_")
-        output_file_path = os.path.join(output_dir, new_filename)
+#         # Generate new file name
+#         new_filename = "3D_" + file.replace("_wpli2_debiased_", "_")
+#         output_file_path = os.path.join(output_dir, new_filename)
         
-        # Save the processed array to the output directory
-        np.save(output_file_path, averaged_data)
-        print(f"Saved processed file to: {output_file_path}")
+#         # Save the processed array to the output directory
+#         np.save(output_file_path, averaged_data)
+#         print(f"Saved processed file to: {output_file_path}")
 
-# Define input and output directories
-input_directory = r"C:\Users\adminlocal\Desktop\Connectivity\connectivity_mcs"
-output_directory = r"C:\Users\adminlocal\Desktop\Connectivity\averaged_epochs\mcs"
+# # Define input and output directories
+# input_directory = r"C:\Users\adminlocal\Desktop\Connectivity\connectivity_vs"
+# output_directory = r"C:\Users\adminlocal\Desktop\Connectivity\averaged_epochs\vs"
 
-# Run the processing function
-process_connectivity_files(input_directory, output_directory)
+# # Run the processing function
+# process_connectivity_files(input_directory, output_directory)
 
 
 
@@ -236,4 +236,93 @@ process_connectivity_files(input_directory, output_directory)
 # directory = r"C:\Users\adminlocal\Desktop\Connectivity\averaged_epochs\coma"
 # filename = "3D_LG_alpha_allSubConArray.npy"
 # plot_histogram_npy(directory, filename)
+
+
+#VERSION 4 - plotting distribution per protocol and bandwidth, across all conditions
+
+# import os
+# import numpy as np
+# import matplotlib.pyplot as plt
+# import seaborn as sns
+# from collections import defaultdict
+
+# def load_and_aggregate_data(root_dir):
+#     """
+#     Loops over patient condition folders, loads .npy files with names formatted as
+#     '3D_{protocol}_{bandwidth}_allSubConArray.npy', and aggregates connectivity values
+#     by protocol and bandwidth.
+#     """
+#     # List of patient condition folders
+#     patient_conditions = ["coma", "vs", "mcs", "del+", "del-", "conscious"]
+    
+#     # Nested dictionary: data_dict[protocol][bandwidth] will store a list of connectivity values.
+#     data_dict = defaultdict(lambda: defaultdict(list))
+    
+#     for condition in patient_conditions:
+#         condition_path = os.path.join(root_dir, condition)
+#         if not os.path.isdir(condition_path):
+#             print(f"Directory not found: {condition_path}")
+#             continue
+        
+#         # Look for files starting with "3D_" and ending with ".npy"
+#         files = [f for f in os.listdir(condition_path) if f.endswith(".npy") and f.startswith("3D_")]
+#         for file in files:
+#             file_path = os.path.join(condition_path, file)
+#             # Expected filename format: 3D_{protocol}_{bandwidth}_allSubConArray.npy
+#             parts = file.split('_')
+#             if len(parts) < 4:
+#                 print(f"Filename format unexpected: {file}")
+#                 continue
+#             protocol = parts[1]
+#             bandwidth = parts[2]
+            
+#             try:
+#                 data = np.load(file_path)
+#                 # Flatten the 3D connectivity array to a 1D array of connectivity values
+#                 values = data.flatten()
+#                 data_dict[protocol][bandwidth].extend(values.tolist())
+#                 print(f"Aggregated {len(values)} values from {file_path} for protocol '{protocol}', bandwidth '{bandwidth}'")
+#             except Exception as e:
+#                 print(f"Error loading {file_path}: {e}")
+    
+#     return data_dict
+
+# def plot_and_save_histograms(data_dict, output_dir):
+#     """
+#     For each protocol and bandwidth combination in data_dict, plot a histogram with a KDE,
+#     and save the figure to the specified output directory.
+#     """
+#     # Create the output directory if it does not exist
+#     if not os.path.exists(output_dir):
+#         os.makedirs(output_dir)
+    
+#     for protocol, bw_dict in data_dict.items():
+#         for bandwidth, values in bw_dict.items():
+#             plt.figure(figsize=(10, 6))
+#             sns.histplot(values, bins=50, kde=True, color="blue")
+#             plt.title(f"Connectivity Distribution\nProtocol: {protocol}, Bandwidth: {bandwidth}", fontsize=14)
+#             plt.xlabel("Connectivity Values", fontsize=12)
+#             plt.ylabel("Frequency", fontsize=12)
+#             plt.grid(True)
+            
+#             # Save the plot as an image file.
+#             file_name = f"{protocol}_{bandwidth}_histogram.png"
+#             file_path = os.path.join(output_dir, file_name)
+#             plt.savefig(file_path)
+#             print(f"Saved histogram for Protocol: {protocol}, Bandwidth: {bandwidth} at {file_path}")
+#             plt.close()
+
+# # Define the root directory where patient condition folders are located.
+# root_directory = r"C:\Users\adminlocal\Desktop\Connectivity\averaged_epochs"
+# # Define the output directory for saving histogram images.
+# output_directory = r"C:\Users\adminlocal\Desktop\Connectivity\averaged_epochs\distribution"
+
+# # Load and aggregate connectivity data by protocol and bandwidth.
+# data_dict = load_and_aggregate_data(root_directory)
+
+# # Plot histogram distributions for each protocol and bandwidth, and save them.
+# plot_and_save_histograms(data_dict, output_directory)
+
+
+
 

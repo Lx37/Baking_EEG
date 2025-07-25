@@ -10,8 +10,8 @@ import os
 import mne
 from getpass import getuser
 
-from config import config as cfg
-from utils import utils
+from Baking_EEG import config as cfg
+from Baking_EEG import utils
 from Baking_EEG import _1_preprocess as preprocess 
 from Baking_EEG import _2_cleaning as cleaning
 from Baking_EEG import _3_epoch as epoch
