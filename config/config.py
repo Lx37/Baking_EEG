@@ -332,7 +332,7 @@ ALL_SUBJECTS_GROUPS = {
         "FM60", "KA70", "MH74", "OD69", "SR57", "AG42", "SM51", 
         "TpAB15J8", "TpAT19J8", "TpDC22J8", "TpFM25J8",
         "TL36", "TpEP16j8", "FR43", "DZ44", "KG85", "MM86", "MM87", 
-        "VS91", "DR92", "AD94", "AG98", "MA99"
+        "VS91", "DR92", "AD94", "AG98", "MA99","MA101"
     ],
     
     "MCS": [
@@ -356,35 +356,56 @@ ALL_SUBJECTS_GROUPS = {
         "TpPL48", "TpRB50", "TpMD52", "TpJA20", "TpFF34", "TpGT32",
     ],
     
-    "CONTROL": [
+    "CONTROLS": [
         "TWB1", "TPC2", "LAB1", "LCM2", "LAT3", "LBM4", "LPO5", 
         "LAG6", "MB103", "FP102", "FG104",
-        "TJL3", "TPLV4", "TTDV5", #"TYS6",
+        "TJL3", "TPLV4", "TTDV5", "TYS6",
         "TJR7", "TLP8"
     ]
 }
-'''
-# FOR SUBGROUPS
-ALL_SUBJECTS_GROUPS = {
-    "COMA": [
-        "TF53", "CA55", "JA61", "ME64", "MP68", "SV62",
-        "TpAT19J1", "TpCF24J1", "TpEM13J1", "TpEP16J1", "TT45", "YG72"
-    ],
-    "VS": [
-        "FM60", "KA70", "MH74", "OD69", "SR57", "AG42", "SM51",
-        "TpAB15J8", "TpAT19J8", "TpDC22J8", "TpFM25J8"
-    ],
-    "MCS": [
-        "AE93", "CW41", "DA75", "GT50", "HM52", "JA71", "KN49", "LP54", "MC58", "TB56", "VT47", "YG66"
-    ],
-    "DELIRIUM+": [
-        "TpAK24", "TpAK27", "TpCB15", "TpDRL3", "TpJB25", "TpJLR17", "TpMB45", "TpMN42", "TpPC21", "TpPM14", "TpRD38"
-    ],
-    "CONTROLS": [
-        "TWB1", "TPC2", "LAB1", "LCM2", "LAT3", "LBM4", "LPO5", "LAG6", "MB103", "FP102", "FG104"
-    ],
-    "DELIRIUM-": [
-        "TpAC23", "TpBD16","TpCG36","TpFF34","TpGB8","TpJA20","TpJPG7","TpJPL10","TpLP11","TpMD13","TpME22","TpPA35","TpSD30","TpYB41"
-    ]
-}
-'''
+
+#what we still need to compute 
+
+# ALL_SUBJECTS_GROUPS={
+#     "COMA":[
+#         "JA61","MP68","SV62","TpAT19J1","TpCF24J1","TpEM13J1","TpEP16J1","YG72","TpCL14j1",
+#         "TpMG17J1","TpMB18J1","TpEP20J1","TpLC21J1","TpDC22J1",
+#         "TpPC23J1","MV48","TpFM25J1","TpCD26J1","NN65","SB67","KS76","GV77","AP84"
+#     ],
+#     "VS":["MH74","OD69","SR57","SM51","TpAB15J8","TpAT19J8","TpDC22J8","TpFM25J8",
+#           "TL36","TpEP16j8","FR43","MM87","VS91","MA101"
+#     ],
+#     "MCS":[
+#         "JA71","LP54","VT47",
+#         "YG66","TpCF24J8","MK80","PL82",
+#         "XL89","OS90","PM95","MG96","PF100"
+#     ],
+#     "DELIRIUM+": ["TpAK24","TpFY57"],
+#     "DELIRIUM-": ["TpFF34"],
+#     "CONTROLS": ["TWB1","MB103","FP102","FG104"]
+# }
+
+# # FOR SUBGROUPS
+# ALL_SUBJECTS_GROUPS = {
+#     "COMA": [
+#         "TF53", "CA55", "JA61", "ME64", "MP68", "SV62",
+#         "TpAT19J1", "TpCF24J1", "TpEM13J1", "TpEP16J1", "TT45", "YG72"
+#     ],
+#     "VS": [
+#         "FM60", "KA70", "MH74", "OD69", "SR57", "AG42", "SM51",
+#         "TpAB15J8", "TpAT19J8", "TpDC22J8", "TpFM25J8"
+#     ],
+#     "MCS": [
+#         "AE93", "CW41", "DA75", "GT50", "HM52", "JA71", "KN49", "LP54", "MC58", "TB56", "VT47", "YG66"
+#     ],
+#     "DELIRIUM+": [
+#         "TpAK24", "TpAK27", "TpCB15", "TpDRL3", "TpJB25", "TpJLR17", "TpMB45", "TpMN42", "TpPC21", "TpPM14", "TpRD38"
+#     ],
+#     "CONTROLS": [
+#         "TWB1", "TPC2", "LAB1", "LCM2", "LAT3", "LBM4", "LPO5", "LAG6", "MB103", "FP102", "FG104"
+#     ],
+#     "DELIRIUM-": [
+#         "TpAC23", "TpBD16","TpCG36","TpFF34","TpGB8","TpJA20","TpJPG7","TpJPL10","TpLP11","TpMD13","TpME22","TpPA35","TpSD30","TpYB41"
+#     ]
+# }
+
