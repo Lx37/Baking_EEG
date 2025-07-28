@@ -1,3 +1,23 @@
+# =============================================================================
+#  Nom du fichier   : run_decoding_one_lg.py
+#  Auteur           : Tom Balay (et un peu copylot)
+#  Création         : 2025-07-28
+#  Description      : 
+#  Ce script exécute une analyse de décodage EEG pour un seul sujet dans le cadre 
+#  d'un protocole de décodage EEG spécifique.
+#  Il charge les données, effectue le décodage temporel, et génère des résultats
+#  et des visualisations.
+#  Il est conçu pour être utilisé dans le cadre du projet Baking_EEG.
+#  Il utilise des configurations prédéfinies pour les paramètres de décodage et
+#  les chemins d'accès aux données.
+#  Il gère les résultats de décodage, les statistiques intra-sujets,
+#  et les matrices de généralisation temporelle (TGM).
+#  Il enregistre les résultats et génère des graphiques de visualisation.
+#
+# licence BSD 3-Clause 2025, CNRS, Tom Balay
+# =============================================================================
+
+
 import sys
 import os
 import logging
