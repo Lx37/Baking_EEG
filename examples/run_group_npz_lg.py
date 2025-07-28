@@ -163,7 +163,7 @@ def filter_group_files_by_config(group_files, group_name):
     return filtered_files
 
 
-# --- FONCTION CENTRALE CORRIGÉE ---
+
 def analyze_group_data_lg(group_files, group_name):
     """
     Analyse les données d'un groupe en rognant chaque sujet à une fenêtre temporelle

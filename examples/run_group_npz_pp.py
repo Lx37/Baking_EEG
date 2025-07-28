@@ -203,9 +203,7 @@ def plot_all_groups_comparison_pp_ap(all_groups_data, save_dir, show_plots=True)
     Affiche et sauvegarde un graphique comparant les scores de décodage de plusieurs groupes,
     avec des barres de significativité colorées et empilées.
 
-    *** CODE CORRIGÉ ***
-    La correction traite `clusters` comme une liste de masques booléens,
-    ce qui est le format de sortie standard de la fonction MNE.
+
     """
     if not all_groups_data:
         logger.warning("Aucune donnée de groupe fournie à la fonction de traçage.")
@@ -231,6 +229,50 @@ def plot_all_groups_comparison_pp_ap(all_groups_data, save_dir, show_plots=True)
             label = f'{mapped_name} (n={group_data["n_subjects"]})'
             ax.plot(times_ms, group_mean, color=color, linewidth=2.5, label=label)
             ax.fill_between(times_ms, group_mean - group_sem, group_mean + group_sem, color=color, alpha=0.2)
+            # --- Ajout détection et annotation des pics principaux ---
+            try:
+                from scipy.signal import find_peaks
+                curve = group_mean
+                peaks, _ = find_peaks(curve)
+                if len(peaks) < 1:
+                    main_peaks = [np.argmax(curve)]
+                else:
+                    peak_heights = curve[peaks]
+                    first_idx = np.argmax(peak_heights)
+                    first_peak = peaks[first_idx]
+                    min_dist_ms = 80
+                    ms_per_idx = np.mean(np.diff(times_ms))
+                    min_dist_idx = int(min_dist_ms / ms_per_idx)
+                    distant_peaks = [p for p in peaks if abs(p - first_peak) >= min_dist_idx and times_ms[p] > 0]
+                    if times_ms[first_peak] > 0:
+                        if distant_peaks:
+                            distant_heights = curve[distant_peaks]
+                            second_peak = distant_peaks[np.argmax(distant_heights)]
+                            main_peaks = [first_peak, second_peak]
+                        else:
+                            main_peaks = [first_peak]
+                    else:
+                        valid_peaks = [p for p in peaks if times_ms[p] > 0]
+                        if valid_peaks:
+                            valid_heights = curve[valid_peaks]
+                            first_valid_idx = np.argmax(valid_heights)
+                            first_valid_peak = valid_peaks[first_valid_idx]
+                            distant_peaks = [p for p in valid_peaks if abs(p - first_valid_peak) >= min_dist_idx]
+                            if distant_peaks:
+                                distant_heights = curve[distant_peaks]
+                                second_peak = distant_peaks[np.argmax(distant_heights)]
+                                main_peaks = [first_valid_peak, second_peak]
+                            else:
+                                main_peaks = [first_valid_peak]
+                        else:
+                            main_peaks = []
+                for i, peak_idx in enumerate(main_peaks):
+                    ax.plot(times_ms[peak_idx], curve[peak_idx], 'o', color=color, markersize=12, markeredgecolor='black', label=None)
+                    ax.annotate(f"Pic {i+1}: {int(times_ms[peak_idx])}ms", (times_ms[peak_idx], curve[peak_idx]),
+                                textcoords="offset points", xytext=(0,10+i*18), ha='center', color=color, fontsize=7, fontweight='bold',
+                                bbox=dict(boxstyle="round,pad=0.2", fc="white", ec=color, lw=1, alpha=0.7))
+            except Exception as e:
+                logger.warning(f"Erreur lors de la détection des pics pour {group_name}: {e}")
         else:
             # Affiche une entrée dans la légende même si le groupe n'a pas de données
             ax.plot([], [], color=color, linewidth=2.5, label=f'{mapped_name} (n=0)')
@@ -404,7 +446,13 @@ def plot_group_tgm_pp_ap(group_data, save_dir, show_plots=True):
         plt.close()
 
 def create_temporal_windows_connected_plots_pp_ap(all_groups_data, save_dir, show_plots=True):
-    windows = {'T100': (90, 110), 'T200': (190, 210), 'T300': (290, 310), 'TALL': (0, 600)}
+    windows = {
+        'T165-175': (165, 175),
+        'T225-235': (225, 235),
+        'T290-300': (290, 300),
+        'T330-340': (330, 340),
+        'T745-755': (745, 755)
+    }
 
     for group_data in all_groups_data:
         group_name = group_data['group_name']
@@ -443,6 +491,73 @@ def create_temporal_windows_connected_plots_pp_ap(all_groups_data, save_dir, sho
         if save_dir: plt.savefig(os.path.join(save_dir, f"temporal_windows_connected_pp_ap_{group_name}.png"))
         if show_plots: plt.show()
         else: plt.close()
+
+    # --- Ajout : graphique multi-groupes PP/AP ---
+    window_names = list(windows.keys())
+    x_positions = np.arange(len(window_names))
+    fig, axes = plt.subplots(1, len(GROUP_ORDER), figsize=(5 * len(GROUP_ORDER), 7), sharey=True)
+    for idx, group_name in enumerate(GROUP_ORDER):
+        group_data = next((g for g in all_groups_data if g['group_name'] == group_name), None)
+        ax = axes[idx]
+        # Vérification et extraction des données nécessaires
+        scores_matrix = None
+        times = None
+        n_subjects = 0
+        if group_data is not None:
+            scores_matrix = group_data.get('scores_matrix', None)
+            times = group_data.get('times', None)
+            if scores_matrix is not None and times is not None:
+                n_subjects = scores_matrix.shape[0]
+                times_ms = times * 1000 if np.max(times) < 10 else times
+            else:
+                times_ms = None
+        else:
+            times_ms = None
+        group_color = GROUP_COLORS.get(group_name, '#1f77b4')
+        if scores_matrix is None or times_ms is None or n_subjects == 0:
+            ax.set_title(GROUP_NAME_MAPPING.get(group_name, group_name))
+            ax.text(0.5, 0.5, 'Aucune donnée', ha='center', va='center', transform=ax.transAxes)
+            continue
+        subjects_window_means = []
+        for subj_idx in range(n_subjects):
+            subject_scores = scores_matrix[subj_idx, :]
+            subject_means = []
+            for win in window_names:
+                tmin, tmax = windows[win]
+                indices = np.where((times_ms >= tmin) & (times_ms <= tmax))[0]
+                if len(indices) > 0:
+                    subject_means.append(np.nanmean(subject_scores[indices]))
+                else:
+                    subject_means.append(np.nan)
+            subjects_window_means.append(subject_means)
+        subjects_window_means = np.array(subjects_window_means)
+        for subj_means in subjects_window_means:
+            valid_idx = ~np.isnan(subj_means)
+            ax.plot(x_positions[valid_idx], np.array(subj_means)[valid_idx], 'o', color=group_color, alpha=0.5, markersize=7)
+        group_means = np.nanmean(subjects_window_means, axis=0)
+        group_stds = np.nanstd(subjects_window_means, axis=0)
+        valid_group_idx = ~np.isnan(group_means)
+        if np.sum(valid_group_idx) > 1:
+            ax.plot(x_positions[valid_group_idx], group_means[valid_group_idx], 'o-', color='black', alpha=1, linewidth=2, markersize=10, label='Moyenne')
+            ax.fill_between(x_positions[valid_group_idx],
+                            group_means[valid_group_idx] - group_stds[valid_group_idx],
+                            group_means[valid_group_idx] + group_stds[valid_group_idx],
+                            color='black', alpha=0.12)
+        ax.axhline(y=CHANCE_LEVEL, color='red', linestyle='--', alpha=0.7, linewidth=2)
+        ax.set_xticks(x_positions)
+        ax.set_xticklabels(window_names, fontsize=9, rotation=45)
+        ax.set_title(f"{GROUP_NAME_MAPPING.get(group_name, group_name)}\n(n={n_subjects})", fontsize=14)
+        ax.set_ylim(0.4, 0.77)
+        ax.grid(True, alpha=0.3)
+    fig.suptitle('Points individuels par groupe - PP/AP', fontsize=18, fontweight='bold')
+    plt.tight_layout(rect=[0, 0, 1, 0.95])
+    if save_dir:
+        os.makedirs(save_dir, exist_ok=True)
+        filename = "temporal_windows_connected_individuals_bygroup_ppap.png"
+        filepath = os.path.join(save_dir, filename)
+        plt.savefig(filepath, dpi=300, bbox_inches='tight')
+        logger.info(f"Graphique points individuels par groupe sauvegardé: {filepath}")
+    plt.close()
 
 def analyze_individual_significance_proportions_pp_ap(all_groups_data, save_dir, show_plots=True):
     groups_analysis = []
