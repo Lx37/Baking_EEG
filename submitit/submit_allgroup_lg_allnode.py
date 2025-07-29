@@ -1,5 +1,22 @@
+"""
+==============================================================================
+ File name       : submit_allgroup_lg_allnode.py
+ Author          : Tom Balay (and a bit Copilot)
+ Created         : 2025-07-29
+ Description     :
+ This script submits EEG LG decoding jobs for all subjects in all groups, each subject on a separate node.
+ It prepares and submits a job for each subject, handling environment setup, job submission, and logging.
+ The script is designed for the Baking_EEG project and uses predefined configurations
+ for decoding parameters and data paths.
+ It manages decoding results, intra-subject statistics, and temporal generalization matrices (TGM).
+ Results and logs are saved for each subject.
+
+ BSD 3-Clause License 2025, CNRS, Tom Balay
+==============================================================================
+"""
 import os
 import sys
+import os
 import signal
 import logging
 from datetime import datetime

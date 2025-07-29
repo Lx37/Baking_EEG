@@ -1,3 +1,13 @@
+# =============================================================================
+#  File name        : submit_1group.py
+#  Author           : Tom Balay (and a bit of Copilot)
+#  Created          : 2025-07-28
+#  Description      :
+#  submitit script to run group-level for PP decoding analysis for all subjects in a single group.
+#  distributed on a single node.
+#  This script is designed to be run on a cluster with Slurm.
+#  BSD 3-Clause License 2025, CNRS, Tom Balay
+# =============================================================================
 import os
 import sys
 import logging

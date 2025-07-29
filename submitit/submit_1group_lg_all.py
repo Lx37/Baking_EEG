@@ -1,3 +1,16 @@
+# =============================================================================
+#  File name        : submit_1group_lg_all.py
+#  Author           : Tom Balay (and a bit of Copilot)
+#  Created          : 2025-07-28
+#  Description      :
+#  Submitit script to run group-level LG decoding analysis for all subjects in a single group.
+# distributed across multiple nodes.
+#  This script is designed to be run on a cluster with Slurm.
+#  It submits jobs for each subject in the specified group, allowing for parallel processing.
+#  It uses the submitit library to manage job submission and execution.
+#  BSD 3-Clause License 2025, CNRS, Tom Balay
+# =============================================================================
+
 import os
 import sys
 import logging

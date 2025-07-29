@@ -1,16 +1,20 @@
-
-#!/usr/bin/env python3
 """
-Script de soumission pour les tests de décimation et folds sur cluster SLURM.
-Version adaptée sans feature selection.
-"""
+==============================================================================
+ File name       : submit_decimate_folds.py
+ Author          : Tom Balay (and a bit Copilot)
+ Created         : 2025-07-29
+ Description     :
+ This script submit the test_decimate_folds.py script to a cluster using submitit.
 
+ BSD 3-Clause License 2025, CNRS, Tom Balay
+==============================================================================
+"""
 import os
 import sys
 import logging
 from datetime import datetime
 
-# Ajouter le chemin vers les modules
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 try:
@@ -19,26 +23,24 @@ except ImportError:
     print("ERROR: submitit n'est pas installé. Installez avec: pip install submitit")
     sys.exit(1)
 
-# Configuration logging
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# PARAMÈTRES À MODIFIER ICI
+
 SUBJECT_FILE = "/mnt/data/tom.balay/data/Baking_EEG_data/PP_COMA_01HZ/Battery/YG72_preproc_ICA_PPAP-epo_ar.fif"
 
-QUICK_TEST = False  # Mettre False pour analyse complète
+QUICK_TEST = False  
 
-# Configuration cluster
+
 PARTITION = "CPU"
 MEM = "60G"
 CPUS = 40
-TIMEOUT_MIN = 7200  # 12 heures en minutes
+TIMEOUT_MIN = 7200  
 ACCOUNT = "tom.balay"
 
 def create_job_function():
-    """
-    Crée la fonction qui sera exécutée sur le cluster.
-    """
+   
     def job_function():
         import sys
         import os
@@ -57,10 +59,10 @@ def create_job_function():
         print(f"Python path: {sys.path[:3]}")
         
         try:
-            # Import de la fonction de test après avoir configuré le path
+           
             from examples.test_decimate_folds import run_quick_test, run_comprehensive_analysis, save_results_and_visualizations
             
-            # Modifier le fichier sujet global
+            
             import examples.test_decimate_folds as test_module
             test_module.TEST_SUBJECT_FILE = SUBJECT_FILE
             
@@ -87,9 +89,7 @@ def create_job_function():
     return job_function
 
 def main():
-    """
-    Fonction principale pour soumettre le job.
-    """
+
     import argparse
     
     parser = argparse.ArgumentParser(description='Soumission des tests de décimation sur cluster')
@@ -102,7 +102,7 @@ def main():
     
     args = parser.parse_args()
     
-    # Modifier les paramètres selon les arguments
+
     global QUICK_TEST, SUBJECT_FILE
     if args.quick:
         QUICK_TEST = True
@@ -120,21 +120,21 @@ def main():
         logger.info(f"Terminé! Résultats dans: {output_dir}")
         return
     
-    # Soumission sur cluster
+
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     logs_dir = f"logs_decimate_folds_{timestamp}"
     
     logger.info(f"Soumission du job sur le cluster...")
     logger.info(f"Logs seront sauvegardés dans: {logs_dir}")
     
-    # Configuration pour l'environnement
+
     setup_commands = [
         "module load python/3.11",
         "source ~/.venvs/py3.11_cluster/bin/activate",
     ]
     
     try:
-        # Configuration de l'executor
+
         executor = submitit.AutoExecutor(folder=logs_dir)
         executor.update_parameters(
             timeout_min=TIMEOUT_MIN,
@@ -146,7 +146,7 @@ def main():
             slurm_setup=setup_commands,
         )
         
-        # Créer et soumettre le job
+
         job_function = create_job_function()
         job = executor.submit(job_function)
         

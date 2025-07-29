@@ -1,4 +1,14 @@
-# --- Imports ---
+# =============================================================================
+#  File name        : submit_all_participant_PP.py
+#  Author           : Tom Balay (and a bit of Copilot)
+#  Created          : 2025-07-28
+#  Description      :
+#  Submitit script to run patient-level PP decoding analysis for all subjects.
+#  distributed each participant on each node.
+#  This script is designed to be run on a cluster with Slurm.
+# 
+#  BSD 3-Clause License 2025, CNRS, Tom Balay
+# =============================================================================
 import os
 import sys
 import logging
@@ -22,11 +32,11 @@ except NameError:
 
 # --- Détermination de PROJECT_ROOT_FOR_PYTHONPATH ---
 project_root_tentative = os.path.dirname(CURRENT_SCRIPT_DIR)
-# (Le reste de la logique de détection du chemin racine reste inchangé)
+
 if os.path.isdir(os.path.join(project_root_tentative, "examples")):
     PROJECT_ROOT_FOR_PYTHONPATH = project_root_tentative
 else:
-    # (Logique de fallback inchangée)
+
     hardcoded_project_root = "/home/tom.balay/Baking_EEG" 
     if os.path.isdir(os.path.join(hardcoded_project_root, "examples")):
         PROJECT_ROOT_FOR_PYTHONPATH = hardcoded_project_root
@@ -82,11 +92,11 @@ except (ModuleNotFoundError, ImportError) as e:
     logger.critical(f"ERREUR CRITIQUE lors des imports. Vérifiez PROJECT_ROOT_FOR_PYTHONPATH. Erreur: {e}", exc_info=True)
     sys.exit(1)
 
-# --- Configuration du Job Slurm (commune à tous les jobs) ---
+
 PATH_TO_VENV_ACTIVATE_ON_CLUSTER = "/home/tom.balay/.venvs/py3.11_cluster/bin/activate"
 PROJECT_ROOT_ON_CLUSTER_FOR_JOB = PROJECT_ROOT_FOR_PYTHONPATH
 
-# La logique de diagnostic du worker reste la même.
+
 python_diagnostic_script_content = f"""
 # ... (contenu du script de diagnostic inchangé) ...
 """
@@ -102,7 +112,7 @@ echo "INFO: PYTHONPATH for job set to: [$PYTHONPATH]"
 """
 
 
-        # --- Wrapper pour l'exécution sur le worker (modifié pour un seul sujet) ---
+      
 def execute_single_subject_decoding_wrapper(subject_id, group_name, **kwargs):
     """
     Wrapper function that performs the import inside the worker node for a single subject.
@@ -119,7 +129,6 @@ def execute_single_subject_decoding_wrapper(subject_id, group_name, **kwargs):
     })
     return execute_single_subject_decoding(**subject_kwargs)
 
-# --- LOGIQUE DE SOUMISSION PRINCIPALE (modifiée pour un job par participant) ---
 def main_submission_logic():
     logger.info("--- Début de la logique de soumission principale (main_submission_logic) ---")
 
@@ -149,7 +158,7 @@ def main_submission_logic():
         f"Timeout={TIMEOUT_MINUTES}min, Partition={SLURM_PARTITION}, Account={SLURM_ACCOUNT or 'N/A'}"
     )
 
-    # Crée un dossier de log unique pour cette exécution groupée
+
     current_timestamp_for_log = datetime.now().strftime('%Y%m%d_%H%M%S')
     submitit_job_log_folder = os.path.join(
         CURRENT_SCRIPT_DIR, "logs_submitit_jobs",
@@ -172,7 +181,7 @@ def main_submission_logic():
     total_subjects = sum(len(subjects) for subjects in ALL_SUBJECTS_GROUPS.values())
     processed_count = 0
 
-    # --- Boucle sur tous les groupes et sujets ---
+
     for group_name, subjects_in_group in ALL_SUBJECTS_GROUPS.items():
         if not subjects_in_group:
             logger.info(f"Groupe '{group_name}' est vide, ignoré.")
@@ -209,7 +218,7 @@ def main_submission_logic():
             except Exception as e_submit:
                 logger.error(f"Erreur lors de la soumission du job pour le sujet {subject_id} (groupe {group_name}): {e_submit}", exc_info=True)
 
-    # --- Attente et collecte des résultats ---
+
     logger.info(f"\n--- {len(submitted_jobs)}/{total_subjects} jobs de sujets ont été soumis. Attente des résultats... ---")
 
     successful_jobs = []

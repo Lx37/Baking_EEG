@@ -1,4 +1,14 @@
-
+# =============================================================================
+#  File name        : submit_1patient_LG.py
+#  Author           : Tom Balay (and a bit of Copilot)
+#  Created          : 2025-07-28
+#  Description      :
+#  Submitit script to run patient-level LG decoding analysis for a single subject.
+#  distributed on a single node.
+#  This script is designed to be run on a cluster with Slurm.
+# 
+#  BSD 3-Clause License 2025, CNRS, Tom Balay
+# =============================================================================
 import os
 import sys
 import logging
