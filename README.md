@@ -1,69 +1,136 @@
-# Baking_EEG
 
-Your Recipe for EEG Insights!
-and prepping your EEG for Scientific Gourmet.
+# 🧁 Baking_EEG
 
-Baking_EEG is a project designed to analyze EEG signals from different types 
-of evoked potential protocols. This project supports multiple acquisition 
-systems, including BrainAmp, EGI, and Micromed. It allows for analyses at 
-different levels, including individual and group analyses.
+**Your Recipe for EEG Insights!**
 
+Baking_EEG is a comprehensive, modular, and open-source Python toolkit for the analysis of EEG signals, with a special focus on evoked potential protocols. Designed for both research and clinical applications, it supports a wide range of acquisition systems and provides robust pipelines for preprocessing, decoding, statistics, and visualization.
 
-## Features
+---
 
-- Analysis of EEG signals from different evoked potential protocols
-- Compatibility with multiple acquisition systems (BrainAmp, EGI, Micromed)
-- Individual and group analyses
+## Key Features
 
-## Prerequisites
+- **Multi-protocol support:** Analyze EEG data from various evoked potential paradigms 
+- **Multi-system compatibility:** Works with BrainAmp, EGI, Micromed, and more
+- **Flexible pipelines:** Individual and group-level analyses, including ERP, temporal decoding and temporal generalization matrix
+- **Statistical analysis:** Intra- and inter-subject statistics, permutation tests, FDR, cluster-based correction
+- **Rich visualization:** Automated dashboards and publication-ready plots
+- **Reproducibility:** Configurable, version-controlled, and ready for cluster computing (SLURM/submitit)
+- **Extensible:** Modular codebase for easy adaptation to new protocols or analysis needs
 
-- Python 3.x
-- Required Python libraries (see `requirements.txt`)
+---
 
-## Installation
+## 📂 Project Structure
 
-1. Clone the repository:
+```
+Baking_EEG/
+├── Baking_EEG/                # Core analysis modules (preprocessing, decoding, stats, etc.)
+├── base/                      # Base decoding and pipeline utilities
+├── config/                    # Configuration files (protocols, classifiers, etc.)
+├── examples/                  # Example scripts and analysis workflows
+├── results/                   # Output results (organized by protocol, subject, etc.)
+├── submitit/                  # SLURM/submitit job submission scripts
+├── utils/                     # Utility functions (visualization, loading, etc.)
+├── requirements.txt           # Main dependencies
+├── README.md                  # This file
+└── ...
+```
+
+---
+
+## 🛠️ Installation
+
+### Prerequisites
+- Python 3.11 or higher recommended
+- See `requirements.txt` for all dependencies
+
+### Quick Start
+
+1. **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/BatteryEEG.git
+    git clone https://github.com/Lx37/Baking_EEG.git
+    cd Baking_EEG
     ```
-2. Navigate to the project directory:
+2. **(Recommended) Create a virtual environment:**
     ```bash
-    cd BatteryEEG
+    python3 -m venv bakingeeg_env
+    source bakingeeg_env/bin/activate
     ```
-3. Install the dependencies:
+   Or use [uv](https://github.com/astral-sh/uv) for faster installs:
+    ```bash
+    uv venv bakingeeg_env --python 3.12
+    source bakingeeg_env/bin/activate
+    uv pip install -r requirements.txt
+    ```
+3. **Install dependencies:**
     ```bash
     pip install -r requirements.txt
     ```
-    We recomand to create a specific python environment with **uv**
-        1. On macOS and Linux. Open a terminal and do
-           `$ curl -LsSf https://astral.sh/uv/install.sh | sh`
-        1. On windows. Open a terminal using **CMD** in the windows menu and do
-         `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
-        2. Exit the terminal and open it again.
-        3. Download with right click and save this file corresponding in "Documents" folder:
-        * [`requirements.txt`](https://github.com/Lx37/Baking_EEG/blob/main/requirements.txt)
-        4. open terminal or **CMD**
-        5. `uv venv backingEEG --python 3.12`
-        6. For Mac/Linux `source backingEEG/bin/activate` (you should have `(backingEEG)` 
-        in your terminal) or for Powershell `backingEEG\Scripts\activate`
-        7. `uv pip install -r Documents/requirements.txt`
+
+---
 
 ## Usage
 
-1. Prepare your EEG data following the instructions specific to your 
-   acquisition system.
-2. Run the analysis script:
+### 1. Prepare your EEG data
+- Organize your raw/preprocessed EEG files according to your acquisition system and protocol.
+- Update or check the configuration files in `config/` as needed.
+
+### 2. Run an analysis
+- **Single subject decoding:**
     ```bash
-    python analyse_eeg.py --input path/to/your/data --output path/to/results
+    python examples/run_decoding_one_lg.py --subject_id <SUBJECT_ID>
     ```
-3. Review the results in the specified output directory.
+- **Group analysis (SLURM/submitit):**
+    ```bash
+    python submitit/submit_1group_lg_all.py
+    ```
+- **Custom analysis:**
+    Explore scripts in `examples/` or build your own using the modular functions.
 
-## Contributing
+### 3. Review results
+- Results (metrics, plots, logs) are saved in the results directory, organized by protocol and subject.
+- Use the visualization utilities in `utils/` for further exploration.
 
-Contributions are welcome! Please submit pull requests and report issues via 
-the issue tracker on GitHub.
+---
 
-## License
+## 🧩 Extending Baking_EEG
+- Add new protocols by editing or adding config files in `config/`
+- Implement new analysis pipelines in Baking_EEG or `base/`
+- Contribute new visualization or statistics modules in `utils/`
 
-This project is licensed under the MIT License. See the `LICENSE` file for 
-details.
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+- Fork the repository and create a feature branch
+- Submit pull requests with clear descriptions
+- Report bugs or request features via GitHub Issues
+
+---
+
+## 📚 Documentation
+
+
+- Examples and scripts are available in the `examples/` folder. 
+
+---
+
+## 📝 License
+
+This project is licensed under the BSD 3-Clause License. See the `LICENSE` file for details.
+
+---
+
+## Contributors
+
+- CNRS, Alexandra Corneyllie, Tom Balay, and all contributors
+- Inspired by the open-source neuroscience and Python communities
+
+---
+
+<div align="center">
+  <em>Baking_EEG: Turning raw EEG into scientific delicacies!</em>
+</div>
+
+---
+
