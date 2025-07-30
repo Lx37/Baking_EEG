@@ -1,4 +1,4 @@
-# === IMPORTS ===
+#Tom
 import logging
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
@@ -11,7 +11,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
 
-# Configuration du logging
+
 logger_base_decoding = logging.getLogger(__name__)
 
 # === CLASSIFIER PIPELINE BUILDER ===
