@@ -25,7 +25,6 @@ logger = logging.getLogger(__name__)
 fmin = 0
 fmax = 45
 
-
 freq_bands = {"delta": [0.5, 4.0],
                 "theta": [4.0, 8.0],
                 "alpha": [8.0, 13.0],
@@ -43,6 +42,11 @@ def epo_spectrum_overSubs(subs, selected_chans, proto, cfg, save=True, plot=True
         print('fif_fname : ', fif_fname)
         epochs = mne.read_epochs(fif_fname, proj=False, verbose=True, preload=True)  
         
+        print('************************************')
+        print(epochs.info)
+        print(epochs.ch_names)
+        epochs.info['bads'] = []
+        
         #Compute epochs spectrums
         epo_spectrum = epochs.compute_psd(fmin=fmin, fmax=fmax, picks=selected_chans)
         
@@ -57,8 +61,8 @@ def epo_spectrum_overSubs(subs, selected_chans, proto, cfg, save=True, plot=True
             sub_title = fif_fname.split('/')[-1].replace('.fif', '')
             epo_fft_fig.suptitle(f'{sub_title} spectrum')   
         
-            epo_fft_topo_fig = epo_spectrum.plot_topo()
-            epo_fft_topo_fig.suptitle(f'{sub_title} spectrum topoplot') 
+            #epo_fft_topo_fig = epo_spectrum.plot_topo()
+            #epo_fft_topo_fig.suptitle(f'{sub_title} spectrum topoplot') 
         
             plt.show()
         
@@ -147,10 +151,10 @@ def epo_spectrum_1sub(fif_fname, selected_chans, plot=True):
     #Plots
     epo_fft_fig = epo_spectrum.plot()
     sub_title = fif_fname.split('/')[-1].replace('.fif', '')
-    epo_fft_fig.suptitle(f'{sub_title} spectrum')   
+    epo_fft_fig.title(f'{sub_title} spectrum')   
     
     epo_fft_topo_fig = epo_spectrum.plot_topo()
-    epo_fft_topo_fig.suptitle(f'{sub_title} spectrum topoplot')
+    epo_fft_topo_fig.title(f'{sub_title} spectrum topoplot')
     
     plt.show()
    

@@ -46,7 +46,7 @@ prefix_ICA = '_preproc_ICA.fif'
 prefix_noICA = '_preproc_noICA.fif'
 prefix_epo_conn = '_epo_conn.fif'
 #prefix_autoreject = '_ar.fif'
-#prefix_ave = '-erp.fif'
+prefix_ave = '-erp.fif'
 #prefix_grandaverage = 'GrandAverage'
 #prefix_evoked_group = '_evoked_group.fif'
 

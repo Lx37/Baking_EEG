@@ -112,19 +112,23 @@ def update_excel_bad_chan(patient_info, bad_chans):
     """
     Update the excel file with the bad channels given for the subject
     """
-    df = pd.read_csv(patient_info['xls_patients_info'])
+    df = pd.read_csv(patient_info['xls_patients_info'], dtype=str)
     
-    print("df['ID_patient'] : ", df['ID_patient'])
-    print("patient_info.ID_patient : ", patient_info['ID_patient'])
-    print('bad_chans : ', bad_chans)
-    print('[str(i) for i in bad_chans] : ', ''.join(str(i) + ',' for i in bad_chans)[:-1])
+    #print("df['ID_patient'] : ", df['ID_patient'])
+    #print("patient_info.ID_patient : ", patient_info['ID_patient'])
+    #print('bad_chans : ', bad_chans)
+     #print('[str(i) for i in bad_chans] : ', ''.join(str(i) + ',' for i in bad_chans)[:-1])
     
-    # Convert bad_chans to a single string with a comma separator (no space!)
+    # Convert bad_chans to a single string with a comma separat²or (no space!)
     bad_chans_str = ','.join(str(i) for i in bad_chans)
     
     # Update the DataFrame
     if patient_info['protocol'] == 'PP':
-        df.loc[df['ID_patient'] == patient_info['ID_patient'], 'Bad_Chans_PP'] = bad_chans_str
+        print('PP')
+        try:
+            df.loc[df['ID_patient'] == patient_info['ID_patient'], 'Bad_Chans_PP'] = bad_chans_str
+        except Exception as e:
+            print(f"Error occurred while updating PP bad channels: {e}")
     elif  patient_info['protocol'] == 'LG':
         df.loc[df['ID_patient'] == patient_info['ID_patient'], 'Bad_Chans_LG'] = bad_chans_str
     elif  patient_info['protocol'] == 'Resting':
@@ -134,11 +138,15 @@ def update_excel_bad_chan(patient_info, bad_chans):
         return 
     #print('df : ', df[df['ID_patient'] == patient_info['ID_patient']]['Bad_Chans_PP'])
     
+    print('patient_info[xls_patients_info]' , patient_info['xls_patients_info'])
     # Save the updated DataFrame back to the CSV file
-    df.to_csv(patient_info['xls_patients_info'], index=False)
+    try:
+        df.to_csv(patient_info['xls_patients_info'], index=False)
+    except Exception as e:
+        print(f"Error occurred while saving CSV: {e}")
+    
     print('csv saved')
-   
-    return df
+    return
 
 
 def cut_preprocessed_sig(data, patient_info, cfg):

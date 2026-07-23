@@ -47,7 +47,7 @@ plot = True
 #sujets = ['CS38', 'JC39', 'TT45', 'MV48', 'TF53', 'CA55', 'JA61', 'SV62', 'ME63', 'ME64',
 #        'SB67', 'MP68', 'YG72', 'MB73', 'KS76', 'BS81', 'TpAT19J1', 'TpCF24J1', 'TpDC22J1', 'TpEM13J1', 'TpEP16J1',
 #        'TpEP20J1', 'TpFM25J1', 'TpLC21J1', 'TpMB18J1', 'TpMG17J1', 'TpPC23J1']
-sujets = ['AD94']#'AD94' #LC97 #AG42
+sujets = ['AD94', 'DR92']#'AD94' #LC97 #AG42
 protocol = 'LG' # 'PP' or 'LG' or 'Resting' (TODO: 'Words' or 'Arythmetic')
 selected_chans = 'all' 
 cfg.data_save_dir = data_save_dir

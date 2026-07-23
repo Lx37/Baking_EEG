@@ -22,6 +22,7 @@ def read_raw(patient_info):
             data = mne.io.read_raw_egi(patient_info['data_fname'], eog=None, misc=None, exclude=None, include=None, preload=True, verbose=None)
 
     elif patient_info['EEG_system'] == 'Gtec_EEGlab':
+        print("patient_info['data_fname'] : ", patient_info['data_fname'])
         data = mne.io.read_raw_eeglab(patient_info['data_fname'], preload=True)
     #TODO code for micromed
     else:
@@ -35,18 +36,17 @@ def set_montage(data, patient_info, cfg, verbose, plot):
     if patient_info['EEG_system'] == 'EGI':
         coordinatesfile = patient_info['data_fname'] + '/coordinates.xml'
         montage = mne.channels.read_dig_egi(coordinatesfile)
-        print('montage loaded ch_names : ', montage.ch_names)
-        montage.ch_names = cfg.EGI_chan_names
-        print('montage new ch_names : ', montage.ch_names)
+        print('montage loaded ch_names : ', montage.ch_names)        
         data.set_montage(montage)#, raise_if_subset=False) for old MNE 0.19
-    
-    elif patient_info['EEG_system'] == 'Gtec_EEGlab':
-        coordinatesfile = patient_info['raw_data_dir'] + '/montage modifie_gNautilusPro_JB.xyz'
-        montage = mne.channels.read_custom_montage(coordinatesfile)#, head_size=0.095, coord_frame=None, *, verbose=None)
-        print('montage loaded ch_names : ', montage.ch_names)
-        data.set_channel_types({'EEG 000':'misc','EEG 033':'misc','EEG 034':'misc'})
-        mne.rename_channels(data.info, cfg.GTec_mapping)
-        data.set_montage(montage)
+        
+    elif patient_info['EEG_system'] == 'Gtec_EEGlab': 
+        if 'EEG 000' in data.info['ch_names']:
+            coordinatesfile = patient_info['raw_data_dir'] + '/montage modifie_gNautilusPro_JB.xyz'
+            montage = mne.channels.read_custom_montage(coordinatesfile)#, head_size=0.095, coord_frame=None, *, verbose=None)
+            print('montage loaded ch_names : ', montage.ch_names)
+            data.set_channel_types({'EEG 000':'misc','EEG 033':'misc'}) # 'EEG 034':'misc'}) #LX
+            mne.rename_channels(data.info, cfg.GTec_mapping)
+            data.set_montage(montage)
 #processing signal differently depending on the signal source + loads the correct montage
     else:
         print('EEG system not recognized for loading coordinates. Please choose between EGI or Gtec_EEGlab')
@@ -125,24 +125,38 @@ def preprocess(patient_info, cfg, save=False, verbose=True, plot=True):
     
     print('###### Load data and set montage ######')
     data = read_raw(patient_info)
+    
+    print(data.info)
+    print("Channel names:", data.info.ch_names)
 
     sfreq = data.info['sfreq']
+    
+    # stimulation are on a chan like STI 014 or on anotations (fro G-tec System)
     if patient_info['protocol'] != 'Resting':
-        event_id = data.event_id
-        print(event_id) #if not resting stqte, then functions prints conditions of the protocol
+        if patient_info['EEG_system'] != 'Gtec_EEGlab': #LX
+            events = mne.find_events(data, stim_channel= 'STI 014') #stimulus channel
+            print(events) #if not resting state, then functions prints conditions of the protocol
+            event_id = data.event_id
+        else: 
+            events = np.column_stack(((data.annotations.onset * data.info['sfreq']).astype(int),  # Temps en échantillons
+                                    np.zeros(len(data.annotations), dtype=int),               # Durée (0 pour événements ponctuels)
+                                    data.annotations.description.astype(int)                # Type d'événement (convertir en entier si nécessaire)
+            ))
+            event_id = {str(desc): int(desc) for desc in data.annotations.description}
+            print(events) #if not resting state, then functions prints conditions of the protocol
     # set montage 
     data = set_montage(data, patient_info, cfg, verbose, plot)
 
     if verbose:
         print(data.info)
     if plot:
-        data.plot_sensors(kind='3d')
+        data.plot_sensors(kind='topomap', show_names=True) # kind='3d'
 
     ############# Set data general info ##############
     data.info['subject_info'] = {'his_id' : patient_info['ID_patient']}
 
     ################ Channels operations ##############
-    # set stim chan type
+        
     if patient_info['EEG_system'] == 'EGI' and patient_info['protocol'] != 'Resting':
         mapping_type = {'STI 014': 'stim'}
         data.set_channel_types(mapping_type)
@@ -188,17 +202,27 @@ def preprocess(patient_info, cfg, save=False, verbose=True, plot=True):
 
     ## Manual check to set bad channels and update excel file + patient_info
     datacheck = data.copy()
-    if patient_info['EEG_system'] == 'EGI' and patient_info['protocol'] != 'Resting':
-        events = mne.find_events(datacheck, stim_channel='STI 014') #stimulus channel
+    if patient_info['protocol'] != 'Resting':
+        if patient_info['EEG_system'] != 'Gtec_EEGlab': 
+    #if patient_info['EEG_system'] == 'EGI' and patient_info['protocol'] != 'Resting':
+            events = mne.find_events(datacheck, stim_channel='STI 014') #stimulus channel
+        else:
+            events = np.column_stack(((datacheck.annotations.onset * datacheck.info['sfreq']).astype(int),  # Temps en échantillons
+                                    np.zeros(len(datacheck.annotations), dtype=int),               # Durée (0 pour événements ponctuels)
+                                    datacheck.annotations.description.astype(int)                # Type d'événement (convertir en entier si nécessaire)
+            ))
         evoked = mne.Epochs(datacheck, events=events, picks='eeg', tmin=-0.2, tmax=1.2).average()
         evoked.plot(titles='Global average triggers, any new bad sensors? (the actual bads are not showned) Note them and indicate in next EEG plot')
+        
+    bads_before_manual_tcheck = data.info['bads'].copy()  # Store the bad channels before manual check
     data.plot(show_options=True, title='Indicate bad sensors manually by a clic on the channel (apears in grey). Greyy one are already defined as bads.', block=True)
-    try:
-        utils.update_excel_bad_chan(patient_info, data.info['bads'])
-    except:
-        print("No way to update excel file with bad channels. Maybe you're on windows and the file is open?")
-        exit() 
-    patient_info['bad_sub_chan'] = data.info['bads']
+    if data.info['bads'] != bads_before_manual_tcheck:  # Check if the bad channels have changed
+        try:
+            utils.update_excel_bad_chan(patient_info, data.info['bads'])
+        except:
+            print("No way to update excel file with bad channels. Maybe you're on windows and the file is open?")
+            exit() 
+        patient_info['bad_sub_chan'] = data.info['bads']
 
     if patient_info['EEG_system'] == 'EGI': #exclusion of non-analysed channels
         data.set_channel_types(cfg.EGI_misc_dict)
@@ -219,7 +243,7 @@ def preprocess(patient_info, cfg, save=False, verbose=True, plot=True):
         data.info['bads'].remove('VREF')
         print(data.info['bads'])
     if plot:
-        data.plot_sensors(kind='3d', ch_type ='eeg', title='Sensory positions, Red ones are indicated as bads ')
+        data.plot_sensors(kind='topomap', ch_type ='eeg', title='Sensory positions, Red ones are indicated as bads ')
 
 
     # ########### Create HEOG and VEOG chans ###########
@@ -245,7 +269,15 @@ def preprocess(patient_info, cfg, save=False, verbose=True, plot=True):
     # TODO difference betwen proto ??
     
     if patient_info['protocol'] != 'Resting':
-        events = mne.find_events(data, stim_channel='STI 014')
+        if patient_info['EEG_system'] != 'Gtec_EEGlab':
+            events = mne.find_events(data, stim_channel='STI 014')  #TODO cas particulier GTEc 'EEG 034'
+        else:
+            events = np.column_stack(((data.annotations.onset * data.info['sfreq']).astype(int),  # Temps en échantillons
+                                    np.zeros(len(data.annotations), dtype=int),               # Durée (0 pour événements ponctuels)
+                                    data.annotations.description.astype(int)                # Type d'événement (convertir en entier si nécessaire)
+            ))
+            #events = mne.find_events(data, stim_channel='EEG 034')  #TODO cas particulier GTEc 'EEG 034'    
+        print('events : ', events)
         event_names = np.zeros((events.shape[0],), dtype='S10') # new array one column of zero's with max lenght of 10 caracters
 
         for x in range(events.shape[0]): # loop over rows
@@ -274,19 +306,28 @@ def preprocess(patient_info, cfg, save=False, verbose=True, plot=True):
         print("Saving data : " + data_name)
         if patient_info['protocol'] != 'Resting':
             data.save(data_name, tmin=i_start, tmax=i_stop, overwrite=True)
-            if patient_info['EEG_system'] == 'EGI': 
+            if patient_info['EEG_system'] == 'EGI' or patient_info['EEG_system'] == 'Gtec_EEGlab': 
                 ######For EGI subjects, save stimulation name dictionary #######
                 nameStimDict =  patient_info['data_save_dir'] + cfg.stimDict_path
                 nameStimDict = nameStimDict + patient_info['ID_patient'] + '_' + patient_info['protocol'] + cfg.prefix_stimDict ## For the stimuli dictionary (names of stimuli given automatically vs ones we gave the stimuli)
                 np.save(nameStimDict, event_id)
                 logger.info("Saved stimdict data " + nameStimDict)
         else:
+            #if patient_info['EEG_system'] == 'Gtec_EEGlab': 
+            #    data.set_montage(None)  A priori ce n'est pas le montage qui coince ni les datas, je ne vois pas pkoi il n'arrive pas a sauvegarder
             data.save(data_name, overwrite=True)
         logger.info("Saved preprocessed data " + data_name)
 
     if plot and patient_info['protocol'] != 'Resting':
         scalings=dict(eeg=20e-6, eog=100e-6, misc=20e-6)
-        events = mne.find_events(data, stim_channel='STI 014')
+        if patient_info['protocol'] != 'Resting':
+            if patient_info['EEG_system'] != 'Gtec_EEGlab':
+                events = mne.find_events(data, stim_channel='STI 014')
+            else:
+                events = np.column_stack(((data.annotations.onset * data.info['sfreq']).astype(int),  # Temps en échantillons
+                                        np.zeros(len(data.annotations), dtype=int),               # Durée (0 pour événements ponctuels)
+                                        data.annotations.description.astype(int)                # Type d'événement (convertir en entier si nécessaire)
+                ))
         eventplot = mne.viz.plot_events(events, data.info['sfreq'], show=True)
         plt.show() 
 

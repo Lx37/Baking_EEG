@@ -121,13 +121,19 @@ def get_ERP_epochs(data, patient_info, cfg, save=True, verbose=True, plot=True):
 
     ########### Renaming of EGI-loaded triggers  ###########
     
-    if patient_info['EEG_system'] == 'EGI' and  patient_info['protocol'] == 'PP':
+    if patient_info['protocol'] == 'PP':
         
         StimNpy = patient_info['data_save_dir'] + cfg.stimDict_path + SubName + '_' + patient_info['protocol'] + cfg.prefix_stimDict
         print(StimNpy)
         translate_dict = np.load(StimNpy, allow_pickle=True).item()
 
-        events = mne.find_events(data, stim_channel='STI 014')
+        if patient_info['EEG_system'] != 'Gtec_EEGlab':
+            events = mne.find_events(data, stim_channel='STI 014')
+        else:
+            events = np.column_stack(((data.annotations.onset * data.info['sfreq']).astype(int),  # Temps en échantillons
+                                    np.zeros(len(data.annotations), dtype=int),               # Durée (0 pour événements ponctuels)
+                                    data.annotations.description.astype(int)                # Type d'événement (convertir en entier si nécessaire)
+            ))
         print('Events BEFORE first changes : ', events)
         print('translate_dict : ', translate_dict)
         #eventplot = mne.viz.plot_events(events, data.info['sfreq'])
