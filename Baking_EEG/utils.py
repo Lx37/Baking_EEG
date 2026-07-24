@@ -21,6 +21,7 @@ def create_patient_info(sujet, xls_patients_info, protocol, raw_data_dir, data_s
     
     print('Patient: ', ID_patient)
     print('Protocol : ', protocol)
+
     
     if protocol not in ['PP', 'LG', 'Resting']: #TODO : other protocols : LG' / 'Words' / 'Arythmetic'
         print("Protocol not recognized. Please choose between 'PP', 'LG', 'Resting'")

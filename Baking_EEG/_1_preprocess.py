@@ -44,7 +44,10 @@ def set_montage(data, patient_info, cfg, verbose, plot):
             coordinatesfile = patient_info['raw_data_dir'] + '/montage modifie_gNautilusPro_JB.xyz'
             montage = mne.channels.read_custom_montage(coordinatesfile)#, head_size=0.095, coord_frame=None, *, verbose=None)
             print('montage loaded ch_names : ', montage.ch_names)
-            data.set_channel_types({'EEG 000':'misc','EEG 033':'misc'}) # 'EEG 034':'misc'}) #LX
+            if 'EEG 034' in data.info['ch_names']:
+                data.set_channel_types({'EEG 000':'misc','EEG 033':'misc', 'EEG 034':'misc'})
+            else:
+                data.set_channel_types({'EEG 000':'misc','EEG 033':'misc'})
             mne.rename_channels(data.info, cfg.GTec_mapping)
             data.set_montage(montage)
 #processing signal differently depending on the signal source + loads the correct montage
@@ -211,6 +214,7 @@ def preprocess(patient_info, cfg, save=False, verbose=True, plot=True):
                                     np.zeros(len(datacheck.annotations), dtype=int),               # Durée (0 pour événements ponctuels)
                                     datacheck.annotations.description.astype(int)                # Type d'événement (convertir en entier si nécessaire)
             ))
+        print('EVENTS : ',  events)
         evoked = mne.Epochs(datacheck, events=events, picks='eeg', tmin=-0.2, tmax=1.2).average()
         evoked.plot(titles='Global average triggers, any new bad sensors? (the actual bads are not showned) Note them and indicate in next EEG plot')
         
