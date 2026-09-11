@@ -35,24 +35,28 @@ except ImportError as e_import:
     sys.exit(1)
 
 LOG_DIR_RUN_GROUP_LG = './logs_run_group_lg_analysis'
-os.makedirs(LOG_DIR_RUN_GROUP_LG, exist_ok=True)
-LOG_FILENAME_RUN_GROUP_LG = os.path.join(
-    LOG_DIR_RUN_GROUP_LG,
-    datetime.now().strftime('log_run_group_lg_analysis_%Y-%m-%d_%H%M%S.log')
-)
 
-for handler in logging.getLogger().handlers[:]:
-    logging.getLogger().removeHandler(handler)
 
-logging.basicConfig(
-    level=logging.INFO,
-    format=('%(asctime)s - %(levelname)s - %(name)s - '
-            '[%(funcName)s:%(lineno)d] - %(message)s'),
-    handlers=[
-        logging.FileHandler(LOG_FILENAME_RUN_GROUP_LG),
-        logging.StreamHandler(sys.stdout)
-    ]
-)
+def setup_run_logging(log_dir=LOG_DIR_RUN_GROUP_LG, level=logging.INFO):
+    """Configure le logging fichier + console pour une execution en script.
+
+    Volontairement NON appelee a l'import : ce module est importe par
+    d'autres scripts et par les lanceurs submitit. Reconfigurer le
+    logging racine au moment de l'import ecrasait la configuration de
+    l'appelant et creait un dossier de logs dans le repertoire courant.
+    """
+    os.makedirs(log_dir, exist_ok=True)
+    log_filename = os.path.join(
+        log_dir, datetime.now().strftime('log_run_group_lg_analysis_%Y-%m-%d_%H%M%S.log'))
+    logging.basicConfig(
+        level=level,
+        format=('%(asctime)s - %(levelname)s - %(name)s - '
+                '[%(funcName)s:%(lineno)d] - %(message)s'),
+        handlers=[logging.FileHandler(log_filename),
+                  logging.StreamHandler(sys.stdout)],
+        force=True,
+    )
+    return log_filename
 logger_run_group_lg = logging.getLogger(__name__)
 
 
@@ -159,6 +163,7 @@ def execute_group_intra_subject_lg_decoding_analysis(
 
 
 if __name__ == "__main__":
+    setup_run_logging()
     cli_parser = argparse.ArgumentParser(description="EEG Group LG Decoding Analysis Script",
                                          formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     cli_parser.add_argument("--group", type=str, required=True, choices=list(ALL_SUBJECTS_GROUPS.keys()),

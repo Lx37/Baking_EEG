@@ -124,7 +124,10 @@ def main():
     # Configuration Slurm pour les jobs de groupe
     SLURM_CPUS_PER_GROUP_JOB = 40  # CPUs par groupe
     SLURM_MEMORY_PER_JOB = "77G"   # Mémoire par groupe
-    SLURM_TIMEOUT_MINUTES = 130000 * 60  
+    # Duree Slurm realiste (24 h). Les valeurs precedentes (jusqu'a 1200000*60
+    # minutes, soit ~137 000 ans) depassaient le MaxTime des partitions :
+    # Slurm rejetait la soumission ou laissait le job en PD.
+    SLURM_TIMEOUT_MINUTES = int(os.environ.get('BAKING_EEG_TIMEOUT_MIN', 24 * 60))
     SLURM_PARTITION = "CPU"
     SLURM_ACCOUNT = "tom.balay"
 

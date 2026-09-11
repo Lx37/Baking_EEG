@@ -1,3 +1,8 @@
+import logging as _logging
+import os as _os
+
+_logger_config = _logging.getLogger(__name__)
+
 ###################################################
 ###### File names organisation and prefixes ######
 
@@ -313,99 +318,170 @@ EGI_con_chan = [x for x in EGI_chan_names if x not in EGI_misc_dict.keys()]
 EGI_con_chan_BRU = [
     x for x in EGI_chan_names_BRU if x not in EGI_misc_dict_BRU.keys()]
 
-#################################
-######### ID of SUBJECT  ########
+###################################################
+################ ID OF SUBJECTS ###################
+#
+# Deux jeux de sujets sont definis ci-dessous.
+#   - ALL_SUBJECTS_GROUPS_FULL   : cohorte complete (143 sujets), jeu de reference
+#   - ALL_SUBJECTS_GROUPS_SUBSET : sous-ensemble (71 sujets) pour tests rapides
+#
+#   export BAKING_EEG_SUBJECT_SET=subset   # run exploratoire
+#   export BAKING_EEG_SUBJECT_SET=full     # run complet (defaut)
+#
+# Particularites documentees des enregistrements :
+#   TYS6  : 401 points temporels pour LG
+#   TpJC5 : 301 points temporels pour PP
+# (ces sujets ne doivent PAS etre exclus : l'analyse de groupe les reinterpole
+#  sur une grille temporelle commune, cf. utils/time_alignment.py)
 
-#TYS6 : 401 point temporels pour LG
-#TpJC5 : 301 points temporels pour PP
-ALL_SUBJECTS_GROUPS = {
+ALL_SUBJECTS_GROUPS_FULL = {
     "COMA": [
-        "TF53", "CA55", "JA61", "ME64", "MP68", "SV62", 
+        "TF53", "CA55", "JA61", "ME64", "MP68", "SV62",
         "TpAT19J1", "TpCF24J1", "TpEM13J1", "TpEP16J1", "TT45", "YG72",
-        "CS38", "JC39", "TpCL14j1", "TpMG17J1", "TpMB18J1", "TpEP20J1", 
-        "TpLC21J1", "TpDC22J1", "TpPC23J1", "MV48", "TpFM25J1", "TpCD26J1", 
-        "ME63", "NN65", "SB67", "MB73", "KS76", "GV77", "JM78", "JR79", 
+        "CS38", "JC39", "TpCL14j1", "TpMG17J1", "TpMB18J1", "TpEP20J1",
+        "TpLC21J1", "TpDC22J1", "TpPC23J1", "MV48", "TpFM25J1", "TpCD26J1",
+        "ME63", "NN65", "SB67", "MB73", "KS76", "GV77", "JM78", "JR79",
         "BS81", "FB83", "AP84"
     ],
-    
+
     "VS": [
-        "FM60", "KA70", "MH74", "OD69", "SR57", "AG42", "SM51", 
+        "FM60", "KA70", "MH74", "OD69", "SR57", "AG42", "SM51",
         "TpAB15J8", "TpAT19J8", "TpDC22J8", "TpFM25J8",
-        "TL36", "TpEP16j8", "FR43", "DZ44", "KG85", "MM86", "MM87", 
-        "VS91", "DR92", "AD94", "AG98", "MA99","MA101"
+        "TL36", "TpEP16j8", "FR43", "DZ44", "KG85", "MM86", "MM87",
+        "VS91", "DR92", "AD94", "AG98", "MA99", "MA101"
     ],
-    
+
     "MCS": [
-        "AE93", "CW41", "DA75", "GT50", "HM52", "JA71", "KN49", 
+        "AE93", "CW41", "DA75", "GT50", "HM52", "JA71", "KN49",
         "LP54", "MC58", "TB56", "VT47", "YG66",
-        "TpCF24J8", "SR59", "MK80", "PL82", "AM88", "XL89", "OS90", 
+        "TpCF24J8", "SR59", "MK80", "PL82", "AM88", "XL89", "OS90",
         "PM95", "MG96", "LC97", "PF100"
     ],
-    
+
     "DELIRIUM+": [
-        "TpAK24", "TpAK27", "TpCB15", "TpDRL3", "TpJB25", "TpJLR17", 
+        "TpAK24", "TpAK27", "TpCB15", "TpDRL3", "TpJB25", "TpJLR17",
         "TpMB45", "TpMN42", "TpPC21", "TpPM14", "TpRD38",
-        "TpCF1", "TpMM4", "TpJC5", "TpJB26", "TpLA28", "TpPM31", 
+        "TpCF1", "TpMM4", "TpJC5", "TpJB26", "TpLA28", "TpPM31",
         "TpSM49", "TpJPS55", "TpFY57"
     ],
-    
+
     "DELIRIUM-": [
-        "TpJPG7", "TpAM43", "TpJPL10", "TpLP11", "TpMD13", "TpBD16", 
+        "TpJPG7", "TpAM43", "TpJPL10", "TpLP11", "TpMD13", "TpBD16",
         "TpFL53", "TpME22", "TpAC23", "TpSD30", "TpKS6", "TpPA35",
-        "TpCG36", "TpRK39", "TpYB41", "TpGB8", "TpPI46", "TpBL47", 
+        "TpCG36", "TpRK39", "TpYB41", "TpGB8", "TpPI46", "TpBL47",
         "TpPL48", "TpRB50", "TpMD52", "TpJA20", "TpFF34", "TpGT32",
     ],
-    
+
     "CONTROLS": [
-        "TWB1", "TPC2", "LAB1", "LCM2", "LAT3", "LBM4", "LPO5", 
+        "TWB1", "TPC2", "LAB1", "LCM2", "LAT3", "LBM4", "LPO5",
         "LAG6", "MB103", "FP102", "FG104",
         "TJL3", "TPLV4", "TTDV5", "TYS6",
         "TJR7", "TLP8"
     ]
 }
 
-#what we still need to compute 
+# Sous-ensemble historique "FOR SUBGROUPS" - NE PAS utiliser pour les analyses
+# publiees : il ne couvre que la moitie de la cohorte.
+ALL_SUBJECTS_GROUPS_SUBSET = {
+    "COMA": [
+        "TF53", "CA55", "JA61", "ME64", "MP68", "SV62",
+        "TpAT19J1", "TpCF24J1", "TpEM13J1", "TpEP16J1", "TT45", "YG72"
+    ],
+    "VS": [
+        "FM60", "KA70", "MH74", "OD69", "SR57", "AG42", "SM51",
+        "TpAB15J8", "TpAT19J8", "TpDC22J8", "TpFM25J8"
+    ],
+    "MCS": [
+        "AE93", "CW41", "DA75", "GT50", "HM52", "JA71", "KN49",
+        "LP54", "MC58", "TB56", "VT47", "YG66"
+    ],
+    "DELIRIUM+": [
+        "TpAK24", "TpAK27", "TpCB15", "TpDRL3", "TpJB25", "TpJLR17",
+        "TpMB45", "TpMN42", "TpPC21", "TpPM14", "TpRD38"
+    ],
+    "DELIRIUM-": [
+        "TpAC23", "TpBD16", "TpCG36", "TpFF34", "TpGB8", "TpJA20",
+        "TpJPG7", "TpJPL10", "TpLP11", "TpMD13", "TpME22", "TpPA35",
+        "TpSD30", "TpYB41"
+    ],
+    "CONTROLS": [
+        "TWB1", "TPC2", "LAB1", "LCM2", "LAT3", "LBM4", "LPO5",
+        "LAG6", "MB103", "FP102", "FG104"
+    ]
+}
 
-# ALL_SUBJECTS_GROUPS={
-#     "COMA":[
-#         "JA61","MP68","SV62","TpAT19J1","TpCF24J1","TpEM13J1","TpEP16J1","YG72","TpCL14j1",
-#         "TpMG17J1","TpMB18J1","TpEP20J1","TpLC21J1","TpDC22J1",
-#         "TpPC23J1","MV48","TpFM25J1","TpCD26J1","NN65","SB67","KS76","GV77","AP84"
-#     ],
-#     "VS":["MH74","OD69","SR57","SM51","TpAB15J8","TpAT19J8","TpDC22J8","TpFM25J8",
-#           "TL36","TpEP16j8","FR43","MM87","VS91","MA101"
-#     ],
-#     "MCS":[
-#         "JA71","LP54","VT47",
-#         "YG66","TpCF24J8","MK80","PL82",
-#         "XL89","OS90","PM95","MG96","PF100"
-#     ],
-#     "DELIRIUM+": ["TpAK24","TpFY57"],
-#     "DELIRIUM-": ["TpFF34"],
-#     "CONTROLS": ["TWB1","MB103","FP102","FG104"]
-# }
+_SUBJECT_SET_CHOICES = {
+    "full": ALL_SUBJECTS_GROUPS_FULL,
+    "subset": ALL_SUBJECTS_GROUPS_SUBSET,
+}
 
-# # FOR SUBGROUPS
-# ALL_SUBJECTS_GROUPS = {
-#     "COMA": [
-#         "TF53", "CA55", "JA61", "ME64", "MP68", "SV62",
-#         "TpAT19J1", "TpCF24J1", "TpEM13J1", "TpEP16J1", "TT45", "YG72"
-#     ],
-#     "VS": [
-#         "FM60", "KA70", "MH74", "OD69", "SR57", "AG42", "SM51",
-#         "TpAB15J8", "TpAT19J8", "TpDC22J8", "TpFM25J8"
-#     ],
-#     "MCS": [
-#         "AE93", "CW41", "DA75", "GT50", "HM52", "JA71", "KN49", "LP54", "MC58", "TB56", "VT47", "YG66"
-#     ],
-#     "DELIRIUM+": [
-#         "TpAK24", "TpAK27", "TpCB15", "TpDRL3", "TpJB25", "TpJLR17", "TpMB45", "TpMN42", "TpPC21", "TpPM14", "TpRD38"
-#     ],
-#     "CONTROLS": [
-#         "TWB1", "TPC2", "LAB1", "LCM2", "LAT3", "LBM4", "LPO5", "LAG6", "MB103", "FP102", "FG104"
-#     ],
-#     "DELIRIUM-": [
-#         "TpAC23", "TpBD16","TpCG36","TpFF34","TpGB8","TpJA20","TpJPG7","TpJPL10","TpLP11","TpMD13","TpME22","TpPA35","TpSD30","TpYB41"
-#     ]
-# }
+ACTIVE_SUBJECT_SET = _os.environ.get("BAKING_EEG_SUBJECT_SET", "full").strip().lower()
+if ACTIVE_SUBJECT_SET not in _SUBJECT_SET_CHOICES:
+    _logger_config.warning(
+        "BAKING_EEG_SUBJECT_SET='%s' inconnu (attendu: full|subset). "
+        "Retour au jeu complet.", ACTIVE_SUBJECT_SET
+    )
+    ACTIVE_SUBJECT_SET = "full"
 
+ALL_SUBJECTS_GROUPS = _SUBJECT_SET_CHOICES[ACTIVE_SUBJECT_SET]
+
+_N_ACTIVE_SUBJECTS = sum(len(v) for v in ALL_SUBJECTS_GROUPS.values())
+_N_FULL_SUBJECTS = sum(len(v) for v in ALL_SUBJECTS_GROUPS_FULL.values())
+_logger_config.info(
+    "Jeu de sujets actif: '%s' - %d sujets sur %d (%s)",
+    ACTIVE_SUBJECT_SET, _N_ACTIVE_SUBJECTS, _N_FULL_SUBJECTS,
+    ", ".join(f"{g}={len(s)}" for g, s in ALL_SUBJECTS_GROUPS.items()),
+)
+if _N_ACTIVE_SUBJECTS < _N_FULL_SUBJECTS:
+    _logger_config.warning(
+        "ATTENTION: %d sujets sur %d sont exclus de ce run "
+        "(BAKING_EEG_SUBJECT_SET='%s'). Pour la cohorte complete: "
+        "export BAKING_EEG_SUBJECT_SET=full",
+        _N_FULL_SUBJECTS - _N_ACTIVE_SUBJECTS, _N_FULL_SUBJECTS,
+        ACTIVE_SUBJECT_SET,
+    )
+
+
+def check_subject_ids(subject_groups=None):
+    """Controle de coherence des identifiants sujets.
+
+    Signale les doublons intra/inter-groupes et les identifiants qui ne
+    different que par la casse (source classique d'echec de recherche de
+    fichier sur un systeme de fichiers sensible a la casse, comme le cluster).
+
+    Returns:
+        dict: {'duplicates': [...], 'case_collisions': [...]} - listes vides si
+        tout est coherent.
+    """
+    groups = subject_groups if subject_groups is not None else ALL_SUBJECTS_GROUPS
+
+    seen = {}
+    duplicates = []
+    for group, subjects in groups.items():
+        for subject in subjects:
+            if subject in seen:
+                duplicates.append((subject, seen[subject], group))
+            else:
+                seen[subject] = group
+
+    by_lower = {}
+    for subject in seen:
+        by_lower.setdefault(subject.lower(), []).append(subject)
+    case_collisions = [sorted(v) for v in by_lower.values() if len(v) > 1]
+
+    for subject, first_group, second_group in duplicates:
+        _logger_config.warning(
+            "Sujet '%s' present dans '%s' et '%s'.",
+            subject, first_group, second_group
+        )
+    for variants in case_collisions:
+        _logger_config.warning(
+            "Identifiants differant seulement par la casse: %s. "
+            "Sur un FS sensible a la casse, une seule orthographe "
+            "correspondra au fichier reel.", variants
+        )
+
+    return {"duplicates": duplicates, "case_collisions": case_collisions}
+
+
+check_subject_ids()

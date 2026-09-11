@@ -48,13 +48,17 @@ def wilcoxon_1samp_no_p(X, sigma=1, tail=0):
     
     for i in range(n_features):
         data = X_reshaped[:, i]
-        
+
         # Remove zeros (ties with hypothesized median of 0)
         data_nonzero = data[data != 0]
-        
+
         if len(data_nonzero) < 3:  # Need at least 3 non-zero values for Wilcoxon
-            # Fall back to a simple mean-based statistic
-            wilcoxon_stats[i] = np.mean(data) * np.sqrt(len(data))
+            # Trop peu de valeurs non nulles pour un rang signe exploitable.
+            # On renvoie 0 (aucune evidence) plutot qu'une statistique
+            # calculee sur une AUTRE echelle : melanger un z-score de Wilcoxon
+            # et un mean*sqrt(n) dans la meme carte rend le seuillage de
+            # cluster incoherent d'un point temporel a l'autre.
+            wilcoxon_stats[i] = 0.0
         else:
             # Compute Wilcoxon statistic manually
             # Sort by absolute value
@@ -180,16 +184,17 @@ def perform_cluster_permutation_test(
         tail_param_mne = -1
 
     
-    # not to over parralelise 
-    if n_jobs == 1 or n_jobs == 0 or (os.cpu_count() is not None and n_jobs > os.cpu_count()):
-        effective_n_jobs = min(
-            4, max(1, os.cpu_count() // 2 if os.cpu_count() is not None else 2)
+    # Limitation du parallelisme pour eviter la sur-souscription.
+    # n_jobs=1 est un choix EXPLICITE de l'appelant (typiquement parce qu'il est
+    # deja dans un contexte parallele) : on ne l'ecrase plus. Seules les valeurs
+    # invalides (0) ou superieures au nombre de coeurs sont corrigees.
+    cpu_count = os.cpu_count()
+    if n_jobs == 0 or (cpu_count is not None and n_jobs > cpu_count):
+        effective_n_jobs = min(4, max(1, cpu_count // 2 if cpu_count else 2))
+        logger_stats_decoding.info(
+            f"Parallelisme MNE ajuste : n_jobs={n_jobs} -> "
+            f"{effective_n_jobs} (n_jobs invalide ou > {cpu_count} coeurs)."
         )
-        if n_jobs != effective_n_jobs:  
-            logger_stats_decoding.info(
-                f"Adjusting MNE parallelism from requested n_jobs={n_jobs} "
-                f"to effective_n_jobs={effective_n_jobs} for resource management."
-            )
         n_jobs = effective_n_jobs
 
     # === PARAMETER LOGGING ===
@@ -228,7 +233,24 @@ def perform_cluster_permutation_test(
 
     # === CONNECTIVITY HANDLING ===
     if connectivity_matrix is not None:
-        test_args_mne["connectivity"] = connectivity_matrix
+        # MNE a renomme 'connectivity' en 'adjacency' a partir de la 0.24 :
+        # l'ancien nom levait un TypeError avale par le except plus bas, et la
+        # fonction renvoyait silencieusement zero cluster.
+        # MNE exige en outre une matrice creuse SciPy : on convertit une
+        # matrice dense plutot que d'echouer ("If adjacency matrix is given,
+        # it must be a SciPy sparse matrix").
+        adjacency_for_mne = connectivity_matrix
+        if isinstance(connectivity_matrix, np.ndarray):
+            try:
+                from scipy.sparse import csr_matrix
+                adjacency_for_mne = csr_matrix(connectivity_matrix)
+                logger_stats_decoding.debug(
+                    "Matrice d'adjacence dense convertie en csr_matrix.")
+            except Exception as e_sparse:
+                logger_stats_decoding.error(
+                    "Conversion de la matrice d'adjacence en creuse "
+                    "impossible (%s).", e_sparse)
+        test_args_mne["adjacency"] = adjacency_for_mne
         logger_stats_decoding.info(
             f"  Using provided connectivity matrix with shape "
             f"{connectivity_matrix.shape if hasattr(connectivity_matrix, 'shape') else 'N/A'}."
@@ -613,11 +635,13 @@ def perform_pointwise_fdr_correction_on_scores(
                     if np.all(np.isclose(differences, 0)):
                         stat, p_val = 0.0, 1.0
                     else:
+                        # scipy >= 1.14 : le parametre 'mode' a ete renomme
+                        # 'method'. L'ancien appel levait un TypeError avale
+                        # par le except ci-dessous -> p-values toutes NaN.
                         stat, p_val = scipy.stats.wilcoxon(
-                            differences, 
+                            differences,
                             zero_method="pratt",
                             alternative=alternative_hypothesis,
-                            mode="auto"
                         )
                     test_choices.append(f"wilcoxon_{test_reason}")
                     
@@ -710,10 +734,27 @@ def perform_pointwise_fdr_correction_on_scores(
         fdr_corrected_p_values_out = fdr_corrected_p_values_flat.reshape(
             original_feature_shape_out)
 
+    # Les p-values NON corrigees sont conservees explicitement : les appelants
+    # faisaient `test_info.get("p_values_raw", p_corrigees)` et recuperaient
+    # donc silencieusement les p-values corrigees a la place des brutes.
+    try:
+        if original_ndim_fdr == 1 and uncorrected_p_values_flat.size == 1:
+            test_used_info["p_values_raw"] = uncorrected_p_values_flat
+        else:
+            test_used_info["p_values_raw"] = uncorrected_p_values_flat.reshape(
+                original_feature_shape_out)
+    except ValueError:
+        test_used_info["p_values_raw"] = uncorrected_p_values_flat
+    test_used_info["alpha"] = alpha_significance_level
+    test_used_info["fdr_method"] = fdr_correction_method
+    test_used_info["n_observations"] = int(data_for_ttest_fdr.shape[0])
+
     # === RESULT LOGGING ===
     num_sig_points = np.sum(fdr_significant_mask_out)
     logger_stats_decoding.info(
-        f"FDR correction completed. {num_sig_points} point(s) found significant "
+        f"FDR correction completed ({statistical_test_type}, "
+        f"n={data_for_ttest_fdr.shape[0]} observations). "
+        f"{num_sig_points} point(s) found significant "
         f"(p_fdr < {alpha_significance_level})."
     )
 

@@ -93,22 +93,45 @@ except (ModuleNotFoundError, ImportError) as e:
     sys.exit(1)
 
 
-PATH_TO_VENV_ACTIVATE_ON_CLUSTER = "/home/tom.balay/.venvs/py3.11_cluster/bin/activate"
+PATH_TO_VENV_ACTIVATE_ON_CLUSTER = os.environ.get(
+    "BAKING_EEG_VENV_ACTIVATE",
+    "/home/tom.balay/.venvs/py3.11_cluster/bin/activate")
 PROJECT_ROOT_ON_CLUSTER_FOR_JOB = PROJECT_ROOT_FOR_PYTHONPATH
 
-
-python_diagnostic_script_content = f"""
-# ... (contenu du script de diagnostic inchangé) ...
-"""
-python_diagnostic_script_content_for_heredoc = python_diagnostic_script_content.replace("{", "{{").replace("}", "}}")
-python_diagnostic_script_content_for_heredoc = python_diagnostic_script_content_for_heredoc.replace(f"{{{{{PROJECT_ROOT_ON_CLUSTER_FOR_JOB}}}}}", f"{{{PROJECT_ROOT_ON_CLUSTER_FOR_JOB}}}")
-
+# ATTENTION - bug corrige ici.
+# Ce bloc avait ete vide de sa substance : il ne restait que l'export
+# PYTHONPATH, les commandes reelles etant remplacees par le commentaire
+# "# ... (le reste des commandes de setup est inchange) ...". La ligne
+# `source $PATH_TO_VENV_ACTIVATE_ON_CLUSTER` avait donc disparu, alors que la
+# variable restait definie : les workers demarraient avec le python par defaut
+# du noeud et echouaient sur `ImportError: No module named mne`.
+# Le contenu ci-dessous est aligne sur celui de submit_allgroup_lg.py, qui lui
+# etait reste complet.
 SETUP_COMMANDS_FOR_SLURM_JOB_CPU = f"""#!/bin/bash
-# ... (le reste des commandes de setup est inchangé) ...
-echo "INFO: Configuring PYTHONPATH for the job..."
+echo "--- Configuration de l'environnement pour le job Slurm PP ---"
+echo "Date: $(date)"
+echo "Hostname: $(hostname)"
+echo "Job ID Slurm: $SLURM_JOB_ID"
+echo "Repertoire de travail initial: $(pwd)"
+
+cd "{PROJECT_ROOT_ON_CLUSTER_FOR_JOB}"
+if [ $? -ne 0 ]; then echo "ERREUR: cd vers la racine du projet a echoue."; exit 1; fi
+echo "Repertoire de travail: $(pwd)"
+
+module purge
+
+echo "Activation de l'environnement virtuel: {PATH_TO_VENV_ACTIVATE_ON_CLUSTER}"
+source "{PATH_TO_VENV_ACTIVATE_ON_CLUSTER}"
+if [ $? -ne 0 ]; then echo "ERREUR: activation du venv echouee."; exit 1; fi
+
 export PYTHONPATH="{PROJECT_ROOT_ON_CLUSTER_FOR_JOB}${{PYTHONPATH:+:$PYTHONPATH}}"
-echo "INFO: PYTHONPATH for job set to: [$PYTHONPATH]"
-# ... (le reste des commandes de setup est inchangé) ...
+export PYTHONUNBUFFERED=1
+echo "PYTHONPATH: [$PYTHONPATH]"
+
+echo "Python utilise: $(which python)"
+python -c "import mne, sklearn, numpy; print('mne', mne.__version__, '| sklearn', sklearn.__version__, '| numpy', numpy.__version__)"
+if [ $? -ne 0 ]; then echo "ERREUR: dependances manquantes dans le venv."; exit 1; fi
+echo "--- Environnement pret ---"
 """
 
 
@@ -117,8 +140,12 @@ def execute_single_subject_decoding_wrapper(subject_id, group_name, **kwargs):
     """
     Wrapper function that performs the import inside the worker node for a single subject.
     """
+    import os
     import sys
-    project_root = "/home/tom.balay/Baking_EEG"
+    # Racine du projet cote worker : surchargeable pour que le script reste
+    # utilisable par quelqu'un d'autre que tom.balay.
+    project_root = os.environ.get("BAKING_EEG_PROJECT_ROOT",
+                                  "/home/tom.balay/Baking_EEG")
     if project_root not in sys.path:
         sys.path.insert(0, project_root)
     from examples.run_decoding_one_pp import execute_single_subject_decoding
@@ -149,7 +176,10 @@ def main_submission_logic():
     # --- Configuration Slurm et Submitit ---
     N_CPUS_FOR_JOB = 40
     MEMORY_FOR_JOB = "60G"
-    TIMEOUT_MINUTES = 1200000 * 60
+    # Duree Slurm realiste (24 h). Les valeurs precedentes (jusqu'a 1200000*60
+    # minutes, soit ~137 000 ans) depassaient le MaxTime des partitions :
+    # Slurm rejetait la soumission ou laissait le job en PD.
+    TIMEOUT_MINUTES = int(os.environ.get('BAKING_EEG_TIMEOUT_MIN', 24 * 60))
     SLURM_PARTITION = "CPU"
     SLURM_ACCOUNT = "tom.balay"
 

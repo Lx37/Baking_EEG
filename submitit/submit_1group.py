@@ -88,7 +88,7 @@ def main():
 
     executor.update_parameters(
         name=f"decoding_{group}",
-        timeout_min=1200,
+        timeout_min=int(os.environ.get('BAKING_EEG_TIMEOUT_MIN', 24 * 60)),  # etait 1200 min (20 h)
         slurm_partition="CPU",
         slurm_mem="79G",
         slurm_cpus_per_task=slurm_cpus,

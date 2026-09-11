@@ -16,6 +16,7 @@
 """
 import os
 import sys
+import argparse
 import logging
 from datetime import datetime
 import getpass
@@ -47,7 +48,7 @@ os.makedirs(log_dir_submitit_master, exist_ok=True)
 current_time_str_log = datetime.now().strftime('%Y%m%d_%H%M%S')
 master_log_file = os.path.join(
     log_dir_submitit_master,
-    f'master_submitit_CONTROLS_ONLY_INTRA_{current_time_str_log}.log'
+    f'master_submitit_allgroup_{current_time_str_log}.log'
 )
 
 logging.basicConfig(
@@ -61,7 +62,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-logger.info("--- Démarrage du script de soumission pour un seul groupe (v2) ---")
+logger.info("--- Démarrage du script de soumission (un job Slurm par groupe) ---")
 logger.info(f"Racine du projet détectée et ajoutée à sys.path : {PROJECT_ROOT}")
 logger.info(f"Log principal de ce script : {master_log_file}")
 
@@ -162,7 +163,44 @@ def execute_decoding_wrapper(**kwargs):
         traceback.print_exc()
         raise
 
+def _slurm_params(cpus, timeout_min, account, partition, mem):
+    """Parametres Slurm communs a tous les jobs de groupe."""
+    return {
+        "timeout_min": timeout_min,
+        "slurm_additional_parameters": {"account": account, "export": "ALL"},
+        "setup": SETUP_COMMANDS_CPU.splitlines(),
+        "slurm_partition": partition,
+        "slurm_mem": mem,
+        "slurm_cpus_per_task": cpus,
+    }
+
+
 def main():
+    parser = argparse.ArgumentParser(
+        description="Soumet une analyse de decodage PP intra-sujet, un job "
+                    "Slurm par groupe.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument(
+        "--groups", nargs="+", default=None,
+        help="Groupes a traiter. Par defaut : TOUS les groupes de "
+             "ALL_SUBJECTS_GROUPS.")
+    parser.add_argument("--cpus", type=int, default=40,
+                        help="CPU par job de groupe.")
+    parser.add_argument("--mem", type=str, default="80G",
+                        help="Memoire par job de groupe.")
+    parser.add_argument("--partition", type=str, default="CPU",
+                        help="Partition Slurm.")
+    parser.add_argument("--account", type=str, default="tom.balay",
+                        help="Compte Slurm.")
+    parser.add_argument(
+        "--timeout-hours", type=float, default=24.0,
+        help="Duree maximale par job, en heures. La valeur precedente "
+             "(60*60 minutes, soit 2,5 jours) depassait le MaxTime de la "
+             "plupart des partitions et faisait rejeter la soumission.")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="Affiche ce qui serait soumis, sans soumettre.")
+    args = parser.parse_args()
+
     try:
         user = getpass.getuser()
     except Exception:
@@ -173,123 +211,139 @@ def main():
     logger.info(f"Chemin de base des données d'entrée : {base_input_path}")
     logger.info(f"Chemin de base des résultats : {base_output_path}")
 
-    GROUP_NAME = 'CONTROLS_DELIRIUM'
-    logger.info(f"Groupe ciblé pour l'analyse : {GROUP_NAME}")
-
-    subjects_for_this_group = ALL_SUBJECTS_GROUPS.get(GROUP_NAME)
-    if not subjects_for_this_group:
-        logger.error(f"Groupe '{GROUP_NAME}' non trouvé ou vide. Arrêt.")
+    # Le script s'appelait "allgroup" mais codait en dur GROUP_NAME =
+    # 'CONTROLS_DELIRIUM', une cle absente de ALL_SUBJECTS_GROUPS : le .get()
+    # renvoyait None et le script sortait sans rien soumettre. On itere
+    # desormais reellement sur tous les groupes.
+    groups_to_process = args.groups or list(ALL_SUBJECTS_GROUPS.keys())
+    unknown = [g for g in groups_to_process if g not in ALL_SUBJECTS_GROUPS]
+    if unknown:
+        logger.error(
+            "Groupe(s) inconnu(s) : %s. Groupes disponibles : %s. Arret.",
+            unknown, list(ALL_SUBJECTS_GROUPS.keys()))
         sys.exit(1)
 
-    SLURM_CPUS_PER_GROUP_JOB = 40
-    
-    # Configuration des paramètres Slurm avec environnement
-    group_job_slurm_params = {
-        "timeout_min": 60 * 60,
-        "slurm_additional_parameters": {
-            "account": "tom.balay",
-            "export": "ALL"  # Exporter toutes les variables d'environnement
-        },
-        "setup": SETUP_COMMANDS_CPU,
-        "slurm_partition": "CPU",
-        "slurm_mem": "80G",
-        "slurm_cpus_per_task": SLURM_CPUS_PER_GROUP_JOB,
-    }
+    total_subjects = sum(len(ALL_SUBJECTS_GROUPS[g]) for g in groups_to_process)
+    logger.info("Groupes à traiter : %s", groups_to_process)
+    logger.info("Nombre total de sujets : %d", total_subjects)
 
+    timeout_min = max(1, int(round(args.timeout_hours * 60)))
     current_time_str_job = datetime.now().strftime('%Y%m%d_%H%M%S')
-    log_folder_submitit_jobs = os.path.join(log_dir_submitit_master, f"slurm_job_{GROUP_NAME}_{current_time_str_job}")
 
-    executor = submitit.AutoExecutor(folder=log_folder_submitit_jobs)
-    logger.info(f"Submitit AutoExecutor initialisé. Logs du job dans : {log_folder_submitit_jobs}")
-    
-    # Configuration de l'executor avec environnement
-    executor.update_parameters(
-        **group_job_slurm_params,
-        env={
-            **os.environ,
-            "PYTHONPATH": f"{PROJECT_ROOT}:{os.environ.get('PYTHONPATH', '')}"
+    jobs = []
+    for group_name in groups_to_process:
+        subjects_for_this_group = ALL_SUBJECTS_GROUPS.get(group_name)
+        if not subjects_for_this_group:
+            logger.warning("Groupe '%s' vide, ignoré.", group_name)
+            continue
+
+        logger.info("--- Groupe %s : %d sujets ---",
+                    group_name, len(subjects_for_this_group))
+
+        log_folder_submitit_jobs = os.path.join(
+            log_dir_submitit_master,
+            f"slurm_job_{group_name}_{current_time_str_job}")
+
+        if args.dry_run:
+            logger.info("[dry-run] Job non soumis pour le groupe %s "
+                        "(%d sujets, %d CPU, %d min).",
+                        group_name, len(subjects_for_this_group), args.cpus,
+                        timeout_min)
+            continue
+
+        executor = submitit.AutoExecutor(folder=log_folder_submitit_jobs)
+        executor.update_parameters(
+            **_slurm_params(args.cpus, timeout_min, args.account,
+                            args.partition, args.mem),
+            env={**os.environ,
+                 "PYTHONPATH": f"{PROJECT_ROOT}:{os.environ.get('PYTHONPATH', '')}"}
+        )
+
+        func_kwargs_group_analysis = {
+            "subject_ids_in_group": subjects_for_this_group,
+            "group_identifier": group_name,
+            "decoding_protocol_identifier": f'Group_Intra_{group_name}',
+            "base_input_data_path": base_input_path,
+            "base_output_results_path": base_output_path,
+            "enable_verbose_logging": True,
+            "n_jobs_for_each_subject": args.cpus,
+            "n_jobs_for_group_cluster_stats": args.cpus,
+            "classifier_type_for_group_runs": CLASSIFIER_MODEL_TYPE,
+            "use_grid_search_for_group": USE_GRID_SEARCH_OPTIMIZATION,
+            "fixed_params_for_group": FIXED_CLASSIFIER_PARAMS_CONFIG if not USE_GRID_SEARCH_OPTIMIZATION else None,
+            "use_csp_for_temporal_group": False,
+            "use_anova_fs_for_temporal_group": USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
+            "param_grid_config_for_group": PARAM_GRID_CONFIG_EXTENDED if USE_GRID_SEARCH_OPTIMIZATION else None,
+            "cv_folds_for_gs_group": CV_FOLDS_FOR_GRIDSEARCH_INTERNAL if USE_GRID_SEARCH_OPTIMIZATION else 0,
+            "compute_tgm_for_group_subjects_flag": COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
+            "compute_intra_subject_stats_for_group_runs_flag": COMPUTE_INTRA_SUBJECT_STATISTICS,
+            "n_perms_intra_subject_folds_for_group_runs": N_PERMUTATIONS_INTRA_SUBJECT,
+            "cluster_threshold_config_intra_fold_group": INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
+            "compute_group_level_stats_flag": True,
+            "n_perms_for_group_cluster_test": N_PERMUTATIONS_GROUP_LEVEL,
+            "group_cluster_test_threshold_method": GROUP_LEVEL_STAT_THRESHOLD_TYPE,
+            "group_cluster_test_t_thresh_value": T_THRESHOLD_FOR_GROUP_STAT_CLUSTERING,
+            "save_results_flag": SAVE_ANALYSIS_RESULTS,
+            "generate_plots_flag": GENERATE_PLOTS,
         }
-    )
 
-    func_kwargs_group_analysis = {
-        "subject_ids_in_group": subjects_for_this_group,
-        "group_identifier": GROUP_NAME,
-        "decoding_protocol_identifier": f'Group_Intra_{GROUP_NAME}',
-        "base_input_data_path": base_input_path,
-        "base_output_results_path": base_output_path,
-        "enable_verbose_logging": True,
-        "n_jobs_for_each_subject": SLURM_CPUS_PER_GROUP_JOB,
-        "n_jobs_for_group_cluster_stats": SLURM_CPUS_PER_GROUP_JOB,
-        "classifier_type_for_group_runs": CLASSIFIER_MODEL_TYPE,
-        "use_grid_search_for_group": USE_GRID_SEARCH_OPTIMIZATION,
-        "fixed_params_for_group": FIXED_CLASSIFIER_PARAMS_CONFIG if not USE_GRID_SEARCH_OPTIMIZATION else None,
-        "use_csp_for_temporal_group": False,
-        "use_anova_fs_for_temporal_group": USE_ANOVA_FS_FOR_TEMPORAL_PIPELINES,
-        "param_grid_config_for_group": PARAM_GRID_CONFIG_EXTENDED if USE_GRID_SEARCH_OPTIMIZATION else None,
-        "cv_folds_for_gs_group": CV_FOLDS_FOR_GRIDSEARCH_INTERNAL if USE_GRID_SEARCH_OPTIMIZATION else 0,
-        "compute_tgm_for_group_subjects_flag": COMPUTE_TEMPORAL_GENERALIZATION_MATRICES,
-        "compute_intra_subject_stats_for_group_runs_flag": COMPUTE_INTRA_SUBJECT_STATISTICS,
-        "n_perms_intra_subject_folds_for_group_runs": N_PERMUTATIONS_INTRA_SUBJECT,
-        "cluster_threshold_config_intra_fold_group": INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG,
-        "compute_group_level_stats_flag": True,
-        "n_perms_for_group_cluster_test": N_PERMUTATIONS_GROUP_LEVEL,
-        "group_cluster_test_threshold_method": GROUP_LEVEL_STAT_THRESHOLD_TYPE,
-        "group_cluster_test_t_thresh_value": T_THRESHOLD_FOR_GROUP_STAT_CLUSTERING,
-        "save_results_flag": SAVE_ANALYSIS_RESULTS,
-        "generate_plots_flag": GENERATE_PLOTS,
-    }
+        try:
+            job = executor.submit(execute_decoding_wrapper,
+                                  **func_kwargs_group_analysis)
+            logger.info("Job groupe %s soumis (ID: %s). Logs: %s",
+                        group_name, job.job_id, log_folder_submitit_jobs)
+            jobs.append((group_name, job, log_folder_submitit_jobs))
+        except Exception as e:
+            logger.error("Erreur de soumission pour le groupe %s : %s",
+                         group_name, e, exc_info=True)
 
-    logger.info("Soumission du job au cluster...")
-    try:
-        job = executor.submit(execute_decoding_wrapper, **func_kwargs_group_analysis)
-        logger.info(f"Job pour le groupe {GROUP_NAME} (ID: {job.job_id}) soumis avec succès.")
-    except Exception as e:
-        logger.error(f"Erreur lors de la soumission du job : {e}", exc_info=True)
+    if args.dry_run:
+        logger.info("[dry-run] Terminé, aucun job soumis.")
+        return
+
+    if not jobs:
+        logger.error("Aucun job soumis. Arrêt.")
         sys.exit(1)
 
-    logger.info(f"Attente du résultat du job {job.job_id}...")
-    
-    try:
-        output_subject_auc_dict = job.result()
-        job_state = job.state
-        logger.info(f"Job {job.job_id} (Groupe: {GROUP_NAME}) terminé. État: {job_state}")
-
-        if isinstance(output_subject_auc_dict, dict) and output_subject_auc_dict:
-            valid_aucs = [auc for auc in output_subject_auc_dict.values() if pd.notna(auc)]
-            mean_auc = np.mean(valid_aucs) if valid_aucs else np.nan
-            num_subjects = len(output_subject_auc_dict)
-            logger.info(f"  -> Résultat: Moyenne AUCs = {mean_auc:.3f} (N={num_subjects} sujets)")
-        else:
-            logger.warning(f"  -> Résultat inattendu/vide. Type reçu: {type(output_subject_auc_dict)}")
-            mean_auc, num_subjects = np.nan, 0
-
-    except FailedJobError as e_failed:
-        logger.error(f"Le job {job.job_id} pour le groupe {GROUP_NAME} A ÉCHOUÉ.")
-        logger.error(f"  Message de Submitit : {e_failed}")
-        logger.error(f"  Veuillez consulter les logs du worker dans : {log_folder_submitit_jobs}")
-        
-        # Affichage des logs pour diagnostic
+    logger.info("%d job(s) soumis. Attente des résultats...", len(jobs))
+    summary = []
+    for group_name, job, log_folder in jobs:
         try:
-            logger.error("--- STDERR du job ---")
-            logger.error(job.stderr())
-            logger.error("--- STDOUT du job ---")
-            logger.error(job.stdout())
-        except Exception:
-            logger.error("Impossible de récupérer les logs du job")
-        
-        job_state, mean_auc, num_subjects = "FAILED", np.nan, 0
+            output_subject_auc_dict = job.result()
+            job_state = job.state
+            if isinstance(output_subject_auc_dict, dict) and output_subject_auc_dict:
+                valid_aucs = [auc for auc in output_subject_auc_dict.values()
+                              if pd.notna(auc)]
+                mean_auc = np.mean(valid_aucs) if valid_aucs else np.nan
+                num_subjects = len(output_subject_auc_dict)
+            else:
+                logger.warning("Groupe %s : résultat inattendu/vide (%s).",
+                               group_name, type(output_subject_auc_dict))
+                mean_auc, num_subjects = np.nan, 0
+        except FailedJobError as e_failed:
+            logger.error("Le job du groupe %s A ÉCHOUÉ : %s", group_name,
+                         e_failed)
+            logger.error("Logs du worker : %s", log_folder)
+            try:
+                logger.error("--- STDERR ---\n%s", job.stderr())
+            except Exception:
+                logger.error("stderr indisponible.")
+            job_state, mean_auc, num_subjects = "FAILED", np.nan, 0
+        except Exception as e_result:
+            logger.error("Groupe %s : erreur de récupération du résultat : %s",
+                         group_name, e_result, exc_info=True)
+            job_state, mean_auc, num_subjects = "UNKNOWN", np.nan, 0
+        summary.append((group_name, job.job_id, job_state, mean_auc,
+                        num_subjects))
 
-    except Exception as e_result:
-        job_state = job.state if 'job' in locals() else "UNKNOWN"
-        logger.error(f"Erreur lors de la récupération du résultat du job. État final: {job_state}", exc_info=True)
-        mean_auc, num_subjects = np.nan, 0
-
-    # Résumé final
     logger.info("--- Résumé final ---")
-    logger.info(f"Groupe: {GROUP_NAME} | Job ID: {job.job_id if 'job' in locals() else 'N/A'} | État: {job_state if 'job_state' in locals() else 'UNKNOWN'} | Moyenne AUCs: {mean_auc if 'mean_auc' in locals() else 'N/A'} | N Sujets: {num_subjects if 'num_subjects' in locals() else 0}")
-    logger.info(f"Script de soumission terminé. Log principal: {master_log_file}")
-    if 'log_folder_submitit_jobs' in locals():
-        logger.info(f"Logs du job Slurm (stdout/stderr) dans: {log_folder_submitit_jobs}")
+    for group_name, job_id, job_state, mean_auc, num_subjects in summary:
+        logger.info("  %-18s job=%-12s état=%-10s AUC moyenne=%s  N=%d",
+                    group_name, job_id, job_state,
+                    f"{mean_auc:.3f}" if pd.notna(mean_auc) else "N/A",
+                    num_subjects)
+    logger.info("Script de soumission terminé. Log principal: %s",
+                master_log_file)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,9 @@
 import os
 import sys
 import glob
+import argparse
 import logging
+from getpass import getuser
 from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
@@ -18,12 +20,14 @@ PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 from config.config import ALL_SUBJECTS_GROUPS
+from utils.utils import configure_project_paths
 
 from utils.stats_utils import (
         perform_pointwise_fdr_correction_on_scores,
         perform_cluster_permutation_test,
         compare_global_scores_to_chance
  )
+from utils.time_alignment import align_subject_curves, resample_to_grid
 
 GROUP_NAME_MAPPING = {
     'COMA': 'COMA',
@@ -42,17 +46,58 @@ GROUP_COLORS = {
 }
 
 # --- Paramètres généraux ---
-BASE_RESULTS_DIR = "/home/tom.balay/results/Baking_EEG_results_V17"
 CHANCE_LEVEL = 0.5
 FDR_ALPHA = 0.05
 
-
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+
+def get_default_results_dir():
+    """Racine des resultats individuels, deduite de la config utilisateur.
+
+    Remplace le chemin macOS code en dur, inutilisable sur le cluster. Peut
+    etre surchargee par --results-dir ou la variable d'environnement
+    BAKING_EEG_RESULTS_DIR.
+    """
+    env_dir = os.environ.get("BAKING_EEG_RESULTS_DIR")
+    if env_dir:
+        return env_dir
+    try:
+        _, base_output = configure_project_paths(getuser())
+        return base_output
+    except Exception as exc:  # configuration utilisateur absente
+        logger.warning(
+            "configure_project_paths a echoue (%s) : utilisation du "
+            "repertoire courant.", exc)
+        return os.getcwd()
+
+
+def get_default_output_dir():
+    """Dossier de sortie des figures de groupe."""
+    env_dir = os.environ.get("BAKING_EEG_GROUP_OUTPUT_DIR")
+    if env_dir:
+        return env_dir
+    return os.path.join(get_default_results_dir(), "group_analysis")
 
 
 def extract_subject_id_from_path(file_path):
     import re
+    
+    # 1. Vérifier si une partie du chemin correspond à un ID connu dans ALL_SUBJECTS_GROUPS
+    # Cela permet de gérer des structures de dossiers variables (profondeur différente)
+    all_known_ids = set()
+    for ids in ALL_SUBJECTS_GROUPS.values():
+        all_known_ids.update(ids)
+    
+    parts = file_path.split(os.sep)
+    # On parcourt les dossiers en remontant depuis le fichier
+    for part in reversed(parts):
+        if part in all_known_ids:
+            return part
+
+    # 2. Regex fallback (ancien comportement)
     #Extract subject ID from file path, e.g., "Subj_12345_svc" -> "12345"
     match = re.search(r'Subj_([A-Za-z0-9]+)', file_path) 
     if match:
@@ -82,12 +127,19 @@ def find_pp_ap_npz_files(base_path):
     
     logger.info("%d fichiers PP/AP trouvés.", len(pp_ap_files))
 
+    # Suivi des sujets ajoutés pour éviter les doublons
+    added_subjects = {group: set() for group in ALL_SUBJECTS_GROUPS}
+
     for f in pp_ap_files:
         subj_id = extract_subject_id_from_path(f)
         found = False
         for group, ids in ALL_SUBJECTS_GROUPS.items():
             if subj_id in ids:
-                organized_data[group].append(f)
+                if subj_id not in added_subjects[group]:
+                    organized_data[group].append(f)
+                    added_subjects[group].add(subj_id)
+                else:
+                    logger.warning(f"Doublon ignoré pour le sujet {subj_id} dans le groupe {group}: {f}")
                 found = True
                 break
         if not found:
@@ -103,66 +155,126 @@ def load_npz_data_pp_ap(file_path):
                 'times': data.get('epochs_time_points'),
                 'tgm_mean': data.get('pp_ap_main_tgm_mean'),
                 'tgm_all_folds': data.get('pp_ap_main_tgm_all_folds'),
-                'auc_global': data.get('pp_ap_main_mean_auc_global')
+                'auc_global': data.get('pp_ap_main_mean_auc_global'),
+                'cv_global_scores': data.get('pp_ap_main_cv_global_scores')
             }
     except Exception as e:
         logger.error("Erreur chargement fichier %s: %s", file_path, e)
         return None
 
 def analyze_group_data_pp_ap(group_files, group_name):
-    logger.info(f"Analyse du groupe {group_name} ({len(group_files)} sujets) pour PP/AP")
-    
-    all_scores, all_tgms, all_aucs, subject_ids = [], [], [], []
-    times = None
-    TARGET_LEN = 601 # Standardisation de la longueur des données
+    """Agrege les resultats individuels d'un groupe.
+
+    Deux corrections importantes par rapport aux versions <= 2026-01 :
+
+    1. Alignement temporel. Les courbes n'etaient gardees que si elles
+       faisaient exactement 601 points (ou 701, alors TRONQUES) ; toute autre
+       longueur entrainait l'exclusion silencieuse du sujet - or la config
+       documente des sujets a 401 et 301 points. On reinterpole desormais
+       chaque sujet sur une grille temporelle commune (cf.
+       utils.time_alignment) : aucun sujet n'est perdu, et l'indice i designe
+       le meme instant chez tous.
+
+    2. Listes paralleles. `auc_global_values` et `tgm_matrix` n'etaient
+       alimentees que lorsque la valeur existait, alors que `subject_ids`
+       l'etait systematiquement : les AUC se retrouvaient decalees et
+       attribuees au mauvais sujet. On insere desormais np.nan / None pour
+       conserver l'alignement des index.
+    """
+    logger.info("Analyse du groupe %s (%d sujets) pour PP/AP",
+                group_name, len(group_files))
+
+    raw_scores, raw_times, raw_tgms = [], [], []
+    all_aucs, subject_ids, all_cv_scores = [], [], []
 
     for file_path in group_files:
         data = load_npz_data_pp_ap(file_path)
         subj_id = extract_subject_id_from_path(file_path)
-        
-        if data and data['scores_1d_mean'] is not None and data['times'] is not None:
-            if data['scores_1d_mean'].shape == (TARGET_LEN,):
-                scores = data['scores_1d_mean']
-            elif data['scores_1d_mean'].shape == (701,):
-                logger.warning(f"Sujet {subj_id} shape (701,) tronqué à (601,).")
-                scores = data['scores_1d_mean'][:TARGET_LEN]
+
+        if not data or data['scores_1d_mean'] is None or data['times'] is None:
+            logger.warning("Donnees invalides pour le sujet %s dans %s",
+                           subj_id, file_path)
+            continue
+
+        scores = np.asarray(data['scores_1d_mean'], dtype=float)
+        times_subject = np.asarray(data['times'], dtype=float)
+        if scores.shape[0] != times_subject.shape[0]:
+            logger.warning(
+                "Sujet %s ignore : %d scores pour %d points temporels.",
+                subj_id, scores.shape[0], times_subject.shape[0])
+            continue
+
+        tgm = None
+        if data['tgm_all_folds'] is not None:
+            tgm_candidate = np.nanmean(np.asarray(data['tgm_all_folds'],
+                                                  dtype=float), axis=0)
+            if tgm_candidate.ndim == 2 and \
+                    tgm_candidate.shape[0] == times_subject.shape[0]:
+                tgm = tgm_candidate
             else:
-                logger.warning(f"Sujet {subj_id} ignoré: shape inattendu {data['scores_1d_mean'].shape}. Attendu ({TARGET_LEN},) ou (701,).")
-                continue
+                logger.warning(
+                    "Sujet %s : TGM de forme %s incompatible avec %d points "
+                    "temporels, TGM ignoree.",
+                    subj_id, getattr(tgm_candidate, 'shape', None),
+                    times_subject.shape[0])
 
-            if times is None:
-                times = data['times']
-                if times.shape[0] == 701:
-                    times = times[:TARGET_LEN]
+        raw_scores.append(scores)
+        raw_times.append(times_subject)
+        raw_tgms.append(tgm)
+        subject_ids.append(subj_id)
+        # np.nan / None systematiques : les listes restent alignees sur
+        # subject_ids meme quand une valeur manque.
+        all_aucs.append(float(data['auc_global'])
+                        if data['auc_global'] is not None else np.nan)
+        all_cv_scores.append(data.get('cv_global_scores'))
 
-            all_scores.append(scores)
-            subject_ids.append(subj_id)
-            if data['tgm_all_folds'] is not None:
-                tgm = np.mean(data['tgm_all_folds'], axis=0)
-                if tgm.shape[0] == 701:
-                    tgm = tgm[:TARGET_LEN, :TARGET_LEN]
-                all_tgms.append(tgm)
-            if data['auc_global'] is not None:
-                all_aucs.append(data['auc_global'])
-        else:
-            logger.warning(f"Données invalides pour sujet {subj_id} dans {file_path}")
-
-    if not all_scores:
-        logger.warning(f"Aucune donnée valide trouvée pour le groupe {group_name}")
+    if not raw_scores:
+        logger.warning("Aucune donnee valide trouvee pour le groupe %s",
+                       group_name)
         return None
 
-    scores_matrix = np.array(all_scores)
+    scores_matrix, times, kept_ids, dropped_ids = align_subject_curves(
+        raw_scores, raw_times, subject_ids)
+    if scores_matrix is None:
+        logger.warning(
+            "Alignement temporel impossible pour le groupe %s.", group_name)
+        return None
+
+    # Repercuter les eventuelles exclusions sur TOUTES les listes paralleles.
+    if dropped_ids:
+        keep_mask = [sid in set(kept_ids) for sid in subject_ids]
+        raw_tgms = [t for t, k in zip(raw_tgms, keep_mask) if k]
+        all_aucs = [a for a, k in zip(all_aucs, keep_mask) if k]
+        all_cv_scores = [c for c, k in zip(all_cv_scores, keep_mask) if k]
+        subject_ids = kept_ids
+
+    aligned_tgms = []
+    for tgm, times_subject, subj_id in zip(raw_tgms, raw_times, subject_ids):
+        if tgm is None:
+            continue
+        resampled = resample_to_grid(tgm, times_subject, times)
+        if resampled is not None:
+            aligned_tgms.append(resampled)
+
+    n_subjects = len(subject_ids)
+    logger.info(
+        "Groupe %s : %d sujets retenus, %d TGM alignees, %d AUC globales "
+        "disponibles.", group_name, n_subjects, len(aligned_tgms),
+        int(np.sum(~np.isnan(all_aucs))) if all_aucs else 0)
+
     return {
         'group_name': group_name,
-        'n_subjects': len(subject_ids),
+        'n_subjects': n_subjects,
         'subject_ids': subject_ids,
         'scores_matrix': scores_matrix,
         'group_mean': np.nanmean(scores_matrix, axis=0),
-        'group_sem': np.nanstd(scores_matrix, axis=0) / np.sqrt(len(subject_ids)),
+        'group_sem': np.nanstd(scores_matrix, axis=0) / np.sqrt(n_subjects),
         'times': times,
-        'tgm_matrix': np.array(all_tgms) if all_tgms else None,
-        'tgm_mean': np.nanmean(np.array(all_tgms), axis=0) if all_tgms else None,
-        'auc_global_values': np.array(all_aucs) if all_aucs else None,
+        'tgm_matrix': np.array(aligned_tgms) if aligned_tgms else None,
+        'tgm_mean': (np.nanmean(np.array(aligned_tgms), axis=0)
+                     if aligned_tgms else None),
+        'auc_global_values': np.array(all_aucs, dtype=float),
+        'cv_scores_list': all_cv_scores
     }
 
 def plot_group_individual_curves_pp_ap(group_data, save_dir, show_plots=True):
@@ -351,47 +463,84 @@ def plot_global_auc_boxplots_pp_ap(all_groups_data, save_dir, show_plots=True):
     for group_data in all_groups_data:
         if group_data['auc_global_values'] is not None and len(group_data['auc_global_values']) > 0:
             mapped_name = GROUP_NAME_MAPPING.get(group_data['group_name'], group_data['group_name'])
-            group_subject_counts[mapped_name] += group_data['n_subjects']
             for value in group_data['auc_global_values']:
-                plot_data.append({'Group': mapped_name, 'AUC': value})
+                # Les AUC manquantes sont desormais des NaN explicites (listes
+                # paralleles) : on ne les compte pas dans le n affiche.
+                if value is None or not np.isfinite(value):
+                    continue
+                group_subject_counts[mapped_name] += 1
+                plot_data.append({'Group': mapped_name, 'AUC': float(value)})
     if not plot_data:
         logger.warning("Aucune donnée AUC globale pour les boxplots.")
         return
     df = pd.DataFrame(plot_data)
     order = [g for g in GROUP_ORDER if g in df['Group'].unique()]
-    palette = [GROUP_COLORS.get(g, '#cccccc') for g in order]
+    
     fig, ax = plt.subplots(figsize=(12, 8))
     # Boxplot par groupe avec couleur
-    boxplot = sns.boxplot(data=df, x='Group', y='AUC', ax=ax, order=order, palette=palette)
+    # Utilisation directe du dictionnaire GROUP_COLORS pour garantir la bonne association couleur-groupe
+    boxplot = sns.boxplot(data=df, x='Group', y='AUC', hue='Group', ax=ax, order=order, palette=GROUP_COLORS, legend=False)
     # Points individuels en couleur de groupe
     for i, group in enumerate(order):
         group_df = df[df['Group'] == group]
         color = GROUP_COLORS.get(group, 'black')
         ax.scatter([i]*len(group_df), group_df['AUC'], color=color, alpha=0.7, s=40, edgecolor='black', zorder=3)
     new_labels = [f"{group} (n={group_subject_counts.get(group, 0)})" for group in order]
+    ax.set_xticks(range(len(order)))
     ax.set_xticklabels(new_labels, rotation=30, ha='right')
-    from scipy.stats import mannwhitneyu
     y_max = df['AUC'].max() if len(df) > 0 else 0.8
     y_min = df['AUC'].min() if len(df) > 0 else 0.4
     y_offset = (y_max - y_min) * 0.05
     star_pos = y_max + y_offset
-    annotation_idx = 0
+
+    # Comparaisons deux a deux AVEC correction FDR. Avec 6 groupes cela fait
+    # 15 tests : sans correction, environ un "resultat significatif" par
+    # figure est attendu sous l'hypothese nulle. Les etoiles affichees
+    # correspondent maintenant aux p-values corrigees.
+    pairs, raw_pvals = [], []
     for i, g1 in enumerate(order):
         for j, g2 in enumerate(order):
             if j <= i:
                 continue
-            auc1 = df[df['Group'] == g1]['AUC']
-            auc2 = df[df['Group'] == g2]['AUC']
+            auc1 = df[df['Group'] == g1]['AUC'].to_numpy()
+            auc2 = df[df['Group'] == g2]['AUC'].to_numpy()
             if len(auc1) > 1 and len(auc2) > 1:
-                stat, p = mannwhitneyu(auc1, auc2, alternative='two-sided')
-                if p < 0.05:
-                    x1, x2 = i, j
-                    y = star_pos + annotation_idx * y_offset * 1.5
-                    ax.plot([x1, x1, x2, x2], [y-0.01, y, y, y-0.01], color='black', linewidth=1.5)
-                    star = '**' if p < 0.01 else '*'
-                    ax.text((x1+x2)/2, y, star, ha='center', va='bottom', color='black', fontsize=18, fontweight='bold')
-                    annotation_idx += 1
-    ax.set(title='PP/AP Global AUC Distribution by Group', xlabel='Clinical Group', ylabel='AUC (Area Under Curve)')
+                _, p = mannwhitneyu(auc1, auc2, alternative='two-sided')
+                pairs.append((i, j, g1, g2, len(auc1), len(auc2)))
+                raw_pvals.append(p)
+
+    corrected_pvals = np.array(raw_pvals, dtype=float)
+    if raw_pvals:
+        _, corrected_pvals = fdrcorrection(np.array(raw_pvals),
+                                           alpha=FDR_ALPHA)
+        logger.info(
+            "Comparaisons inter-groupes (Mann-Whitney, %d tests, FDR "
+            "Benjamini-Hochberg alpha=%.2f) :", len(raw_pvals), FDR_ALPHA)
+        for (i, j, g1, g2, n1, n2), p_raw, p_fdr in zip(pairs, raw_pvals,
+                                                        corrected_pvals):
+            logger.info("  %-12s vs %-12s  n=%d/%d  p=%.4f  p_FDR=%.4f%s",
+                        g1, g2, n1, n2, p_raw, p_fdr,
+                        "  *" if p_fdr < FDR_ALPHA else "")
+
+    annotation_idx = 0
+    for (i, j, _g1, _g2, _n1, _n2), p_fdr in zip(pairs, corrected_pvals):
+        if p_fdr < FDR_ALPHA:
+            x1, x2 = i, j
+            y = star_pos + annotation_idx * y_offset * 1.5
+            ax.plot([x1, x1, x2, x2], [y - 0.01, y, y, y - 0.01],
+                    color='black', linewidth=1.5)
+            star = '**' if p_fdr < 0.01 else '*'
+            ax.text((x1 + x2) / 2, y, star, ha='center', va='bottom',
+                    color='black', fontsize=18, fontweight='bold')
+            annotation_idx += 1
+    if not annotation_idx and pairs:
+        ax.text(0.99, 0.02, "aucune différence significative après FDR",
+                transform=ax.transAxes, ha='right', va='bottom', fontsize=9,
+                style='italic', color='#555555')
+
+    ax.set(title='PP/AP Global AUC Distribution by Group\n'
+                 '(Mann-Whitney, FDR-corrected)',
+           xlabel='Clinical Group', ylabel='AUC (Area Under Curve)')
     ax.axhline(y=CHANCE_LEVEL, color='red', linestyle='--', alpha=0.7, label='Chance Level')
     ax.legend(); plt.tight_layout()
     if save_dir: plt.savefig(os.path.join(save_dir, "pp_ap_global_auc_boxplot.png"))
@@ -560,49 +709,191 @@ def create_temporal_windows_connected_plots_pp_ap(all_groups_data, save_dir, sho
     plt.close()
 
 def analyze_individual_significance_proportions_pp_ap(all_groups_data, save_dir, show_plots=True):
+    """Proportion de sujets dont le decodage depasse significativement la chance.
+    """
     groups_analysis = []
-    
-    # Agréger les données par nom de groupe mappé
-    group_data_aggregated = defaultdict(lambda: {'auc_values': [], 'n_subjects': 0})
+
+    # Dictionnaire pour stocker les résultats détaillés par sujet pour les bar charts
+    detailed_results = {}
+
     for g_data in all_groups_data:
-        if g_data['auc_global_values'] is not None and len(g_data['auc_global_values']) > 0:
-            mapped_name = GROUP_NAME_MAPPING.get(g_data['group_name'], g_data['group_name'])
-            group_data_aggregated[mapped_name]['auc_values'].extend(g_data['auc_global_values'])
-            group_data_aggregated[mapped_name]['n_subjects'] += g_data['n_subjects']
-            
-    # Réorganiser les données selon GROUP_ORDER
-    for group_name in GROUP_ORDER:
-        if group_name in group_data_aggregated:
-            data = group_data_aggregated[group_name]
-            auc_values = np.array(data['auc_values'])
-            significant_count = np.sum(auc_values > CHANCE_LEVEL)
-            total_patients = len(auc_values)
-            percentage_significant = (significant_count / total_patients) * 100 if total_patients > 0 else 0
-            groups_analysis.append({
-                'group_name': group_name,
-                'n_subjects': total_patients,
-                'n_significant': significant_count,
-                'percentage_significant': percentage_significant
+        group_name = g_data['group_name']
+        mapped_name = GROUP_NAME_MAPPING.get(group_name, group_name)
+
+        n_subjects = g_data['n_subjects']
+        subject_ids = g_data['subject_ids']
+        cv_scores_list = g_data.get('cv_scores_list', [None] * n_subjects)
+        auc_values = g_data['auc_global_values']
+
+        subject_results = []
+        testable_idx, raw_pvals = [], []
+
+        for i in range(n_subjects):
+            scores = cv_scores_list[i] if i < len(cv_scores_list) else None
+            p_val = None
+            if scores is not None and np.size(scores) > 0:
+                scores = np.asarray(scores, dtype=float)
+                scores = scores[np.isfinite(scores)]
+                if scores.size >= 2:
+                    try:
+                        _, p_val = wilcoxon(scores - CHANCE_LEVEL,
+                                            alternative='greater')
+                    except ValueError as exc:
+                        # Cas degeneres (toutes les differences nulles...).
+                        logger.debug("Wilcoxon impossible pour %s : %s",
+                                     subject_ids[i], exc)
+                        p_val = None
+
+            auc_i = (float(auc_values[i])
+                     if auc_values is not None and i < len(auc_values)
+                     else np.nan)
+            subject_results.append({
+                'id': subject_ids[i],
+                'auc': auc_i,
+                'significant': False,   # rempli apres correction FDR
+                'p_value': p_val,
+                'p_value_fdr': None,
+                'testable': p_val is not None,
             })
+            if p_val is not None:
+                testable_idx.append(i)
+                raw_pvals.append(p_val)
+
+        # Correction FDR sur les sujets testables du groupe.
+        n_significant = 0
+        if raw_pvals:
+            rejected, p_fdr = fdrcorrection(np.array(raw_pvals),
+                                            alpha=FDR_ALPHA)
+            for pos, subj_idx in enumerate(testable_idx):
+                subject_results[subj_idx]['p_value_fdr'] = float(p_fdr[pos])
+                subject_results[subj_idx]['significant'] = bool(rejected[pos])
+            n_significant = int(np.sum(rejected))
+
+        n_testable = len(testable_idx)
+        n_undetermined = n_subjects - n_testable
+        if n_undetermined:
+            logger.warning(
+                "Groupe %s : %d/%d sujets sans scores de CV exploitables, "
+                "classes 'indetermines' et exclus du denominateur.",
+                mapped_name, n_undetermined, n_subjects)
+
+        percentage_significant = ((n_significant / n_testable) * 100
+                                  if n_testable > 0 else 0.0)
+
+        groups_analysis.append({
+            'group_name': group_name,
+            'mapped_name': mapped_name,
+            'n_subjects': n_testable,
+            'n_total_subjects': n_subjects,
+            'n_undetermined': n_undetermined,
+            'n_significant': n_significant,
+            'percentage_significant': percentage_significant
+        })
+
+        detailed_results[mapped_name] = subject_results
 
     if not groups_analysis: return
-    n_groups = len(groups_analysis)
-    fig_pie, axes_pie = plt.subplots(1, n_groups, figsize=(4 * n_groups, 5), squeeze=False)
-    
-    for i, analysis in enumerate(groups_analysis):
-        mapped_name = analysis['group_name']
-        sizes = [analysis['n_subjects'] - analysis['n_significant'], analysis['n_significant']]
-        labels = ['≤ Chance', '> Chance']
-        colors = ['#ff6b6b', '#4ecdc4']
-        axes_pie[0, i].pie(sizes, autopct='%1.0f%%', startangle=90, colors=colors, textprops={'fontsize': 12, 'fontweight': 'bold'})
-        axes_pie[0, i].set_title(f"{mapped_name}\n(n={analysis['n_subjects']})")
+
+    # --- 1. Pie Charts (Proportions Globales) ---
+    # Filtrer pour ne garder que les groupes présents dans GROUP_ORDER
+    ordered_analysis = [g for g in groups_analysis if g['mapped_name'] in GROUP_NAME_MAPPING.values()]
+    # Trier selon l'ordre défini dans GROUP_ORDER
+    ordered_analysis.sort(key=lambda x: GROUP_ORDER.index(x['mapped_name']) if x['mapped_name'] in GROUP_ORDER else 999)
+
+    n_groups = len(ordered_analysis)
+    if n_groups > 0:
+        fig_pie, axes_pie = plt.subplots(1, n_groups, figsize=(4 * n_groups, 5), squeeze=False)
         
-    fig_pie.legend(labels, loc='lower center', ncol=2)
-    fig_pie.suptitle('Proportion of Subjects with AUC > Chance (PP/AP)', fontsize=16, fontweight='bold')
-    plt.tight_layout(rect=[0, 0.1, 1, 0.95])
-    if save_dir: plt.savefig(os.path.join(save_dir, "individual_significance_proportions_pie_pp_ap.png"))
-    if show_plots: plt.show()
-    else: plt.close(fig_pie)
+        for i, analysis in enumerate(ordered_analysis):
+            mapped_name = analysis['mapped_name']
+            sizes = [analysis['n_subjects'] - analysis['n_significant'], analysis['n_significant']]
+            labels = ['Non significatif', 'Significatif (FDR)']
+            colors = ['#ff6b6b', '#4ecdc4'] # Rouge clair, Cyan clair
+
+            axes_pie[0, i].pie(sizes, autopct='%1.0f%%', startangle=90, colors=colors,
+                             textprops={'fontsize': 12, 'fontweight': 'bold'},
+                             wedgeprops={'edgecolor': 'white', 'linewidth': 2})
+            title = f"{mapped_name}\n(n={analysis['n_subjects']})"
+            if analysis.get('n_undetermined'):
+                title += f"\n+{analysis['n_undetermined']} indéterminés"
+            axes_pie[0, i].set_title(title, fontsize=13, fontweight='bold')
+
+        fig_pie.legend(labels, loc='lower center', ncol=2, fontsize=12)
+        fig_pie.suptitle(
+            'Proportion of Subjects with Significant Decoding\n'
+            '(Wilcoxon on CV scores vs chance, FDR-corrected within group)',
+            fontsize=15, fontweight='bold', y=1.06)
+        plt.tight_layout()
+        
+        if save_dir: 
+            plt.savefig(os.path.join(save_dir, "individual_significance_proportions_pie_pp_ap.png"), bbox_inches='tight')
+        if show_plots: 
+            plt.show()
+        else: 
+            plt.close(fig_pie)
+
+    # --- 2. Bar Charts (Détail par Sujet) ---
+    # Créer un bar chart pour chaque groupe montrant l'AUC de chaque sujet
+    for group_name in GROUP_ORDER:
+        mapped_name = GROUP_NAME_MAPPING.get(group_name, group_name)
+        if mapped_name not in detailed_results:
+            continue
+            
+        subjects = detailed_results[mapped_name]
+        if not subjects:
+            continue
+            
+        # Trier les sujets par AUC décroissant pour une meilleure lisibilité
+        subjects_sorted = sorted(
+            subjects,
+            key=lambda x: (x['auc'] if np.isfinite(x['auc']) else -np.inf),
+            reverse=True)
+
+        ids = [s['id'] for s in subjects_sorted]
+        aucs = [s['auc'] for s in subjects_sorted]
+        # Gris = pas de scores CV, donc significativite indeterminee.
+        colors = ['#4ecdc4' if s['significant']
+                  else ('#ff6b6b' if s.get('testable') else '#bbbbbb')
+                  for s in subjects_sorted]
+
+        plt.figure(figsize=(max(10, len(subjects)*0.6), 6)) # Largeur adaptative
+        bars = plt.bar(range(len(subjects)), aucs, color=colors, edgecolor='black', alpha=0.8)
+
+        # Ligne de chance
+        plt.axhline(y=CHANCE_LEVEL, color='black', linestyle='--', linewidth=2, label='Chance Level')
+
+        # Esthétique
+        plt.xticks(range(len(subjects)), ids, rotation=45, ha='right', fontsize=10)
+        # Bornes calculees sur les donnees : un ylim fixe (0.3, 1.0) masquait
+        # sans le dire les sujets dont l'AUC sortait de l'intervalle.
+        finite_aucs = [a for a in aucs if np.isfinite(a)]
+        if finite_aucs:
+            low = min(0.45, min(finite_aucs) - 0.05)
+            high = max(0.75, max(finite_aucs) + 0.05)
+            plt.ylim(low, high)
+        plt.ylabel('Global AUC', fontsize=12)
+        plt.title(f'Individual Decoding Performance - {mapped_name}', fontsize=14, fontweight='bold')
+        
+        # Légende personnalisée
+        from matplotlib.patches import Patch
+        legend_elements = [
+            Patch(facecolor='#4ecdc4', edgecolor='black',
+                  label='Significatif (Wilcoxon, FDR<0.05)'),
+            Patch(facecolor='#ff6b6b', edgecolor='black',
+                  label='Non significatif'),
+            Patch(facecolor='#bbbbbb', edgecolor='black',
+                  label='Indéterminé (pas de scores CV)')
+        ]
+        plt.legend(handles=legend_elements, loc='upper right')
+        
+        plt.tight_layout()
+        
+        if save_dir:
+            plt.savefig(os.path.join(save_dir, f"individual_auc_bars_{mapped_name}_pp_ap.png"))
+        if show_plots:
+            plt.show()
+        else:
+            plt.close()
 
 def create_temporal_windows_comparison_boxplots_pp_ap(all_groups_data, save_dir, show_plots=True):
     """
@@ -792,13 +1083,29 @@ def plot_temporal_windows_boxplots_pp_ap(all_groups_data, save_dir, show_plots=T
         plt.close()
 
 def main():
+    parser = argparse.ArgumentParser(
+        description="Analyse de groupe PP/AP a partir des NPZ individuels.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument(
+        "--results-dir", type=str, default=None,
+        help="Racine contenant intra_subject_results/ "
+             "(defaut: BAKING_EEG_RESULTS_DIR, sinon configure_project_paths).")
+    parser.add_argument(
+        "--output-dir", type=str, default=None,
+        help="Dossier de sortie des figures "
+             "(defaut: <results-dir>/group_analysis/PP_AP_analysis_<horodatage>).")
+    args = parser.parse_args()
+
+    base_results_dir = args.results_dir or get_default_results_dir()
     logger.info("Début de l'analyse PP/AP")
-    
+    logger.info("Racine des résultats individuels : %s", base_results_dir)
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    results_dir = os.path.join("/home/tom.balay/results", f"PP_AP_analysis_{timestamp}")
+    results_dir = args.output_dir or os.path.join(
+        get_default_output_dir(), f"PP_AP_analysis_{timestamp}")
     os.makedirs(results_dir, exist_ok=True)
-    
-    organized_files = find_pp_ap_npz_files(BASE_RESULTS_DIR)
+
+    organized_files = find_pp_ap_npz_files(base_results_dir)
     if not organized_files:
         logger.error("Aucun fichier NPZ PP/AP trouvé. Arrêt.")
         return

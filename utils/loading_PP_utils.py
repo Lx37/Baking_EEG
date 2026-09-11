@@ -1,4 +1,3 @@
-#tol
 # --- Data loading function for PP
 # DELIRIUM protocol
 import os
@@ -11,6 +10,147 @@ from config.decoding_config import CONFIG_LOAD_MAIN_DECODING
 logger_data_loading = logging.getLogger(__name__)
 from config.decoding_config import CONFIG_LOAD_BATTERY_PROTOCOL
 from config.decoding_config import CONFIG_LOAD_PPEXT3_PROTOCOL
+
+# Correspondance groupe -> sous-dossier de donnees PP.
+# Source unique de verite : cette table remplace les deux chaines if/elif
+# dupliquees (et divergentes) qui existaient dans
+# load_epochs_data_for_decoding_delirium et load_epochs_data_auto_protocol.
+PP_GROUP_DIRECTORIES = {
+    "CONTROLS": "PP_CONTROLS_0.5",
+    "CONTROLS_DELIRIUM": "PP_CONTROLS_0.5",
+    "CONTROLS_COMA": "PP_CONTROLS_COMA_01HZ",
+    "COMA": "PP_COMA_01HZ",
+    "MCS": "PP_MCS_01HZ",
+    "MCS+": "PP_MCS_01HZ",
+    "MCS-": "PP_MCS_01HZ",
+    "VS": "PP_VS_01HZ",
+    "DELIRIUM+": "PP_PATIENTS_DELIRIUM+_0.5",
+    "DELIRIUM-": "PP_PATIENTS_DELIRIUM-_0.5",
+}
+
+# Cache mono-entree du dernier fichier d'epochs lu.
+# Sans lui, une analyse mono-sujet relisait le meme .fif jusqu'a 4 fois :
+# detection du protocole dans load_epochs_data_auto_protocol (1), chargement
+# reel (2), et double appel depuis run_decoding_one_pp (3 et 4).
+_EPOCHS_CACHE = {"path": None, "mtime": None, "epochs": None}
+
+
+def _read_epochs_cached(epochs_fif_filename, verbose_logging=False):
+    """Lit un fichier d'epochs, en reutilisant le dernier lu si c'est le meme.
+
+    Le cache est invalide par le chemin ET la date de modification. Une copie
+    est renvoyee a chaque appel pour qu'un appelant qui modifie l'objet
+    (pick, crop...) ne corrompe pas le cache.
+    """
+    try:
+        mtime = os.path.getmtime(epochs_fif_filename)
+    except OSError:
+        mtime = None
+
+    if (_EPOCHS_CACHE["path"] == epochs_fif_filename
+            and _EPOCHS_CACHE["mtime"] == mtime
+            and _EPOCHS_CACHE["epochs"] is not None):
+        if verbose_logging:
+            logger_data_loading.debug(
+                "Epochs relus depuis le cache : %s", epochs_fif_filename)
+        return _EPOCHS_CACHE["epochs"].copy()
+
+    with mne.utils.use_log_level("WARNING"):
+        epochs_object = mne.read_epochs(
+            epochs_fif_filename, proj=False, verbose=False, preload=True
+        )
+    _EPOCHS_CACHE.update({"path": epochs_fif_filename, "mtime": mtime,
+                          "epochs": epochs_object})
+    return epochs_object.copy()
+
+
+def _resolve_path_case_insensitive(directory, filename):
+    """Cherche `filename` dans `directory` en ignorant la casse.
+
+    Les identifiants sujets de la config melangent les casses (TpAB15J8 vs
+    TpAB15j8, TpCL14j1...). Sur macOS le FS est insensible a la casse et le
+    probleme est invisible ; sur le cluster Linux il fait echouer la recherche
+    de fichier. Ce repli resout la divergence sans avoir a deviner la bonne
+    orthographe.
+
+    Returns:
+        str | None: chemin reel trouve, ou None.
+    """
+    if not os.path.isdir(directory):
+        return None
+    target = filename.lower()
+    try:
+        for entry in os.listdir(directory):
+            if entry.lower() == target:
+                return os.path.join(directory, entry)
+    except OSError:
+        return None
+    return None
+
+
+def resolve_group_directory(base_input_data_path, group_affiliation,
+                            subject_identifier=None, verbose_logging=False):
+    """Determine le dossier de donnees PP d'un sujet.
+
+    Le groupe passe explicitement par l'appelant (--group) est PRIORITAIRE.
+    Auparavant le groupe deduit de ALL_SUBJECTS_GROUPS l'emportait, si bien
+    qu'un sujet liste dans "CONTROLS" mais lance avec --group CONTROLS_COMA
+    allait chercher PP_CONTROLS_0.5 au lieu de PP_CONTROLS_COMA_01HZ.
+
+    Returns:
+        tuple: (chemin_dossier | None, groupe_retenu)
+    """
+    requested = (group_affiliation or "").strip().upper()
+    detected_group = next(
+        (grp for grp, s_list in ALL_SUBJECTS_GROUPS.items()
+         if subject_identifier and subject_identifier in s_list), None
+    )
+
+    if requested in PP_GROUP_DIRECTORIES:
+        group_to_use = requested
+        if detected_group and detected_group.upper() != requested:
+            logger_data_loading.info(
+                "Sujet '%s' : groupe demande '%s' retenu (il figure aussi "
+                "dans '%s' de ALL_SUBJECTS_GROUPS).",
+                subject_identifier, requested, detected_group
+            )
+    elif detected_group:
+        group_to_use = detected_group.upper()
+        logger_data_loading.debug(
+            "Sujet '%s' : groupe '%s' deduit de ALL_SUBJECTS_GROUPS.",
+            subject_identifier, group_to_use
+        )
+    else:
+        group_to_use = requested
+
+    directory_name = PP_GROUP_DIRECTORIES.get(group_to_use)
+    if directory_name is None:
+        logger_data_loading.error(
+            "Groupe '%s' inconnu (sujet '%s'). Groupes connus : %s.",
+            group_to_use, subject_identifier,
+            sorted(PP_GROUP_DIRECTORIES.keys())
+        )
+        return None, group_to_use
+
+    candidate = os.path.join(base_input_data_path, directory_name)
+    if os.path.isdir(candidate):
+        if verbose_logging:
+            logger_data_loading.debug(
+                "Dossier de donnees pour '%s' (%s) : %s",
+                subject_identifier, group_to_use, candidate)
+        return candidate, group_to_use
+
+    resolved = _resolve_path_case_insensitive(base_input_data_path,
+                                              directory_name)
+    if resolved and os.path.isdir(resolved):
+        logger_data_loading.info(
+            "Dossier '%s' trouve avec une casse differente : %s",
+            directory_name, resolved)
+        return resolved, group_to_use
+
+    return None, group_to_use
+
+
 def find_epochs_file_with_protocol_detection(
     data_root_path, subject_identifier, verbose_logging=True
 ):
@@ -105,6 +245,31 @@ def find_epochs_file_with_protocol_detection(
                     )
                 return full_path, 'legacy'
 
+    # Repli insensible a la casse : les identifiants sujets de la config
+    # melangent les casses (TpAB15J8 / TpAB15j8, TpCL14j1, TpEP16j8...). Sur un
+    # FS sensible a la casse (cluster Linux), les recherches exactes ci-dessus
+    # echouent alors que le fichier existe.
+    search_plan = [
+        (os.path.join(data_root_path, "Battery"), battery_patterns, 'battery'),
+        (os.path.join(data_root_path, "PPext3"), battery_patterns, 'ppext3'),
+        (data_root_path, file_patterns, 'legacy'),
+    ]
+    for directory, patterns, protocol in search_plan:
+        if not os.path.isdir(directory):
+            continue
+        for subject_id in possible_subject_ids:
+            for pattern in patterns:
+                filename = pattern.format(subject_id=subject_id)
+                resolved = _resolve_path_case_insensitive(directory, filename)
+                if resolved:
+                    logger_data_loading.warning(
+                        "Fichier trouve avec une casse differente de la config "
+                        "pour '%s' : %s (attendu '%s'). Harmonisez "
+                        "ALL_SUBJECTS_GROUPS avec les noms de fichiers reels.",
+                        subject_identifier, os.path.basename(resolved), filename
+                    )
+                    return resolved, protocol
+
     # If nothing found, return None
     if verbose_logging:
         logger_data_loading.warning(
@@ -168,67 +333,11 @@ def load_epochs_data_for_decoding_delirium(
         return None, {}
 
     start_time = time.time()
-    
-    # First, try to find the subject in ALL_SUBJECTS_GROUPS to get the exact group name
-    detected_group = next(
-        (grp for grp, s_list in ALL_SUBJECTS_GROUPS.items()
-         if subject_identifier in s_list), None,
+
+    data_root_path, group_to_use = resolve_group_directory(
+        base_input_data_path, group_affiliation, subject_identifier,
+        verbose_logging
     )
-    
-    # Use detected group or provided group_affiliation
-    group_to_use = detected_group if detected_group else group_affiliation.upper()
-    
-    data_root_path = None
-    if group_to_use == "CONTROLS_DELIRIUM":
-        potential_path = os.path.join(base_input_data_path, "PP_CONTROLS_0.5")
-        if os.path.isdir(potential_path):
-            data_root_path = potential_path
-    elif group_to_use == "COMA":
-
-        potential_path = os.path.join(base_input_data_path, "PP_COMA_01HZ")
-        if verbose_logging:
-            logger_data_loading.debug("Trying COMA path: %s (exists: %s)", 
-                                    potential_path, os.path.isdir(potential_path))
-        if os.path.isdir(potential_path):
-            data_root_path = potential_path
-    elif group_to_use == "MCS":
-
-        potential_path = os.path.join(base_input_data_path, f"PP_MCS_01HZ")
-        if verbose_logging:
-                logger_data_loading.debug("Trying MCS path: %s (exists: %s)", 
-                                     potential_path, os.path.isdir(potential_path))
-        if os.path.isdir(potential_path):
-            data_root_path = potential_path
-    elif group_to_use == "VS":
-
-        potential_path = os.path.join(base_input_data_path, "PP_VS_01HZ")
-        if verbose_logging:
-            logger_data_loading.debug("Trying VS path: %s (exists: %s)", 
-                                    potential_path, os.path.isdir(potential_path))
-        if os.path.isdir(potential_path):
-            data_root_path = potential_path
-    elif group_to_use == "DELIRIUM+":
-        potential_path = os.path.join(
-            base_input_data_path,
-            "PP_PATIENTS_DELIRIUM+_0.5"
-        )
-        if os.path.isdir(potential_path):
-            data_root_path = potential_path
-    elif group_to_use == "DELIRIUM-":
-        potential_path = os.path.join(
-            base_input_data_path,
-            "PP_PATIENTS_DELIRIUM-_0.5"
-        )
-        if os.path.isdir(potential_path):
-            data_root_path = potential_path
-    
-
-    if not data_root_path:
-        group_affiliation_lower = group_affiliation.lower()
-        if group_affiliation_lower == "controls_coma" or group_to_use == "CONTROLS_COMA":
-            potential_path = os.path.join(base_input_data_path, "PP_CONTROLS_COMA_01HZ")
-            if os.path.isdir(potential_path):
-                data_root_path = potential_path
 
     if not data_root_path or not os.path.isdir(data_root_path):
         logger_data_loading.error(
@@ -281,11 +390,10 @@ def load_epochs_data_for_decoding_delirium(
             subject_identifier, epochs_fif_filename, file_protocol_type
         )
     try:
-        # Suppress MNE's verbose logging
-        with mne.utils.use_log_level("WARNING"):
-            epochs_object = mne.read_epochs(
-                epochs_fif_filename, proj=False, verbose=False, preload=True
-            )
+        # Lecture mise en cache : le meme .fif etait relu jusqu'a 4 fois par
+        # sujet (detection de protocole + chargement, x2 appels amont).
+        epochs_object = _read_epochs_cached(epochs_fif_filename,
+                                            verbose_logging)
         if epochs_object and verbose_logging:
             logger_data_loading.info(
                 "Event IDs available for %s:", subject_identifier)
@@ -768,71 +876,32 @@ def load_epochs_data_auto_protocol(
             - Dictionary of extracted data
             - Detected protocol type
     """
-    # First, load with delirium function to detect protocol and get file info
-    epochs_temp, _ = load_epochs_data_for_decoding_delirium(
-        subject_identifier=subject_identifier,
-        group_affiliation=group_affiliation,
-        base_input_data_path=base_input_data_path,
-        conditions_to_load={'temp': 'AP'},  # Minimal load for detection
-        verbose_logging=False
-    )
-
-    # Get file protocol hint from the temporary load (context)
-    # We'll need to detect this from the file path structure
-    data_root_path = None
+    # Resolution du dossier de donnees (source unique de verite, cf.
+    # resolve_group_directory) puis indice de protocole donne par le nom et
+    # l'emplacement du fichier.
     file_protocol_hint = None
-
-    # Reconstruct the data path to get file protocol hint
-    # First, try to find the subject in ALL_SUBJECTS_GROUPS to get the exact group name
-    detected_group = next(
-        (grp for grp, s_list in ALL_SUBJECTS_GROUPS.items()
-         if subject_identifier in s_list), None,
+    data_root_path, _group_to_use = resolve_group_directory(
+        base_input_data_path, group_affiliation, subject_identifier,
+        verbose_logging
     )
-    
-    # Use detected group or provided group_affiliation
-    group_to_use = detected_group if detected_group else group_affiliation.upper()
-    
-    if group_to_use == "CONTROLS_DELIRIUM":
-        data_root_path = os.path.join(base_input_data_path, "PP_CONTROLS_0.5")
-    elif group_to_use == "COMA":
-     
-        potential_path = os.path.join(base_input_data_path, "PP_COMA_01HZ")
-        if os.path.isdir(potential_path):
-            data_root_path = potential_path
-    elif group_to_use == "MCS":
-        
-        potential_path = os.path.join(base_input_data_path, f"PP_MCS_01HZ")
-        if verbose_logging:
-                logger_data_loading.debug("Trying MCS path: %s (exists: %s)", 
-                                     potential_path, os.path.isdir(potential_path))
-        if os.path.isdir(potential_path):
-            data_root_path = potential_path
-    elif group_to_use == "VS":
-        
-        potential_path = os.path.join(base_input_data_path, "PP_VS_01HZ")
-        if os.path.isdir(potential_path):
-            data_root_path = potential_path
-    elif group_to_use == "DELIRIUM+":
-        data_root_path = os.path.join(
-            base_input_data_path,
-            "PP_PATIENTS_DELIRIUM+_0.5"
-        )
-    elif group_to_use == "DELIRIUM-":
-        data_root_path = os.path.join(
-            base_input_data_path,
-            "PP_PATIENTS_DELIRIUM-_0.5"
-        )
-    
 
-    if not data_root_path or not os.path.isdir(data_root_path):
-        group_affiliation_lower = group_affiliation.lower()
-        if group_affiliation_lower == "controls_coma" or group_to_use == "CONTROLS_COMA":
-            data_root_path = os.path.join(base_input_data_path, "PP_CONTROLS_COMA_01HZ")
-
+    epochs_temp = None
     if data_root_path and os.path.isdir(data_root_path):
-        _, file_protocol_hint = find_epochs_file_with_protocol_detection(
-            data_root_path, subject_identifier, verbose_logging=False
+        epochs_fif_filename, file_protocol_hint = (
+            find_epochs_file_with_protocol_detection(
+                data_root_path, subject_identifier, verbose_logging=False
+            )
         )
+        if epochs_fif_filename:
+            try:
+                # Passe par le cache : la lecture faite ici est reutilisee par
+                # le chargement reel ci-dessous, sans relire le fichier.
+                epochs_temp = _read_epochs_cached(epochs_fif_filename,
+                                                  verbose_logging)
+            except (FileNotFoundError, IOError, ValueError, RuntimeError) as e:
+                logger_data_loading.error(
+                    "Lecture impossible de '%s' pour la detection de "
+                    "protocole (%s).", epochs_fif_filename, e)
 
     # Detect protocol type with file hint
     protocol_type = detect_protocol_type(epochs_temp, file_protocol_hint)

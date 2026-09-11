@@ -60,25 +60,28 @@ from config.decoding_config import (
 )
 
 LOG_DIR = './logs_run_single_subject_lg'
-os.makedirs(LOG_DIR, exist_ok=True)
-LOG_FILENAME = os.path.join(
-    LOG_DIR,
-    datetime.now().strftime('log_run_single_subject_lg_%Y-%m-%d_%H%M%S.log')
-)
 
 
-for handler in logging.getLogger().handlers[:]:
-    logging.getLogger().removeHandler(handler)
+def setup_run_logging(log_dir=LOG_DIR, level=logging.INFO):
+    """Configure le logging fichier + console pour une execution en script.
 
-logging.basicConfig(
-    level=logging.INFO,
-    format=('%(asctime)s - %(levelname)s - %(name)s - '
-            '[%(funcName)s:%(lineno)d] - %(message)s'),
-    handlers=[
-        logging.FileHandler(LOG_FILENAME),
-        logging.StreamHandler(sys.stdout)
-    ]
-)
+    Volontairement NON appelee a l'import : ce module est importe par
+    d'autres scripts et par les lanceurs submitit. Reconfigurer le
+    logging racine au moment de l'import ecrasait la configuration de
+    l'appelant et creait un dossier de logs dans le repertoire courant.
+    """
+    os.makedirs(log_dir, exist_ok=True)
+    log_filename = os.path.join(
+        log_dir, datetime.now().strftime('log_run_single_subject_lg_%Y-%m-%d_%H%M%S.log'))
+    logging.basicConfig(
+        level=level,
+        format=('%(asctime)s - %(levelname)s - %(name)s - '
+                '[%(funcName)s:%(lineno)d] - %(message)s'),
+        handlers=[logging.FileHandler(log_filename),
+                  logging.StreamHandler(sys.stdout)],
+        force=True,
+    )
+    return log_filename
 logger = logging.getLogger(__name__)
 
 
@@ -869,6 +872,7 @@ def execute_single_subject_lg_decoding(
 
 
 if __name__ == "__main__":
+    setup_run_logging()
     cli_parser = argparse.ArgumentParser(
         description="EEG Single Subject LG Decoding Analysis Script",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)

@@ -62,6 +62,28 @@ SUPPORTED_CLASSIFIER_TYPES = {
     "rf": "Random Forest"
 }
 
+# === CLASS BALANCING ===
+# Un SEUL mecanisme de rebalancement doit etre actif : cumuler class_weight et
+# sample_weight revient a appliquer la correction deux fois (scikit-learn
+# multiplie les deux facteurs).
+#   "class_weight"  : class_weight="balanced" sur le classifieur (RECOMMANDE).
+#                     Seule strategie applicable a l'identique au decodage
+#                     temporel (SlidingEstimator / GeneralizingEstimator, qui
+#                     n'acceptent pas de sample_weight par fold) et au decodage
+#                     global -> les deux AUC restent comparables.
+#   "sample_weight" : poids equilibres recalcules par fold, passes a fit().
+#                     Ne s'applique qu'au decodage global.
+#   "none"          : aucun rebalancement.
+CLASS_BALANCING_STRATEGY = "class_weight"
+
+# === AGGREGATION DES REPETITIONS DE CV ===
+# RepeatedStratifiedKFold(n_splits=k, n_repeats=r) produit k*r folds, mais
+# chaque essai est teste r fois : les folds ne sont PAS independants.
+# Si True, les scores sont moyennes sur les r repetitions avant tout test
+# statistique intra-sujet (n effectif = k au lieu de k*r) et les probabilites
+# predites sont moyennees au lieu d'etre ecrasees.
+AGGREGATE_CV_REPEATS_BEFORE_STATS = True
+
 # === STATISTICAL TESTING PARAMETERS ===
 # For stats on CV folds (single subject)
 N_PERMUTATIONS_INTRA_SUBJECT = 1024
@@ -235,6 +257,30 @@ DATASET_CONFIGS = {
         }
     }
 }
+SUPPORTED_PROTOCOL_TYPES = ('delirium', 'battery', 'ppext3')
+
+
+def normalize_protocol_type(protocol_type):
+    """Normalise un nom de protocole ('Battery', 'PPEXT3', None...).
+
+    Les appelants transmettaient tantot la valeur brute renvoyee par la
+    detection, tantot une version minusculee : les comparaisons strictes
+    `protocol_type == 'battery'` retombaient alors silencieusement sur la
+    configuration 'delirium' (mauvaises familles AP, mauvais nombre de folds).
+
+    Returns:
+        str: 'delirium', 'battery' ou 'ppext3'.
+    """
+    if not protocol_type:
+        return 'delirium'
+    normalized = str(protocol_type).strip().lower()
+    if normalized in ('legacy', 'legacy_fallback', 'unknown'):
+        return 'delirium'
+    if normalized not in SUPPORTED_PROTOCOL_TYPES:
+        return 'delirium'
+    return normalized
+
+
 # Function to get protocol-specific configuration
 
 
@@ -252,7 +298,8 @@ def get_protocol_config(protocol_type):
         'battery': CONFIG_LOAD_BATTERY_PROTOCOL,
         'ppext3': CONFIG_LOAD_PPEXT3_PROTOCOL
     }
-    return config_map.get(protocol_type, CONFIG_LOAD_DELIRIUM_PROTOCOL)
+    return config_map.get(normalize_protocol_type(protocol_type),
+                          CONFIG_LOAD_DELIRIUM_PROTOCOL)
 
 # Protocol-specific AP families configuration
 
@@ -266,6 +313,7 @@ def get_protocol_ap_families(protocol_type):
     Returns:
         dict: Protocol-specific AP families configuration
     """
+    protocol_type = normalize_protocol_type(protocol_type)
     if protocol_type == 'battery':
         return {
             f"AP_FAMILY_{i}": [f"AP/{i}/Music/", f"AP/{i}/Conv/"]
@@ -290,6 +338,7 @@ def get_protocol_pp_comparison_events(protocol_type):
     Returns:
         list: List of PP event codes for specific comparisons
     """
+    protocol_type = normalize_protocol_type(protocol_type)
     if protocol_type == 'delirium':
         # Delirium protocol uses specific PP codes
         return PP_CODES_FOR_SPECIFIC_COMPARISON  # ["PP/10", "PP/20", "PP/30"]

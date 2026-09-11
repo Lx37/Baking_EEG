@@ -153,7 +153,7 @@ def main_submission_logic():
     # Configuration du job Slurm
     executor = submitit.AutoExecutor(folder=submitit_log_folder)
     executor.update_parameters(
-        timeout_min=12000 * 60,
+        timeout_min=int(os.environ.get('BAKING_EEG_TIMEOUT_MIN', 24 * 60)),  # etait 12000*60 min (~1370 ans)
         slurm_partition="CPU",
         slurm_mem="60G",
         slurm_cpus_per_task=40,

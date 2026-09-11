@@ -90,7 +90,7 @@ def main():
         executor = submitit.AutoExecutor(folder=job_folder)
         executor.update_parameters(
             name=f"decoding_LG_{group}_{subject}",
-            timeout_min=120000,
+            timeout_min=int(os.environ.get('BAKING_EEG_TIMEOUT_MIN', 24 * 60)),  # etait 120000 min (~83 jours)
             slurm_partition="CPU",
             slurm_mem="79G",
             slurm_cpus_per_task=slurm_cpus,

@@ -32,8 +32,9 @@ def configure_project_paths(current_user_login):
                 "Baking_EEG_data"),
         "adminlocal": ("C:\\Users\\adminlocal\\Desktop\\ConnectDoc\\"
                        "EEG_2025_CAP_FPerrin_Vera"),
-        "tom": "/Users/tom/Desktop/ENSC/Stage CAP/BakingEEG_data",
-        # Add other users and their paths here
+       # "tom": "/Users/tom/Desktop/ENSC/Stage CAP/BakingEEG_data",
+        "tombalay": "/Users/tombalay/Desktop/ENSC/Stage 2A CAP/resultats_publi_baking_and_code/Baking_EEG/data",
+  
     }
     base_input_data_path = user_input_data_paths.get(
         current_user_login,
@@ -50,13 +51,14 @@ def configure_project_paths(current_user_login):
         current_user_login, base_input_data_path
     )
 
-    output_version_folder_name = "V17"  # Versioning for results
+    output_version_folder_name = "V18"  # Versioning for results
     user_output_results_paths = {
         "tom.balay": (f"/home/tom.balay/results/"
                       f"Baking_EEG_results_{output_version_folder_name}"),
         "tom": (f"/Users/tom/Desktop/ENSC/Stage CAP/"
                 f"Baking_EEG_results_{output_version_folder_name}"),
-        # Add other users and their output paths here
+       "tombalay": (f"/Users/tombalay/Desktop/ENSC/Stage 2A CAP/resultats_publi_baking_and_code/Baking_EEG/Baking_EEG_results_{output_version_folder_name}"),
+       # Add other users and their output paths here
     }
     base_output_results_path = user_output_results_paths.get(
         current_user_login,

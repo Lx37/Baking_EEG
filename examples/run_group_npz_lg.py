@@ -27,7 +27,7 @@ baking_eeg_dir = os.path.join(current_dir, '..')
 if baking_eeg_dir not in sys.path:
     sys.path.insert(0, baking_eeg_dir)
 
-# Gestion robuste des dépendances optionnelles
+
 try:
     from utils.stats_utils import (
         perform_pointwise_fdr_correction_on_scores,
@@ -38,7 +38,7 @@ try:
 except ImportError:
     STATS_UTILS_AVAILABLE = False
     def perform_pointwise_fdr_correction_on_scores(*args, **kwargs):
-        # Fonction factice pour éviter un crash si le module est manquant
+
         return None, np.array([False]), np.array([1.0]), np.array([1.0])
 
 try:
@@ -50,7 +50,31 @@ except ImportError:
 warnings.filterwarnings('ignore', category=UserWarning)
 warnings.filterwarnings('ignore', category=RuntimeWarning)
 
-BASE_RESULTS_DIR = "/home/tom.balay/results/Baking_EEG_results_V17/intra_subject_lg_results"
+from utils.time_alignment import build_common_time_grid, resample_to_grid
+
+
+def get_default_results_dir():
+    """Racine des resultats individuels (plus de chemin macOS code en dur)."""
+    env_dir = os.environ.get("BAKING_EEG_RESULTS_DIR")
+    if env_dir:
+        return env_dir
+    try:
+        from getpass import getuser
+        from utils.utils import configure_project_paths
+        _, base_output = configure_project_paths(getuser())
+        return base_output
+    except Exception as exc:
+        logger.warning("configure_project_paths a echoue (%s) : "
+                       "utilisation du repertoire courant.", exc)
+        return os.getcwd()
+
+
+def get_default_output_dir():
+    """Dossier de sortie des figures de groupe LG."""
+    env_dir = os.environ.get("BAKING_EEG_GROUP_OUTPUT_DIR")
+    if env_dir:
+        return env_dir
+    return os.path.join(get_default_results_dir(), "group_analysis")
 
 # --- Constantes et Mappings ---
 GROUP_NAME_MAPPING = {
@@ -110,8 +134,10 @@ def find_npz_files(base_path):
         logger.warning("Aucun fichier de résultats NPZ trouvé.")
         return {}
     logger.info("%d fichiers de résultats potentiels trouvés.", len(all_files))
+
     folder_to_group = {
         'COMA_LG_COMA': 'COMA', 'CONTROLS_DELIRIUM_LG_CONTROLS': 'CONTROLS',
+        'CONTROLS_COMA_LG_CONTROLS': 'CONTROLS_COMA',
         'DELIRIUM-_LG_PATIENTS_DELIRIUM-': 'DELIRIUM-', 'DELIRIUM+_LG_PATIENTS_DELIRIUM+': 'DELIRIUM+',
         'MCS_LG_MCS': 'MCS', 'VS_LG_VS': 'VS',
     }
@@ -145,6 +171,7 @@ def load_npz_data(file_path):
                     result[f'{effect}_effect_scores'] = data[f'{prefix}_scores_1d_mean']
                     if f'{prefix}_tgm_mean' in data_keys: result[f'{effect}_effect_tgm'] = data[f'{prefix}_tgm_mean']
                     if f'{prefix}_mean_auc_global' in data_keys: result[f'{effect}_effect_auc_global'] = data[f'{prefix}_mean_auc_global']
+                    if f'{prefix}_cv_global_scores' in data_keys: result[f'{effect}_effect_cv_scores'] = data[f'{prefix}_cv_global_scores']
             if 'local_effect_scores' not in result and 'global_effect_scores' not in result: return None
             return result
     except Exception as e:
@@ -165,85 +192,166 @@ def filter_group_files_by_config(group_files, group_name):
 
 
 def analyze_group_data_lg(group_files, group_name):
+    """Agrege les resultats LG d'un groupe sur une grille temporelle commune.
+
+    Corrections par rapport aux versions <= 2026-01 :
+
+    1. Les sujets dont la grille temporelle differait apres rognage etaient
+       purement et simplement ecartes ("vecteur temporel different, Verifiez
+       les sfreq"). Ils sont maintenant reinterpoles sur une grille commune
+       (cf. utils.time_alignment), donc conserves.
+    2. `np.nan_to_num(..., nan=CHANCE_LEVEL)` remplacait les NaN par 0.5, ce
+       qui tire la moyenne de groupe vers le niveau de chance au lieu de
+       traiter la valeur comme manquante. Les NaN sont desormais propages et
+       ignores par les nanmean/nanstd.
+    3. `auc_global_values` et `cv_scores_list` n'etaient alimentees que
+       lorsque la cle existait, alors que `subject_ids` l'etait toujours :
+       les AUC finissaient attribuees au mauvais sujet. Les listes sont
+       maintenant strictement paralleles (np.nan / None si absent).
     """
-    Analyse les données d'un groupe en rognant chaque sujet à une fenêtre temporelle
-    commune de [-200, 800] ms pour standardiser l'analyse.
-    """
-    logger.info(f"Analyse LG du groupe {group_name} sur la fenêtre commune [{COMMON_T_MIN}, {COMMON_T_MAX}] ms.")
-    
-    group_data_list, subject_ids = [], []
-    processed_local_scores, processed_global_scores = [], []
-    processed_local_tgms, processed_global_tgms = [], []
-    local_auc_global_list, global_auc_global_list = [], []
-    
-    common_time_vector = None
+    logger.info(
+        "Analyse LG du groupe %s sur la fenetre commune [%s, %s] ms.",
+        group_name, COMMON_T_MIN, COMMON_T_MAX)
+
+    group_data_list, subject_ids, subject_times = [], [], []
+    raw = {
+        'local': {'scores': [], 'tgm': [], 'auc': [], 'cv': []},
+        'global': {'scores': [], 'tgm': [], 'auc': [], 'cv': []},
+    }
 
     for file_path in group_files:
         data = load_npz_data(file_path)
-        if data is None: continue
+        if data is None:
+            continue
 
         subject_id, raw_times = data['subject_id'], data['times']
         if raw_times is None or len(raw_times) < 2:
-            logger.warning(f"Sujet {subject_id} ignoré : données temporelles invalides.")
+            logger.warning(
+                "Sujet %s ignore : donnees temporelles invalides.", subject_id)
             continue
-            
-        times_ms = raw_times * 1000 if np.max(raw_times) < 100 else raw_times
-        common_indices = np.where((times_ms >= COMMON_T_MIN) & (times_ms <= COMMON_T_MAX))[0]
-        
-        if len(common_indices) == 0:
-            logger.warning(f"Sujet {subject_id} ignoré : aucune donnée dans la fenêtre commune [{COMMON_T_MIN}, {COMMON_T_MAX}] ms.")
+
+        times_ms = np.asarray(raw_times, dtype=float)
+        times_ms = times_ms * 1000 if np.max(times_ms) < 100 else times_ms
+        in_window = (times_ms >= COMMON_T_MIN) & (times_ms <= COMMON_T_MAX)
+        if not np.any(in_window):
+            logger.warning(
+                "Sujet %s ignore : aucune donnee dans la fenetre [%s, %s] ms.",
+                subject_id, COMMON_T_MIN, COMMON_T_MAX)
             continue
-            
-        cropped_times = times_ms[common_indices]
-        if common_time_vector is None:
-            common_time_vector = cropped_times
-            logger.info(f"Vecteur temporel commun défini avec {len(common_time_vector)} points de {cropped_times[0]:.1f} à {cropped_times[-1]:.1f} ms.")
-        elif not np.array_equal(common_time_vector, cropped_times):
-            logger.error(f"Erreur critique: Le sujet {subject_id} a un vecteur temporel différent après rognage. Vérifiez les sfreq.")
+
+        has_any_effect = False
+        for effect in ('local', 'global'):
+            scores = data.get(f'{effect}_effect_scores')
+            if scores is None:
+                raw[effect]['scores'].append(None)
+                raw[effect]['tgm'].append(None)
+                raw[effect]['auc'].append(np.nan)
+                raw[effect]['cv'].append(None)
+                continue
+            scores = np.asarray(scores, dtype=float)
+            if scores.shape[0] != times_ms.shape[0]:
+                logger.warning(
+                    "Sujet %s (%s) : %d scores pour %d points temporels, "
+                    "effet ignore.", subject_id, effect, scores.shape[0],
+                    times_ms.shape[0])
+                raw[effect]['scores'].append(None)
+                raw[effect]['tgm'].append(None)
+                raw[effect]['auc'].append(np.nan)
+                raw[effect]['cv'].append(None)
+                continue
+
+            has_any_effect = True
+            raw[effect]['scores'].append(scores)
+
+            tgm = data.get(f'{effect}_effect_tgm')
+            if tgm is not None:
+                tgm = np.asarray(tgm, dtype=float)
+                if tgm.ndim != 2 or tgm.shape[0] != times_ms.shape[0]:
+                    tgm = None
+            raw[effect]['tgm'].append(tgm)
+
+            auc = data.get(f'{effect}_effect_auc_global')
+            raw[effect]['auc'].append(float(auc) if auc is not None else np.nan)
+            raw[effect]['cv'].append(data.get(f'{effect}_effect_cv_scores'))
+
+        if not has_any_effect:
+            for effect in ('local', 'global'):
+                for key in ('scores', 'tgm', 'auc', 'cv'):
+                    raw[effect][key].pop()
             continue
 
         subject_ids.append(subject_id)
+        subject_times.append(times_ms)
         group_data_list.append(data)
 
-        for effect in ['local', 'global']:
-            scores_key, tgm_key, auc_key = f'{effect}_effect_scores', f'{effect}_effect_tgm', f'{effect}_effect_auc_global'
-            if scores_key in data and data[scores_key] is not None:
-                if len(data[scores_key]) >= np.max(common_indices) + 1:
-                    scores_list = processed_local_scores if effect == 'local' else processed_global_scores
-                    scores_list.append(np.nan_to_num(data[scores_key][common_indices], nan=CHANCE_LEVEL))
-                    if tgm_key in data and data[tgm_key] is not None:
-                        tgm_list = processed_local_tgms if effect == 'local' else processed_global_tgms
-                        tgm_list.append(data[tgm_key][np.ix_(common_indices, common_indices)])
-                    if auc_key in data:
-                        auc_list = local_auc_global_list if effect == 'local' else global_auc_global_list
-                        auc_list.append(data[auc_key])
-
     if not group_data_list:
-        logger.warning(f"Aucune donnée valide pour le groupe {group_name} après filtrage temporel.")
+        logger.warning(
+            "Aucune donnee valide pour le groupe %s apres filtrage temporel.",
+            group_name)
         return {}
 
-    result = {'group_name': group_name, 'n_subjects': len(subject_ids), 'subject_ids': subject_ids,
-              'times': common_time_vector, 'group_data': group_data_list}
+    # Grille commune bornee a la fenetre d'analyse LG.
+    clipped_times = []
+    for times_ms in subject_times:
+        in_window = (times_ms >= COMMON_T_MIN) & (times_ms <= COMMON_T_MAX)
+        clipped_times.append(times_ms[in_window])
+    common_time_vector = build_common_time_grid(clipped_times,
+                                                subject_labels=subject_ids)
+    if common_time_vector is None:
+        logger.warning(
+            "Grille temporelle commune impossible pour le groupe %s.",
+            group_name)
+        return {}
 
-    if processed_local_scores:
-        local_matrix = np.array(processed_local_scores)
-        result['local_effect'] = {'scores_matrix': local_matrix, 'group_mean': np.nanmean(local_matrix, axis=0),
-                                  'group_sem': np.nanstd(local_matrix, axis=0) / np.sqrt(local_matrix.shape[0]),
-                                  'auc_global_values': np.array(local_auc_global_list)}
-        if processed_local_tgms:
-            result['local_effect']['tgm_matrix'] = np.array(processed_local_tgms)
-            result['local_effect']['tgm_mean'] = np.nanmean(result['local_effect']['tgm_matrix'], axis=0)
+    result = {'group_name': group_name, 'n_subjects': len(subject_ids),
+              'subject_ids': subject_ids, 'times': common_time_vector,
+              'group_data': group_data_list}
 
-    if processed_global_scores:
-        global_matrix = np.array(processed_global_scores)
-        result['global_effect'] = {'scores_matrix': global_matrix, 'group_mean': np.nanmean(global_matrix, axis=0),
-                                   'group_sem': np.nanstd(global_matrix, axis=0) / np.sqrt(global_matrix.shape[0]),
-                                   'auc_global_values': np.array(global_auc_global_list)}
-        if processed_global_tgms:
-            result['global_effect']['tgm_matrix'] = np.array(processed_global_tgms)
-            result['global_effect']['tgm_mean'] = np.nanmean(result['global_effect']['tgm_matrix'], axis=0)
+    for effect in ('local', 'global'):
+        scores_aligned, tgms_aligned = [], []
+        aucs, cvs, kept_ids = [], [], []
+        for idx, subject_id in enumerate(subject_ids):
+            scores = raw[effect]['scores'][idx]
+            if scores is None:
+                continue
+            resampled = resample_to_grid(scores, subject_times[idx],
+                                         common_time_vector)
+            if resampled is None or np.all(np.isnan(resampled)):
+                continue
+            scores_aligned.append(resampled)
+            kept_ids.append(subject_id)
+            aucs.append(raw[effect]['auc'][idx])
+            cvs.append(raw[effect]['cv'][idx])
 
-    logger.info(f"Groupe {group_name} analysé - Local: {len(processed_local_scores)}, Global: {len(processed_global_scores)} sujets.")
+            tgm = raw[effect]['tgm'][idx]
+            if tgm is not None:
+                tgm_resampled = resample_to_grid(tgm, subject_times[idx],
+                                                 common_time_vector)
+                if tgm_resampled is not None:
+                    tgms_aligned.append(tgm_resampled)
+
+        if not scores_aligned:
+            continue
+
+        matrix = np.array(scores_aligned)
+        result[f'{effect}_effect'] = {
+            'scores_matrix': matrix,
+            'group_mean': np.nanmean(matrix, axis=0),
+            'group_sem': np.nanstd(matrix, axis=0) / np.sqrt(matrix.shape[0]),
+            'auc_global_values': np.array(aucs, dtype=float),
+            'cv_scores_list': cvs,
+            'subject_ids': kept_ids,
+        }
+        if tgms_aligned:
+            result[f'{effect}_effect']['tgm_matrix'] = np.array(tgms_aligned)
+            result[f'{effect}_effect']['tgm_mean'] = np.nanmean(
+                np.array(tgms_aligned), axis=0)
+
+    logger.info(
+        "Groupe %s analyse - Local: %d, Global: %d sujets.",
+        group_name,
+        result.get('local_effect', {}).get('scores_matrix', np.empty((0,))).shape[0],
+        result.get('global_effect', {}).get('scores_matrix', np.empty((0,))).shape[0])
     return result
 
 
@@ -346,7 +454,7 @@ def plot_all_groups_comparison(all_groups_data, save_dir, show_plots=True):
                     # Utiliser la fonction importée directement
                     _, clusters, cluster_p, _ = perform_cluster_permutation_test(
                         scores_matrix, 
-                        chance_level=CHANCE_LEVEL+0.0125, 
+                        chance_level=CHANCE_LEVEL, 
                         n_permutations=10000,
                         alternative_hypothesis="greater", 
                         n_jobs=-1
@@ -543,11 +651,8 @@ def add_significance_bars(ax, groups_data, stats_results, y_positions, bar_heigh
 def analyze_individual_significance_proportions(all_groups_data, save_dir, show_plots=True):
     """
     Analyse et visualise la significativité des scores AUC pour chaque sujet et chaque groupe.
-
-    Cette fonction génère deux types de graphiques pour les effets 'locaux' et 'globaux' :
-    1. Des graphiques en secteurs montrant la proportion de sujets avec un AUC supérieur au niveau de chance.
-    2. Des graphiques à barres pour chaque groupe, affichant le score AUC de chaque sujet
-       avec une ligne indiquant le niveau de chance pour identifier les sujets significatifs.
+    Utilise un test de Wilcoxon contre la chance (0.5) sur les scores de validation croisée si disponibles.
+    Sinon, utilise un seuil arbitraire (moins rigoureux).
 
     Args:
         all_groups_data (list): Une liste de dictionnaires, chaque dictionnaire contenant les données d'un groupe.
@@ -558,7 +663,10 @@ def analyze_individual_significance_proportions(all_groups_data, save_dir, show_
         os.makedirs(save_dir)
         logger.info(f"Répertoire créé : {save_dir}")
 
-    SIGNIFICANCE_THRESHOLD = CHANCE_LEVEL + 0.0125
+    # Critere UNIQUE de significativite : Wilcoxon unilateral des scores de
+    # validation croisee contre la chance, corrige par FDR au sein du groupe.
+    # Le repli "AUC > 0.5125" a ete supprime : il melangeait deux definitions
+    # de "significatif" dans une figure dont la legende n'en annoncait qu'une.
     for effect_type in ['local', 'global']:
         groups_analysis = []
         # --- Boucle pour générer les graphiques à barres individuels ---
@@ -567,24 +675,78 @@ def analyze_individual_significance_proportions(all_groups_data, save_dir, show_
             if effect_key not in group_data or 'auc_global_values' not in group_data[effect_key]:
                 continue
 
-            auc_values = group_data[effect_key]['auc_global_values']
-            valid_aucs = auc_values[~np.isnan(auc_values)]
+            auc_values = np.asarray(
+                group_data[effect_key]['auc_global_values'], dtype=float)
+            cv_scores_list = group_data[effect_key].get(
+                'cv_scores_list', [None] * len(auc_values))
+            effect_subject_ids = group_data[effect_key].get(
+                'subject_ids', group_data['subject_ids'])
+
+            # Filter out NaNs from auc_values but keep track of indices to match with cv_scores
+            valid_indices = ~np.isnan(auc_values)
+            valid_aucs = auc_values[valid_indices]
+            valid_cv_scores = [cv_scores_list[i] for i in range(len(auc_values)) if valid_indices[i]]
+
+            all_subject_ids = np.array(effect_subject_ids)
+            valid_subject_ids = all_subject_ids[valid_indices]
+
             if len(valid_aucs) == 0:
                 continue
 
+            # p-values brutes, puis correction FDR sur les sujets testables.
+            raw_pvals, testable_pos = [], []
+            for i, scores in enumerate(valid_cv_scores):
+                if scores is None or np.size(scores) < 2:
+                    continue
+                scores_arr = np.asarray(scores, dtype=float)
+                scores_arr = scores_arr[np.isfinite(scores_arr)]
+                if scores_arr.size < 2:
+                    continue
+                try:
+                    _, p = wilcoxon(scores_arr - CHANCE_LEVEL,
+                                    alternative='greater')
+                except ValueError:
+                    continue
+                raw_pvals.append(p)
+                testable_pos.append(i)
+
+            is_significant = np.zeros(len(valid_aucs), dtype=bool)
+            is_testable = np.zeros(len(valid_aucs), dtype=bool)
+            if raw_pvals:
+                rejected, _ = fdrcorrection(np.array(raw_pvals), alpha=0.05)
+                for pos, subj_pos in enumerate(testable_pos):
+                    is_significant[subj_pos] = bool(rejected[pos])
+                    is_testable[subj_pos] = True
+            n_undetermined = int(np.sum(~is_testable))
+            if n_undetermined:
+                logger.warning(
+                    "Groupe %s (%s) : %d sujet(s) sans scores de CV "
+                    "exploitables -> significativite indeterminee.",
+                    group_data['group_name'], effect_type, n_undetermined)
+
             # Préparation des données pour le graphique à barres
-            subject_ids = np.arange(len(valid_aucs))
-            colors = ['#4ecdc4' if x > SIGNIFICANCE_THRESHOLD else '#ff6b6b' for x in valid_aucs]
+            x_pos = np.arange(len(valid_aucs))
+            colors = ['#4ecdc4' if sig else ('#ff6b6b' if test else '#bbbbbb')
+                      for sig, test in zip(is_significant, is_testable)]
 
             # Création du graphique à barres pour le groupe actuel
             plt.figure(figsize=(12, 7))
-            plt.bar(subject_ids, valid_aucs, color=colors, label='Score AUC par sujet')
-            plt.axhline(y=SIGNIFICANCE_THRESHOLD, color='r', linestyle='--', label=f'Seuil de significativité ({SIGNIFICANCE_THRESHOLD:.4f})')
+            bars = plt.bar(x_pos, valid_aucs, color=colors, label='Score AUC par sujet')
+            
+            # Add stars for significant subjects
+            for i, (rect, sig) in enumerate(zip(bars, is_significant)):
+                if sig:
+                    height = rect.get_height()
+                    plt.text(rect.get_x() + rect.get_width()/2., height, '*',
+                             ha='center', va='bottom', color='black', fontsize=14, fontweight='bold')
+
+            plt.axhline(y=CHANCE_LEVEL, color='k', linestyle='--', alpha=0.5, label='Chance (0.5)')
 
             plt.xlabel('ID du Sujet')
             plt.ylabel('Valeur AUC')
+            plt.xticks(x_pos, valid_subject_ids, rotation=45, ha='right')
             group_name = GROUP_NAME_MAPPING.get(group_data['group_name'], group_data['group_name'])
-            plt.title(f'Scores AUC Individuels - {group_name} - Effet {effect_type.capitalize()}')
+            plt.title(f'Scores AUC Individuels - {group_name} - Effet {effect_type.capitalize()}\n(* = p < 0.05 vs chance)')
             plt.legend()
             plt.tight_layout()
 
@@ -604,7 +766,7 @@ def analyze_individual_significance_proportions(all_groups_data, save_dir, show_
                 plt.close()
 
             # Collecte des données pour le graphique en secteurs
-            significant_count = np.sum(valid_aucs > SIGNIFICANCE_THRESHOLD)
+            significant_count = np.sum(is_significant)
             groups_analysis.append({
                 'group_name': group_data['group_name'],
                 'n_subjects': len(valid_aucs),
@@ -627,11 +789,11 @@ def analyze_individual_significance_proportions(all_groups_data, save_dir, show_
         fig, axes = plt.subplots(1, len(ordered_analysis), figsize=(4 * len(ordered_analysis), 5), squeeze=False)
         for i, analysis in enumerate(ordered_analysis):
             sizes = [analysis['n_significant'], analysis['n_subjects'] - analysis['n_significant']]
-            labels = [f'> {CHANCE_LEVEL}', f'<= {CHANCE_LEVEL}']
+            labels = [f'Significatif\n(p<0.05)', f'Non Signif.']
             pie_colors = ['#4ecdc4', '#ff6b6b']
             axes[0, i].pie(sizes, labels=labels, autopct='%1.1f%%', colors=pie_colors, startangle=90)
             axes[0, i].set_title(f"{GROUP_NAME_MAPPING.get(analysis['group_name'], analysis['group_name'])}\n(n={analysis['n_subjects']})")
-        fig.suptitle(f'Proportion de Sujets Significatifs - Effet {effect_type.capitalize()}', fontsize=16)
+        fig.suptitle(f'Proportion de Sujets Significatifs (Wilcoxon vs Chance) - Effet {effect_type.capitalize()}', fontsize=16)
         plt.tight_layout(rect=[0, 0, 1, 0.95])
         
         if save_dir:
@@ -1189,12 +1351,29 @@ def display_subject_sampling_frequencies(all_groups_data):
     logger.info("="*80)
 
 def main():
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    results_dir = f"/home/tom.balay/results/LG_analysis_{timestamp}"
-    os.makedirs(results_dir, exist_ok=True)
-    logger.info(f"Les résultats seront sauvegardés dans : {results_dir}")
+    import argparse
+    parser = argparse.ArgumentParser(
+        description="Analyse de groupe LG a partir des NPZ individuels.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument(
+        "--results-dir", type=str, default=None,
+        help="Racine contenant les resultats individuels LG "
+             "(defaut: BAKING_EEG_RESULTS_DIR, sinon configure_project_paths).")
+    parser.add_argument(
+        "--output-dir", type=str, default=None,
+        help="Dossier de sortie des figures "
+             "(defaut: <results-dir>/group_analysis/LG_analysis_<horodatage>).")
+    args = parser.parse_args()
 
-    organized_data = find_npz_files(BASE_RESULTS_DIR)
+    base_results_dir = args.results_dir or get_default_results_dir()
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    results_dir = args.output_dir or os.path.join(
+        get_default_output_dir(), f"LG_analysis_{timestamp}")
+    os.makedirs(results_dir, exist_ok=True)
+    logger.info("Racine des résultats individuels : %s", base_results_dir)
+    logger.info("Les résultats seront sauvegardés dans : %s", results_dir)
+
+    organized_data = find_npz_files(base_results_dir)
     if not organized_data:
         logger.error("Aucun fichier NPZ trouvé. Arrêt.")
         return

@@ -15,7 +15,8 @@ from config.decoding_config import (
     COMPUTE_TGM_FOR_MAIN_COMPARISON, COMPUTE_TGM_FOR_SPECIFIC_COMPARISONS,
     COMPUTE_TGM_FOR_INTER_FAMILY_COMPARISONS,
     # Protocol-specific functions
-    get_protocol_config,get_protocol_ap_families, get_protocol_pp_comparison_events
+    get_protocol_config, get_protocol_ap_families,
+    get_protocol_pp_comparison_events, normalize_protocol_type
 )
 from config.config import ALL_SUBJECTS_GROUPS
 from utils import stats_utils as bEEG_stats
@@ -65,27 +66,36 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 
 # --- Logging Configuration ---
-LOG_DIR_RUN_ONE = './logs_run_single_subject'  
-os.makedirs(LOG_DIR_RUN_ONE, exist_ok=True)
-LOG_FILENAME_RUN_ONE = os.path.join(
-    LOG_DIR_RUN_ONE,
-    datetime.now().strftime('log_run_single_subject_%Y-%m-%d_%H%M%S.log')
-)
+LOG_DIR_RUN_ONE = './logs_run_single_subject'
 
-
-for handler in logging.getLogger().handlers[:]:
-    logging.getLogger().removeHandler(handler)
-
-logging.basicConfig(
-    level=logging.INFO,
-    format=('%(asctime)s - %(levelname)s - %(name)s - '
-            '[%(funcName)s:%(lineno)d] - %(message)s'),
-    handlers=[
-        logging.FileHandler(LOG_FILENAME_RUN_ONE),
-        logging.StreamHandler(sys.stdout)
-    ]
-)
 logger_run_one = logging.getLogger(__name__)
+
+
+def setup_run_logging(log_dir=LOG_DIR_RUN_ONE, level=logging.INFO):
+    """Configure le logging fichier + console pour une execution en script.
+
+    Volontairement NON appelee a l'import : ce module est importe par les
+    lanceurs submitit et par run_decoding_one_group_pp. Reconfigurer le
+    logging racine (et supprimer tous ses handlers) au moment de l'import
+    ecrasait la configuration de l'appelant et creait un dossier de logs dans
+    le repertoire courant, quel qu'il soit.
+    """
+    os.makedirs(log_dir, exist_ok=True)
+    log_filename = os.path.join(
+        log_dir,
+        datetime.now().strftime('log_run_single_subject_%Y-%m-%d_%H%M%S.log')
+    )
+    logging.basicConfig(
+        level=level,
+        format=('%(asctime)s - %(levelname)s - %(name)s - '
+                '[%(funcName)s:%(lineno)d] - %(message)s'),
+        handlers=[
+            logging.FileHandler(log_filename),
+            logging.StreamHandler(sys.stdout)
+        ],
+        force=True,
+    )
+    return log_filename
 
 logging.getLogger("Baking_EEG.decoding_core").setLevel(logging.INFO)
 logging.getLogger("Baking_EEG.utils.data_loading_utils").setLevel(logging.INFO)
@@ -101,7 +111,7 @@ def get_protocol_cv_folds(detected_protocol):
     Returns:
         int: Number of CV folds to use
     """
-    if detected_protocol and detected_protocol.lower() == 'delirium':
+    if normalize_protocol_type(detected_protocol) == 'delirium':
         return 10  # 10 folds for Delirium protocol
     else:
         return 5   # 5 folds for PPext3, Battery and other protocols
@@ -233,28 +243,31 @@ def execute_single_subject_decoding(
         )
 
       
-        basic_loading_conditions = {"XPP_ALL": "PP/", "XAP_ALL": "AP/"}
-        epochs_object, returned_data_dict_basic, detected_protocol = load_epochs_data_auto_protocol(
+        # Une seule passe de detection : load_epochs_data_auto_protocol
+        # detecte deja le protocole et renvoie les donnees. Le double appel
+        # precedent (detection puis chargement) relisait le fichier .fif deux
+        # fois de plus par sujet, sans rien apporter.
+        _, _, detected_protocol_raw = load_epochs_data_auto_protocol(
             subject_identifier, group_affiliation, base_input_data_path,
-            basic_loading_conditions, enable_verbose_logging
+            {"XPP_ALL": "PP/", "XAP_ALL": "AP/"}, enable_verbose_logging
         )
 
-  
+        # Normalisation UNIQUE de la casse du protocole : les getters
+        # get_protocol_* comparaient en strict, si bien qu'un 'Battery' ou un
+        # 'PPext3' retombait sur la configuration delirium.
+        detected_protocol = normalize_protocol_type(detected_protocol_raw)
         logger_run_one.info(
-            "Detected protocol '%s' for subject %s",
-            detected_protocol, subject_identifier
+            "Protocole detecte '%s' (brut: '%s') pour le sujet %s",
+            detected_protocol, detected_protocol_raw, subject_identifier
         )
 
-      
-        actual_loading_conditions = get_protocol_config(detected_protocol.lower() if detected_protocol else 'delirium')
-        
-       
-        epochs_object, returned_data_dict, detected_protocol = load_epochs_data_auto_protocol(
+        actual_loading_conditions = get_protocol_config(detected_protocol)
+
+        epochs_object, returned_data_dict, _ = load_epochs_data_auto_protocol(
             subject_identifier, group_affiliation, base_input_data_path,
             actual_loading_conditions, enable_verbose_logging
         )
-        
-       
+
         protocol_pp_events = get_protocol_pp_comparison_events(detected_protocol)
         
         logger_run_one.info(
@@ -860,6 +873,8 @@ if __name__ == "__main__":
 
     command_line_args = cli_parser.parse_args()
 
+    # Le logging n'est configure QU'EN mode script (plus a l'import du module).
+    setup_run_logging()
 
     n_jobs_arg_str = command_line_args.n_jobs_override if command_line_args.n_jobs_override is not None else N_JOBS_PROCESSING
     try:
