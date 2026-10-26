@@ -37,7 +37,8 @@ LOG_DIR_SUBMITIT_GROUPS = './logs_submitit_groups_LG'
 os.makedirs(LOG_DIR_SUBMITIT_GROUPS, exist_ok=True)
 
 # Configuration de l'environnement cluster
-PATH_TO_VENV_ACTIVATE_ON_CLUSTER = "/home/tom.balay/.venvs/py3.11_cluster/bin/activate"
+PATH_TO_VENV_ACTIVATE_ON_CLUSTER = os.environ.get(
+    "BAKING_EEG_VENV_ACTIVATE", "/home/tom.balay/.venvs/py3.11_cluster/bin/activate")
 PROJECT_ROOT_ON_CLUSTER_FOR_JOB = PROJECT_ROOT
 
 SETUP_COMMANDS_FOR_SLURM_JOB_CPU = f"""
@@ -96,7 +97,7 @@ def group_decoding_task_wrapper(**kwargs):
     signal.signal(signal.SIGTERM, signal_handler)
     signal.signal(signal.SIGINT, signal_handler)
 
-    project_root = "/home/tom.balay/Baking_EEG" 
+    project_root = os.environ.get("BAKING_EEG_PROJECT_ROOT", "/home/tom.balay/Baking_EEG")
     
     if project_root not in sys.path:
         sys.path.insert(0, project_root)
@@ -128,7 +129,7 @@ def main():
     # Slurm rejetait la soumission ou laissait le job en PD.
     SLURM_TIMEOUT_MINUTES = int(os.environ.get('BAKING_EEG_TIMEOUT_MIN', 24 * 60))
     SLURM_PARTITION = "CPU"
-    SLURM_ACCOUNT = "tom.balay"
+    SLURM_ACCOUNT = os.environ.get("BAKING_EEG_SLURM_ACCOUNT", "tom.balay")
 
     logger.info(f"Configuration Slurm:")
     logger.info(f"  CPUs par groupe: {SLURM_CPUS_PER_GROUP_JOB}")
@@ -166,7 +167,7 @@ def main():
         executor = submitit.AutoExecutor(folder=log_folder_group)
         executor.update_parameters(
             timeout_min=SLURM_TIMEOUT_MINUTES,
-            setup=SETUP_COMMANDS_FOR_SLURM_JOB_CPU,
+            slurm_setup=SETUP_COMMANDS_FOR_SLURM_JOB_CPU.splitlines(),
             slurm_partition=SLURM_PARTITION,
             slurm_mem=SLURM_MEMORY_PER_JOB,
             slurm_cpus_per_task=SLURM_CPUS_PER_GROUP_JOB,

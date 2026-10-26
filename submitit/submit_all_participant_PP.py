@@ -156,8 +156,36 @@ def execute_single_subject_decoding_wrapper(subject_id, group_name, **kwargs):
     })
     return execute_single_subject_decoding(**subject_kwargs)
 
-def main_submission_logic():
+def select_subjects(groups=None, subjects=None):
+    """Sous-ensemble de ALL_SUBJECTS_GROUPS a soumettre (tout par defaut)."""
+    unknown_groups = sorted(set(groups or []) - set(ALL_SUBJECTS_GROUPS))
+    known_ids = {s for ids in ALL_SUBJECTS_GROUPS.values() for s in ids}
+    unknown_subjects = sorted(set(subjects or []) - known_ids)
+    if unknown_groups or unknown_subjects:
+        logger.critical(f"Inconnus dans ALL_SUBJECTS_GROUPS - groupes: {unknown_groups}, "
+                        f"sujets: {unknown_subjects}. Arrêt.")
+        sys.exit(1)
+    selected = {}
+    for group_name, ids in ALL_SUBJECTS_GROUPS.items():
+        if groups and group_name not in groups:
+            continue
+        keep = [s for s in ids if not subjects or s in subjects]
+        if keep:
+            selected[group_name] = keep
+    return selected
+
+
+def main_submission_logic(groups=None, subjects=None, dry_run=False):
     logger.info("--- Début de la logique de soumission principale (main_submission_logic) ---")
+
+    selected = select_subjects(groups, subjects)
+    total_selected = sum(len(ids) for ids in selected.values())
+    for group_name, ids in selected.items():
+        logger.info(f"  {group_name} ({len(ids)}): {', '.join(ids)}")
+    logger.info(f"Sujets sélectionnés : {total_selected}")
+    if dry_run:
+        logger.info("[dry-run] Aucun job soumis.")
+        return
 
     try:
         user_for_paths = getpass.getuser()
@@ -181,7 +209,7 @@ def main_submission_logic():
     # Slurm rejetait la soumission ou laissait le job en PD.
     TIMEOUT_MINUTES = int(os.environ.get('BAKING_EEG_TIMEOUT_MIN', 24 * 60))
     SLURM_PARTITION = "CPU"
-    SLURM_ACCOUNT = "tom.balay"
+    SLURM_ACCOUNT = os.environ.get("BAKING_EEG_SLURM_ACCOUNT", "tom.balay")
 
     logger.info(
         f"Ressources Slurm pour chaque job: CPUs={N_CPUS_FOR_JOB}, Mémoire={MEMORY_FOR_JOB}, "
@@ -200,7 +228,7 @@ def main_submission_logic():
     executor = submitit.AutoExecutor(folder=submitit_job_log_folder)
     executor.update_parameters(
         timeout_min=TIMEOUT_MINUTES,
-        setup=SETUP_COMMANDS_FOR_SLURM_JOB_CPU.splitlines(),
+        slurm_setup=SETUP_COMMANDS_FOR_SLURM_JOB_CPU.splitlines(),
         slurm_partition=SLURM_PARTITION,
         slurm_mem=MEMORY_FOR_JOB,
         slurm_cpus_per_task=N_CPUS_FOR_JOB,
@@ -208,14 +236,11 @@ def main_submission_logic():
     )
 
     submitted_jobs = []
-    total_subjects = sum(len(subjects) for subjects in ALL_SUBJECTS_GROUPS.values())
+    total_subjects = total_selected
     processed_count = 0
 
 
-    for group_name, subjects_in_group in ALL_SUBJECTS_GROUPS.items():
-        if not subjects_in_group:
-            logger.info(f"Groupe '{group_name}' est vide, ignoré.")
-            continue
+    for group_name, subjects_in_group in selected.items():
         for subject_id in subjects_in_group:
             processed_count += 1
             logger.info(f"--- Préparation du job sujet {processed_count}/{total_subjects}: Groupe={group_name}, Sujet={subject_id} ---")
@@ -280,3 +305,19 @@ def main_submission_logic():
         failed_subjects = [f"{g}/{s}" for _, g, s in failed_jobs]
         logger.warning(f"Liste des sujets dont le job a échoué: {failed_subjects}")
     logger.info("="*80 + "\n")
+
+
+if __name__ == "__main__":
+    # Ce bloc manquait depuis la version GitHub de juillet 2025 : lancé en
+    # script, le fichier définissait ses fonctions et ne soumettait rien.
+    import argparse
+    parser = argparse.ArgumentParser(
+        description="Soumet un job Slurm par sujet pour le décodage PP/AP.")
+    parser.add_argument("--groups", nargs="+",
+                        help="Groupes à traiter (défaut : tous).")
+    parser.add_argument("--subjects", nargs="+",
+                        help="Sujets à traiter (défaut : tous ceux des groupes retenus).")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="Affiche la sélection sans rien soumettre.")
+    cli_args = parser.parse_args()
+    main_submission_logic(cli_args.groups, cli_args.subjects, cli_args.dry_run)

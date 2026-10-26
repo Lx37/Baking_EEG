@@ -51,6 +51,10 @@ warnings.filterwarnings('ignore', category=UserWarning)
 warnings.filterwarnings('ignore', category=RuntimeWarning)
 
 from utils.time_alignment import build_common_time_grid, resample_to_grid
+from utils.permutation_stats import (
+    load_permutation_results, attach_permutation_results,
+    proportion_statistics, proportion_report, benjamini_hochberg, stars,
+)
 
 
 def get_default_results_dir():
@@ -127,36 +131,43 @@ def extract_subject_id_from_path(file_path):
     return os.path.basename(os.path.dirname(file_path))
 
 def find_npz_files(base_path):
+    """Range les NPZ LG par groupe, d'apres l'identifiant sujet.
+
+    Le groupe est lu dans ALL_SUBJECTS_GROUPS, comme pour l'analyse PP.
+    L'ancienne version cherchait des dossiers nommes '<GROUPE>_LG_<...>'
+    (ex. 'COMA_LG_COMA') : le code de decodage actuel ecrit dans
+    intra_subject_lg_results/<SUJET>/..., donc plus aucun fichier n'etait
+    reconnu, et un groupe absent de la table (CONTROLS) etait ignore en silence.
+    Quand un sujet a ete relance, seul le NPZ le plus recent est garde.
+    """
     logger.info("Recherche des fichiers NPZ dans: %s", base_path)
-    organized_data = {}
-    all_files = glob.glob(os.path.join(base_path, '**', '*decoding_results_full.npz'), recursive=True)
+    # Uniquement les NPZ LG : '*decoding_results_full.npz' ramassait aussi les
+    # NPZ PP, et quand le PP d'un sujet etait plus recent, son NPZ LG etait
+    # ecarte comme 'ancienne version' -> sujet perdu.
+    all_files = glob.glob(os.path.join(base_path, '**', 'lg_decoding_results_full.npz'), recursive=True)
     if not all_files:
         logger.warning("Aucun fichier de résultats NPZ trouvé.")
         return {}
     logger.info("%d fichiers de résultats potentiels trouvés.", len(all_files))
 
-    folder_to_group = {
-        'COMA_LG_COMA': 'COMA', 'CONTROLS_DELIRIUM_LG_CONTROLS': 'CONTROLS',
-        'CONTROLS_COMA_LG_CONTROLS': 'CONTROLS_COMA',
-        'DELIRIUM-_LG_PATIENTS_DELIRIUM-': 'DELIRIUM-', 'DELIRIUM+_LG_PATIENTS_DELIRIUM+': 'DELIRIUM+',
-        'MCS_LG_MCS': 'MCS', 'VS_LG_VS': 'VS',
-    }
-    for file_path in all_files:
-        try:
-            path_parts = file_path.split(os.sep)
-            group_name, protocol_name = None, None
-            for i in range(len(path_parts) - 1, 0, -1):
-                folder = path_parts[i]
-                if folder in folder_to_group:
-                    group_name, protocol_name = folder_to_group[folder], folder
-                    break
-            if not group_name: continue
-            if protocol_name not in organized_data: organized_data[protocol_name] = {}
-            if group_name not in organized_data[protocol_name]: organized_data[protocol_name][group_name] = []
-            organized_data[protocol_name][group_name].append(file_path)
-        except Exception as e:
-            logger.warning(f"Erreur lors du traitement du chemin {file_path}: {e}")
-    return organized_data
+    subject_to_group = {s: g for g, ids in ALL_SUBJECTS_GROUPS.items() for s in ids}
+    organized = {}
+    seen = set()
+    for file_path in sorted(all_files, key=os.path.getmtime, reverse=True):
+        parts = file_path.split(os.sep)
+        subject_id = next((p for p in reversed(parts) if p in subject_to_group), None)
+        subject_id = subject_id or extract_subject_id_from_path(file_path)
+        group_name = subject_to_group.get(subject_id)
+        if group_name is None:
+            logger.warning(f"Sujet '{subject_id}' absent de ALL_SUBJECTS_GROUPS, ignoré : {file_path}")
+            continue
+        if subject_id in seen:
+            logger.info(f"Ancienne version ignorée pour {subject_id} : {file_path}")
+            continue
+        seen.add(subject_id)
+        organized.setdefault(group_name, []).append(file_path)
+    logger.info("Sujets retenus par groupe : %s", {g: len(f) for g, f in organized.items()})
+    return {'LG': organized} if organized else {}
 
 def load_npz_data(file_path):
     try:
@@ -457,7 +468,8 @@ def plot_all_groups_comparison(all_groups_data, save_dir, show_plots=True):
                         chance_level=CHANCE_LEVEL, 
                         n_permutations=10000,
                         alternative_hypothesis="greater", 
-                        n_jobs=-1
+                        n_jobs=-1,
+                        random_seed=42
                     )
                     # Calculer la position verticale de la barre pour ce groupe
                     y_top = SIGNIFICANCE_AREA_TOP - (group_idx * (BAR_HEIGHT + BAR_GAP))
@@ -573,7 +585,7 @@ def plot_group_tgm_individual(all_groups_data, save_dir, show_plots=True):
             im = ax.imshow(tgm_mean, origin='lower', aspect='auto', extent=[times_ms[0], times_ms[-1], times_ms[0], times_ms[-1]], vmin=0.4, vmax=0.62, cmap='RdYlBu_r')
             
             if tgm_matrix is not None and STATS_UTILS_AVAILABLE:
-                _, significant_mask, _, _ = perform_pointwise_fdr_correction_on_scores(tgm_matrix, chance_level=CHANCE_LEVEL, alpha_significance_level=FDR_ALPHA,alternative_hypothesis="two-sided")
+                _, significant_mask, _, _ = perform_pointwise_fdr_correction_on_scores(tgm_matrix, chance_level=CHANCE_LEVEL, alpha_significance_level=FDR_ALPHA,alternative_hypothesis="greater")
                 if np.any(significant_mask): ax.contour(times_ms, times_ms, significant_mask, levels=[0.5], colors='black', linewidths=2)
 
             ax.plot([times_ms[0], times_ms[-1]], [times_ms[0], times_ms[-1]], 'k--', alpha=0.5)
@@ -590,226 +602,104 @@ def plot_group_tgm_individual(all_groups_data, save_dir, show_plots=True):
             if show_plots: plt.show()
             else: plt.close()
 
-def add_significance_bars(ax, groups_data, stats_results, y_positions, bar_height=0.02):
-    """
-    Ajouter des barres de significativité sur un graphique.
-    
-    Args:
-        ax: Axe matplotlib
-        groups_data: Données des groupes
-        stats_results: Résultats des tests statistiques
-        y_positions: Positions y pour les barres
-        bar_height: Hauteur des barres
-    """
-    if not stats_results.get('pairwise_results'):
-        return
-    
-    group_names = stats_results['groups_names']
-    pairwise_results = stats_results['pairwise_results']
-    
-    # Trouver les positions x des groupes
-    x_positions = {group_name: i for i, group_name in enumerate(group_names)}
-    
-    bar_y = max(y_positions) + bar_height
-    
-    for comparison_key, result in pairwise_results.items():
-        # Utiliser la p-value FDR corrigée si disponible, sinon la p-value brute
-        p_value = result.get('mannwhitney_pvalue_fdr', result.get('mannwhitney_pvalue', 1.0))
-        
-        if np.isnan(p_value):
-            continue
-        
-        # Déterminer le niveau de significativité
-        if p_value < 0.001:
-            significance = "***"
-        elif p_value < 0.01:
-            significance = "**"
-        elif p_value < 0.05:
-            significance = "*"
-        else:
-            continue  # Ne pas afficher de barre si non significatif
-        
-        # Extraire les noms des groupes
-        group1, group2 = comparison_key.split('_vs_')
-        
-        if group1 in x_positions and group2 in x_positions:
-            x1, x2 = x_positions[group1], x_positions[group2]
-            
-            # Dessiner la barre horizontale
-            ax.plot([x1, x2], [bar_y, bar_y], 'k-', linewidth=1)
-            # Dessiner les barres verticales
-            ax.plot([x1, x1], [bar_y - bar_height/2, bar_y + bar_height/2], 'k-', linewidth=1)
-            ax.plot([x2, x2], [bar_y - bar_height/2, bar_y + bar_height/2], 'k-', linewidth=1)
-            
-            # Ajouter le texte de significativité
-            ax.text((x1 + x2) / 2, bar_y + bar_height/2, significance, 
-                   ha='center', va='bottom', fontsize=10, fontweight='bold')
-            
-            bar_y += bar_height * 3  # Espacement entre les barres
-
-
 def analyze_individual_significance_proportions(all_groups_data, save_dir, show_plots=True):
-    """
-    Analyse et visualise la significativité des scores AUC pour chaque sujet et chaque groupe.
-    Utilise un test de Wilcoxon contre la chance (0.5) sur les scores de validation croisée si disponibles.
-    Sinon, utilise un seuil arbitraire (moins rigoureux).
+    """Significativite individuelle et proportion de sujets significatifs.
 
-    Args:
-        all_groups_data (list): Une liste de dictionnaires, chaque dictionnaire contenant les données d'un groupe.
-        save_dir (str): Le répertoire où sauvegarder les graphiques générés.
-        show_plots (bool): Si True, affiche les graphiques.
+    Test de permutation des labels (examples/run_permutation_tests.py), BH sur
+    tous les sujets du contraste, IC 95 % de Clopper-Pearson et tests exacts de
+    Fisher entre groupes (utils/permutation_stats.py). Remplace le Wilcoxon sur
+    les AUC des plis, non valide : les plis partagent leurs essais
+    d'entrainement (Stelzer et al. 2013 ; Noirhomme et al. 2014).
     """
-    if save_dir and not os.path.exists(save_dir):
-        os.makedirs(save_dir)
-        logger.info(f"Répertoire créé : {save_dir}")
+    if save_dir:
+        os.makedirs(save_dir, exist_ok=True)
 
-    # Critere UNIQUE de significativite : Wilcoxon unilateral des scores de
-    # validation croisee contre la chance, corrige par FDR au sein du groupe.
-    # Le repli "AUC > 0.5125" a ete supprime : il melangeait deux definitions
-    # de "significatif" dans une figure dont la legende n'en annoncait qu'une.
     for effect_type in ['local', 'global']:
-        groups_analysis = []
-        # --- Boucle pour générer les graphiques à barres individuels ---
-        for group_data in all_groups_data:
-            effect_key = f'{effect_type}_effect'
-            if effect_key not in group_data or 'auc_global_values' not in group_data[effect_key]:
+        effect_key = f'{effect_type}_effect'
+        present = [g for g in all_groups_data if effect_key in g]
+        groups = {
+            g['group_name']: (g[effect_key]['subject_ids'],
+                              g[effect_key].get('perm_p', np.full(len(g[effect_key]['subject_ids']), np.nan)))
+            for g in present
+        }
+        stats_res = proportion_statistics(groups, alpha=FDR_ALPHA)
+        if stats_res is None:
+            logger.error("Effet %s : aucun resultat de permutation, proportions "
+                         "non calculees.", effect_type)
+            continue
+        logger.info("Effet %s\n%s", effect_type, proportion_report(stats_res))
+        if save_dir:
+            with open(os.path.join(save_dir, f"individual_significance_stats_{effect_type}.json"), 'w') as f:
+                json.dump(stats_res, f, indent=2)
+
+        # --- Barres : AUC de chaque sujet, * = significatif ---
+        for g in present:
+            effect = g[effect_key]
+            aucs = np.asarray(effect['auc_global_values'], dtype=float)
+            ids = np.asarray(effect['subject_ids'])
+            keep = np.isfinite(aucs)
+            if not keep.any():
                 continue
-
-            auc_values = np.asarray(
-                group_data[effect_key]['auc_global_values'], dtype=float)
-            cv_scores_list = group_data[effect_key].get(
-                'cv_scores_list', [None] * len(auc_values))
-            effect_subject_ids = group_data[effect_key].get(
-                'subject_ids', group_data['subject_ids'])
-
-            # Filter out NaNs from auc_values but keep track of indices to match with cv_scores
-            valid_indices = ~np.isnan(auc_values)
-            valid_aucs = auc_values[valid_indices]
-            valid_cv_scores = [cv_scores_list[i] for i in range(len(auc_values)) if valid_indices[i]]
-
-            all_subject_ids = np.array(effect_subject_ids)
-            valid_subject_ids = all_subject_ids[valid_indices]
-
-            if len(valid_aucs) == 0:
-                continue
-
-            # p-values brutes, puis correction FDR sur les sujets testables.
-            raw_pvals, testable_pos = [], []
-            for i, scores in enumerate(valid_cv_scores):
-                if scores is None or np.size(scores) < 2:
-                    continue
-                scores_arr = np.asarray(scores, dtype=float)
-                scores_arr = scores_arr[np.isfinite(scores_arr)]
-                if scores_arr.size < 2:
-                    continue
-                try:
-                    _, p = wilcoxon(scores_arr - CHANCE_LEVEL,
-                                    alternative='greater')
-                except ValueError:
-                    continue
-                raw_pvals.append(p)
-                testable_pos.append(i)
-
-            is_significant = np.zeros(len(valid_aucs), dtype=bool)
-            is_testable = np.zeros(len(valid_aucs), dtype=bool)
-            if raw_pvals:
-                rejected, _ = fdrcorrection(np.array(raw_pvals), alpha=0.05)
-                for pos, subj_pos in enumerate(testable_pos):
-                    is_significant[subj_pos] = bool(rejected[pos])
-                    is_testable[subj_pos] = True
-            n_undetermined = int(np.sum(~is_testable))
-            if n_undetermined:
-                logger.warning(
-                    "Groupe %s (%s) : %d sujet(s) sans scores de CV "
-                    "exploitables -> significativite indeterminee.",
-                    group_data['group_name'], effect_type, n_undetermined)
-
-            # Préparation des données pour le graphique à barres
-            x_pos = np.arange(len(valid_aucs))
-            colors = ['#4ecdc4' if sig else ('#ff6b6b' if test else '#bbbbbb')
-                      for sig, test in zip(is_significant, is_testable)]
-
-            # Création du graphique à barres pour le groupe actuel
+            aucs, ids = aucs[keep], ids[keep]
+            subj = stats_res['subjects']
+            is_sig = [subj.get(s, {}).get('significant', False) for s in ids]
+            colors = ['#4ecdc4' if sig else ('#ff6b6b' if s in subj else '#bbbbbb')
+                      for s, sig in zip(ids, is_sig)]
+            x_pos = np.arange(len(aucs))
             plt.figure(figsize=(12, 7))
-            bars = plt.bar(x_pos, valid_aucs, color=colors, label='Score AUC par sujet')
-            
-            # Add stars for significant subjects
-            for i, (rect, sig) in enumerate(zip(bars, is_significant)):
+            bars = plt.bar(x_pos, aucs, color=colors, label='Score AUC par sujet')
+            for rect, sig in zip(bars, is_sig):
                 if sig:
-                    height = rect.get_height()
-                    plt.text(rect.get_x() + rect.get_width()/2., height, '*',
+                    plt.text(rect.get_x() + rect.get_width() / 2., rect.get_height(), '*',
                              ha='center', va='bottom', color='black', fontsize=14, fontweight='bold')
-
             plt.axhline(y=CHANCE_LEVEL, color='k', linestyle='--', alpha=0.5, label='Chance (0.5)')
-
             plt.xlabel('ID du Sujet')
-            plt.ylabel('Valeur AUC')
-            plt.xticks(x_pos, valid_subject_ids, rotation=45, ha='right')
-            group_name = GROUP_NAME_MAPPING.get(group_data['group_name'], group_data['group_name'])
-            plt.title(f'Scores AUC Individuels - {group_name} - Effet {effect_type.capitalize()}\n(* = p < 0.05 vs chance)')
+            plt.ylabel('AUC (5 plis, 0-800 ms)')
+            plt.xticks(x_pos, ids, rotation=45, ha='right')
+            group_label = GROUP_NAME_MAPPING.get(g['group_name'], g['group_name'])
+            plt.title(f'Scores AUC Individuels - {group_label} - Effet {effect_type.capitalize()}\n'
+                      '(* = test de permutation, BH q < 0.05 sur tous les sujets)')
             plt.legend()
             plt.tight_layout()
-
-            # Sauvegarde du graphique à barres
             if save_dir:
-                # Créer des sous-dossiers pour mieux organiser les fichiers
-                bar_charts_dir = os.path.join(save_dir, 'bar_charts', effect_type)
-                if not os.path.exists(bar_charts_dir):
-                    os.makedirs(bar_charts_dir)
-                filepath = os.path.join(bar_charts_dir, f"bar_scores_{group_data['group_name']}_{effect_type}.png")
+                bar_dir = os.path.join(save_dir, 'bar_charts', effect_type)
+                os.makedirs(bar_dir, exist_ok=True)
+                filepath = os.path.join(bar_dir, f"bar_scores_{g['group_name']}_{effect_type}.png")
                 plt.savefig(filepath, dpi=300)
                 logger.info(f"Graphique à barres sauvegardé : {filepath}")
-
             if show_plots:
                 plt.show()
             else:
                 plt.close()
 
-            # Collecte des données pour le graphique en secteurs
-            significant_count = np.sum(is_significant)
-            groups_analysis.append({
-                'group_name': group_data['group_name'],
-                'n_subjects': len(valid_aucs),
-                'n_significant': significant_count
-            })
-
-        # --- Création du graphique en secteurs (camembert) comme auparavant ---
-        if not groups_analysis:
-            continue
-        # Trier les analyses selon GROUP_ORDER
-        ordered_analysis = []
-        for group in GROUP_ORDER:
-            for analysis in groups_analysis:
-                if analysis['group_name'] == group:
-                    ordered_analysis.append(analysis)
-        # Si certains groupes ne sont pas dans GROUP_ORDER, les ajouter à la fin
-        for analysis in groups_analysis:
-            if analysis['group_name'] not in GROUP_ORDER:
-                ordered_analysis.append(analysis)
-        fig, axes = plt.subplots(1, len(ordered_analysis), figsize=(4 * len(ordered_analysis), 5), squeeze=False)
-        for i, analysis in enumerate(ordered_analysis):
-            sizes = [analysis['n_significant'], analysis['n_subjects'] - analysis['n_significant']]
-            labels = [f'Significatif\n(p<0.05)', f'Non Signif.']
-            pie_colors = ['#4ecdc4', '#ff6b6b']
-            axes[0, i].pie(sizes, labels=labels, autopct='%1.1f%%', colors=pie_colors, startangle=90)
-            axes[0, i].set_title(f"{GROUP_NAME_MAPPING.get(analysis['group_name'], analysis['group_name'])}\n(n={analysis['n_subjects']})")
-        fig.suptitle(f'Proportion de Sujets Significatifs (Wilcoxon vs Chance) - Effet {effect_type.capitalize()}', fontsize=16)
+        # --- Camemberts : proportion par groupe, IC 95 % ---
+        names = ([n for n in GROUP_ORDER if n in stats_res['groups']]
+                 + [n for n in stats_res['groups'] if n not in GROUP_ORDER])
+        names = [n for n in names if stats_res['groups'][n]['n_tested']]
+        fig, axes = plt.subplots(1, len(names), figsize=(4 * len(names), 5), squeeze=False)
+        for i, name in enumerate(names):
+            gs = stats_res['groups'][name]
+            lo, hi = gs['ci95_clopper_pearson']
+            axes[0, i].pie([gs['n_significant'], gs['n_tested'] - gs['n_significant']],
+                           labels=['Significatif\n(q<0.05)', 'Non signif.'], autopct=lambda p: f'{p:.1f}%' if p > 0 else '',
+                           colors=['#4ecdc4', '#ff6b6b'], startangle=90)
+            axes[0, i].set_title(f"{GROUP_NAME_MAPPING.get(name, name)}\n"
+                                 f"(n={gs['n_tested']}, IC95 {100 * lo:.0f}-{100 * hi:.0f} %)")
+        fig.suptitle('Proportion de sujets significatifs (test de permutation, BH sur tous '
+                     f'les sujets) - Effet {effect_type.capitalize()}', fontsize=16)
         plt.tight_layout(rect=[0, 0, 1, 0.95])
-        
         if save_dir:
-            # Créer un sous-dossier pour les graphiques en secteurs
-            pie_charts_dir = os.path.join(save_dir, 'pie_charts')
-            if not os.path.exists(pie_charts_dir):
-                os.makedirs(pie_charts_dir)
-            
-            filepath = os.path.join(pie_charts_dir, f"significance_proportions_{effect_type}.png")
+            pie_dir = os.path.join(save_dir, 'pie_charts')
+            os.makedirs(pie_dir, exist_ok=True)
+            filepath = os.path.join(pie_dir, f"significance_proportions_{effect_type}.png")
             plt.savefig(filepath, dpi=300)
             logger.info(f"Graphique des proportions sauvegardé : {filepath}")
-        
         if show_plots:
             plt.show()
         else:
             plt.close()
+
+
 def perform_statistical_tests(all_groups_data, effect_type='local'):
     """
     Effectuer des tests Mann-Whitney U entre les groupes pour les métriques globales AUC.
@@ -878,7 +768,8 @@ def perform_statistical_tests(all_groups_data, effect_type='local'):
     }
 
 
-def plot_global_auc_boxplots(all_groups_data, save_dir, show_plots=True):
+def plot_global_auc_boxplots(all_groups_data, save_dir, show_plots=True,
+                             auc_labels=None):
     """
     Crée des boxplots pour les AUC globaux avec tests statistiques et export des résultats.
     """
@@ -920,40 +811,38 @@ def plot_global_auc_boxplots(all_groups_data, save_dir, show_plots=True):
 
         ax.set_title(f'Distribution des AUC globaux - Effet {effect_type.capitalize()}', fontsize=16, fontweight='bold')
         ax.set_xlabel('Groupe Clinique', fontsize=14)
-        ax.set_ylabel('AUC (Aire sous la courbe)', fontsize=14)
+        ax.set_ylabel((auc_labels or {}).get(effect_type, 'AUC'), fontsize=14)
         ax.axhline(y=CHANCE_LEVEL, color='red', linestyle='--', alpha=0.7, label=f'Niveau de chance ({CHANCE_LEVEL})')
 
         # Légende x avec n sujets
         new_labels = [f"{g} (n={group_subject_counts.get(g, 0)})" for g in ordered_groups]
         ax.set_xticklabels(new_labels, rotation=45, ha='right')
 
-        # Test Wilcoxon vs chance pour chaque groupe (ajouté)
+        # Wilcoxon unilateral de chaque groupe contre la chance, corrige BH
+        # sur les groupes (6 tests par figure : sans correction, ~1 faux
+        # positif sur 3 figures sous l'hypothese nulle).
         y_min, y_max = ax.get_ylim()
         y_sig = y_max - 0.04 * (y_max - y_min)
-        for idx, group in enumerate(ordered_groups):
-            group_aucs = df[df['Group'] == group]['AUC'].values
-            group_aucs = group_aucs[~np.isnan(group_aucs)]
-            if len(group_aucs) > 1:
-                try:
-                    stat, pval = wilcoxon(group_aucs - CHANCE_LEVEL, alternative='greater')
-                    if pval < 0.001:
-                        sig = '***'
-                    elif pval < 0.01:
-                        sig = '**'
-                    elif pval < 0.05:
-                        sig = '*'
-                    else:
-                        sig = ''
-                    if sig:
-                        ax.text(idx, y_sig, sig, ha='center', va='bottom', fontsize=18, fontweight='bold', color='black')
-                except Exception as e:
-                    logger.warning(f"Erreur test Wilcoxon pour {group} ({effect_type}): {e}")
-
-        # Affichage des barres de significativité pour les effets global ET local
-        if stats_results and stats_results.get('pairwise_results'):
-            y_max_auc = df['AUC'].max()
-            y_positions = [y_max_auc + 0.05]
-            add_significance_bars(ax, df, stats_results, y_positions)
+        raw_p = []
+        for group in ordered_groups:
+            group_aucs = df[df['Group'] == group]['AUC'].dropna().values
+            raw_p.append(wilcoxon(group_aucs - CHANCE_LEVEL, alternative='greater')[1]
+                         if len(group_aucs) > 1 else np.nan)
+        p_vs_chance = benjamini_hochberg(raw_p)
+        for idx, (group, p_raw, p_fdr) in enumerate(zip(ordered_groups, raw_p, p_vs_chance)):
+            logger.info("  %s vs chance (%s) : Wilcoxon p=%.4g, p_FDR=%.4g",
+                        group, effect_type, p_raw, p_fdr)
+            if stars(p_fdr):
+                ax.text(idx, y_sig, stars(p_fdr), ha='center', va='bottom',
+                        fontsize=18, fontweight='bold', color='black')
+        if stats_results:
+            stats_results['vs_chance_wilcoxon_bh'] = {
+                g: {'p': float(pr), 'p_fdr': float(pf)}
+                for g, pr, pf in zip(ordered_groups, raw_p, p_vs_chance)}
+        # (L'ancien appel a add_significance_bars() placait les barres selon
+        # l'ordre de chargement des groupes, pas celui de l'axe x : les
+        # etoiles reliaient de mauvaises boites. Les barres sont tracees
+        # ci-dessous, une seule fois, sur les bonnes positions.)
 
         y_min, y_max = ax.get_ylim()
         ax.set_ylim(y_min - 0.02, y_max + 0.15)
@@ -971,7 +860,8 @@ def plot_global_auc_boxplots(all_groups_data, save_dir, show_plots=True):
             # Pour éviter la superposition, on garde une pile de hauteurs par paire
             used_levels = {}
             for key, result in stats_results['pairwise_results'].items():
-                g1, g2 = key.split('_vs_')
+                # Cles en noms bruts (DELIRIUM+), axe en noms affiches (Delirium +).
+                g1, g2 = (GROUP_NAME_MAPPING.get(g, g) for g in key.split('_vs_'))
                 if g1 in idx_map and g2 in idx_map:
                     p_corr = result.get('mannwhitney_pvalue_fdr', np.nan)
                     if not np.isnan(p_corr):
@@ -1045,8 +935,9 @@ def plot_group_individual_curves(group_data, save_dir, show_plots=True):
     Crée des graphiques pour un groupe avec :
     - Les courbes individuelles en arrière-plan.
     - La moyenne du groupe et son erreur standard (SEM) en avant-plan.
-    - Des barres empilées colorées en bas du graphique pour indiquer les clusters
-      temporels significatifs (p < 0.05) pour chaque sujet individuel.
+    - Une barre coloree sous la courbe pour les clusters temporels ou le
+      GROUPE decode au-dessus de la chance (test de cluster par permutation
+      de signe sur les sujets, 10000 permutations, p < 0.05).
     """
     group_name = group_data['group_name']
     mapped_name = GROUP_NAME_MAPPING.get(group_name, group_name)
@@ -1095,9 +986,10 @@ def plot_group_individual_curves(group_data, save_dir, show_plots=True):
                     _, clusters, cluster_p, _ = perform_cluster_permutation_test(
                         scores_matrix,
                         chance_level=CHANCE_LEVEL,
-                        n_permutations=1024,
+                        n_permutations=10000,
                         alternative_hypothesis="greater",
-                        n_jobs=-1
+                        n_jobs=-1,
+                        random_seed=42
                     )
                     # Position de la barre de clusters sous la courbe moyenne
                     y_top = SIGNIFICANCE_AREA_TOP - (0 * (BAR_HEIGHT + BAR_GAP))
@@ -1216,26 +1108,20 @@ def create_temporal_windows_connected_plots(all_groups_data, save_dir, show_plot
                                 group_means[valid_group_idx] + group_stds[valid_group_idx],
                                 color='black', alpha=0.15)
 
-            # Test Wilcoxon vs chance pour chaque fenêtre
-            for win_idx, win in enumerate(window_names):
-                win_vals = subjects_window_means[:, win_idx]
-                valid_vals = win_vals[~np.isnan(win_vals)]
-                if len(valid_vals) > 1:
-                    try:
-                        from scipy.stats import wilcoxon
-                        stat, pval = wilcoxon(valid_vals - CHANCE_LEVEL, alternative='two-sided')
-                        if pval < 0.001:
-                            sig = '***'
-                        elif pval < 0.01:
-                            sig = '**'
-                        elif pval < 0.05:
-                            sig = '*'
-                        else:
-                            sig = ''
-                        if sig:
-                            ax.text(win_idx, 0.41, sig, ha='center', va='center', fontsize=18, fontweight='bold')
-                    except Exception as e:
-                        logger.warning(f"Erreur test Wilcoxon pour {mapped_name} {effect_type} {win}: {e}")
+            # Wilcoxon unilateral contre la chance par fenetre, BH sur les
+            # fenetres de la figure. Les fenetres ont ete choisies d'apres les
+            # courbes de groupe : test EXPLORATOIRE (selection circulaire),
+            # l'inference temporelle de reference est le test de cluster.
+            raw_p = []
+            for win_idx in range(len(window_names)):
+                vals = subjects_window_means[:, win_idx]
+                vals = vals[~np.isnan(vals)]
+                raw_p.append(wilcoxon(vals - CHANCE_LEVEL, alternative='greater')[1]
+                             if len(vals) > 1 else np.nan)
+            for win_idx, p_fdr in enumerate(benjamini_hochberg(raw_p)):
+                if stars(p_fdr):
+                    ax.text(win_idx, 0.41, stars(p_fdr), ha='center', va='center',
+                            fontsize=18, fontweight='bold')
 
             ax.axhline(y=CHANCE_LEVEL, color='red', linestyle='--', alpha=0.7, linewidth=2, label='Niveau de chance')
             ax.set_xlim(-0.5, len(window_names) - 0.5)
@@ -1245,7 +1131,7 @@ def create_temporal_windows_connected_plots(all_groups_data, save_dir, show_plot
             ax.set_xticklabels(window_names, fontsize=8, rotation=45)
             ax.set_ylabel('Score AUC', fontsize=14)
             ax.grid(True, alpha=0.3)
-            ax.set_title(f'{mapped_name} - {effect_type.capitalize()}\nComparaison des fenêtres temporelles (n={n_subjects})', fontsize=16, fontweight='bold')
+            ax.set_title(f'{mapped_name} - {effect_type.capitalize()}\nFenêtres temporelles (n={n_subjects}) - exploratoire, BH', fontsize=16, fontweight='bold')
             plt.tight_layout()
 
             if save_dir:
@@ -1391,8 +1277,34 @@ def main():
         logger.error("Aucune donnée de groupe valide n'a pu être chargée.")
         return
 
+    # Test de permutation individuel (examples/run_permutation_tests.py) : il
+    # fournit les p individuelles ET l'AUC comparee entre groupes, calculee
+    # sur la meme fenetre post-stimulus (0-800 ms) et 5 plis pour tous.
+    auc_labels = {}
+    for effect_type, contrast in (('local', 'ls_ld'), ('global', 'gs_gd')):
+        perm = load_permutation_results(base_results_dir, "LG", contrast)
+        for group_data in all_groups_data:
+            effect = group_data.get(f'{effect_type}_effect')
+            if not effect:
+                continue
+            effect['perm_auc'], effect['perm_p'] = attach_permutation_results(
+                effect['subject_ids'], perm)
+            if perm:
+                effect['auc_global_values'] = effect['perm_auc']
+        if perm:
+            auc_labels[effect_type] = "AUC, permutation-test decoding (5-fold, 0-800 ms)"
+        else:
+            logger.warning(
+                "Aucun resultat dans %s/permutation_tests/LG pour %s : boxplots "
+                "sur l'AUC CV d'origine (epoque entiere, exploratoire) et pas de "
+                "proportions de sujets significatifs. Lancer "
+                "submitit/submit_permutation_tests.py --paradigm LG.",
+                base_results_dir, contrast)
+            auc_labels[effect_type] = "AUC, original CV (exploratory)"
+
     display_subject_sampling_frequencies(all_groups_data)
-    plot_global_auc_boxplots(all_groups_data, results_dir, show_plots=False)
+    plot_global_auc_boxplots(all_groups_data, results_dir, show_plots=False,
+                             auc_labels=auc_labels)
     create_temporal_windows_connected_plots(all_groups_data, results_dir, show_plots=False)
     plot_all_groups_comparison(all_groups_data, results_dir, show_plots=False)
     create_temporal_windows_comparison_boxplots(all_groups_data, results_dir, show_plots=False)

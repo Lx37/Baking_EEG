@@ -36,12 +36,14 @@ def configure_project_paths(current_user_login):
         "tombalay": "/Users/tombalay/Desktop/ENSC/Stage 2A CAP/resultats_publi_baking_and_code/Baking_EEG/data",
   
     }
-    base_input_data_path = user_input_data_paths.get(
+    # BAKING_EEG_DATA_DIR / BAKING_EEG_RESULTS_DIR permettent a un autre
+    # utilisateur de lancer le pipeline sans modifier ce fichier.
+    base_input_data_path = os.environ.get("BAKING_EEG_DATA_DIR") or user_input_data_paths.get(
         current_user_login,
         os.path.join(os.path.expanduser("~"),
                      "Baking_EEG_data_fallback"),  # Fallback path
     )
-    if current_user_login not in user_input_data_paths:
+    if current_user_login not in user_input_data_paths and not os.environ.get("BAKING_EEG_DATA_DIR"):
         logger_path_utils.warning(
             "User '%s' not in input path config, using fallback: %s",
             current_user_login, base_input_data_path
@@ -51,7 +53,9 @@ def configure_project_paths(current_user_login):
         current_user_login, base_input_data_path
     )
 
-    output_version_folder_name = "V18"  # Versioning for results
+    # Versioning des resultats : export BAKING_EEG_RESULTS_VERSION=V19 pour
+    # ecrire une nouvelle campagne sans melanger avec les NPZ precedents.
+    output_version_folder_name = os.environ.get("BAKING_EEG_RESULTS_VERSION", "V18")
     user_output_results_paths = {
         "tom.balay": (f"/home/tom.balay/results/"
                       f"Baking_EEG_results_{output_version_folder_name}"),
@@ -60,12 +64,12 @@ def configure_project_paths(current_user_login):
        "tombalay": (f"/Users/tombalay/Desktop/ENSC/Stage 2A CAP/resultats_publi_baking_and_code/Baking_EEG/Baking_EEG_results_{output_version_folder_name}"),
        # Add other users and their output paths here
     }
-    base_output_results_path = user_output_results_paths.get(
+    base_output_results_path = os.environ.get("BAKING_EEG_RESULTS_DIR") or user_output_results_paths.get(
         current_user_login,
         os.path.join(base_input_data_path,  # Fallback output path
                      f"decoding_results_{output_version_folder_name}"),
     )
-    if current_user_login not in user_output_results_paths:
+    if current_user_login not in user_output_results_paths and not os.environ.get("BAKING_EEG_RESULTS_DIR"):
         logger_path_utils.warning(
             "User '%s' not in output path config, using fallback: %s",
             current_user_login, base_output_results_path

@@ -54,7 +54,7 @@ def load_epochs_data_for_lg_decoding(
             "Base input data path '%s' is not a valid directory.",
             base_input_data_path
         )
-        return None, {}, "unknown", "unknown"
+        return None, {}, "unknown"
     if (conditions_to_load is not None and
             not isinstance(conditions_to_load, dict)):
         logger_data_loading.error(

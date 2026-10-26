@@ -104,7 +104,11 @@ T_THRESHOLD_FOR_GROUP_STAT_CLUSTERING = None  # e.g., 2.0 or calculated
 INTRA_FOLD_CLUSTER_THRESHOLD_CONFIG = {"start": 0.1, "step": 0.1}
 
 # === Analysis step control flags ===
-COMPUTE_INTRA_SUBJECT_STATISTICS = True
+# Tests intra-sujet sur les plis de CV (FDR / clusters sur les AUC des plis) :
+# desactives. Les plis partagent leurs essais d'entrainement, ces tests donnent
+# trop de faux positifs (Stelzer et al. 2013 ; Noirhomme et al. 2014). La
+# significativite individuelle vient de examples/run_permutation_tests.py.
+COMPUTE_INTRA_SUBJECT_STATISTICS = False
 COMPUTE_GROUP_LEVEL_STATISTICS = True
 SAVE_ANALYSIS_RESULTS = True
 GENERATE_PLOTS = True

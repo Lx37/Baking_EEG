@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-from scipy.stats import mannwhitneyu, wilcoxon
+from scipy.stats import mannwhitneyu
 from statsmodels.stats.multitest import fdrcorrection
 import json
 from collections import defaultdict
@@ -28,6 +28,10 @@ from utils.stats_utils import (
         compare_global_scores_to_chance
  )
 from utils.time_alignment import align_subject_curves, resample_to_grid
+from utils.permutation_stats import (
+    load_permutation_results, attach_permutation_results,
+    proportion_statistics, proportion_report,
+)
 
 GROUP_NAME_MAPPING = {
     'COMA': 'COMA',
@@ -48,6 +52,10 @@ GROUP_COLORS = {
 # --- Paramètres généraux ---
 CHANCE_LEVEL = 0.5
 FDR_ALPHA = 0.05
+# Fin de la fenetre d'analyse PP (s) : les controles ont des epochs jusqu'a
+# +1.2 s, les autres groupes jusqu'a +1.0 s. On coupe tout le monde a +1.0 s
+# pour que les courbes et les tests portent sur la meme fenetre.
+PP_T_MAX = 1.0
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
@@ -127,6 +135,10 @@ def find_pp_ap_npz_files(base_path):
     
     logger.info("%d fichiers PP/AP trouvés.", len(pp_ap_files))
 
+    # Un sujet relance produit un nouveau dossier horodate : on garde le NPZ
+    # le plus recent (l'ordre de glob est arbitraire sur le cluster).
+    pp_ap_files.sort(key=os.path.getmtime, reverse=True)
+
     # Suivi des sujets ajoutés pour éviter les doublons
     added_subjects = {group: set() for group in ALL_SUBJECTS_GROUPS}
 
@@ -204,10 +216,16 @@ def analyze_group_data_pp_ap(group_files, group_name):
                 subj_id, scores.shape[0], times_subject.shape[0])
             continue
 
+        keep = times_subject <= PP_T_MAX + 1e-9
+        n_full = times_subject.shape[0]
+        times_subject, scores = times_subject[keep], scores[keep]
+
         tgm = None
         if data['tgm_all_folds'] is not None:
             tgm_candidate = np.nanmean(np.asarray(data['tgm_all_folds'],
                                                   dtype=float), axis=0)
+            if tgm_candidate.ndim == 2 and tgm_candidate.shape[0] == n_full:
+                tgm_candidate = tgm_candidate[np.ix_(keep, keep)]
             if tgm_candidate.ndim == 2 and \
                     tgm_candidate.shape[0] == times_subject.shape[0]:
                 tgm = tgm_candidate
@@ -405,7 +423,8 @@ def plot_all_groups_comparison_pp_ap(all_groups_data, save_dir, show_plots=True)
                 chance_level=CHANCE_LEVEL,
                 n_permutations=10000,
                 alternative_hypothesis="greater",
-                n_jobs=-1
+                n_jobs=-1,
+                random_seed=42
             )
             
             # Positionnement vertical des barres pour ce groupe
@@ -457,7 +476,8 @@ def plot_all_groups_comparison_pp_ap(all_groups_data, save_dir, show_plots=True)
         plt.close()
 
 
-def plot_global_auc_boxplots_pp_ap(all_groups_data, save_dir, show_plots=True):
+def plot_global_auc_boxplots_pp_ap(all_groups_data, save_dir, show_plots=True,
+                                   auc_label="Global AUC"):
     plot_data = []
     group_subject_counts = defaultdict(int)
     for group_data in all_groups_data:
@@ -538,9 +558,9 @@ def plot_global_auc_boxplots_pp_ap(all_groups_data, save_dir, show_plots=True):
                 transform=ax.transAxes, ha='right', va='bottom', fontsize=9,
                 style='italic', color='#555555')
 
-    ax.set(title='PP/AP Global AUC Distribution by Group\n'
-                 '(Mann-Whitney, FDR-corrected)',
-           xlabel='Clinical Group', ylabel='AUC (Area Under Curve)')
+    ax.set(title='PP/AP decoding by group\n'
+                 f'(pairwise Mann-Whitney, BH-FDR over {len(raw_pvals)} pairs)',
+           xlabel='Clinical Group', ylabel=auc_label)
     ax.axhline(y=CHANCE_LEVEL, color='red', linestyle='--', alpha=0.7, label='Chance Level')
     ax.legend(); plt.tight_layout()
     if save_dir: plt.savefig(os.path.join(save_dir, "pp_ap_global_auc_boxplot.png"))
@@ -571,7 +591,7 @@ def plot_group_tgm_pp_ap(group_data, save_dir, show_plots=True):
     if tgm_matrix is not None and STATS_UTILS_AVAILABLE:
         try:
             _, significant_mask, _, _ = perform_pointwise_fdr_correction_on_scores(
-                tgm_matrix, chance_level=CHANCE_LEVEL, alpha_significance_level=FDR_ALPHA, alternative_hypothesis="two-sided"
+                tgm_matrix, chance_level=CHANCE_LEVEL, alpha_significance_level=FDR_ALPHA, alternative_hypothesis="greater"
             )
             if np.any(significant_mask):
                 ax.contour(times_ms, times_ms, significant_mask, levels=[0.5], colors='black', linewidths=2)
@@ -710,86 +730,51 @@ def create_temporal_windows_connected_plots_pp_ap(all_groups_data, save_dir, sho
 
 def analyze_individual_significance_proportions_pp_ap(all_groups_data, save_dir, show_plots=True):
     """Proportion de sujets dont le decodage depasse significativement la chance.
+
+    Significativite individuelle : test de permutation des labels
+    (examples/run_permutation_tests.py), correction BH sur tous les sujets,
+    IC 95 % de Clopper-Pearson et tests exacts de Fisher entre groupes
+    (utils/permutation_stats.py). Le Wilcoxon sur les AUC des plis utilise
+    auparavant n'est pas valide : les plis partagent leurs essais
+    d'entrainement (Stelzer et al. 2013 ; Noirhomme et al. 2014).
     """
+    groups = {
+        GROUP_NAME_MAPPING.get(g['group_name'], g['group_name']):
+            (g['subject_ids'], g.get('perm_p', np.full(g['n_subjects'], np.nan)))
+        for g in all_groups_data
+    }
+    stats_res = proportion_statistics(groups, alpha=FDR_ALPHA)
+    if stats_res is None:
+        logger.error("Aucun resultat de permutation PP : proportions de sujets "
+                     "significatifs non calculees.")
+        return
+    logger.info(proportion_report(stats_res))
+    if save_dir:
+        with open(os.path.join(save_dir, "individual_significance_stats_pp_ap.json"), 'w') as f:
+            json.dump(stats_res, f, indent=2)
+
     groups_analysis = []
-
-    # Dictionnaire pour stocker les résultats détaillés par sujet pour les bar charts
     detailed_results = {}
-
     for g_data in all_groups_data:
-        group_name = g_data['group_name']
-        mapped_name = GROUP_NAME_MAPPING.get(group_name, group_name)
-
-        n_subjects = g_data['n_subjects']
-        subject_ids = g_data['subject_ids']
-        cv_scores_list = g_data.get('cv_scores_list', [None] * n_subjects)
-        auc_values = g_data['auc_global_values']
-
-        subject_results = []
-        testable_idx, raw_pvals = [], []
-
-        for i in range(n_subjects):
-            scores = cv_scores_list[i] if i < len(cv_scores_list) else None
-            p_val = None
-            if scores is not None and np.size(scores) > 0:
-                scores = np.asarray(scores, dtype=float)
-                scores = scores[np.isfinite(scores)]
-                if scores.size >= 2:
-                    try:
-                        _, p_val = wilcoxon(scores - CHANCE_LEVEL,
-                                            alternative='greater')
-                    except ValueError as exc:
-                        # Cas degeneres (toutes les differences nulles...).
-                        logger.debug("Wilcoxon impossible pour %s : %s",
-                                     subject_ids[i], exc)
-                        p_val = None
-
-            auc_i = (float(auc_values[i])
-                     if auc_values is not None and i < len(auc_values)
-                     else np.nan)
-            subject_results.append({
-                'id': subject_ids[i],
-                'auc': auc_i,
-                'significant': False,   # rempli apres correction FDR
-                'p_value': p_val,
-                'p_value_fdr': None,
-                'testable': p_val is not None,
-            })
-            if p_val is not None:
-                testable_idx.append(i)
-                raw_pvals.append(p_val)
-
-        # Correction FDR sur les sujets testables du groupe.
-        n_significant = 0
-        if raw_pvals:
-            rejected, p_fdr = fdrcorrection(np.array(raw_pvals),
-                                            alpha=FDR_ALPHA)
-            for pos, subj_idx in enumerate(testable_idx):
-                subject_results[subj_idx]['p_value_fdr'] = float(p_fdr[pos])
-                subject_results[subj_idx]['significant'] = bool(rejected[pos])
-            n_significant = int(np.sum(rejected))
-
-        n_testable = len(testable_idx)
-        n_undetermined = n_subjects - n_testable
-        if n_undetermined:
-            logger.warning(
-                "Groupe %s : %d/%d sujets sans scores de CV exploitables, "
-                "classes 'indetermines' et exclus du denominateur.",
-                mapped_name, n_undetermined, n_subjects)
-
-        percentage_significant = ((n_significant / n_testable) * 100
-                                  if n_testable > 0 else 0.0)
-
+        mapped_name = GROUP_NAME_MAPPING.get(g_data['group_name'], g_data['group_name'])
+        g_stats = stats_res['groups'][mapped_name]
+        subject_results = [{
+            'id': sid,
+            'auc': float(auc),
+            'testable': sid in stats_res['subjects'],
+            'significant': stats_res['subjects'].get(sid, {}).get('significant', False),
+        } for sid, auc in zip(g_data['subject_ids'], g_data['auc_global_values'])]
         groups_analysis.append({
-            'group_name': group_name,
+            'group_name': g_data['group_name'],
             'mapped_name': mapped_name,
-            'n_subjects': n_testable,
-            'n_total_subjects': n_subjects,
-            'n_undetermined': n_undetermined,
-            'n_significant': n_significant,
-            'percentage_significant': percentage_significant
+            'n_subjects': g_stats['n_tested'],
+            'n_total_subjects': g_data['n_subjects'],
+            'n_undetermined': len(g_stats['missing']),
+            'n_significant': g_stats['n_significant'],
+            'percentage_significant': (100 * g_stats['proportion']
+                                       if g_stats['n_tested'] else 0.0),
+            'ci95': g_stats['ci95_clopper_pearson'],
         })
-
         detailed_results[mapped_name] = subject_results
 
     if not groups_analysis: return
@@ -807,13 +792,15 @@ def analyze_individual_significance_proportions_pp_ap(all_groups_data, save_dir,
         for i, analysis in enumerate(ordered_analysis):
             mapped_name = analysis['mapped_name']
             sizes = [analysis['n_subjects'] - analysis['n_significant'], analysis['n_significant']]
-            labels = ['Non significatif', 'Significatif (FDR)']
+            labels = ['Non significatif', 'Significatif (permutation, BH)']
             colors = ['#ff6b6b', '#4ecdc4'] # Rouge clair, Cyan clair
 
-            axes_pie[0, i].pie(sizes, autopct='%1.0f%%', startangle=90, colors=colors,
+            axes_pie[0, i].pie(sizes, autopct=lambda p: f'{p:.0f}%' if p > 0 else '', startangle=90, colors=colors,
                              textprops={'fontsize': 12, 'fontweight': 'bold'},
                              wedgeprops={'edgecolor': 'white', 'linewidth': 2})
-            title = f"{mapped_name}\n(n={analysis['n_subjects']})"
+            lo, hi = analysis['ci95']
+            title = (f"{mapped_name}\n(n={analysis['n_subjects']}, "
+                     f"IC95 {100 * lo:.0f}-{100 * hi:.0f} %)")
             if analysis.get('n_undetermined'):
                 title += f"\n+{analysis['n_undetermined']} indéterminés"
             axes_pie[0, i].set_title(title, fontsize=13, fontweight='bold')
@@ -821,7 +808,7 @@ def analyze_individual_significance_proportions_pp_ap(all_groups_data, save_dir,
         fig_pie.legend(labels, loc='lower center', ncol=2, fontsize=12)
         fig_pie.suptitle(
             'Proportion of Subjects with Significant Decoding\n'
-            '(Wilcoxon on CV scores vs chance, FDR-corrected within group)',
+            '(label-permutation test, BH-FDR across all subjects; 95% CI Clopper-Pearson)',
             fontsize=15, fontweight='bold', y=1.06)
         plt.tight_layout()
         
@@ -851,7 +838,7 @@ def analyze_individual_significance_proportions_pp_ap(all_groups_data, save_dir,
 
         ids = [s['id'] for s in subjects_sorted]
         aucs = [s['auc'] for s in subjects_sorted]
-        # Gris = pas de scores CV, donc significativite indeterminee.
+        # Gris = pas de test de permutation pour ce sujet.
         colors = ['#4ecdc4' if s['significant']
                   else ('#ff6b6b' if s.get('testable') else '#bbbbbb')
                   for s in subjects_sorted]
@@ -871,18 +858,18 @@ def analyze_individual_significance_proportions_pp_ap(all_groups_data, save_dir,
             low = min(0.45, min(finite_aucs) - 0.05)
             high = max(0.75, max(finite_aucs) + 0.05)
             plt.ylim(low, high)
-        plt.ylabel('Global AUC', fontsize=12)
+        plt.ylabel('AUC (5-fold, 0-1000 ms)', fontsize=12)
         plt.title(f'Individual Decoding Performance - {mapped_name}', fontsize=14, fontweight='bold')
         
         # Légende personnalisée
         from matplotlib.patches import Patch
         legend_elements = [
             Patch(facecolor='#4ecdc4', edgecolor='black',
-                  label='Significatif (Wilcoxon, FDR<0.05)'),
+                  label='Significatif (permutation, q<0.05)'),
             Patch(facecolor='#ff6b6b', edgecolor='black',
                   label='Non significatif'),
             Patch(facecolor='#bbbbbb', edgecolor='black',
-                  label='Indéterminé (pas de scores CV)')
+                  label='Indéterminé (pas de test de permutation)')
         ]
         plt.legend(handles=legend_elements, loc='upper right')
         
@@ -1120,6 +1107,27 @@ def main():
         logger.error("Aucune donnée de groupe valide n'a pu être chargée. Vérifiez les fichiers.")
         return
 
+    # Test de permutation individuel (examples/run_permutation_tests.py) : il
+    # fournit les p individuelles ET l'AUC "globale" comparee entre groupes,
+    # calculee avec les memes 5 plis et la meme fenetre pour tous les sujets.
+    # L'AUC globale d'origine melangeait 5 plis (DoC) et 10 plis (delirium).
+    permutation_results = load_permutation_results(base_results_dir, "PP", "pp_ap")
+    for group_data in all_groups_data:
+        group_data['perm_auc'], group_data['perm_p'] = attach_permutation_results(
+            group_data['subject_ids'], permutation_results)
+    if permutation_results:
+        for group_data in all_groups_data:
+            group_data['auc_global_values'] = group_data['perm_auc']
+        auc_label = "AUC, permutation-test decoding (5-fold, 0-1000 ms)"
+    else:
+        logger.warning(
+            "Aucun resultat dans %s/permutation_tests/PP : boxplots sur l'AUC "
+            "CV d'origine (k et fenetre non homogenes, exploratoire) et pas de "
+            "proportions de sujets significatifs. Lancer "
+            "submitit/submit_permutation_tests.py --paradigm PP.",
+            base_results_dir)
+        auc_label = "AUC, original CV (k not homogeneous - exploratory)"
+
 
     logger.info("Génération des graphiques...")
     for group_data in all_groups_data:
@@ -1127,7 +1135,8 @@ def main():
        # plot_group_tgm_pp_ap(group_data, results_dir, show_plots=False)
 
     plot_all_groups_comparison_pp_ap(all_groups_data, results_dir, show_plots=False)
-    plot_global_auc_boxplots_pp_ap(all_groups_data, results_dir, show_plots=False)
+    plot_global_auc_boxplots_pp_ap(all_groups_data, results_dir, show_plots=False,
+                                   auc_label=auc_label)
     create_temporal_windows_connected_plots_pp_ap(all_groups_data, results_dir, show_plots=False)
     analyze_individual_significance_proportions_pp_ap(all_groups_data, results_dir, show_plots=False)
     create_temporal_windows_comparison_boxplots_pp_ap(all_groups_data, results_dir, show_plots=False)

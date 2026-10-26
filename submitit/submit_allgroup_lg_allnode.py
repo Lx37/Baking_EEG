@@ -166,7 +166,7 @@ def main():
             executor = submitit.AutoExecutor(folder=log_folder_subject)
             executor.update_parameters(
                 timeout_min=SLURM_TIMEOUT_MINUTES,
-                setup=SETUP_COMMANDS_FOR_SLURM_JOB_CPU,
+                slurm_setup=SETUP_COMMANDS_FOR_SLURM_JOB_CPU.splitlines(),
                 slurm_partition=SLURM_PARTITION,
                 slurm_mem=SLURM_MEMORY_PER_JOB,
                 slurm_cpus_per_task=SLURM_CPUS_PER_GROUP_JOB,
