@@ -320,6 +320,7 @@ EGI_con_chan_BRU = [
 #TpJC5 : 301 points temporels pour PP
 ALL_SUBJECTS_GROUPS = {
     "COMA": [
+        "JA61", "CS38", "MV48", #LX
         "TF53", "CA55", "JA61", "ME64", "MP68", "SV62", 
         "TpAT19J1", "TpCF24J1", "TpEM13J1", "TpEP16J1", "TT45", "YG72",
         "CS38", "JC39", "TpCL14j1", "TpMG17J1", "TpMB18J1", "TpEP20J1", 
@@ -329,13 +330,16 @@ ALL_SUBJECTS_GROUPS = {
     ],
     
     "VS": [
+        "FP43", "SM51", "TpDC22j8", "TpAB15j8", "TpEP16j8", "TpFM25j8",  #Lx
+        "DZ44", #LX
         "FM60", "KA70", "MH74", "OD69", "SR57", "AG42", "SM51", 
-        "TpAB15J8", "TpAT19J8", "TpDC22J8", "TpFM25J8",
-        "TL36", "TpEP16j8", "FR43", "DZ44", "KG85", "MM86", "MM87", 
+        "TpAB15J8", "TpAT19j8", "TpDC22J8", "TpFM25J8",
+        "TL36", "TpEP16J8", "FR43", "DZ44", "KG85", "MM86", "MM87", 
         "VS91", "DR92", "AD94", "AG98", "MA99","MA101"
     ],
     
     "MCS": [
+        "TpCF24j8", "VT47", #LX
         "AE93", "CW41", "DA75", "GT50", "HM52", "JA71", "KN49", 
         "LP54", "MC58", "TB56", "VT47", "YG66",
         "TpCF24J8", "SR59", "MK80", "PL82", "AM88", "XL89", "OS90", 
@@ -343,6 +347,7 @@ ALL_SUBJECTS_GROUPS = {
     ],
     
     "DELIRIUM+": [
+        "TpCF1", "TpJPS55", "TpSM49" #LX
         "TpAK24", "TpAK27", "TpCB15", "TpDRL3", "TpJB25", "TpJLR17", 
         "TpMB45", "TpMN42", "TpPC21", "TpPM14", "TpRD38",
         "TpCF1", "TpMM4", "TpJC5", "TpJB26", "TpLA28", "TpPM31", 
@@ -356,7 +361,8 @@ ALL_SUBJECTS_GROUPS = {
         "TpPL48", "TpRB50", "TpMD52", "TpJA20", "TpFF34", "TpGT32",
     ],
     
-    "CONTROLS": [
+    "CONTROLS_DELIRIUM": [  # LX Was CONTROLS ... but not taken into account in loading_PP_utils.py
+        "FG104", "FP102", "MB103", #LX
         "TWB1", "TPC2", "LAB1", "LCM2", "LAT3", "LBM4", "LPO5", 
         "LAG6", "MB103", "FP102", "FG104",
         "TJL3", "TPLV4", "TTDV5", "TYS6",

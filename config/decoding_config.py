@@ -4,7 +4,7 @@ P_THRESHOLD = 0.05
 N_PERMUTATIONS = 1000
 DEFAULT_CLASSIFIER_TYPE_MODULE_INTERNAL = "svc"
 # For MNE's internal parallelism within Sliding/Generalizing Estimators
-INTERNAL_N_JOBS_FOR_MNE_DECODING = -1
+INTERNAL_N_JOBS_FOR_MNE_DECODING = 8 #LX was -1
 
 # Event mapping for different LG condition comparisons:
 # LSGD versus LDGD (Local Standard Global Deviant vs Local Deviant
@@ -90,7 +90,7 @@ COMPUTE_TEMPORAL_GENERALIZATION_MATRICES = True
 
 # Specific TGM configuration by comparison type
 # TGM ONLY for main comparison PP vs AP all
-COMPUTE_TGM_FOR_MAIN_COMPARISON = True  # PP/all vs AP/all and LD/GD vs LD/GS and GD vs GS
+COMPUTE_TGM_FOR_MAIN_COMPARISON = False  # PP/all vs AP/all and LD/GD vs LD/GS and GD vs GS
 COMPUTE_TGM_FOR_SPECIFIC_COMPARISONS = False  # PP_spec vs AP_families
 COMPUTE_TGM_FOR_INTER_FAMILY_COMPARISONS = False  # AP_family vs AP_family
 

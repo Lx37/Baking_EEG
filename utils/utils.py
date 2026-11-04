@@ -33,6 +33,9 @@ def configure_project_paths(current_user_login):
                        "EEG_2025_CAP_FPerrin_Vera"),
         "tom": "/Users/tom/Desktop/ENSC/Stage CAP/BakingEEG_data",
         # Add other users and their paths here
+        #"alexandra.corneyllie":  "/mnt/data/tom.balay/data/Baking_EEG_data/", #keep same as Tom to avoid data replication
+        "alexandra.corneyllie":  "/home/alexandra.corneyllie/Projets/Baking_EEG_data/", #changed in 2026 after tom.balays suppression on cluster
+        #"/home/alexandra.corneyllie/Projets/Analyses Tom Juillet 2025 - Epoching Fabrice/Data/Analysis/LocalGlobal/data_epochs/"
     }
     base_input_data_path = user_input_data_paths.get(
         current_user_login,
@@ -40,6 +43,7 @@ def configure_project_paths(current_user_login):
                      "Baking_EEG_data_fallback"),  # Fallback path
     )
     if current_user_login not in user_input_data_paths:
+        print("ICICIIIIII")
         logger_path_utils.warning(
             "User '%s' not in input path config, using fallback: %s",
             current_user_login, base_input_data_path
@@ -53,9 +57,13 @@ def configure_project_paths(current_user_login):
     user_output_results_paths = {
         "tom.balay": (f"/home/tom.balay/results/"
                       f"Baking_EEG_results_{output_version_folder_name}"),
+
         "tom": (f"/Users/tom/Desktop/ENSC/Stage CAP/"
                 f"Baking_EEG_results_{output_version_folder_name}"),
+
         # Add other users and their output paths here
+        "alexandra.corneyllie": (f"/home/alexandra.corneyllie/Projets/Dev Tom 2025/"
+                      f"Baking_EEG_results_{output_version_folder_name}"),
     }
     base_output_results_path = user_output_results_paths.get(
         current_user_login,

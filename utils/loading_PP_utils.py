@@ -230,6 +230,7 @@ def load_epochs_data_for_decoding_delirium(
                 data_root_path = potential_path
 
     if not data_root_path or not os.path.isdir(data_root_path):
+        print("**********************************************ICCCIII")
         logger_data_loading.error(
             "Data directory for subject '%s' (group: '%s') not found. "
             "Attempted path: '%s'. Base input: '%s'.",

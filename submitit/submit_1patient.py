@@ -7,10 +7,11 @@ import shutil
 import submitit
 from submitit.core.utils import FailedJobError
 
-PROJECT_ROOT = "/home/tom.balay/Baking_EEG"
+#PROJECT_ROOT = "/home/tom.balay/Baking_EEG"
+PROJECT_ROOT = "/home/alexandra.corneyllie/Projets/Dev Tom 2025/Baking_EEG" #Lx
 
 
-TARGET_SUBJECT_ID_FOR_JOB = "LP54"
+TARGET_SUBJECT_ID_FOR_JOB = "MG96"
 
 
 PATH_TO_VENV_ACTIVATE_ON_CLUSTER = "/home/tom.balay/.venvs/py3.11_cluster/bin/activate"

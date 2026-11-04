@@ -367,8 +367,8 @@ def enhanced_decoding_task_wrapper(**kwargs):
 
 def main():
 
-    TARGET_SUBJECT_ID = "TpFY57"
-
+    TARGET_SUBJECT_ID = "LC97"
+    
     log_info("=" * 80, logger)
     log_info(
         f"DÉMARRAGE SOUMISSION - SUJET {TARGET_SUBJECT_ID} (Protocole LG)", logger)
@@ -439,7 +439,7 @@ def main():
 
 
     slurm_params = {
-        "timeout_min": 24 * 60, 
+        "timeout_min": 24 * 600, #LX was 24*60
         "slurm_partition": "CPU",
         "slurm_mem": "70G",
         "slurm_cpus_per_task": 40,
@@ -463,7 +463,7 @@ def main():
         "group_affiliation": subject_group,
         "base_input_data_path": base_input_path,
         "base_output_results_path": base_output_path,
-        "n_jobs_for_processing": 40,
+        "n_jobs_for_processing": 40, #LX was 40
         "save_results_flag": dc['SAVE_ANALYSIS_RESULTS'],
         "generate_plots_flag": dc['GENERATE_PLOTS'],
         "loading_conditions_config": dc['CONFIG_LOAD_ALL_NEEDED_FOR_SINGLE_SUBJECT_LG'],
